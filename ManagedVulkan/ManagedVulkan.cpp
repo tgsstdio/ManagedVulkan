@@ -32,15 +32,19 @@ array<ManagedVulkan::ExtensionProperties^>^ ManagedVulkan::Vulkan::EnumerateInst
 		// CODE copied from http://www.codeproject.com/Articles/19354/Quick-C-CLI-Learn-C-CLI-in-less-than-minutes#A8
 		// We use the tracking reference to access the references inside the array
 		// since normally strings are passed by value
-		VkExtensionProperties* current = &instance_extensions[0];
 
-		for (int i = 0; i < count; ++i)
+		if (count > 0)
 		{
-			// HOPEFULLY THIS ISN'T NULL PADDED TO 256
-			output[i] = gcnew ExtensionProperties();
-			output[i]->ExtensionName = gcnew String(current->extensionName);
-			output[i]->SpecVersion = current->specVersion;
-			++current;
+			VkExtensionProperties* current = &instance_extensions[0];
+
+			for (int i = 0; i < count; ++i)
+			{
+				// HOPEFULLY THIS ISN'T NULL PADDED TO 256
+				output[i] = gcnew ExtensionProperties();
+				output[i]->ExtensionName = gcnew String(current->extensionName);
+				output[i]->SpecVersion = current->specVersion;
+				++current;
+			}
 		}
 
 		return output;
@@ -136,6 +140,7 @@ ManagedVulkan::Instance ^ ManagedVulkan::Vulkan::CreateInstance(ManagedVulkan::C
 
 		if (result != VK_SUCCESS)
 		{
+			// SHOULDN'T GET VK_INCOMPLETE ERROR DUE TO FIRST CALL TO VULKAN TO GET FULL COUNT
 			switch (result)
 			{
 			case VK_ERROR_OUT_OF_HOST_MEMORY:
