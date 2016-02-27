@@ -22,17 +22,19 @@ array<ManagedVulkan::ExtensionProperties^>^ ManagedVulkan::Vulkan::EnumerateInst
 		auto err = vkEnumerateInstanceExtensionProperties(
 			NULL, &instance_extension_count, NULL);
 
-		VkExtensionProperties* instance_extensions = new VkExtensionProperties[instance_extension_count];
+		int count = (int)instance_extension_count;
+		instance_extensions = new VkExtensionProperties[count];
 		err = vkEnumerateInstanceExtensionProperties(
 			NULL, &instance_extension_count, instance_extensions);
 
-		array<ExtensionProperties ^> ^output = gcnew array<ExtensionProperties ^>(instance_extension_count);
+		array<ExtensionProperties ^> ^output = gcnew array<ExtensionProperties ^>(count);
 		
 		// CODE copied from http://www.codeproject.com/Articles/19354/Quick-C-CLI-Learn-C-CLI-in-less-than-minutes#A8
 		// We use the tracking reference to access the references inside the array
 		// since normally strings are passed by value
 		VkExtensionProperties* current = &instance_extensions[0];
-		for (uint32_t i = 0; i < instance_extension_count; ++i)
+
+		for (int i = 0; i < count; ++i)
 		{
 			// HOPEFULLY THIS ISN'T NULL PADDED TO 256
 			output[i] = gcnew ExtensionProperties();
@@ -122,7 +124,7 @@ ManagedVulkan::Instance ^ ManagedVulkan::Vulkan::CreateInstance(ManagedVulkan::C
 
 		// enabled extensions
 		input.enabledExtensionCount = (UInt32)createInfo->EnabledExtensionNames->Length;
-		for each (String^ extension in createInfo->EnabledLayerNames)
+		for each (String^ extension in createInfo->EnabledExtensionNames)
 		{
 			IntPtr extensionName = Marshal::StringToHGlobalAnsi(extension);
 			disposables->Add(extensionName);
