@@ -49,7 +49,7 @@ array<ManagedVulkan::ExtensionProperties^>^ ManagedVulkan::Vulkan::EnumerateInst
 	{
 		if (instance_extensions != nullptr)
 		{
-			delete instance_extensions;
+			delete[] instance_extensions;
 		}
 	}
 }
