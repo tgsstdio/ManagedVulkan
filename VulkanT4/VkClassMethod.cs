@@ -10,10 +10,14 @@ namespace VulkanT4
     {
         public VkClassMethod(VkFunction func)
         {
-            Name = func.Name.Substring(2);
-            Parameters = func.Parameters.Skip(1).ToList();
+            Name = func.Name;
+            //Parameters = func.Parameters.Skip(1).ToList();
+            Function = func;
         }
 
+        // TODO : translate CppType into C++ / CLI types
+        public string ReturnType { get; set; }
+        public VkFunction Function { get; private set; }
         public string Name { get; set; }
         public List<VkFunctionParam> Parameters { get; set; }
     }

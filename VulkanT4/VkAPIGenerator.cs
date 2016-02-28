@@ -1,19 +1,59 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace VulkanT4
 {
     public class VkAPIGenerator : IVkAPIGenerator
     {
+        private IDictionary<string, string> mTranslations;
         public VkAPIGenerator()
         {
-            Functions = new List<VkFunction>();
+            mFunctions = new List<VkFunction>();
+            mProxies = new Dictionary<string, VkProxy>();
+
+            mTranslations = new Dictionary<string, string>();
         }
 
-        public List<VkFunction> Functions { get; private set; }
+        private List<VkFunction> mFunctions;
+        public IList<VkFunction> Functions
+        {
+            get
+            {
+                return mFunctions;
+            }
+
+        }
+
+        private Dictionary<string, VkProxy> mProxies;
+        public IDictionary<string, VkProxy> Proxies
+        {
+            get
+            {
+                return mProxies;
+            }               
+        }
 
         public void Apply(XDocument doc)
         {
+            GenerateTranslations();
+            ExtractFunctions(doc);
+        }
+
+        private void GenerateTranslations()
+        {
+            mTranslations.Add("char*", "String^");
+            mTranslations.Add("uint32_t", "UInt32");
+            mTranslations.Add("uint32_t*", "ref UInt32");
+            mTranslations.Add("uint64_t", "UInt64");
+            mTranslations.Add("VkBool32", "bool");
+            mTranslations.Add("size_t", "IntPtr");
+        }
+
+        private void ExtractFunctions(XDocument doc)
+        {
+            // get all commands
             foreach (var child in doc.Root.Descendants("command"))
             {
                 var proto = child.Element("proto");
@@ -66,12 +106,45 @@ namespace VulkanT4
                         fn.Parameters.Add(p);
                     }
 
-                    Functions.Add(fn);
+                    mFunctions.Add(fn);
                 }
-
-
             }
-        }
 
+            // group them in classes
+
+            // including catch all
+            var notMatching = new VkProxy("Vulkan");
+            notMatching.Name = "Vulkan";
+            mProxies[notMatching.Key] = notMatching;
+
+            Func<VkFunction, bool> instFn = (a) => a.Parameters.Count >= 1 && a.Parameters[0].Tokens.Length == 2 && !a.Parameters[0].Tokens[0].EndsWith("*");
+
+            foreach (var fn in Functions)
+            {
+                if (instFn(fn))
+                {
+                    var first = fn.Parameters[0];
+
+                    VkProxy found = null;
+                    if (!mProxies.TryGetValue(first.CppType, out found))
+                    {
+                        found = new VkProxy(first.CppType);
+                        found.Name = first.CppType.Substring(2);
+                        mProxies[first.CppType] = found;
+                    }
+
+                    var method = new VkClassMethod(fn);                              
+                    method.Parameters = fn.Parameters.Skip(1).ToList();
+                    found.Methods.Add(method);
+
+                }
+                else
+                {
+                    var wrapper = new VkClassMethod(fn);
+                    wrapper.Parameters = fn.Parameters;
+                    notMatching.Methods.Add(wrapper);
+                }
+            }            
+        }
     }
 }

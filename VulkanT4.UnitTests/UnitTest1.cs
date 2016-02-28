@@ -65,6 +65,8 @@ namespace VulkanT4.UnitTests
             Assert.AreEqual("const", param.Tokens[0]);
             Assert.AreEqual("VkInstanceCreateInfo*", param.Tokens[1]);
             Assert.AreEqual("pCreateInfo", param.Tokens[2]);
+
+            Assert.AreEqual(1, generator.Proxies.Keys.Count);
         }
 
 
@@ -109,12 +111,14 @@ namespace VulkanT4.UnitTests
             Assert.AreEqual(0, second.FailureCodes.Length);
             Assert.AreEqual(0, second.Parameters.Count);
 
+            Assert.AreEqual(1, generator.Proxies.Keys.Count);
+
         }
 
         [TestMethod]
         public void ParseVkXML()
         {
-            var doc = XDocument.Load("vk.xml");
+            var doc = XDocument.Load("vk.xml", LoadOptions.PreserveWhitespace);
             IVkAPIGenerator generator = new VkAPIGenerator();
 
             bool hasFailed = false;

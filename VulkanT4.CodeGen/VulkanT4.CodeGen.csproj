@@ -5,10 +5,10 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{06F882AA-A844-4B1C-B5F0-B36945B8B4F2}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>t4CodeGen</RootNamespace>
-    <AssemblyName>t4CodeGen</AssemblyName>
+    <RootNamespace>VulkanT4.CodeGen</RootNamespace>
+    <AssemblyName>VulkanT4.CodeGen</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -43,13 +46,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ManagedVulkan.cpp">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ManagedVulkan.tt2</DependentUpon>
+    </Content>
+    <None Include="ManagedVulkan.tt2">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ManagedVulkan.cpp</LastGenOutput>
+    </None>
     <Content Include="ManagedVulkan.h">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
