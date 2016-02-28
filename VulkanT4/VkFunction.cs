@@ -4,9 +4,10 @@ namespace VulkanT4
 {
     public class VkFunction
     {
-        public VkFunction(string name)
+        public VkFunction(string key)
         {
-            Name = name;
+            Key = key;
+            Name = key.Substring(2);
             Parameters = new List<VkFunctionParam>();
         }
 

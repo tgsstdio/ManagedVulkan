@@ -11,6 +11,7 @@ namespace VulkanT4
         public string Text { get; set; }
         public string[] Tokens { get; set; }
         public string CppType { get; set; }
+        public string Name { get; set; }
         public string CSharpType { get; set; }
     }
 }

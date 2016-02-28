@@ -16,19 +16,8 @@ var entitiesXml = "vk.xml";
 
 var doc = XDocument.Load(Host.ResolvePath(entitiesXml));
 
-var functions = new List<VkFunction>();
-foreach (var child in doc.Root.Descendants("command"))
-{
-	var proto = child.Element("proto");
-	if (proto != null)
-	{
-		var name = proto.Element("name");
-		var type = proto.Element("type");
-
-		var fn = new VkFunction(name.Value);
-		functions.Add(fn);
-	}
-}
+var generator = new VulkanT4.VkAPIGenerator();
+generator.Apply(doc);
 
 var ns = "ManagedVulkan";
 #>
@@ -38,7 +27,7 @@ namespace <#= ns #> {
 	public ref class Vulkan
 	{
 	public:
-<# foreach (var f in functions)
+<# foreach (var f in generator.Functions)
 {
 #>
 		<#= f.Name #>  
