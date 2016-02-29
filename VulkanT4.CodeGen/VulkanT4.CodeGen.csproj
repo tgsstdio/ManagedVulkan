@@ -52,26 +52,27 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ManagedVulkan.tt2">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ManagedVulkan.cpp</LastGenOutput>
+    </None>
     <Content Include="ManagedVulkan.cpp">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ManagedVulkan.tt2</DependentUpon>
     </Content>
-    <None Include="ManagedVulkan.tt2">
+    <Content Include="ManagedVulkan.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ManagedVulkan.cpp</LastGenOutput>
-    </None>
-    <Content Include="ManagedVulkan.h">
+      <LastGenOutput>ManagedVulkan1.h</LastGenOutput>
+    </Content>
+    <Content Include="ManagedVulkan1.h">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ManagedVulkan.tt</DependentUpon>
     </Content>
-    <Content Include="ManagedVulkan.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ManagedVulkan.h</LastGenOutput>
-    </Content>
     <Content Include="vk.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>

@@ -7,7 +7,7 @@ namespace VulkanT4
         public VkFunction(string key)
         {
             Key = key;
-            Name = key.Substring(2);
+            Name = key.StartsWith("vk") ? key.Substring(2) : key;
             Parameters = new List<VkFunctionParam>();
         }
 

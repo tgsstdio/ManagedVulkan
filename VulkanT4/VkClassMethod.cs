@@ -17,6 +17,7 @@ namespace VulkanT4
 
         // TODO : translate CppType into C++ / CLI types
         public string ReturnType { get; set; }
+        public VkTypeTranslation Translation { get; set; }
         public VkFunction Function { get; private set; }
         public string Name { get; set; }
         public List<VkFunctionParam> Parameters { get; set; }

@@ -44,9 +44,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VkAPIGenerator.cs" />
     <Compile Include="VkClassMethod.cs" />
+    <Compile Include="VkEnum.cs" />
+    <Compile Include="VkEnumItem.cs" />
     <Compile Include="VkProxy.cs" />
     <Compile Include="VkFunction.cs" />
     <Compile Include="VkFunctionParam.cs" />
+    <Compile Include="VkStruct.cs" />
+    <Compile Include="VkStructMember.cs" />
+    <Compile Include="VkTypeTranslation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

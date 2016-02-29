@@ -7,6 +7,8 @@ namespace VulkanT4
     {
         IList<VkFunction> Functions { get; }
         IDictionary<string, VkProxy> Proxies { get; }
+        IDictionary<string, VkStruct> Structs { get; }
+        IList<VkEnum> Enums { get; }
         void Apply(XDocument doc);
     }
 }

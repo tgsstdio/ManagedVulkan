@@ -31,8 +31,77 @@ using namespace System;
 
 namespace <#= ns #> 
 {
+	// ENUMS
+<#	foreach(var el in generator.Enums)
+	{
+		var flags = el.UseFlags ? "[FlagsAttribute] ": "";
+#>
+	<#= flags #>public enum class <#= el.Name #> : Int32
+	{
+<#		
+		foreach(var i in el.Items)
+		{			
+			var finalValue = i.Value != null ? " = " + i.Value + "," : ((i.BitPosition != null) ? " = 1 << " + i.BitPosition + "," : ",");
+			var comments = i.Comment != null ? "// " + i.Comment : "";
+#>
+		<#= i.Name #><#= finalValue #> <#= comments #>
+<#		
+		}
+#>
+	};
 
-<#	foreach (var proxy in generator.Proxies.Values)
+<# 
+	}
+#>
+	// STRUCTS 
+<#  foreach (var s in generator.Structs.Values)
+	{
+#>
+	public ref class <#= s.Name #>
+	{
+	private:
+<#		
+		foreach(var m in s.Members)
+		{
+			if (m.IncludeInDeclaration)
+			{
+				var initialValue = m.Translation != null ? m.Translation.Default : ";";
+#>
+		<#= m.CSharpType #> <#= m.FieldName #><#= initialValue #>
+<#
+			}
+		}
+#>
+	public:
+<#		
+		foreach(var m in s.Members)
+		{
+			if (m.IncludeInDeclaration)
+			{
+#>
+		property <#= m.CSharpType #> <#= m.Name #>
+		{
+			<#= m.CSharpType #> get()
+			{
+				return <#= m.FieldName #>;
+			}
+			void set(<#= m.CSharpType #> value)
+			{
+				<#= m.FieldName #> = value; 
+			}
+		}
+<#
+			}
+		}
+#>
+	}
+
+<#  
+	}	
+#>
+	// INTERFACES
+<#
+	foreach (var proxy in generator.Proxies.Values)
 	{
 #>
 	// <#= proxy.Key #>
@@ -41,7 +110,8 @@ namespace <#= ns #>
 <#	
 		foreach (var m in proxy.Methods)
 		{
-			var returnType = m.Function.ReturnType ?? "<RETURN_TYPE>";
+			var returnType = m.Translation != null ? m.Translation.CSharpType : (m.Function.ReturnType ?? "<RETURN_TYPE>");	
+
 #>
 		<#= returnType #> <#= m.Name #>(<#
 			var first = true;
@@ -49,7 +119,7 @@ namespace <#= ns #>
 			foreach(var param in m.Parameters)
 			{ 
 				var paramName = param.Name ?? "<NAME>";
-				var paramType = param.CppType ?? "<TYPE>";
+				var paramType = param.Translation != null ? param.Translation.MethodOnly : (param.CppType ?? "<TYPE>");	
 			#><#= separator #><#= paramType #> <#= paramName #><#
 				if (first)
 				{
@@ -64,6 +134,8 @@ namespace <#= ns #>
 
 	public ref class <#= proxy.Name #> : public I<#= proxy.Key #>
 	{
+	private:
+		<#= proxy.Key #> mInst;
 	public:
 <#	
 		foreach (var m in proxy.Methods)
@@ -76,7 +148,8 @@ namespace <#= ns #>
 			foreach(var param in m.Parameters)
 			{ 
 				var paramName = param.Name ?? "<NAME>";
-				var paramType = param.CppType ?? "<TYPE>";
+				var paramType = param.Translation != null ? param.Translation.MethodOnly : (param.CppType ?? "<TYPE>");	
+
 			#><#= separator #><#= paramType #> <#= paramName #><#
 				if (first)
 				{

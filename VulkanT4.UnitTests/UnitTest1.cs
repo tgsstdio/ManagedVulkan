@@ -20,7 +20,7 @@ namespace VulkanT4.UnitTests
                         <param><type> VkInstance </type> * <name> pInstance </name></param>
                     </command>
                 </commands>";
-            var doc = XDocument.Parse(xml);
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
             IVkAPIGenerator generator = new VkAPIGenerator();
             generator.Apply(doc);
             Assert.AreEqual(1, generator.Functions.Count);
@@ -45,7 +45,7 @@ namespace VulkanT4.UnitTests
                         <param>const <type>VkInstanceCreateInfo</type>* <name>pCreateInfo</name></param>
                     </command>
                 </commands>";
-            var doc = XDocument.Parse(xml);
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
             IVkAPIGenerator generator = new VkAPIGenerator();
             generator.Apply(doc);
             Assert.AreEqual(1, generator.Functions.Count);
@@ -86,7 +86,7 @@ namespace VulkanT4.UnitTests
                         </command>
                     </commands>                    
                 </registry>";
-            var doc = XDocument.Parse(xml);
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
             IVkAPIGenerator generator = new VkAPIGenerator();
             generator.Apply(doc);
             Assert.AreEqual(2, generator.Functions.Count);
@@ -113,6 +113,156 @@ namespace VulkanT4.UnitTests
 
             Assert.AreEqual(1, generator.Proxies.Keys.Count);
 
+        }
+
+        [TestMethod]
+        public void ParseStruct1()
+        {
+            string xml =
+               @"<registry>
+                    <type category=""struct"" name=""VkExtent3D"">
+                        <member><type>uint32_t</type>        <name>width</name></member>
+                        <member optional=""true""><type>uint32_t</type>        <name>height</name></member>
+                        <member optional=""true"" len=""null - terminated"">const <type>char</type>*     <name>pEngineName</name></member>
+
+                        </type>
+                </registry>";
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(0, generator.Functions.Count);
+            Assert.AreEqual(1, generator.Structs.Keys.Count);
+            var item = generator.Structs.Values.ElementAt(0);
+            Assert.AreEqual("VkExtent3D", item.Key);
+            Assert.AreEqual("Extent3D", item.Name);
+            Assert.AreEqual(3, item.Members.Count);
+
+            var member_0 = item.Members[0];
+            Assert.AreEqual("width", member_0.Key);
+            Assert.AreEqual("Width", member_0.Name);
+            Assert.AreEqual("mWidth", member_0.FieldName);
+            Assert.AreEqual("uint32_t", member_0.CppType);
+            Assert.AreEqual("UInt32", member_0.CSharpType);
+            Assert.IsFalse(member_0.Optional);
+            Assert.IsNotNull(member_0.LengthConditions);
+            Assert.AreEqual(0, member_0.LengthConditions.Length);
+
+            var member_1 = item.Members[1];
+            Assert.AreEqual("height", member_1.Key);
+            Assert.AreEqual("Height", member_1.Name);
+            Assert.AreEqual("mHeight", member_1.FieldName);
+            Assert.AreEqual("uint32_t", member_1.CppType);
+            Assert.AreEqual("UInt32", member_1.CSharpType);
+            Assert.IsTrue(member_1.Optional);
+            Assert.IsNotNull(member_1.LengthConditions);
+            Assert.AreEqual(0, member_1.LengthConditions.Length);
+
+            var member_2 = item.Members[2];
+            Assert.AreEqual("pEngineName", member_2.Key);
+            Assert.AreEqual("EngineName", member_2.Name);
+            Assert.AreEqual("mEngineName", member_2.FieldName);
+            Assert.AreEqual("char*", member_2.CppType);
+            Assert.AreEqual("String^", member_2.CSharpType);
+            Assert.IsTrue(member_2.Optional);
+            Assert.IsNotNull(member_2.LengthConditions);
+            Assert.AreEqual(1, member_2.LengthConditions.Length);
+            Assert.AreEqual("null - terminated", member_2.LengthConditions[0]);
+        }
+
+        [TestMethod]
+        public void ParseStruct2()
+        {
+            string xml =
+               @"<registry>
+                    <type category=""struct"" name=""VkExtent3D"">
+                        <member><type>char</type>            <name>layerName</name>[<enum>VK_MAX_EXTENSION_NAME_SIZE</enum>]</member> <!-- layer name -->
+                    </type>
+                </registry>";
+
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(0, generator.Functions.Count);
+            Assert.AreEqual(1, generator.Structs.Keys.Count);
+            var item = generator.Structs.Values.ElementAt(0);
+            Assert.AreEqual("VkExtent3D", item.Key);
+            Assert.AreEqual("Extent3D", item.Name);
+            Assert.AreEqual(1, item.Members.Count);
+
+            var member = item.Members[0];
+            Assert.AreEqual("layerName", member.Key);
+            Assert.AreEqual("LayerName", member.Name);
+            Assert.AreEqual("mLayerName", member.FieldName);
+            Assert.AreEqual("char[]", member.CppType);
+            Assert.AreEqual("String^", member.CSharpType);
+            Assert.IsFalse(member.Optional);
+            Assert.IsNotNull(member.LengthConditions);
+            Assert.AreEqual(0, member.LengthConditions.Length);
+        }
+
+        [TestMethod]
+        public void ParseStruct3()
+        {
+            string xml =
+               @"<registry>
+                    <type category=""struct"" name=""VkExtent3D"">
+                        <member len=""enabledExtensionCount,null - terminated"">const <type>char</type>* const*      <name>ppEnabledExtensionNames</name></member>
+                    </type>
+                </registry>";
+
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(0, generator.Functions.Count);
+            Assert.AreEqual(1, generator.Structs.Keys.Count);
+            var item = generator.Structs.Values.ElementAt(0);
+            Assert.AreEqual("VkExtent3D", item.Key);
+            Assert.AreEqual("Extent3D", item.Name);
+            Assert.AreEqual(1, item.Members.Count);
+
+            var member = item.Members[0];
+            Assert.AreEqual("ppEnabledExtensionNames", member.Key);
+            Assert.AreEqual("EnabledExtensionNames", member.Name);
+            Assert.AreEqual("mEnabledExtensionNames", member.FieldName);
+            Assert.AreEqual("const char* const*", member.CppType);
+            Assert.AreEqual("array<String^>^", member.CSharpType);
+            Assert.IsFalse(member.Optional);
+            Assert.IsNotNull(member.LengthConditions);
+            Assert.AreEqual(2, member.LengthConditions.Length);
+            Assert.AreEqual("enabledExtensionCount", member.LengthConditions[0]);
+            Assert.AreEqual("null - terminated", member.LengthConditions[1]);
+        }
+
+        [TestMethod]
+        public void IgnoreInDeclaration()
+        {
+            string xml =
+               @"<registry>
+                    <type category=""struct"" name=""VkExtent3D"">
+                        <member>const <type>void</type>*            <name>pNext</name></member>
+                    </type>
+                </registry>";
+
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(0, generator.Functions.Count);
+            Assert.AreEqual(1, generator.Structs.Keys.Count);
+            var item = generator.Structs.Values.ElementAt(0);
+            Assert.AreEqual("VkExtent3D", item.Key);
+            Assert.AreEqual("Extent3D", item.Name);
+            Assert.AreEqual(1, item.Members.Count);
+
+            var member = item.Members[0];
+            Assert.AreEqual("pNext", member.Key);
+            Assert.AreEqual("pNext", member.Name);
+            Assert.AreEqual("pNext", member.FieldName);
+            Assert.AreEqual("void*", member.CppType);
+            Assert.AreEqual("IntPtr", member.CSharpType);
+            Assert.IsFalse(member.Optional);
+            Assert.IsNotNull(member.LengthConditions);
+            Assert.AreEqual(0, member.LengthConditions.Length);
+            Assert.IsFalse(member.IncludeInDeclaration);
         }
 
         [TestMethod]
