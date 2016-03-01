@@ -265,6 +265,48 @@ namespace VulkanT4.UnitTests
             Assert.IsFalse(member.IncludeInDeclaration);
         }
 
+
+        [TestMethod]
+        public void ParseDelegate()
+        {
+            string xml =
+               @"<registry>
+                    <type category=""funcpointer"">typedef void (VKAPI_PTR *<name>PFN_vkInternalAllocationNotification</name>)(
+                    <type>void</type>*                                       pUserData,
+                    <type>size_t</type>                                      size,
+                    <type>VkInternalAllocationType</type>                    allocationType,
+                    <type>VkSystemAllocationScope</type>                     allocationScope);</type>
+                </registry>";
+
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(1, generator.Delegates.Count);
+        }
+
+        [TestMethod]
+        public void ParseBool()
+        {
+            string xml =
+               @"<registry>
+                    <command>
+                        <proto><type>VkBool32</type> <name>vkGetDeviceQueue</name></proto>
+                    </command>
+                </registry>";
+
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(1, generator.Proxies.Keys.Count);
+            var proxy = generator.Proxies.Values.First();
+            Assert.AreEqual(1, proxy.Methods.Count);
+            var method = proxy.Methods[0];
+            Assert.IsNotNull(method.Translation);
+            Assert.IsNotNull(method.ReturnType);
+            Assert.AreEqual("VkBool32", method.ReturnType);
+            Assert.AreEqual("VkBool32", method.Translation.CppType);
+        }
+
         [TestMethod]
         public void ParseVkXML()
         {

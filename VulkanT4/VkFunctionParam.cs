@@ -14,5 +14,6 @@ namespace VulkanT4
         public string Name { get; set; }
         public string CSharpType { get; set; }
         public VkTypeTranslation Translation { get; set; }
+        public string[] LengthConditions { get; set; }
     }
 }

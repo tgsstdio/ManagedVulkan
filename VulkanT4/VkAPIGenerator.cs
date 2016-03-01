@@ -15,6 +15,8 @@ namespace VulkanT4
             mProxies = new Dictionary<string, VkProxy>();
             mStructs = new Dictionary<string, VkStruct>();
             mEnums = new List<VkEnum>();
+            mHandles = new Dictionary<string, VkHandle>();
+            mDelegates = new List<VkFunction>();
         }
 
         private List<VkFunction> mFunctions;
@@ -54,14 +56,135 @@ namespace VulkanT4
             }
         }
 
+        private Dictionary<string, VkHandle> mHandles;
+        public IDictionary<string, VkHandle> Handles
+        {
+            get
+            {
+                return mHandles;
+            }
+        }
+
+        private List<VkFunction> mDelegates;
+        public IList<VkFunction> Delegates
+        {
+            get
+            {
+                return mDelegates;
+            }
+        }
+
         public void Apply(XDocument doc)
         {
             GenerateTranslations();
             ExtractEnumsAndMasks(doc);
             ExtractStructs(doc);
             ExtractFunctions(doc);
+            ExtractHandles(doc);
+            ExtractDelegates(doc);
             RetranslateMembers();
             RetranslateProxies();
+            RetranslateDelegates();
+        }
+
+        private void RetranslateDelegates()
+        {
+            // second pass to match
+            foreach (var s in mDelegates)
+            {
+                foreach (var m in s.Parameters)
+                {
+                    if (m.Translation == null)
+                    {
+                        VkTypeTranslation sharpType = null;
+                        if (mTranslations.TryGetValue(m.CppType, out sharpType))
+                        {
+                            m.CSharpType = sharpType.CSharpType;
+                            m.Translation = sharpType;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ExtractDelegates(XDocument doc)
+        {
+            foreach (var child in doc.Root.Descendants("type"))
+            {
+                var category = child.Attribute("category");
+
+                if (category != null && category.Value == "funcpointer")
+                {
+                    var name = child.Element("name");
+                    if (name != null)
+                    {
+                        var key = name.Value;
+                        var del = new VkFunction(key);
+
+                        // remove extra white spaces
+                        string fullText = string.Join(" ", child.Value.Split(new[] { " ", "\n" }, StringSplitOptions.RemoveEmptyEntries));
+                        var bracketTokens = fullText.Split(new[] { "(", ")" }, StringSplitOptions.RemoveEmptyEntries);
+                        var paramTokens = bracketTokens[2].Split(',');
+
+                        foreach (var token in paramTokens)
+                        {
+                            var argStmt = token.Trim();
+                            var arguments = argStmt.Split(' ');
+
+                            if (arguments.Length > 1)
+                            {
+                                var p = new VkFunctionParam();
+                                p.Text = argStmt;
+                                p.Tokens = arguments;
+
+                                if (p.Tokens.Length == 2)
+                                {
+                                    p.CppType = p.Tokens[0];
+                                    p.Name = p.Tokens[1];
+                                }
+                                else if (p.Tokens.Length == 3)
+                                {
+                                    p.CppType = p.Tokens[1];
+                                    p.Name = p.Tokens[2];
+                                }
+
+                                del.Parameters.Add(p);
+                            }
+                        }
+
+                        mDelegates.Add(del);
+                    }
+                }
+            }
+        }
+
+        private void ExtractHandles(XDocument doc)
+        {
+            foreach (var child in doc.Root.Descendants("type"))
+            {
+                var category = child.Attribute("category");
+
+                if (category != null && category.Value == "handle")
+                {
+                    var name = child.Element("name");
+                    if (name != null && !(mTranslations.ContainsKey(name.Value) || mTranslations.ContainsKey(name.Value + "*")))
+                    {
+                        var h = new VkHandle(name.Value);
+                        mHandles.Add(h.Key, h);
+
+                        if (!mTranslations.ContainsKey(h.Key))
+                        {
+                            mTranslations.Add(h.Key, new VkTypeTranslation { CppType = h.Key, CSharpType = h.Name + "^", Default = " = nullptr;", MethodOnly = h.Name + "^" });
+                        }
+
+                        var pointerStmt = h.Key + "*";
+                        if (!mTranslations.ContainsKey(pointerStmt))
+                        {
+                            mTranslations.Add(pointerStmt, new VkTypeTranslation { CppType = pointerStmt, CSharpType = h.Name + "^", Default = " = nullptr;", MethodOnly = h.Name + "^" });
+                        }
+                    }
+                }
+            }
         }
 
         private void ExtractEnumsAndMasks(XDocument doc)
@@ -105,6 +228,10 @@ namespace VulkanT4
                             el.Items.Add(item);
                         }
                         mEnums.Add(el);
+
+                        var arrayType = "array<" + el.Name + ">^";
+                        var pointerType = el.Name + "*";
+                        mTranslations.Add(pointerType, new VkTypeTranslation { CppType = pointerType, CSharpType = arrayType, Default = " = nullptr;", MethodOnly = el.Name });
                     }
                     
                 }
@@ -241,12 +368,18 @@ namespace VulkanT4
                     mStructs.Add(key, s);
 
                     // POINTERS
-                    var item = new VkTypeTranslation { CppType = s.Key + "*", CSharpType = s.Name + "^", Default = " = nullptr;", MethodOnly = s.Name + "^" };
-                    mTranslations.Add(item.CppType, item);
+                    var pointerStmt = s.Key + "*";
+                    if (!mTranslations.ContainsKey(pointerStmt))
+                    {
+                        var item = new VkTypeTranslation { CppType = s.Key + "*", CSharpType = s.Name + "^", Default = " = nullptr;", MethodOnly = s.Name + "^" };
+                        mTranslations.Add(pointerStmt, item);
+                    }
 
-                    // STRUCTS
-                    var item2 = new VkTypeTranslation { CppType = s.Key, CSharpType = s.Name + "^", Default = " = nullptr;", MethodOnly = s.Name + "^" };
-                    mTranslations.Add(item2.CppType, item2);
+                    if (!mTranslations.ContainsKey(s.Key))
+                    {
+                        var item2 = new VkTypeTranslation { CppType = s.Key, CSharpType = s.Name + "^", Default = " = nullptr;", MethodOnly = s.Name + "^" };
+                        mTranslations.Add(item2.CppType, item2);
+                    }
                 }
             }
         }
@@ -300,6 +433,11 @@ namespace VulkanT4
                         }
                     }
                 }
+
+                foreach (var method in proxy.Methods)
+                {
+                    ParseEnumerateMethods(method);
+                }
             }
         }
 
@@ -317,6 +455,9 @@ namespace VulkanT4
             mTranslations.Add(item.CppType, item);
 
             item = new VkTypeTranslation { CppType = "uint32_t*", CSharpType = "UInt32", Default = " = 0;", MethodOnly = "ref UInt32" };
+            mTranslations.Add(item.CppType, item);
+
+            item = new VkTypeTranslation { CppType = "uint64_t", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64" };
             mTranslations.Add(item.CppType, item);
 
             item = new VkTypeTranslation { CppType = "uint64_t*", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64" };
@@ -351,6 +492,12 @@ namespace VulkanT4
             mTranslations.Add(item.CppType, item);
 
             item = new VkTypeTranslation { CppType = "VkDeviceSize", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64" };
+            mTranslations.Add(item.CppType, item);
+
+            item = new VkTypeTranslation { CppType = "VkDeviceSize*", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "ref UInt64" };
+            mTranslations.Add(item.CppType, item);
+
+            item = new VkTypeTranslation { CppType = "void*", CSharpType = "IntPtr", Default = " = IntPtr.Zero;", MethodOnly = "IntPtr" };
             mTranslations.Add(item.CppType, item);
         }
 
@@ -391,22 +538,35 @@ namespace VulkanT4
 
                     foreach (var param in child.Descendants("param"))
                     {
-                        var p = new VkFunctionParam();
-                        p.Text = param.Value;
-                        p.Tokens = p.Text.Split(' ');
-
-                        if (p.Tokens.Length == 2)
+                        var paramType = param.Element("type");
+                        if (paramType != null)
                         {
-                            p.CppType = p.Tokens[0];
-                            p.Name = p.Tokens[1];
-                        }
-                        else if (p.Tokens.Length == 3)
-                        {
-                            p.CppType = p.Tokens[1];
-                            p.Name = p.Tokens[2];
-                        }
+                            var p = new VkFunctionParam();
+                            p.Tokens = param.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                            p.Text = string.Join(" ", p.Tokens);
 
-                        fn.Parameters.Add(p);
+                            var len = param.Attribute("len");
+                            if (len != null)
+                            {
+                                p.LengthConditions = len.Value.Split(new[] { ',' });
+                            }
+                            else
+                            {
+                                p.LengthConditions = new string[0];
+                            }
+
+                            if (p.Tokens.Length == 2)
+                            {
+                                p.CppType = p.Tokens[0];
+                                p.Name = p.Tokens[1];
+                            }
+                            else if (p.Tokens.Length == 3)
+                            {
+                                p.CppType = p.Tokens[1];
+                                p.Name = p.Tokens[2];
+                            }
+                            fn.Parameters.Add(p);
+                        }
                     }
 
                     mFunctions.Add(fn);
@@ -420,6 +580,7 @@ namespace VulkanT4
             // including catch all
             var notMatching = new VkProxy("Vulkan");
             notMatching.Name = "Vulkan";
+            notMatching.RequiresInstance = false;
             mProxies[notMatching.Key] = notMatching;
 
             Func<VkFunction, bool> instFn = (a) => a.Parameters.Count >= 1 && a.Parameters[0].Tokens.Length == 2 && !a.Parameters[0].Tokens[0].EndsWith("*");
@@ -437,17 +598,23 @@ namespace VulkanT4
                         found.Name = first.CppType.Substring(2);
                         mProxies[first.CppType] = found;
 
-                        var pointer = new VkTypeTranslation { CppType = first.CppType + "*", CSharpType = found.Name + "^", Default = " = nullptr;", MethodOnly = found.Name + "^" };
-                        mTranslations.Add(pointer.CppType, pointer);
+                        var pointerStmt = first.CppType + "*";
+                        if (!mTranslations.ContainsKey(pointerStmt))
+                        {
+                            var pointer = new VkTypeTranslation { CppType = pointerStmt, CSharpType = found.Name + "^", Default = " = nullptr;", MethodOnly = found.Name + "^" };
+                            mTranslations.Add(pointerStmt, pointer);
+                        }
 
-                        var classRef = new VkTypeTranslation { CppType = first.CppType, CSharpType = found.Name + "^", Default = " = nullptr;", MethodOnly = found.Name + "^" };
-                        mTranslations.Add(classRef.CppType, classRef);
+                        if (!mTranslations.ContainsKey(first.CppType))
+                        {
+                            var classRef = new VkTypeTranslation { CppType = first.CppType, CSharpType = found.Name + "^", Default = " = nullptr;", MethodOnly = found.Name + "^" };
+                            mTranslations.Add(classRef.CppType, classRef);
+                        }
                     }
 
                     var method = new VkClassMethod(fn);                              
                     method.Parameters = fn.Parameters.Skip(1).ToList();
                     found.Methods.Add(method);
-
                 }
                 else
                 {
@@ -456,6 +623,64 @@ namespace VulkanT4
                     notMatching.Methods.Add(wrapper);
                 }
             }            
+        }
+
+        private void ParseEnumerateMethods(VkClassMethod method)
+        {
+            string[] actualFunctions = new string[] {
+                "vkGetImageSparseMemoryRequirements",
+                "vkGetSwapchainImagesKHR",
+                "vkGetPhysicalDeviceQueueFamilyProperties",
+                "vkGetPhysicalDeviceSparseImageFormatProperties",
+                "vkGetPhysicalDeviceDisplayPropertiesKHR",
+                "vkGetDisplayModePropertiesKHR",
+                "vkGetPhysicalDeviceSurfaceFormatsKHR",
+                "vkGetPhysicalDeviceSurfacePresentModesKHR",
+            };
+            var exceptions = new HashSet<string>(actualFunctions);
+
+            if (method.Name.StartsWith("Enumerate") || exceptions.Contains(method.Function.Key))
+            {
+                var lengthParams = new HashSet<string>();
+                var finalParams = new List<VkFunctionParam>();
+                for (int i = method.Parameters.Count - 1; i > 0; --i)
+                {
+                    var param = method.Parameters[i];
+
+                    if (param.LengthConditions.Length > 0)
+                    {
+                        foreach (var l in param.LengthConditions)
+                        {
+                            lengthParams.Add(l);
+                        }
+                        var a = new VkFunctionParam();
+                        a.Name = param.Name;
+                        a.CppType = param.CppType;
+
+                        VkTypeTranslation paramType = null;
+                        if (mTranslations.TryGetValue(param.CppType, out paramType))
+                        {
+                            a.CSharpType = "array<" + paramType.MethodOnly + ">^";
+                        }
+                        else
+                        {
+                            a.CSharpType = "<ARRAY TYPE>";
+                        }
+
+                        a.Text = string.Join(" ", new[] { a.CSharpType, a.Name });
+                        a.Tokens = a.Text.Split(' ');
+                        a.LengthConditions = param.LengthConditions;
+                        finalParams.Add(a);
+                    }                    
+                    else if (!lengthParams.Contains(param.Name))
+                    {
+                        finalParams.Add(param);
+                    }
+                }
+               
+                finalParams.Reverse();
+                method.Parameters = finalParams;                
+            }
         }
     }
 }

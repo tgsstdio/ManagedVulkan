@@ -1,6 +1,6 @@
 # Managed Vulkan
 
-My own managed C++ / CLI interface for Vulkan 
+My own managed C++ / CLI interface for Vulkan (on my Windows machines compiled with Visual Studio 2015 Community Edition)
 
 NOTE : most likely a leaky messy prototype
 

@@ -31,6 +31,19 @@ using namespace System;
 
 namespace <#= ns #> 
 {
+	// HANDLES
+<#	foreach(var h in generator.Handles.Values)
+	{
+#>
+	public ref class <#= h.Name #>
+	{
+	internal:
+		<#= h.Key #> mHandle;
+	};
+
+<#
+	}
+#>
 	// ENUMS
 <#	foreach(var el in generator.Enums)
 	{
@@ -94,11 +107,35 @@ namespace <#= ns #>
 			}
 		}
 #>
-	}
+	};
 
 <#  
 	}	
 #>
+	// DELEGATES
+<#	foreach(var del in generator.Delegates)
+	{
+#>
+	public delegate void <#= del.Key #>(<#
+			var first = true;
+			var separator = "";
+			foreach(var param in del.Parameters)
+			{ 
+				var paramName = param.Name ?? "<NAME>";
+				var paramType = param.Translation != null ? param.Translation.MethodOnly : (param.CppType ?? "<TYPE>");	
+
+			#><#= separator #><#= paramType #> <#= paramName #><#
+				if (first)
+				{
+					separator = ", ";
+					first = false;
+				}	
+			} #>);
+
+<#
+	}
+#>
+
 	// INTERFACES
 <#
 	foreach (var proxy in generator.Proxies.Values)
@@ -119,7 +156,12 @@ namespace <#= ns #>
 			foreach(var param in m.Parameters)
 			{ 
 				var paramName = param.Name ?? "<NAME>";
-				var paramType = param.Translation != null ? param.Translation.MethodOnly : (param.CppType ?? "<TYPE>");	
+				var paramType = param.Translation != null ? param.Translation.MethodOnly :  
+					(	param.CSharpType ?? 
+						(	
+							param.CppType ?? "<TYPE>"
+						)
+					);
 			#><#= separator #><#= paramType #> <#= paramName #><#
 				if (first)
 				{
@@ -134,13 +176,20 @@ namespace <#= ns #>
 
 	public ref class <#= proxy.Name #> : public I<#= proxy.Key #>
 	{
+<#
+	if (proxy.RequiresInstance)
+	{
+#>
 	private:
 		<#= proxy.Key #> mInst;
+<#
+	}
+#>
 	public:
 <#	
 		foreach (var m in proxy.Methods)
 		{
-			var returnType = m.Function.ReturnType ?? "<RETURN_TYPE>";
+			var returnType = m.Translation != null ? m.Translation.CSharpType : (m.Function.ReturnType ?? "<RETURN_TYPE>");	
 #>
 		<#= returnType #> <#= m.Name #>(<#
 			var first = true;
@@ -148,7 +197,12 @@ namespace <#= ns #>
 			foreach(var param in m.Parameters)
 			{ 
 				var paramName = param.Name ?? "<NAME>";
-				var paramType = param.Translation != null ? param.Translation.MethodOnly : (param.CppType ?? "<TYPE>");	
+				var paramType = param.Translation != null ? param.Translation.MethodOnly :  
+					(	param.CSharpType ?? 
+						(	
+							param.CppType ?? "<TYPE>"
+						)
+					);
 
 			#><#= separator #><#= paramType #> <#= paramName #><#
 				if (first)

@@ -46,6 +46,7 @@
     <Compile Include="VkClassMethod.cs" />
     <Compile Include="VkEnum.cs" />
     <Compile Include="VkEnumItem.cs" />
+    <Compile Include="VkHandle.cs" />
     <Compile Include="VkProxy.cs" />
     <Compile Include="VkFunction.cs" />
     <Compile Include="VkFunctionParam.cs" />

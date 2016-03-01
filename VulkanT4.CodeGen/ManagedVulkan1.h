@@ -8,6 +8,157 @@ using namespace System;
 
 namespace ManagedVulkan 
 {
+	// HANDLES
+	public ref class DeviceMemory
+	{
+	internal:
+		VkDeviceMemory mHandle;
+	};
+
+	public ref class CommandPool
+	{
+	internal:
+		VkCommandPool mHandle;
+	};
+
+	public ref class Buffer
+	{
+	internal:
+		VkBuffer mHandle;
+	};
+
+	public ref class BufferView
+	{
+	internal:
+		VkBufferView mHandle;
+	};
+
+	public ref class Image
+	{
+	internal:
+		VkImage mHandle;
+	};
+
+	public ref class ImageView
+	{
+	internal:
+		VkImageView mHandle;
+	};
+
+	public ref class ShaderModule
+	{
+	internal:
+		VkShaderModule mHandle;
+	};
+
+	public ref class Pipeline
+	{
+	internal:
+		VkPipeline mHandle;
+	};
+
+	public ref class PipelineLayout
+	{
+	internal:
+		VkPipelineLayout mHandle;
+	};
+
+	public ref class Sampler
+	{
+	internal:
+		VkSampler mHandle;
+	};
+
+	public ref class DescriptorSet
+	{
+	internal:
+		VkDescriptorSet mHandle;
+	};
+
+	public ref class DescriptorSetLayout
+	{
+	internal:
+		VkDescriptorSetLayout mHandle;
+	};
+
+	public ref class DescriptorPool
+	{
+	internal:
+		VkDescriptorPool mHandle;
+	};
+
+	public ref class Fence
+	{
+	internal:
+		VkFence mHandle;
+	};
+
+	public ref class Semaphore
+	{
+	internal:
+		VkSemaphore mHandle;
+	};
+
+	public ref class Event
+	{
+	internal:
+		VkEvent mHandle;
+	};
+
+	public ref class QueryPool
+	{
+	internal:
+		VkQueryPool mHandle;
+	};
+
+	public ref class Framebuffer
+	{
+	internal:
+		VkFramebuffer mHandle;
+	};
+
+	public ref class RenderPass
+	{
+	internal:
+		VkRenderPass mHandle;
+	};
+
+	public ref class PipelineCache
+	{
+	internal:
+		VkPipelineCache mHandle;
+	};
+
+	public ref class DisplayKHR
+	{
+	internal:
+		VkDisplayKHR mHandle;
+	};
+
+	public ref class DisplayModeKHR
+	{
+	internal:
+		VkDisplayModeKHR mHandle;
+	};
+
+	public ref class SurfaceKHR
+	{
+	internal:
+		VkSurfaceKHR mHandle;
+	};
+
+	public ref class SwapchainKHR
+	{
+	internal:
+		VkSwapchainKHR mHandle;
+	};
+
+	public ref class DebugReportCallbackEXT
+	{
+	internal:
+		VkDebugReportCallbackEXT mHandle;
+	};
+
 	// ENUMS
 	public enum class VkImageLayout : Int32
 	{
@@ -952,7 +1103,7 @@ namespace ManagedVulkan
 				mY = value; 
 			}
 		}
-	}
+	};
 
 	public ref class Offset3D
 	{
@@ -994,7 +1145,7 @@ namespace ManagedVulkan
 				mZ = value; 
 			}
 		}
-	}
+	};
 
 	public ref class Extent2D
 	{
@@ -1024,7 +1175,7 @@ namespace ManagedVulkan
 				mHeight = value; 
 			}
 		}
-	}
+	};
 
 	public ref class Extent3D
 	{
@@ -1066,7 +1217,7 @@ namespace ManagedVulkan
 				mDepth = value; 
 			}
 		}
-	}
+	};
 
 	public ref class Viewport
 	{
@@ -1144,7 +1295,7 @@ namespace ManagedVulkan
 				mMaxDepth = value; 
 			}
 		}
-	}
+	};
 
 	public ref class Rect2D
 	{
@@ -1174,7 +1325,7 @@ namespace ManagedVulkan
 				mExtent = value; 
 			}
 		}
-	}
+	};
 
 	public ref class Rect3D
 	{
@@ -1204,7 +1355,7 @@ namespace ManagedVulkan
 				mExtent = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ClearRect
 	{
@@ -1246,7 +1397,7 @@ namespace ManagedVulkan
 				mLayerCount = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ComponentMapping
 	{
@@ -1300,7 +1451,7 @@ namespace ManagedVulkan
 				mA = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PhysicalDeviceProperties
 	{
@@ -1414,7 +1565,7 @@ namespace ManagedVulkan
 				mSparseProperties = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ExtensionProperties
 	{
@@ -1444,7 +1595,7 @@ namespace ManagedVulkan
 				mSpecVersion = value; 
 			}
 		}
-	}
+	};
 
 	public ref class LayerProperties
 	{
@@ -1498,7 +1649,7 @@ namespace ManagedVulkan
 				mDescription = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ApplicationInfo
 	{
@@ -1576,25 +1727,25 @@ namespace ManagedVulkan
 				mApiVersion = value; 
 			}
 		}
-	}
+	};
 
 	public ref class AllocationCallbacks
 	{
 	private:
-		void* mUserData;
+		IntPtr mUserData = IntPtr.Zero;
 		PFN_vkAllocationFunction mPfnAllocation;
 		PFN_vkReallocationFunction mPfnReallocation;
 		PFN_vkFreeFunction mPfnFree;
 		PFN_vkInternalAllocationNotification mPfnInternalAllocation;
 		PFN_vkInternalFreeNotification mPfnInternalFree;
 	public:
-		property void* UserData
+		property IntPtr UserData
 		{
-			void* get()
+			IntPtr get()
 			{
 				return mUserData;
 			}
-			void set(void* value)
+			void set(IntPtr value)
 			{
 				mUserData = value; 
 			}
@@ -1654,7 +1805,7 @@ namespace ManagedVulkan
 				mPfnInternalFree = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DeviceQueueCreateInfo
 	{
@@ -1720,7 +1871,7 @@ namespace ManagedVulkan
 				mQueuePriorities = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DeviceCreateInfo
 	{
@@ -1834,7 +1985,7 @@ namespace ManagedVulkan
 				mEnabledFeatures = value; 
 			}
 		}
-	}
+	};
 
 	public ref class InstanceCreateInfo
 	{
@@ -1924,7 +2075,7 @@ namespace ManagedVulkan
 				mEnabledExtensionNames = value; 
 			}
 		}
-	}
+	};
 
 	public ref class QueueFamilyProperties
 	{
@@ -1978,7 +2129,7 @@ namespace ManagedVulkan
 				mMinImageTransferGranularity = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PhysicalDeviceMemoryProperties
 	{
@@ -2032,7 +2183,7 @@ namespace ManagedVulkan
 				mVK_MAX_MEMORY_HEAPS = value; 
 			}
 		}
-	}
+	};
 
 	public ref class MemoryAllocateInfo
 	{
@@ -2074,7 +2225,7 @@ namespace ManagedVulkan
 				mMemoryTypeIndex = value; 
 			}
 		}
-	}
+	};
 
 	public ref class MemoryRequirements
 	{
@@ -2116,7 +2267,7 @@ namespace ManagedVulkan
 				mMemoryTypeBits = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SparseImageFormatProperties
 	{
@@ -2158,7 +2309,7 @@ namespace ManagedVulkan
 				mFlags = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SparseImageMemoryRequirements
 	{
@@ -2224,7 +2375,7 @@ namespace ManagedVulkan
 				mImageMipTailStride = value; 
 			}
 		}
-	}
+	};
 
 	public ref class MemoryType
 	{
@@ -2254,7 +2405,7 @@ namespace ManagedVulkan
 				mHeapIndex = value; 
 			}
 		}
-	}
+	};
 
 	public ref class MemoryHeap
 	{
@@ -2284,13 +2435,13 @@ namespace ManagedVulkan
 				mFlags = value; 
 			}
 		}
-	}
+	};
 
 	public ref class MappedMemoryRange
 	{
 	private:
 		VkStructureType mSType;
-		VkDeviceMemory mMemory;
+		DeviceMemory^ mMemory = nullptr;
 		UInt64 mOffset = 0;
 		UInt64 mSize = 0;
 	public:
@@ -2305,13 +2456,13 @@ namespace ManagedVulkan
 				mSType = value; 
 			}
 		}
-		property VkDeviceMemory Memory
+		property DeviceMemory^ Memory
 		{
-			VkDeviceMemory get()
+			DeviceMemory^ get()
 			{
 				return mMemory;
 			}
-			void set(VkDeviceMemory value)
+			void set(DeviceMemory^ value)
 			{
 				mMemory = value; 
 			}
@@ -2338,7 +2489,7 @@ namespace ManagedVulkan
 				mSize = value; 
 			}
 		}
-	}
+	};
 
 	public ref class FormatProperties
 	{
@@ -2380,7 +2531,7 @@ namespace ManagedVulkan
 				mBufferFeatures = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ImageFormatProperties
 	{
@@ -2446,22 +2597,22 @@ namespace ManagedVulkan
 				mMaxResourceSize = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DescriptorBufferInfo
 	{
 	private:
-		VkBuffer mBuffer;
+		Buffer^ mBuffer = nullptr;
 		UInt64 mOffset = 0;
 		UInt64 mRange = 0;
 	public:
-		property VkBuffer Buffer
+		property Buffer^ Buffer
 		{
-			VkBuffer get()
+			Buffer^ get()
 			{
 				return mBuffer;
 			}
-			void set(VkBuffer value)
+			void set(Buffer^ value)
 			{
 				mBuffer = value; 
 			}
@@ -2488,33 +2639,33 @@ namespace ManagedVulkan
 				mRange = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DescriptorImageInfo
 	{
 	private:
-		VkSampler mSampler;
-		VkImageView mImageView;
+		Sampler^ mSampler = nullptr;
+		ImageView^ mImageView = nullptr;
 		VkImageLayout mImageLayout;
 	public:
-		property VkSampler Sampler
+		property Sampler^ Sampler
 		{
-			VkSampler get()
+			Sampler^ get()
 			{
 				return mSampler;
 			}
-			void set(VkSampler value)
+			void set(Sampler^ value)
 			{
 				mSampler = value; 
 			}
 		}
-		property VkImageView ImageView
+		property ImageView^ ImageView
 		{
-			VkImageView get()
+			ImageView^ get()
 			{
 				return mImageView;
 			}
-			void set(VkImageView value)
+			void set(ImageView^ value)
 			{
 				mImageView = value; 
 			}
@@ -2530,20 +2681,20 @@ namespace ManagedVulkan
 				mImageLayout = value; 
 			}
 		}
-	}
+	};
 
 	public ref class WriteDescriptorSet
 	{
 	private:
 		VkStructureType mSType;
-		VkDescriptorSet mDstSet;
+		DescriptorSet^ mDstSet = nullptr;
 		UInt32 mDstBinding = 0;
 		UInt32 mDstArrayElement = 0;
 		UInt32 mDescriptorCount = 0;
 		VkDescriptorType mDescriptorType;
 		DescriptorImageInfo^ mImageInfo = nullptr;
 		DescriptorBufferInfo^ mBufferInfo = nullptr;
-		VkBufferView* mTexelBufferView;
+		BufferView^ mTexelBufferView = nullptr;
 	public:
 		property VkStructureType SType
 		{
@@ -2556,13 +2707,13 @@ namespace ManagedVulkan
 				mSType = value; 
 			}
 		}
-		property VkDescriptorSet DstSet
+		property DescriptorSet^ DstSet
 		{
-			VkDescriptorSet get()
+			DescriptorSet^ get()
 			{
 				return mDstSet;
 			}
-			void set(VkDescriptorSet value)
+			void set(DescriptorSet^ value)
 			{
 				mDstSet = value; 
 			}
@@ -2633,27 +2784,27 @@ namespace ManagedVulkan
 				mBufferInfo = value; 
 			}
 		}
-		property VkBufferView* TexelBufferView
+		property BufferView^ TexelBufferView
 		{
-			VkBufferView* get()
+			BufferView^ get()
 			{
 				return mTexelBufferView;
 			}
-			void set(VkBufferView* value)
+			void set(BufferView^ value)
 			{
 				mTexelBufferView = value; 
 			}
 		}
-	}
+	};
 
 	public ref class CopyDescriptorSet
 	{
 	private:
 		VkStructureType mSType;
-		VkDescriptorSet mSrcSet;
+		DescriptorSet^ mSrcSet = nullptr;
 		UInt32 mSrcBinding = 0;
 		UInt32 mSrcArrayElement = 0;
-		VkDescriptorSet mDstSet;
+		DescriptorSet^ mDstSet = nullptr;
 		UInt32 mDstBinding = 0;
 		UInt32 mDstArrayElement = 0;
 		UInt32 mDescriptorCount = 0;
@@ -2669,13 +2820,13 @@ namespace ManagedVulkan
 				mSType = value; 
 			}
 		}
-		property VkDescriptorSet SrcSet
+		property DescriptorSet^ SrcSet
 		{
-			VkDescriptorSet get()
+			DescriptorSet^ get()
 			{
 				return mSrcSet;
 			}
-			void set(VkDescriptorSet value)
+			void set(DescriptorSet^ value)
 			{
 				mSrcSet = value; 
 			}
@@ -2702,13 +2853,13 @@ namespace ManagedVulkan
 				mSrcArrayElement = value; 
 			}
 		}
-		property VkDescriptorSet DstSet
+		property DescriptorSet^ DstSet
 		{
-			VkDescriptorSet get()
+			DescriptorSet^ get()
 			{
 				return mDstSet;
 			}
-			void set(VkDescriptorSet value)
+			void set(DescriptorSet^ value)
 			{
 				mDstSet = value; 
 			}
@@ -2746,7 +2897,7 @@ namespace ManagedVulkan
 				mDescriptorCount = value; 
 			}
 		}
-	}
+	};
 
 	public ref class BufferCreateInfo
 	{
@@ -2836,14 +2987,14 @@ namespace ManagedVulkan
 				mQueueFamilyIndices = value; 
 			}
 		}
-	}
+	};
 
 	public ref class BufferViewCreateInfo
 	{
 	private:
 		VkStructureType mSType;
 		<TYPE> m<NAME>;
-		VkBuffer mBuffer;
+		Buffer^ mBuffer = nullptr;
 		VkFormat mFormat;
 		UInt64 mOffset = 0;
 		UInt64 mRange = 0;
@@ -2870,13 +3021,13 @@ namespace ManagedVulkan
 				m<NAME> = value; 
 			}
 		}
-		property VkBuffer Buffer
+		property Buffer^ Buffer
 		{
-			VkBuffer get()
+			Buffer^ get()
 			{
 				return mBuffer;
 			}
-			void set(VkBuffer value)
+			void set(Buffer^ value)
 			{
 				mBuffer = value; 
 			}
@@ -2914,7 +3065,7 @@ namespace ManagedVulkan
 				mRange = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ImageSubresource
 	{
@@ -2956,7 +3107,7 @@ namespace ManagedVulkan
 				mArrayLayer = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ImageSubresourceLayers
 	{
@@ -3010,7 +3161,7 @@ namespace ManagedVulkan
 				mLayerCount = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ImageSubresourceRange
 	{
@@ -3076,7 +3227,7 @@ namespace ManagedVulkan
 				mLayerCount = value; 
 			}
 		}
-	}
+	};
 
 	public ref class MemoryBarrier
 	{
@@ -3118,7 +3269,7 @@ namespace ManagedVulkan
 				mDstAccessMask = value; 
 			}
 		}
-	}
+	};
 
 	public ref class BufferMemoryBarrier
 	{
@@ -3128,7 +3279,7 @@ namespace ManagedVulkan
 		VkAccessFlags mDstAccessMask;
 		UInt32 mSrcQueueFamilyIndex = 0;
 		UInt32 mDstQueueFamilyIndex = 0;
-		VkBuffer mBuffer;
+		Buffer^ mBuffer = nullptr;
 		UInt64 mOffset = 0;
 		UInt64 mSize = 0;
 	public:
@@ -3187,13 +3338,13 @@ namespace ManagedVulkan
 				mDstQueueFamilyIndex = value; 
 			}
 		}
-		property VkBuffer Buffer
+		property Buffer^ Buffer
 		{
-			VkBuffer get()
+			Buffer^ get()
 			{
 				return mBuffer;
 			}
-			void set(VkBuffer value)
+			void set(Buffer^ value)
 			{
 				mBuffer = value; 
 			}
@@ -3220,7 +3371,7 @@ namespace ManagedVulkan
 				mSize = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ImageMemoryBarrier
 	{
@@ -3232,7 +3383,7 @@ namespace ManagedVulkan
 		VkImageLayout mNewLayout;
 		UInt32 mSrcQueueFamilyIndex = 0;
 		UInt32 mDstQueueFamilyIndex = 0;
-		VkImage mImage;
+		Image^ mImage = nullptr;
 		ImageSubresourceRange^ mSubresourceRange = nullptr;
 	public:
 		property VkStructureType SType
@@ -3312,13 +3463,13 @@ namespace ManagedVulkan
 				mDstQueueFamilyIndex = value; 
 			}
 		}
-		property VkImage Image
+		property Image^ Image
 		{
-			VkImage get()
+			Image^ get()
 			{
 				return mImage;
 			}
-			void set(VkImage value)
+			void set(Image^ value)
 			{
 				mImage = value; 
 			}
@@ -3334,7 +3485,7 @@ namespace ManagedVulkan
 				mSubresourceRange = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ImageCreateInfo
 	{
@@ -3508,7 +3659,7 @@ namespace ManagedVulkan
 				mInitialLayout = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SubresourceLayout
 	{
@@ -3574,14 +3725,14 @@ namespace ManagedVulkan
 				mDepthPitch = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ImageViewCreateInfo
 	{
 	private:
 		VkStructureType mSType;
 		VkImageViewCreateFlags mFlags;
-		VkImage mImage;
+		Image^ mImage = nullptr;
 		VkImageViewType mViewType;
 		VkFormat mFormat;
 		ComponentMapping^ mComponents = nullptr;
@@ -3609,13 +3760,13 @@ namespace ManagedVulkan
 				mFlags = value; 
 			}
 		}
-		property VkImage Image
+		property Image^ Image
 		{
-			VkImage get()
+			Image^ get()
 			{
 				return mImage;
 			}
-			void set(VkImage value)
+			void set(Image^ value)
 			{
 				mImage = value; 
 			}
@@ -3664,7 +3815,7 @@ namespace ManagedVulkan
 				mSubresourceRange = value; 
 			}
 		}
-	}
+	};
 
 	public ref class BufferCopy
 	{
@@ -3706,14 +3857,14 @@ namespace ManagedVulkan
 				mSize = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SparseMemoryBind
 	{
 	private:
 		UInt64 mResourceOffset = 0;
 		UInt64 mSize = 0;
-		VkDeviceMemory mMemory;
+		DeviceMemory^ mMemory = nullptr;
 		UInt64 mMemoryOffset = 0;
 		<TYPE> m<NAME>;
 	public:
@@ -3739,13 +3890,13 @@ namespace ManagedVulkan
 				mSize = value; 
 			}
 		}
-		property VkDeviceMemory Memory
+		property DeviceMemory^ Memory
 		{
-			VkDeviceMemory get()
+			DeviceMemory^ get()
 			{
 				return mMemory;
 			}
-			void set(VkDeviceMemory value)
+			void set(DeviceMemory^ value)
 			{
 				mMemory = value; 
 			}
@@ -3772,7 +3923,7 @@ namespace ManagedVulkan
 				m<NAME> = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SparseImageMemoryBind
 	{
@@ -3780,7 +3931,7 @@ namespace ManagedVulkan
 		ImageSubresource^ mSubresource = nullptr;
 		Offset3D^ mOffset = nullptr;
 		Extent3D^ mExtent = nullptr;
-		VkDeviceMemory mMemory;
+		DeviceMemory^ mMemory = nullptr;
 		UInt64 mMemoryOffset = 0;
 		<TYPE> m<NAME>;
 	public:
@@ -3817,13 +3968,13 @@ namespace ManagedVulkan
 				mExtent = value; 
 			}
 		}
-		property VkDeviceMemory Memory
+		property DeviceMemory^ Memory
 		{
-			VkDeviceMemory get()
+			DeviceMemory^ get()
 			{
 				return mMemory;
 			}
-			void set(VkDeviceMemory value)
+			void set(DeviceMemory^ value)
 			{
 				mMemory = value; 
 			}
@@ -3850,22 +4001,22 @@ namespace ManagedVulkan
 				m<NAME> = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SparseBufferMemoryBindInfo
 	{
 	private:
-		VkBuffer mBuffer;
+		Buffer^ mBuffer = nullptr;
 		UInt32 mBindCount = 0;
 		SparseMemoryBind^ mBinds = nullptr;
 	public:
-		property VkBuffer Buffer
+		property Buffer^ Buffer
 		{
-			VkBuffer get()
+			Buffer^ get()
 			{
 				return mBuffer;
 			}
-			void set(VkBuffer value)
+			void set(Buffer^ value)
 			{
 				mBuffer = value; 
 			}
@@ -3892,22 +4043,22 @@ namespace ManagedVulkan
 				mBinds = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SparseImageOpaqueMemoryBindInfo
 	{
 	private:
-		VkImage mImage;
+		Image^ mImage = nullptr;
 		UInt32 mBindCount = 0;
 		SparseMemoryBind^ mBinds = nullptr;
 	public:
-		property VkImage Image
+		property Image^ Image
 		{
-			VkImage get()
+			Image^ get()
 			{
 				return mImage;
 			}
-			void set(VkImage value)
+			void set(Image^ value)
 			{
 				mImage = value; 
 			}
@@ -3934,22 +4085,22 @@ namespace ManagedVulkan
 				mBinds = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SparseImageMemoryBindInfo
 	{
 	private:
-		VkImage mImage;
+		Image^ mImage = nullptr;
 		UInt32 mBindCount = 0;
 		SparseImageMemoryBind^ mBinds = nullptr;
 	public:
-		property VkImage Image
+		property Image^ Image
 		{
-			VkImage get()
+			Image^ get()
 			{
 				return mImage;
 			}
-			void set(VkImage value)
+			void set(Image^ value)
 			{
 				mImage = value; 
 			}
@@ -3976,14 +4127,14 @@ namespace ManagedVulkan
 				mBinds = value; 
 			}
 		}
-	}
+	};
 
 	public ref class BindSparseInfo
 	{
 	private:
 		VkStructureType mSType;
 		UInt32 mWaitSemaphoreCount = 0;
-		VkSemaphore* mWaitSemaphores;
+		Semaphore^ mWaitSemaphores = nullptr;
 		UInt32 mBufferBindCount = 0;
 		SparseBufferMemoryBindInfo^ mBufferBinds = nullptr;
 		UInt32 mImageOpaqueBindCount = 0;
@@ -3991,7 +4142,7 @@ namespace ManagedVulkan
 		UInt32 mImageBindCount = 0;
 		SparseImageMemoryBindInfo^ mImageBinds = nullptr;
 		UInt32 mSignalSemaphoreCount = 0;
-		VkSemaphore* mSignalSemaphores;
+		Semaphore^ mSignalSemaphores = nullptr;
 	public:
 		property VkStructureType SType
 		{
@@ -4015,13 +4166,13 @@ namespace ManagedVulkan
 				mWaitSemaphoreCount = value; 
 			}
 		}
-		property VkSemaphore* WaitSemaphores
+		property Semaphore^ WaitSemaphores
 		{
-			VkSemaphore* get()
+			Semaphore^ get()
 			{
 				return mWaitSemaphores;
 			}
-			void set(VkSemaphore* value)
+			void set(Semaphore^ value)
 			{
 				mWaitSemaphores = value; 
 			}
@@ -4103,18 +4254,18 @@ namespace ManagedVulkan
 				mSignalSemaphoreCount = value; 
 			}
 		}
-		property VkSemaphore* SignalSemaphores
+		property Semaphore^ SignalSemaphores
 		{
-			VkSemaphore* get()
+			Semaphore^ get()
 			{
 				return mSignalSemaphores;
 			}
-			void set(VkSemaphore* value)
+			void set(Semaphore^ value)
 			{
 				mSignalSemaphores = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ImageCopy
 	{
@@ -4180,7 +4331,7 @@ namespace ManagedVulkan
 				mExtent = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ImageBlit
 	{
@@ -4234,7 +4385,7 @@ namespace ManagedVulkan
 				m2 = value; 
 			}
 		}
-	}
+	};
 
 	public ref class BufferImageCopy
 	{
@@ -4312,7 +4463,7 @@ namespace ManagedVulkan
 				mImageExtent = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ImageResolve
 	{
@@ -4378,7 +4529,7 @@ namespace ManagedVulkan
 				mExtent = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ShaderModuleCreateInfo
 	{
@@ -4432,7 +4583,7 @@ namespace ManagedVulkan
 				mCode = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DescriptorSetLayoutBinding
 	{
@@ -4441,7 +4592,7 @@ namespace ManagedVulkan
 		VkDescriptorType mDescriptorType;
 		UInt32 mDescriptorCount = 0;
 		VkShaderStageFlags mStageFlags;
-		VkSampler* mImmutableSamplers;
+		Sampler^ mImmutableSamplers = nullptr;
 	public:
 		property UInt32 Binding
 		{
@@ -4487,18 +4638,18 @@ namespace ManagedVulkan
 				mStageFlags = value; 
 			}
 		}
-		property VkSampler* ImmutableSamplers
+		property Sampler^ ImmutableSamplers
 		{
-			VkSampler* get()
+			Sampler^ get()
 			{
 				return mImmutableSamplers;
 			}
-			void set(VkSampler* value)
+			void set(Sampler^ value)
 			{
 				mImmutableSamplers = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DescriptorSetLayoutCreateInfo
 	{
@@ -4552,7 +4703,7 @@ namespace ManagedVulkan
 				mBindings = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DescriptorPoolSize
 	{
@@ -4582,7 +4733,7 @@ namespace ManagedVulkan
 				mDescriptorCount = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DescriptorPoolCreateInfo
 	{
@@ -4648,15 +4799,15 @@ namespace ManagedVulkan
 				mPoolSizes = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DescriptorSetAllocateInfo
 	{
 	private:
 		VkStructureType mSType;
-		VkDescriptorPool mDescriptorPool;
+		DescriptorPool^ mDescriptorPool = nullptr;
 		UInt32 mDescriptorSetCount = 0;
-		VkDescriptorSetLayout* mSetLayouts;
+		DescriptorSetLayout^ mSetLayouts = nullptr;
 	public:
 		property VkStructureType SType
 		{
@@ -4669,13 +4820,13 @@ namespace ManagedVulkan
 				mSType = value; 
 			}
 		}
-		property VkDescriptorPool DescriptorPool
+		property DescriptorPool^ DescriptorPool
 		{
-			VkDescriptorPool get()
+			DescriptorPool^ get()
 			{
 				return mDescriptorPool;
 			}
-			void set(VkDescriptorPool value)
+			void set(DescriptorPool^ value)
 			{
 				mDescriptorPool = value; 
 			}
@@ -4691,18 +4842,18 @@ namespace ManagedVulkan
 				mDescriptorSetCount = value; 
 			}
 		}
-		property VkDescriptorSetLayout* SetLayouts
+		property DescriptorSetLayout^ SetLayouts
 		{
-			VkDescriptorSetLayout* get()
+			DescriptorSetLayout^ get()
 			{
 				return mSetLayouts;
 			}
-			void set(VkDescriptorSetLayout* value)
+			void set(DescriptorSetLayout^ value)
 			{
 				mSetLayouts = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SpecializationMapEntry
 	{
@@ -4744,7 +4895,7 @@ namespace ManagedVulkan
 				mSize = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SpecializationInfo
 	{
@@ -4752,7 +4903,7 @@ namespace ManagedVulkan
 		UInt32 mMapEntryCount = 0;
 		SpecializationMapEntry^ mMapEntries = nullptr;
 		IntPtr mDataSize = 0;
-		void* mData;
+		IntPtr mData = IntPtr.Zero;
 	public:
 		property UInt32 MapEntryCount
 		{
@@ -4787,18 +4938,18 @@ namespace ManagedVulkan
 				mDataSize = value; 
 			}
 		}
-		property void* Data
+		property IntPtr Data
 		{
-			void* get()
+			IntPtr get()
 			{
 				return mData;
 			}
-			void set(void* value)
+			void set(IntPtr value)
 			{
 				mData = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineShaderStageCreateInfo
 	{
@@ -4806,7 +4957,7 @@ namespace ManagedVulkan
 		VkStructureType mSType;
 		VkPipelineShaderStageCreateFlags mFlags;
 		VkShaderStageFlagBits mStage;
-		VkShaderModule mModule;
+		ShaderModule^ mModule = nullptr;
 		String^ mName = nullptr;
 		SpecializationInfo^ mSpecializationInfo = nullptr;
 	public:
@@ -4843,13 +4994,13 @@ namespace ManagedVulkan
 				mStage = value; 
 			}
 		}
-		property VkShaderModule Module
+		property ShaderModule^ Module
 		{
-			VkShaderModule get()
+			ShaderModule^ get()
 			{
 				return mModule;
 			}
-			void set(VkShaderModule value)
+			void set(ShaderModule^ value)
 			{
 				mModule = value; 
 			}
@@ -4876,7 +5027,7 @@ namespace ManagedVulkan
 				mSpecializationInfo = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ComputePipelineCreateInfo
 	{
@@ -4884,8 +5035,8 @@ namespace ManagedVulkan
 		VkStructureType mSType;
 		VkPipelineCreateFlags mFlags;
 		PipelineShaderStageCreateInfo^ mStage = nullptr;
-		VkPipelineLayout mLayout;
-		VkPipeline mBasePipelineHandle;
+		PipelineLayout^ mLayout = nullptr;
+		Pipeline^ mBasePipelineHandle = nullptr;
 		Int32 mBasePipelineIndex = 0;
 	public:
 		property VkStructureType SType
@@ -4921,24 +5072,24 @@ namespace ManagedVulkan
 				mStage = value; 
 			}
 		}
-		property VkPipelineLayout Layout
+		property PipelineLayout^ Layout
 		{
-			VkPipelineLayout get()
+			PipelineLayout^ get()
 			{
 				return mLayout;
 			}
-			void set(VkPipelineLayout value)
+			void set(PipelineLayout^ value)
 			{
 				mLayout = value; 
 			}
 		}
-		property VkPipeline BasePipelineHandle
+		property Pipeline^ BasePipelineHandle
 		{
-			VkPipeline get()
+			Pipeline^ get()
 			{
 				return mBasePipelineHandle;
 			}
-			void set(VkPipeline value)
+			void set(Pipeline^ value)
 			{
 				mBasePipelineHandle = value; 
 			}
@@ -4954,7 +5105,7 @@ namespace ManagedVulkan
 				mBasePipelineIndex = value; 
 			}
 		}
-	}
+	};
 
 	public ref class VertexInputBindingDescription
 	{
@@ -4996,7 +5147,7 @@ namespace ManagedVulkan
 				mInputRate = value; 
 			}
 		}
-	}
+	};
 
 	public ref class VertexInputAttributeDescription
 	{
@@ -5050,7 +5201,7 @@ namespace ManagedVulkan
 				mOffset = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineVertexInputStateCreateInfo
 	{
@@ -5128,7 +5279,7 @@ namespace ManagedVulkan
 				mVertexAttributeDescriptions = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineInputAssemblyStateCreateInfo
 	{
@@ -5182,7 +5333,7 @@ namespace ManagedVulkan
 				mPrimitiveRestartEnable = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineTessellationStateCreateInfo
 	{
@@ -5224,7 +5375,7 @@ namespace ManagedVulkan
 				mPatchControlPoints = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineViewportStateCreateInfo
 	{
@@ -5302,7 +5453,7 @@ namespace ManagedVulkan
 				mScissors = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineRasterizationStateCreateInfo
 	{
@@ -5452,7 +5603,7 @@ namespace ManagedVulkan
 				mLineWidth = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineMultisampleStateCreateInfo
 	{
@@ -5554,7 +5705,7 @@ namespace ManagedVulkan
 				mAlphaToOneEnable = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineColorBlendAttachmentState
 	{
@@ -5656,7 +5807,7 @@ namespace ManagedVulkan
 				mColorWriteMask = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineColorBlendStateCreateInfo
 	{
@@ -5746,7 +5897,7 @@ namespace ManagedVulkan
 				m4 = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineDynamicStateCreateInfo
 	{
@@ -5754,7 +5905,7 @@ namespace ManagedVulkan
 		VkStructureType mSType;
 		VkPipelineDynamicStateCreateFlags mFlags;
 		UInt32 mDynamicStateCount = 0;
-		VkDynamicState* mDynamicStates;
+		array<VkDynamicState>^ mDynamicStates = nullptr;
 	public:
 		property VkStructureType SType
 		{
@@ -5789,18 +5940,18 @@ namespace ManagedVulkan
 				mDynamicStateCount = value; 
 			}
 		}
-		property VkDynamicState* DynamicStates
+		property array<VkDynamicState>^ DynamicStates
 		{
-			VkDynamicState* get()
+			array<VkDynamicState>^ get()
 			{
 				return mDynamicStates;
 			}
-			void set(VkDynamicState* value)
+			void set(array<VkDynamicState>^ value)
 			{
 				mDynamicStates = value; 
 			}
 		}
-	}
+	};
 
 	public ref class StencilOpState
 	{
@@ -5890,7 +6041,7 @@ namespace ManagedVulkan
 				mReference = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineDepthStencilStateCreateInfo
 	{
@@ -6028,7 +6179,7 @@ namespace ManagedVulkan
 				mMaxDepthBounds = value; 
 			}
 		}
-	}
+	};
 
 	public ref class GraphicsPipelineCreateInfo
 	{
@@ -6046,10 +6197,10 @@ namespace ManagedVulkan
 		PipelineDepthStencilStateCreateInfo^ mDepthStencilState = nullptr;
 		PipelineColorBlendStateCreateInfo^ mColorBlendState = nullptr;
 		PipelineDynamicStateCreateInfo^ mDynamicState = nullptr;
-		VkPipelineLayout mLayout;
-		VkRenderPass mRenderPass;
+		PipelineLayout^ mLayout = nullptr;
+		RenderPass^ mRenderPass = nullptr;
 		UInt32 mSubpass = 0;
-		VkPipeline mBasePipelineHandle;
+		Pipeline^ mBasePipelineHandle = nullptr;
 		Int32 mBasePipelineIndex = 0;
 	public:
 		property VkStructureType SType
@@ -6195,24 +6346,24 @@ namespace ManagedVulkan
 				mDynamicState = value; 
 			}
 		}
-		property VkPipelineLayout Layout
+		property PipelineLayout^ Layout
 		{
-			VkPipelineLayout get()
+			PipelineLayout^ get()
 			{
 				return mLayout;
 			}
-			void set(VkPipelineLayout value)
+			void set(PipelineLayout^ value)
 			{
 				mLayout = value; 
 			}
 		}
-		property VkRenderPass RenderPass
+		property RenderPass^ RenderPass
 		{
-			VkRenderPass get()
+			RenderPass^ get()
 			{
 				return mRenderPass;
 			}
-			void set(VkRenderPass value)
+			void set(RenderPass^ value)
 			{
 				mRenderPass = value; 
 			}
@@ -6228,13 +6379,13 @@ namespace ManagedVulkan
 				mSubpass = value; 
 			}
 		}
-		property VkPipeline BasePipelineHandle
+		property Pipeline^ BasePipelineHandle
 		{
-			VkPipeline get()
+			Pipeline^ get()
 			{
 				return mBasePipelineHandle;
 			}
-			void set(VkPipeline value)
+			void set(Pipeline^ value)
 			{
 				mBasePipelineHandle = value; 
 			}
@@ -6250,7 +6401,7 @@ namespace ManagedVulkan
 				mBasePipelineIndex = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineCacheCreateInfo
 	{
@@ -6258,7 +6409,7 @@ namespace ManagedVulkan
 		VkStructureType mSType;
 		VkPipelineCacheCreateFlags mFlags;
 		IntPtr mInitialDataSize = 0;
-		void* mInitialData;
+		IntPtr mInitialData = IntPtr.Zero;
 	public:
 		property VkStructureType SType
 		{
@@ -6293,18 +6444,18 @@ namespace ManagedVulkan
 				mInitialDataSize = value; 
 			}
 		}
-		property void* InitialData
+		property IntPtr InitialData
 		{
-			void* get()
+			IntPtr get()
 			{
 				return mInitialData;
 			}
-			void set(void* value)
+			void set(IntPtr value)
 			{
 				mInitialData = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PushConstantRange
 	{
@@ -6346,7 +6497,7 @@ namespace ManagedVulkan
 				mSize = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PipelineLayoutCreateInfo
 	{
@@ -6354,7 +6505,7 @@ namespace ManagedVulkan
 		VkStructureType mSType;
 		VkPipelineLayoutCreateFlags mFlags;
 		UInt32 mSetLayoutCount = 0;
-		VkDescriptorSetLayout* mSetLayouts;
+		DescriptorSetLayout^ mSetLayouts = nullptr;
 		UInt32 mPushConstantRangeCount = 0;
 		PushConstantRange^ mPushConstantRanges = nullptr;
 	public:
@@ -6391,13 +6542,13 @@ namespace ManagedVulkan
 				mSetLayoutCount = value; 
 			}
 		}
-		property VkDescriptorSetLayout* SetLayouts
+		property DescriptorSetLayout^ SetLayouts
 		{
-			VkDescriptorSetLayout* get()
+			DescriptorSetLayout^ get()
 			{
 				return mSetLayouts;
 			}
-			void set(VkDescriptorSetLayout* value)
+			void set(DescriptorSetLayout^ value)
 			{
 				mSetLayouts = value; 
 			}
@@ -6424,7 +6575,7 @@ namespace ManagedVulkan
 				mPushConstantRanges = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SamplerCreateInfo
 	{
@@ -6634,7 +6785,7 @@ namespace ManagedVulkan
 				mUnnormalizedCoordinates = value; 
 			}
 		}
-	}
+	};
 
 	public ref class CommandPoolCreateInfo
 	{
@@ -6676,13 +6827,13 @@ namespace ManagedVulkan
 				mQueueFamilyIndex = value; 
 			}
 		}
-	}
+	};
 
 	public ref class CommandBufferAllocateInfo
 	{
 	private:
 		VkStructureType mSType;
-		VkCommandPool mCommandPool;
+		CommandPool^ mCommandPool = nullptr;
 		VkCommandBufferLevel mLevel;
 		UInt32 mCommandBufferCount = 0;
 	public:
@@ -6697,13 +6848,13 @@ namespace ManagedVulkan
 				mSType = value; 
 			}
 		}
-		property VkCommandPool CommandPool
+		property CommandPool^ CommandPool
 		{
-			VkCommandPool get()
+			CommandPool^ get()
 			{
 				return mCommandPool;
 			}
-			void set(VkCommandPool value)
+			void set(CommandPool^ value)
 			{
 				mCommandPool = value; 
 			}
@@ -6730,15 +6881,15 @@ namespace ManagedVulkan
 				mCommandBufferCount = value; 
 			}
 		}
-	}
+	};
 
 	public ref class CommandBufferInheritanceInfo
 	{
 	private:
 		VkStructureType mSType;
-		VkRenderPass mRenderPass;
+		RenderPass^ mRenderPass = nullptr;
 		UInt32 mSubpass = 0;
-		VkFramebuffer mFramebuffer;
+		Framebuffer^ mFramebuffer = nullptr;
 		bool mOcclusionQueryEnable = false;
 		VkQueryControlFlags mQueryFlags;
 		VkQueryPipelineStatisticFlags mPipelineStatistics;
@@ -6754,13 +6905,13 @@ namespace ManagedVulkan
 				mSType = value; 
 			}
 		}
-		property VkRenderPass RenderPass
+		property RenderPass^ RenderPass
 		{
-			VkRenderPass get()
+			RenderPass^ get()
 			{
 				return mRenderPass;
 			}
-			void set(VkRenderPass value)
+			void set(RenderPass^ value)
 			{
 				mRenderPass = value; 
 			}
@@ -6776,13 +6927,13 @@ namespace ManagedVulkan
 				mSubpass = value; 
 			}
 		}
-		property VkFramebuffer Framebuffer
+		property Framebuffer^ Framebuffer
 		{
-			VkFramebuffer get()
+			Framebuffer^ get()
 			{
 				return mFramebuffer;
 			}
-			void set(VkFramebuffer value)
+			void set(Framebuffer^ value)
 			{
 				mFramebuffer = value; 
 			}
@@ -6820,7 +6971,7 @@ namespace ManagedVulkan
 				mPipelineStatistics = value; 
 			}
 		}
-	}
+	};
 
 	public ref class CommandBufferBeginInfo
 	{
@@ -6862,14 +7013,14 @@ namespace ManagedVulkan
 				mInheritanceInfo = value; 
 			}
 		}
-	}
+	};
 
 	public ref class RenderPassBeginInfo
 	{
 	private:
 		VkStructureType mSType;
-		VkRenderPass mRenderPass;
-		VkFramebuffer mFramebuffer;
+		RenderPass^ mRenderPass = nullptr;
+		Framebuffer^ mFramebuffer = nullptr;
 		Rect2D^ mRenderArea = nullptr;
 		UInt32 mClearValueCount = 0;
 		VkClearValue* mClearValues;
@@ -6885,24 +7036,24 @@ namespace ManagedVulkan
 				mSType = value; 
 			}
 		}
-		property VkRenderPass RenderPass
+		property RenderPass^ RenderPass
 		{
-			VkRenderPass get()
+			RenderPass^ get()
 			{
 				return mRenderPass;
 			}
-			void set(VkRenderPass value)
+			void set(RenderPass^ value)
 			{
 				mRenderPass = value; 
 			}
 		}
-		property VkFramebuffer Framebuffer
+		property Framebuffer^ Framebuffer
 		{
-			VkFramebuffer get()
+			Framebuffer^ get()
 			{
 				return mFramebuffer;
 			}
-			void set(VkFramebuffer value)
+			void set(Framebuffer^ value)
 			{
 				mFramebuffer = value; 
 			}
@@ -6940,7 +7091,7 @@ namespace ManagedVulkan
 				mClearValues = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ClearDepthStencilValue
 	{
@@ -6970,7 +7121,7 @@ namespace ManagedVulkan
 				mStencil = value; 
 			}
 		}
-	}
+	};
 
 	public ref class ClearAttachment
 	{
@@ -7012,7 +7163,7 @@ namespace ManagedVulkan
 				mClearValue = value; 
 			}
 		}
-	}
+	};
 
 	public ref class AttachmentDescription
 	{
@@ -7126,7 +7277,7 @@ namespace ManagedVulkan
 				mFinalLayout = value; 
 			}
 		}
-	}
+	};
 
 	public ref class AttachmentReference
 	{
@@ -7156,7 +7307,7 @@ namespace ManagedVulkan
 				mLayout = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SubpassDescription
 	{
@@ -7282,7 +7433,7 @@ namespace ManagedVulkan
 				mPreserveAttachments = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SubpassDependency
 	{
@@ -7372,7 +7523,7 @@ namespace ManagedVulkan
 				mDependencyFlags = value; 
 			}
 		}
-	}
+	};
 
 	public ref class RenderPassCreateInfo
 	{
@@ -7474,7 +7625,7 @@ namespace ManagedVulkan
 				mDependencies = value; 
 			}
 		}
-	}
+	};
 
 	public ref class EventCreateInfo
 	{
@@ -7504,7 +7655,7 @@ namespace ManagedVulkan
 				mFlags = value; 
 			}
 		}
-	}
+	};
 
 	public ref class FenceCreateInfo
 	{
@@ -7534,7 +7685,7 @@ namespace ManagedVulkan
 				mFlags = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PhysicalDeviceFeatures
 	{
@@ -8200,7 +8351,7 @@ namespace ManagedVulkan
 				mInheritedQueries = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PhysicalDeviceSparseProperties
 	{
@@ -8266,7 +8417,7 @@ namespace ManagedVulkan
 				mResidencyNonResidentStrict = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PhysicalDeviceLimits
 	{
@@ -9544,7 +9695,7 @@ namespace ManagedVulkan
 				mNonCoherentAtomSize = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SemaphoreCreateInfo
 	{
@@ -9574,7 +9725,7 @@ namespace ManagedVulkan
 				mFlags = value; 
 			}
 		}
-	}
+	};
 
 	public ref class QueryPoolCreateInfo
 	{
@@ -9640,16 +9791,16 @@ namespace ManagedVulkan
 				mPipelineStatistics = value; 
 			}
 		}
-	}
+	};
 
 	public ref class FramebufferCreateInfo
 	{
 	private:
 		VkStructureType mSType;
 		VkFramebufferCreateFlags mFlags;
-		VkRenderPass mRenderPass;
+		RenderPass^ mRenderPass = nullptr;
 		UInt32 mAttachmentCount = 0;
-		VkImageView* mAttachments;
+		ImageView^ mAttachments = nullptr;
 		UInt32 mWidth = 0;
 		UInt32 mHeight = 0;
 		UInt32 mLayers = 0;
@@ -9676,13 +9827,13 @@ namespace ManagedVulkan
 				mFlags = value; 
 			}
 		}
-		property VkRenderPass RenderPass
+		property RenderPass^ RenderPass
 		{
-			VkRenderPass get()
+			RenderPass^ get()
 			{
 				return mRenderPass;
 			}
-			void set(VkRenderPass value)
+			void set(RenderPass^ value)
 			{
 				mRenderPass = value; 
 			}
@@ -9698,13 +9849,13 @@ namespace ManagedVulkan
 				mAttachmentCount = value; 
 			}
 		}
-		property VkImageView* Attachments
+		property ImageView^ Attachments
 		{
-			VkImageView* get()
+			ImageView^ get()
 			{
 				return mAttachments;
 			}
-			void set(VkImageView* value)
+			void set(ImageView^ value)
 			{
 				mAttachments = value; 
 			}
@@ -9742,7 +9893,7 @@ namespace ManagedVulkan
 				mLayers = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DrawIndirectCommand
 	{
@@ -9796,7 +9947,7 @@ namespace ManagedVulkan
 				mFirstInstance = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DrawIndexedIndirectCommand
 	{
@@ -9862,7 +10013,7 @@ namespace ManagedVulkan
 				mFirstInstance = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DispatchIndirectCommand
 	{
@@ -9904,19 +10055,19 @@ namespace ManagedVulkan
 				mZ = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SubmitInfo
 	{
 	private:
 		VkStructureType mSType;
 		UInt32 mWaitSemaphoreCount = 0;
-		VkSemaphore* mWaitSemaphores;
+		Semaphore^ mWaitSemaphores = nullptr;
 		VkPipelineStageFlags* mWaitDstStageMask;
 		UInt32 mCommandBufferCount = 0;
 		CommandBuffer^ mCommandBuffers = nullptr;
 		UInt32 mSignalSemaphoreCount = 0;
-		VkSemaphore* mSignalSemaphores;
+		Semaphore^ mSignalSemaphores = nullptr;
 	public:
 		property VkStructureType SType
 		{
@@ -9940,13 +10091,13 @@ namespace ManagedVulkan
 				mWaitSemaphoreCount = value; 
 			}
 		}
-		property VkSemaphore* WaitSemaphores
+		property Semaphore^ WaitSemaphores
 		{
-			VkSemaphore* get()
+			Semaphore^ get()
 			{
 				return mWaitSemaphores;
 			}
-			void set(VkSemaphore* value)
+			void set(Semaphore^ value)
 			{
 				mWaitSemaphores = value; 
 			}
@@ -9995,23 +10146,23 @@ namespace ManagedVulkan
 				mSignalSemaphoreCount = value; 
 			}
 		}
-		property VkSemaphore* SignalSemaphores
+		property Semaphore^ SignalSemaphores
 		{
-			VkSemaphore* get()
+			Semaphore^ get()
 			{
 				return mSignalSemaphores;
 			}
-			void set(VkSemaphore* value)
+			void set(Semaphore^ value)
 			{
 				mSignalSemaphores = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DisplayPropertiesKHR
 	{
 	private:
-		VkDisplayKHR mDisplay;
+		DisplayKHR^ mDisplay = nullptr;
 		String^ mDisplayName = nullptr;
 		Extent2D^ mPhysicalDimensions = nullptr;
 		Extent2D^ mPhysicalResolution = nullptr;
@@ -10019,13 +10170,13 @@ namespace ManagedVulkan
 		bool mPlaneReorderPossible = false;
 		bool mPersistentContent = false;
 	public:
-		property VkDisplayKHR Display
+		property DisplayKHR^ Display
 		{
-			VkDisplayKHR get()
+			DisplayKHR^ get()
 			{
 				return mDisplay;
 			}
-			void set(VkDisplayKHR value)
+			void set(DisplayKHR^ value)
 			{
 				mDisplay = value; 
 			}
@@ -10096,21 +10247,21 @@ namespace ManagedVulkan
 				mPersistentContent = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DisplayPlanePropertiesKHR
 	{
 	private:
-		VkDisplayKHR mCurrentDisplay;
+		DisplayKHR^ mCurrentDisplay = nullptr;
 		UInt32 mCurrentStackIndex = 0;
 	public:
-		property VkDisplayKHR CurrentDisplay
+		property DisplayKHR^ CurrentDisplay
 		{
-			VkDisplayKHR get()
+			DisplayKHR^ get()
 			{
 				return mCurrentDisplay;
 			}
-			void set(VkDisplayKHR value)
+			void set(DisplayKHR^ value)
 			{
 				mCurrentDisplay = value; 
 			}
@@ -10126,7 +10277,7 @@ namespace ManagedVulkan
 				mCurrentStackIndex = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DisplayModeParametersKHR
 	{
@@ -10156,21 +10307,21 @@ namespace ManagedVulkan
 				mRefreshRate = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DisplayModePropertiesKHR
 	{
 	private:
-		VkDisplayModeKHR mDisplayMode;
+		DisplayModeKHR^ mDisplayMode = nullptr;
 		DisplayModeParametersKHR^ mParameters = nullptr;
 	public:
-		property VkDisplayModeKHR DisplayMode
+		property DisplayModeKHR^ DisplayMode
 		{
-			VkDisplayModeKHR get()
+			DisplayModeKHR^ get()
 			{
 				return mDisplayMode;
 			}
-			void set(VkDisplayModeKHR value)
+			void set(DisplayModeKHR^ value)
 			{
 				mDisplayMode = value; 
 			}
@@ -10186,7 +10337,7 @@ namespace ManagedVulkan
 				mParameters = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DisplayModeCreateInfoKHR
 	{
@@ -10228,7 +10379,7 @@ namespace ManagedVulkan
 				mParameters = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DisplayPlaneCapabilitiesKHR
 	{
@@ -10342,14 +10493,14 @@ namespace ManagedVulkan
 				mMaxDstExtent = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DisplaySurfaceCreateInfoKHR
 	{
 	private:
 		VkStructureType mSType;
 		VkDisplaySurfaceCreateFlagsKHR mFlags;
-		VkDisplayModeKHR mDisplayMode;
+		DisplayModeKHR^ mDisplayMode = nullptr;
 		UInt32 mPlaneIndex = 0;
 		UInt32 mPlaneStackIndex = 0;
 		VkSurfaceTransformFlagBitsKHR mTransform;
@@ -10379,13 +10530,13 @@ namespace ManagedVulkan
 				mFlags = value; 
 			}
 		}
-		property VkDisplayModeKHR DisplayMode
+		property DisplayModeKHR^ DisplayMode
 		{
-			VkDisplayModeKHR get()
+			DisplayModeKHR^ get()
 			{
 				return mDisplayMode;
 			}
-			void set(VkDisplayModeKHR value)
+			void set(DisplayModeKHR^ value)
 			{
 				mDisplayMode = value; 
 			}
@@ -10456,7 +10607,7 @@ namespace ManagedVulkan
 				mImageExtent = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DisplayPresentInfoKHR
 	{
@@ -10510,7 +10661,7 @@ namespace ManagedVulkan
 				mPersistent = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SurfaceCapabilitiesKHR
 	{
@@ -10636,7 +10787,7 @@ namespace ManagedVulkan
 				mSupportedUsageFlags = value; 
 			}
 		}
-	}
+	};
 
 	public ref class AndroidSurfaceCreateInfoKHR
 	{
@@ -10678,7 +10829,7 @@ namespace ManagedVulkan
 				mWindow = value; 
 			}
 		}
-	}
+	};
 
 	public ref class MirSurfaceCreateInfoKHR
 	{
@@ -10732,7 +10883,7 @@ namespace ManagedVulkan
 				mMirSurface = value; 
 			}
 		}
-	}
+	};
 
 	public ref class WaylandSurfaceCreateInfoKHR
 	{
@@ -10786,7 +10937,7 @@ namespace ManagedVulkan
 				mSurface = value; 
 			}
 		}
-	}
+	};
 
 	public ref class Win32SurfaceCreateInfoKHR
 	{
@@ -10840,7 +10991,7 @@ namespace ManagedVulkan
 				mHwnd = value; 
 			}
 		}
-	}
+	};
 
 	public ref class XlibSurfaceCreateInfoKHR
 	{
@@ -10894,7 +11045,7 @@ namespace ManagedVulkan
 				mWindow = value; 
 			}
 		}
-	}
+	};
 
 	public ref class XcbSurfaceCreateInfoKHR
 	{
@@ -10948,7 +11099,7 @@ namespace ManagedVulkan
 				mWindow = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SurfaceFormatKHR
 	{
@@ -10978,14 +11129,14 @@ namespace ManagedVulkan
 				mColorSpace = value; 
 			}
 		}
-	}
+	};
 
 	public ref class SwapchainCreateInfoKHR
 	{
 	private:
 		VkStructureType mSType;
 		VkSwapchainCreateFlagsKHR mFlags;
-		VkSurfaceKHR mSurface;
+		SurfaceKHR^ mSurface = nullptr;
 		UInt32 mMinImageCount = 0;
 		VkFormat mImageFormat;
 		VkColorSpaceKHR mImageColorSpace;
@@ -10999,7 +11150,7 @@ namespace ManagedVulkan
 		VkCompositeAlphaFlagBitsKHR mCompositeAlpha;
 		VkPresentModeKHR mPresentMode;
 		bool mClipped = false;
-		VkSwapchainKHR mOldSwapchain;
+		SwapchainKHR^ mOldSwapchain = nullptr;
 	public:
 		property VkStructureType SType
 		{
@@ -11023,13 +11174,13 @@ namespace ManagedVulkan
 				mFlags = value; 
 			}
 		}
-		property VkSurfaceKHR Surface
+		property SurfaceKHR^ Surface
 		{
-			VkSurfaceKHR get()
+			SurfaceKHR^ get()
 			{
 				return mSurface;
 			}
-			void set(VkSurfaceKHR value)
+			void set(SurfaceKHR^ value)
 			{
 				mSurface = value; 
 			}
@@ -11177,29 +11328,29 @@ namespace ManagedVulkan
 				mClipped = value; 
 			}
 		}
-		property VkSwapchainKHR OldSwapchain
+		property SwapchainKHR^ OldSwapchain
 		{
-			VkSwapchainKHR get()
+			SwapchainKHR^ get()
 			{
 				return mOldSwapchain;
 			}
-			void set(VkSwapchainKHR value)
+			void set(SwapchainKHR^ value)
 			{
 				mOldSwapchain = value; 
 			}
 		}
-	}
+	};
 
 	public ref class PresentInfoKHR
 	{
 	private:
 		VkStructureType mSType;
 		UInt32 mWaitSemaphoreCount = 0;
-		VkSemaphore* mWaitSemaphores;
+		Semaphore^ mWaitSemaphores = nullptr;
 		UInt32 mSwapchainCount = 0;
-		VkSwapchainKHR* mSwapchains;
+		SwapchainKHR^ mSwapchains = nullptr;
 		UInt32 mImageIndices = 0;
-		VkResult* mResults;
+		array<VkResult>^ mResults = nullptr;
 	public:
 		property VkStructureType SType
 		{
@@ -11223,13 +11374,13 @@ namespace ManagedVulkan
 				mWaitSemaphoreCount = value; 
 			}
 		}
-		property VkSemaphore* WaitSemaphores
+		property Semaphore^ WaitSemaphores
 		{
-			VkSemaphore* get()
+			Semaphore^ get()
 			{
 				return mWaitSemaphores;
 			}
-			void set(VkSemaphore* value)
+			void set(Semaphore^ value)
 			{
 				mWaitSemaphores = value; 
 			}
@@ -11245,13 +11396,13 @@ namespace ManagedVulkan
 				mSwapchainCount = value; 
 			}
 		}
-		property VkSwapchainKHR* Swapchains
+		property SwapchainKHR^ Swapchains
 		{
-			VkSwapchainKHR* get()
+			SwapchainKHR^ get()
 			{
 				return mSwapchains;
 			}
-			void set(VkSwapchainKHR* value)
+			void set(SwapchainKHR^ value)
 			{
 				mSwapchains = value; 
 			}
@@ -11267,18 +11418,18 @@ namespace ManagedVulkan
 				mImageIndices = value; 
 			}
 		}
-		property VkResult* Results
+		property array<VkResult>^ Results
 		{
-			VkResult* get()
+			array<VkResult>^ get()
 			{
 				return mResults;
 			}
-			void set(VkResult* value)
+			void set(array<VkResult>^ value)
 			{
 				mResults = value; 
 			}
 		}
-	}
+	};
 
 	public ref class DebugReportCallbackCreateInfoEXT
 	{
@@ -11286,7 +11437,7 @@ namespace ManagedVulkan
 		VkStructureType mSType;
 		VkDebugReportFlagsEXT mFlags;
 		PFN_vkDebugReportCallbackEXT mPfnCallback;
-		void* mUserData;
+		IntPtr mUserData = IntPtr.Zero;
 	public:
 		property VkStructureType SType
 		{
@@ -11321,55 +11472,69 @@ namespace ManagedVulkan
 				mPfnCallback = value; 
 			}
 		}
-		property void* UserData
+		property IntPtr UserData
 		{
-			void* get()
+			IntPtr get()
 			{
 				return mUserData;
 			}
-			void set(void* value)
+			void set(IntPtr value)
 			{
 				mUserData = value; 
 			}
 		}
-	}
+	};
+
+	// DELEGATES
+	public delegate void PFN_vkInternalAllocationNotification(IntPtr pUserData, IntPtr size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope);
+
+	public delegate void PFN_vkInternalFreeNotification(IntPtr pUserData, IntPtr size, VkInternalAllocationType allocationType, VkSystemAllocationScope allocationScope);
+
+	public delegate void PFN_vkReallocationFunction(IntPtr pUserData, IntPtr pOriginal, IntPtr size, IntPtr alignment, VkSystemAllocationScope allocationScope);
+
+	public delegate void PFN_vkAllocationFunction(IntPtr pUserData, IntPtr size, IntPtr alignment, VkSystemAllocationScope allocationScope);
+
+	public delegate void PFN_vkFreeFunction(IntPtr pUserData, IntPtr pMemory);
+
+	public delegate void PFN_vkVoidFunction();
+
+	public delegate void PFN_vkDebugReportCallbackEXT(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, UInt64 object, IntPtr location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage, IntPtr pUserData);
+
 
 	// INTERFACES
 	// Vulkan
 	public interface class IVulkan
 	{
 		VkResult CreateInstance(InstanceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Instance^ pInstance);
-		VkResult EnumerateInstanceLayerProperties(ref UInt32 pPropertyCount, LayerProperties^ pProperties);
-		VkResult EnumerateInstanceExtensionProperties(String^ pLayerName, ref UInt32 pPropertyCount, ExtensionProperties^ pProperties);
+		VkResult EnumerateInstanceLayerProperties(array<LayerProperties^>^ pProperties);
+		VkResult EnumerateInstanceExtensionProperties(array<ExtensionProperties^>^ pProperties);
 	};
 
 	public ref class Vulkan : public IVulkan
 	{
-	private:
-		Vulkan mInst;
 	public:
 		VkResult CreateInstance(InstanceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Instance^ pInstance);
-		VkResult EnumerateInstanceLayerProperties(ref UInt32 pPropertyCount, LayerProperties^ pProperties);
-		VkResult EnumerateInstanceExtensionProperties(String^ pLayerName, ref UInt32 pPropertyCount, ExtensionProperties^ pProperties);
+		VkResult EnumerateInstanceLayerProperties(array<LayerProperties^>^ pProperties);
+		VkResult EnumerateInstanceExtensionProperties(array<ExtensionProperties^>^ pProperties);
 	};
 
 	// VkInstance
 	public interface class IVkInstance
 	{
 		void DestroyInstance(AllocationCallbacks^ pAllocator);
-		VkResult EnumeratePhysicalDevices(ref UInt32 pPhysicalDeviceCount, PhysicalDevice^ pPhysicalDevices);
+		VkResult EnumeratePhysicalDevices(array<PhysicalDevice^>^ pPhysicalDevices);
 		PFN_vkVoidFunction GetInstanceProcAddr(String^ pName);
-		VkResult CreateAndroidSurfaceKHR(AndroidSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		VkResult CreateDisplayPlaneSurfaceKHR(DisplaySurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		VkResult CreateMirSurfaceKHR(MirSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		void DestroySurfaceKHR(VkSurfaceKHR surface, AllocationCallbacks^ pAllocator);
-		VkResult CreateWaylandSurfaceKHR(WaylandSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		VkResult CreateWin32SurfaceKHR(Win32SurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		VkResult CreateXlibSurfaceKHR(XlibSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		VkResult CreateXcbSurfaceKHR(XcbSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		VkResult CreateDebugReportCallbackEXT(DebugReportCallbackCreateInfoEXT^ pCreateInfo, AllocationCallbacks^ pAllocator, VkDebugReportCallbackEXT* pCallback);
-		void DestroyDebugReportCallbackEXT(VkDebugReportCallbackEXT callback, AllocationCallbacks^ pAllocator);
-		void DebugReportMessageEXT(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, IntPtr location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage);
+		VkResult CreateAndroidSurfaceKHR(AndroidSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		VkResult CreateDisplayPlaneSurfaceKHR(DisplaySurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		VkResult CreateMirSurfaceKHR(MirSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		void DestroySurfaceKHR(SurfaceKHR^ surface, AllocationCallbacks^ pAllocator);
+		VkResult CreateWaylandSurfaceKHR(WaylandSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		VkResult CreateWin32SurfaceKHR(Win32SurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		VkResult CreateXlibSurfaceKHR(XlibSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		VkResult CreateXcbSurfaceKHR(XcbSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		VkResult CreateDebugReportCallbackEXT(DebugReportCallbackCreateInfoEXT^ pCreateInfo, AllocationCallbacks^ pAllocator, DebugReportCallbackEXT^ pCallback);
+		void DestroyDebugReportCallbackEXT(DebugReportCallbackEXT^ callback, AllocationCallbacks^ pAllocator);
+		void DebugReportMessageEXT(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, UInt64 object, IntPtr location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage);
 	};
 
 	public ref class Instance : public IVkInstance
@@ -11378,19 +11543,19 @@ namespace ManagedVulkan
 		VkInstance mInst;
 	public:
 		void DestroyInstance(AllocationCallbacks^ pAllocator);
-		VkResult EnumeratePhysicalDevices(ref UInt32 pPhysicalDeviceCount, PhysicalDevice^ pPhysicalDevices);
+		VkResult EnumeratePhysicalDevices(array<PhysicalDevice^>^ pPhysicalDevices);
 		PFN_vkVoidFunction GetInstanceProcAddr(String^ pName);
-		VkResult CreateAndroidSurfaceKHR(AndroidSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		VkResult CreateDisplayPlaneSurfaceKHR(DisplaySurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		VkResult CreateMirSurfaceKHR(MirSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		void DestroySurfaceKHR(VkSurfaceKHR surface, AllocationCallbacks^ pAllocator);
-		VkResult CreateWaylandSurfaceKHR(WaylandSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		VkResult CreateWin32SurfaceKHR(Win32SurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		VkResult CreateXlibSurfaceKHR(XlibSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		VkResult CreateXcbSurfaceKHR(XcbSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSurfaceKHR* pSurface);
-		VkResult CreateDebugReportCallbackEXT(DebugReportCallbackCreateInfoEXT^ pCreateInfo, AllocationCallbacks^ pAllocator, VkDebugReportCallbackEXT* pCallback);
-		void DestroyDebugReportCallbackEXT(VkDebugReportCallbackEXT callback, AllocationCallbacks^ pAllocator);
-		void DebugReportMessageEXT(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, IntPtr location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage);
+		VkResult CreateAndroidSurfaceKHR(AndroidSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		VkResult CreateDisplayPlaneSurfaceKHR(DisplaySurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		VkResult CreateMirSurfaceKHR(MirSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		void DestroySurfaceKHR(SurfaceKHR^ surface, AllocationCallbacks^ pAllocator);
+		VkResult CreateWaylandSurfaceKHR(WaylandSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		VkResult CreateWin32SurfaceKHR(Win32SurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		VkResult CreateXlibSurfaceKHR(XlibSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		VkResult CreateXcbSurfaceKHR(XcbSurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SurfaceKHR^ pSurface);
+		VkResult CreateDebugReportCallbackEXT(DebugReportCallbackCreateInfoEXT^ pCreateInfo, AllocationCallbacks^ pAllocator, DebugReportCallbackEXT^ pCallback);
+		void DestroyDebugReportCallbackEXT(DebugReportCallbackEXT^ callback, AllocationCallbacks^ pAllocator);
+		void DebugReportMessageEXT(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, UInt64 object, IntPtr location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage);
 	};
 
 	// VkDevice
@@ -11399,79 +11564,79 @@ namespace ManagedVulkan
 		PFN_vkVoidFunction GetDeviceProcAddr(String^ pName);
 		void DestroyDevice(AllocationCallbacks^ pAllocator);
 		void GetDeviceQueue(UInt32 queueFamilyIndex, UInt32 queueIndex, Queue^ pQueue);
-		VkResult DeviceWaitIdle(<TYPE> <NAME>);
-		VkResult AllocateMemory(MemoryAllocateInfo^ pAllocateInfo, AllocationCallbacks^ pAllocator, VkDeviceMemory* pMemory);
-		void FreeMemory(VkDeviceMemory memory, AllocationCallbacks^ pAllocator);
-		VkResult MapMemory(VkDeviceMemory memory, UInt64 offset, UInt64 size, VkMemoryMapFlags flags, void** ppData);
-		void UnmapMemory(VkDeviceMemory memory);
+		VkResult DeviceWaitIdle();
+		VkResult AllocateMemory(MemoryAllocateInfo^ pAllocateInfo, AllocationCallbacks^ pAllocator, DeviceMemory^ pMemory);
+		void FreeMemory(DeviceMemory^ memory, AllocationCallbacks^ pAllocator);
+		VkResult MapMemory(DeviceMemory^ memory, UInt64 offset, UInt64 size, VkMemoryMapFlags flags, void** ppData);
+		void UnmapMemory(DeviceMemory^ memory);
 		VkResult FlushMappedMemoryRanges(UInt32 memoryRangeCount, MappedMemoryRange^ pMemoryRanges);
 		VkResult InvalidateMappedMemoryRanges(UInt32 memoryRangeCount, MappedMemoryRange^ pMemoryRanges);
-		void GetDeviceMemoryCommitment(VkDeviceMemory memory, VkDeviceSize* pCommittedMemoryInBytes);
-		void GetBufferMemoryRequirements(VkBuffer buffer, MemoryRequirements^ pMemoryRequirements);
-		VkResult BindBufferMemory(VkBuffer buffer, VkDeviceMemory memory, UInt64 memoryOffset);
-		void GetImageMemoryRequirements(VkImage image, MemoryRequirements^ pMemoryRequirements);
-		VkResult BindImageMemory(VkImage image, VkDeviceMemory memory, UInt64 memoryOffset);
-		void GetImageSparseMemoryRequirements(VkImage image, ref UInt32 pSparseMemoryRequirementCount, SparseImageMemoryRequirements^ pSparseMemoryRequirements);
-		VkResult CreateFence(FenceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkFence* pFence);
-		void DestroyFence(VkFence fence, AllocationCallbacks^ pAllocator);
-		VkResult ResetFences(UInt32 fenceCount, VkFence* pFences);
-		VkResult GetFenceStatus(VkFence fence);
-		VkResult WaitForFences(UInt32 fenceCount, VkFence* pFences, bool waitAll, uint64_t timeout);
-		VkResult CreateSemaphore(SemaphoreCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSemaphore* pSemaphore);
-		void DestroySemaphore(VkSemaphore semaphore, AllocationCallbacks^ pAllocator);
-		VkResult CreateEvent(EventCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkEvent* pEvent);
-		void DestroyEvent(VkEvent event, AllocationCallbacks^ pAllocator);
-		VkResult GetEventStatus(VkEvent event);
-		VkResult SetEvent(VkEvent event);
-		VkResult ResetEvent(VkEvent event);
-		VkResult CreateQueryPool(QueryPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkQueryPool* pQueryPool);
-		void DestroyQueryPool(VkQueryPool queryPool, AllocationCallbacks^ pAllocator);
-		VkResult GetQueryPoolResults(VkQueryPool queryPool, UInt32 firstQuery, UInt32 queryCount, IntPtr dataSize, void* pData, UInt64 stride, VkQueryResultFlags flags);
-		VkResult CreateBuffer(BufferCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkBuffer* pBuffer);
-		void DestroyBuffer(VkBuffer buffer, AllocationCallbacks^ pAllocator);
-		VkResult CreateBufferView(BufferViewCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkBufferView* pView);
-		void DestroyBufferView(VkBufferView bufferView, AllocationCallbacks^ pAllocator);
-		VkResult CreateImage(ImageCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkImage* pImage);
-		void DestroyImage(VkImage image, AllocationCallbacks^ pAllocator);
-		void GetImageSubresourceLayout(VkImage image, ImageSubresource^ pSubresource, SubresourceLayout^ pLayout);
-		VkResult CreateImageView(ImageViewCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkImageView* pView);
-		void DestroyImageView(VkImageView imageView, AllocationCallbacks^ pAllocator);
-		VkResult CreateShaderModule(ShaderModuleCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkShaderModule* pShaderModule);
-		void DestroyShaderModule(VkShaderModule shaderModule, AllocationCallbacks^ pAllocator);
-		VkResult CreatePipelineCache(PipelineCacheCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkPipelineCache* pPipelineCache);
-		void DestroyPipelineCache(VkPipelineCache pipelineCache, AllocationCallbacks^ pAllocator);
-		VkResult GetPipelineCacheData(VkPipelineCache pipelineCache, size_t* pDataSize, void* pData);
-		VkResult MergePipelineCaches(VkPipelineCache dstCache, UInt32 srcCacheCount, VkPipelineCache* pSrcCaches);
-		VkResult CreateGraphicsPipelines(VkPipelineCache pipelineCache, UInt32 createInfoCount, GraphicsPipelineCreateInfo^ pCreateInfos, AllocationCallbacks^ pAllocator, VkPipeline* pPipelines);
-		VkResult CreateComputePipelines(VkPipelineCache pipelineCache, UInt32 createInfoCount, ComputePipelineCreateInfo^ pCreateInfos, AllocationCallbacks^ pAllocator, VkPipeline* pPipelines);
-		void DestroyPipeline(VkPipeline pipeline, AllocationCallbacks^ pAllocator);
-		VkResult CreatePipelineLayout(PipelineLayoutCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkPipelineLayout* pPipelineLayout);
-		void DestroyPipelineLayout(VkPipelineLayout pipelineLayout, AllocationCallbacks^ pAllocator);
-		VkResult CreateSampler(SamplerCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSampler* pSampler);
-		void DestroySampler(VkSampler sampler, AllocationCallbacks^ pAllocator);
-		VkResult CreateDescriptorSetLayout(DescriptorSetLayoutCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkDescriptorSetLayout* pSetLayout);
-		void DestroyDescriptorSetLayout(VkDescriptorSetLayout descriptorSetLayout, AllocationCallbacks^ pAllocator);
-		VkResult CreateDescriptorPool(DescriptorPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkDescriptorPool* pDescriptorPool);
-		void DestroyDescriptorPool(VkDescriptorPool descriptorPool, AllocationCallbacks^ pAllocator);
-		VkResult ResetDescriptorPool(VkDescriptorPool descriptorPool, VkDescriptorPoolResetFlags flags, <TYPE> <NAME>);
-		VkResult AllocateDescriptorSets(DescriptorSetAllocateInfo^ pAllocateInfo, VkDescriptorSet* pDescriptorSets);
-		VkResult FreeDescriptorSets(VkDescriptorPool descriptorPool, UInt32 descriptorSetCount, VkDescriptorSet* pDescriptorSets);
+		void GetDeviceMemoryCommitment(DeviceMemory^ memory, ref UInt64 pCommittedMemoryInBytes);
+		void GetBufferMemoryRequirements(Buffer^ buffer, MemoryRequirements^ pMemoryRequirements);
+		VkResult BindBufferMemory(Buffer^ buffer, DeviceMemory^ memory, UInt64 memoryOffset);
+		void GetImageMemoryRequirements(Image^ image, MemoryRequirements^ pMemoryRequirements);
+		VkResult BindImageMemory(Image^ image, DeviceMemory^ memory, UInt64 memoryOffset);
+		void GetImageSparseMemoryRequirements(array<SparseImageMemoryRequirements^>^ pSparseMemoryRequirements);
+		VkResult CreateFence(FenceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Fence^ pFence);
+		void DestroyFence(Fence^ fence, AllocationCallbacks^ pAllocator);
+		VkResult ResetFences(UInt32 fenceCount, Fence^ pFences);
+		VkResult GetFenceStatus(Fence^ fence);
+		VkResult WaitForFences(UInt32 fenceCount, Fence^ pFences, bool waitAll, UInt64 timeout);
+		VkResult CreateSemaphore(SemaphoreCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Semaphore^ pSemaphore);
+		void DestroySemaphore(Semaphore^ semaphore, AllocationCallbacks^ pAllocator);
+		VkResult CreateEvent(EventCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Event^ pEvent);
+		void DestroyEvent(Event^ event, AllocationCallbacks^ pAllocator);
+		VkResult GetEventStatus(Event^ event);
+		VkResult SetEvent(Event^ event);
+		VkResult ResetEvent(Event^ event);
+		VkResult CreateQueryPool(QueryPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, QueryPool^ pQueryPool);
+		void DestroyQueryPool(QueryPool^ queryPool, AllocationCallbacks^ pAllocator);
+		VkResult GetQueryPoolResults(QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount, IntPtr dataSize, IntPtr pData, UInt64 stride, VkQueryResultFlags flags);
+		VkResult CreateBuffer(BufferCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Buffer^ pBuffer);
+		void DestroyBuffer(Buffer^ buffer, AllocationCallbacks^ pAllocator);
+		VkResult CreateBufferView(BufferViewCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, BufferView^ pView);
+		void DestroyBufferView(BufferView^ bufferView, AllocationCallbacks^ pAllocator);
+		VkResult CreateImage(ImageCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Image^ pImage);
+		void DestroyImage(Image^ image, AllocationCallbacks^ pAllocator);
+		void GetImageSubresourceLayout(Image^ image, ImageSubresource^ pSubresource, SubresourceLayout^ pLayout);
+		VkResult CreateImageView(ImageViewCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, ImageView^ pView);
+		void DestroyImageView(ImageView^ imageView, AllocationCallbacks^ pAllocator);
+		VkResult CreateShaderModule(ShaderModuleCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, ShaderModule^ pShaderModule);
+		void DestroyShaderModule(ShaderModule^ shaderModule, AllocationCallbacks^ pAllocator);
+		VkResult CreatePipelineCache(PipelineCacheCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, PipelineCache^ pPipelineCache);
+		void DestroyPipelineCache(PipelineCache^ pipelineCache, AllocationCallbacks^ pAllocator);
+		VkResult GetPipelineCacheData(PipelineCache^ pipelineCache, size_t* pDataSize, IntPtr pData);
+		VkResult MergePipelineCaches(PipelineCache^ dstCache, UInt32 srcCacheCount, PipelineCache^ pSrcCaches);
+		VkResult CreateGraphicsPipelines(PipelineCache^ pipelineCache, UInt32 createInfoCount, GraphicsPipelineCreateInfo^ pCreateInfos, AllocationCallbacks^ pAllocator, Pipeline^ pPipelines);
+		VkResult CreateComputePipelines(PipelineCache^ pipelineCache, UInt32 createInfoCount, ComputePipelineCreateInfo^ pCreateInfos, AllocationCallbacks^ pAllocator, Pipeline^ pPipelines);
+		void DestroyPipeline(Pipeline^ pipeline, AllocationCallbacks^ pAllocator);
+		VkResult CreatePipelineLayout(PipelineLayoutCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, PipelineLayout^ pPipelineLayout);
+		void DestroyPipelineLayout(PipelineLayout^ pipelineLayout, AllocationCallbacks^ pAllocator);
+		VkResult CreateSampler(SamplerCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Sampler^ pSampler);
+		void DestroySampler(Sampler^ sampler, AllocationCallbacks^ pAllocator);
+		VkResult CreateDescriptorSetLayout(DescriptorSetLayoutCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, DescriptorSetLayout^ pSetLayout);
+		void DestroyDescriptorSetLayout(DescriptorSetLayout^ descriptorSetLayout, AllocationCallbacks^ pAllocator);
+		VkResult CreateDescriptorPool(DescriptorPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, DescriptorPool^ pDescriptorPool);
+		void DestroyDescriptorPool(DescriptorPool^ descriptorPool, AllocationCallbacks^ pAllocator);
+		VkResult ResetDescriptorPool(DescriptorPool^ descriptorPool, VkDescriptorPoolResetFlags flags);
+		VkResult AllocateDescriptorSets(DescriptorSetAllocateInfo^ pAllocateInfo, DescriptorSet^ pDescriptorSets);
+		VkResult FreeDescriptorSets(DescriptorPool^ descriptorPool, UInt32 descriptorSetCount, DescriptorSet^ pDescriptorSets);
 		void UpdateDescriptorSets(UInt32 descriptorWriteCount, WriteDescriptorSet^ pDescriptorWrites, UInt32 descriptorCopyCount, CopyDescriptorSet^ pDescriptorCopies);
-		VkResult CreateFramebuffer(FramebufferCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkFramebuffer* pFramebuffer);
-		void DestroyFramebuffer(VkFramebuffer framebuffer, AllocationCallbacks^ pAllocator);
-		VkResult CreateRenderPass(RenderPassCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkRenderPass* pRenderPass);
-		void DestroyRenderPass(VkRenderPass renderPass, AllocationCallbacks^ pAllocator);
-		void GetRenderAreaGranularity(VkRenderPass renderPass, Extent2D^ pGranularity);
-		VkResult CreateCommandPool(CommandPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkCommandPool* pCommandPool);
-		void DestroyCommandPool(VkCommandPool commandPool, AllocationCallbacks^ pAllocator);
-		VkResult ResetCommandPool(VkCommandPool commandPool, VkCommandPoolResetFlags flags);
+		VkResult CreateFramebuffer(FramebufferCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Framebuffer^ pFramebuffer);
+		void DestroyFramebuffer(Framebuffer^ framebuffer, AllocationCallbacks^ pAllocator);
+		VkResult CreateRenderPass(RenderPassCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, RenderPass^ pRenderPass);
+		void DestroyRenderPass(RenderPass^ renderPass, AllocationCallbacks^ pAllocator);
+		void GetRenderAreaGranularity(RenderPass^ renderPass, Extent2D^ pGranularity);
+		VkResult CreateCommandPool(CommandPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, CommandPool^ pCommandPool);
+		void DestroyCommandPool(CommandPool^ commandPool, AllocationCallbacks^ pAllocator);
+		VkResult ResetCommandPool(CommandPool^ commandPool, VkCommandPoolResetFlags flags);
 		VkResult AllocateCommandBuffers(CommandBufferAllocateInfo^ pAllocateInfo, CommandBuffer^ pCommandBuffers);
-		void FreeCommandBuffers(VkCommandPool commandPool, UInt32 commandBufferCount, CommandBuffer^ pCommandBuffers);
-		VkResult CreateSharedSwapchainsKHR(UInt32 swapchainCount, SwapchainCreateInfoKHR^ pCreateInfos, AllocationCallbacks^ pAllocator, VkSwapchainKHR* pSwapchains);
-		VkResult CreateSwapchainKHR(SwapchainCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSwapchainKHR* pSwapchain);
-		void DestroySwapchainKHR(VkSwapchainKHR swapchain, AllocationCallbacks^ pAllocator);
-		VkResult GetSwapchainImagesKHR(VkSwapchainKHR swapchain, ref UInt32 pSwapchainImageCount, VkImage* pSwapchainImages);
-		VkResult AcquireNextImageKHR(VkSwapchainKHR swapchain, uint64_t timeout, VkSemaphore semaphore, VkFence fence, ref UInt32 pImageIndex);
+		void FreeCommandBuffers(CommandPool^ commandPool, UInt32 commandBufferCount, CommandBuffer^ pCommandBuffers);
+		VkResult CreateSharedSwapchainsKHR(UInt32 swapchainCount, SwapchainCreateInfoKHR^ pCreateInfos, AllocationCallbacks^ pAllocator, SwapchainKHR^ pSwapchains);
+		VkResult CreateSwapchainKHR(SwapchainCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SwapchainKHR^ pSwapchain);
+		void DestroySwapchainKHR(SwapchainKHR^ swapchain, AllocationCallbacks^ pAllocator);
+		VkResult GetSwapchainImagesKHR(array<Image^>^ pSwapchainImages);
+		VkResult AcquireNextImageKHR(SwapchainKHR^ swapchain, UInt64 timeout, Semaphore^ semaphore, Fence^ fence, ref UInt32 pImageIndex);
 	};
 
 	public ref class Device : public IVkDevice
@@ -11482,109 +11647,109 @@ namespace ManagedVulkan
 		PFN_vkVoidFunction GetDeviceProcAddr(String^ pName);
 		void DestroyDevice(AllocationCallbacks^ pAllocator);
 		void GetDeviceQueue(UInt32 queueFamilyIndex, UInt32 queueIndex, Queue^ pQueue);
-		VkResult DeviceWaitIdle(<TYPE> <NAME>);
-		VkResult AllocateMemory(MemoryAllocateInfo^ pAllocateInfo, AllocationCallbacks^ pAllocator, VkDeviceMemory* pMemory);
-		void FreeMemory(VkDeviceMemory memory, AllocationCallbacks^ pAllocator);
-		VkResult MapMemory(VkDeviceMemory memory, UInt64 offset, UInt64 size, VkMemoryMapFlags flags, void** ppData);
-		void UnmapMemory(VkDeviceMemory memory);
+		VkResult DeviceWaitIdle();
+		VkResult AllocateMemory(MemoryAllocateInfo^ pAllocateInfo, AllocationCallbacks^ pAllocator, DeviceMemory^ pMemory);
+		void FreeMemory(DeviceMemory^ memory, AllocationCallbacks^ pAllocator);
+		VkResult MapMemory(DeviceMemory^ memory, UInt64 offset, UInt64 size, VkMemoryMapFlags flags, void** ppData);
+		void UnmapMemory(DeviceMemory^ memory);
 		VkResult FlushMappedMemoryRanges(UInt32 memoryRangeCount, MappedMemoryRange^ pMemoryRanges);
 		VkResult InvalidateMappedMemoryRanges(UInt32 memoryRangeCount, MappedMemoryRange^ pMemoryRanges);
-		void GetDeviceMemoryCommitment(VkDeviceMemory memory, VkDeviceSize* pCommittedMemoryInBytes);
-		void GetBufferMemoryRequirements(VkBuffer buffer, MemoryRequirements^ pMemoryRequirements);
-		VkResult BindBufferMemory(VkBuffer buffer, VkDeviceMemory memory, UInt64 memoryOffset);
-		void GetImageMemoryRequirements(VkImage image, MemoryRequirements^ pMemoryRequirements);
-		VkResult BindImageMemory(VkImage image, VkDeviceMemory memory, UInt64 memoryOffset);
-		void GetImageSparseMemoryRequirements(VkImage image, ref UInt32 pSparseMemoryRequirementCount, SparseImageMemoryRequirements^ pSparseMemoryRequirements);
-		VkResult CreateFence(FenceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkFence* pFence);
-		void DestroyFence(VkFence fence, AllocationCallbacks^ pAllocator);
-		VkResult ResetFences(UInt32 fenceCount, VkFence* pFences);
-		VkResult GetFenceStatus(VkFence fence);
-		VkResult WaitForFences(UInt32 fenceCount, VkFence* pFences, bool waitAll, uint64_t timeout);
-		VkResult CreateSemaphore(SemaphoreCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSemaphore* pSemaphore);
-		void DestroySemaphore(VkSemaphore semaphore, AllocationCallbacks^ pAllocator);
-		VkResult CreateEvent(EventCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkEvent* pEvent);
-		void DestroyEvent(VkEvent event, AllocationCallbacks^ pAllocator);
-		VkResult GetEventStatus(VkEvent event);
-		VkResult SetEvent(VkEvent event);
-		VkResult ResetEvent(VkEvent event);
-		VkResult CreateQueryPool(QueryPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkQueryPool* pQueryPool);
-		void DestroyQueryPool(VkQueryPool queryPool, AllocationCallbacks^ pAllocator);
-		VkResult GetQueryPoolResults(VkQueryPool queryPool, UInt32 firstQuery, UInt32 queryCount, IntPtr dataSize, void* pData, UInt64 stride, VkQueryResultFlags flags);
-		VkResult CreateBuffer(BufferCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkBuffer* pBuffer);
-		void DestroyBuffer(VkBuffer buffer, AllocationCallbacks^ pAllocator);
-		VkResult CreateBufferView(BufferViewCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkBufferView* pView);
-		void DestroyBufferView(VkBufferView bufferView, AllocationCallbacks^ pAllocator);
-		VkResult CreateImage(ImageCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkImage* pImage);
-		void DestroyImage(VkImage image, AllocationCallbacks^ pAllocator);
-		void GetImageSubresourceLayout(VkImage image, ImageSubresource^ pSubresource, SubresourceLayout^ pLayout);
-		VkResult CreateImageView(ImageViewCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkImageView* pView);
-		void DestroyImageView(VkImageView imageView, AllocationCallbacks^ pAllocator);
-		VkResult CreateShaderModule(ShaderModuleCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkShaderModule* pShaderModule);
-		void DestroyShaderModule(VkShaderModule shaderModule, AllocationCallbacks^ pAllocator);
-		VkResult CreatePipelineCache(PipelineCacheCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkPipelineCache* pPipelineCache);
-		void DestroyPipelineCache(VkPipelineCache pipelineCache, AllocationCallbacks^ pAllocator);
-		VkResult GetPipelineCacheData(VkPipelineCache pipelineCache, size_t* pDataSize, void* pData);
-		VkResult MergePipelineCaches(VkPipelineCache dstCache, UInt32 srcCacheCount, VkPipelineCache* pSrcCaches);
-		VkResult CreateGraphicsPipelines(VkPipelineCache pipelineCache, UInt32 createInfoCount, GraphicsPipelineCreateInfo^ pCreateInfos, AllocationCallbacks^ pAllocator, VkPipeline* pPipelines);
-		VkResult CreateComputePipelines(VkPipelineCache pipelineCache, UInt32 createInfoCount, ComputePipelineCreateInfo^ pCreateInfos, AllocationCallbacks^ pAllocator, VkPipeline* pPipelines);
-		void DestroyPipeline(VkPipeline pipeline, AllocationCallbacks^ pAllocator);
-		VkResult CreatePipelineLayout(PipelineLayoutCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkPipelineLayout* pPipelineLayout);
-		void DestroyPipelineLayout(VkPipelineLayout pipelineLayout, AllocationCallbacks^ pAllocator);
-		VkResult CreateSampler(SamplerCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSampler* pSampler);
-		void DestroySampler(VkSampler sampler, AllocationCallbacks^ pAllocator);
-		VkResult CreateDescriptorSetLayout(DescriptorSetLayoutCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkDescriptorSetLayout* pSetLayout);
-		void DestroyDescriptorSetLayout(VkDescriptorSetLayout descriptorSetLayout, AllocationCallbacks^ pAllocator);
-		VkResult CreateDescriptorPool(DescriptorPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkDescriptorPool* pDescriptorPool);
-		void DestroyDescriptorPool(VkDescriptorPool descriptorPool, AllocationCallbacks^ pAllocator);
-		VkResult ResetDescriptorPool(VkDescriptorPool descriptorPool, VkDescriptorPoolResetFlags flags, <TYPE> <NAME>);
-		VkResult AllocateDescriptorSets(DescriptorSetAllocateInfo^ pAllocateInfo, VkDescriptorSet* pDescriptorSets);
-		VkResult FreeDescriptorSets(VkDescriptorPool descriptorPool, UInt32 descriptorSetCount, VkDescriptorSet* pDescriptorSets);
+		void GetDeviceMemoryCommitment(DeviceMemory^ memory, ref UInt64 pCommittedMemoryInBytes);
+		void GetBufferMemoryRequirements(Buffer^ buffer, MemoryRequirements^ pMemoryRequirements);
+		VkResult BindBufferMemory(Buffer^ buffer, DeviceMemory^ memory, UInt64 memoryOffset);
+		void GetImageMemoryRequirements(Image^ image, MemoryRequirements^ pMemoryRequirements);
+		VkResult BindImageMemory(Image^ image, DeviceMemory^ memory, UInt64 memoryOffset);
+		void GetImageSparseMemoryRequirements(array<SparseImageMemoryRequirements^>^ pSparseMemoryRequirements);
+		VkResult CreateFence(FenceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Fence^ pFence);
+		void DestroyFence(Fence^ fence, AllocationCallbacks^ pAllocator);
+		VkResult ResetFences(UInt32 fenceCount, Fence^ pFences);
+		VkResult GetFenceStatus(Fence^ fence);
+		VkResult WaitForFences(UInt32 fenceCount, Fence^ pFences, bool waitAll, UInt64 timeout);
+		VkResult CreateSemaphore(SemaphoreCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Semaphore^ pSemaphore);
+		void DestroySemaphore(Semaphore^ semaphore, AllocationCallbacks^ pAllocator);
+		VkResult CreateEvent(EventCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Event^ pEvent);
+		void DestroyEvent(Event^ event, AllocationCallbacks^ pAllocator);
+		VkResult GetEventStatus(Event^ event);
+		VkResult SetEvent(Event^ event);
+		VkResult ResetEvent(Event^ event);
+		VkResult CreateQueryPool(QueryPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, QueryPool^ pQueryPool);
+		void DestroyQueryPool(QueryPool^ queryPool, AllocationCallbacks^ pAllocator);
+		VkResult GetQueryPoolResults(QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount, IntPtr dataSize, IntPtr pData, UInt64 stride, VkQueryResultFlags flags);
+		VkResult CreateBuffer(BufferCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Buffer^ pBuffer);
+		void DestroyBuffer(Buffer^ buffer, AllocationCallbacks^ pAllocator);
+		VkResult CreateBufferView(BufferViewCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, BufferView^ pView);
+		void DestroyBufferView(BufferView^ bufferView, AllocationCallbacks^ pAllocator);
+		VkResult CreateImage(ImageCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Image^ pImage);
+		void DestroyImage(Image^ image, AllocationCallbacks^ pAllocator);
+		void GetImageSubresourceLayout(Image^ image, ImageSubresource^ pSubresource, SubresourceLayout^ pLayout);
+		VkResult CreateImageView(ImageViewCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, ImageView^ pView);
+		void DestroyImageView(ImageView^ imageView, AllocationCallbacks^ pAllocator);
+		VkResult CreateShaderModule(ShaderModuleCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, ShaderModule^ pShaderModule);
+		void DestroyShaderModule(ShaderModule^ shaderModule, AllocationCallbacks^ pAllocator);
+		VkResult CreatePipelineCache(PipelineCacheCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, PipelineCache^ pPipelineCache);
+		void DestroyPipelineCache(PipelineCache^ pipelineCache, AllocationCallbacks^ pAllocator);
+		VkResult GetPipelineCacheData(PipelineCache^ pipelineCache, size_t* pDataSize, IntPtr pData);
+		VkResult MergePipelineCaches(PipelineCache^ dstCache, UInt32 srcCacheCount, PipelineCache^ pSrcCaches);
+		VkResult CreateGraphicsPipelines(PipelineCache^ pipelineCache, UInt32 createInfoCount, GraphicsPipelineCreateInfo^ pCreateInfos, AllocationCallbacks^ pAllocator, Pipeline^ pPipelines);
+		VkResult CreateComputePipelines(PipelineCache^ pipelineCache, UInt32 createInfoCount, ComputePipelineCreateInfo^ pCreateInfos, AllocationCallbacks^ pAllocator, Pipeline^ pPipelines);
+		void DestroyPipeline(Pipeline^ pipeline, AllocationCallbacks^ pAllocator);
+		VkResult CreatePipelineLayout(PipelineLayoutCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, PipelineLayout^ pPipelineLayout);
+		void DestroyPipelineLayout(PipelineLayout^ pipelineLayout, AllocationCallbacks^ pAllocator);
+		VkResult CreateSampler(SamplerCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Sampler^ pSampler);
+		void DestroySampler(Sampler^ sampler, AllocationCallbacks^ pAllocator);
+		VkResult CreateDescriptorSetLayout(DescriptorSetLayoutCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, DescriptorSetLayout^ pSetLayout);
+		void DestroyDescriptorSetLayout(DescriptorSetLayout^ descriptorSetLayout, AllocationCallbacks^ pAllocator);
+		VkResult CreateDescriptorPool(DescriptorPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, DescriptorPool^ pDescriptorPool);
+		void DestroyDescriptorPool(DescriptorPool^ descriptorPool, AllocationCallbacks^ pAllocator);
+		VkResult ResetDescriptorPool(DescriptorPool^ descriptorPool, VkDescriptorPoolResetFlags flags);
+		VkResult AllocateDescriptorSets(DescriptorSetAllocateInfo^ pAllocateInfo, DescriptorSet^ pDescriptorSets);
+		VkResult FreeDescriptorSets(DescriptorPool^ descriptorPool, UInt32 descriptorSetCount, DescriptorSet^ pDescriptorSets);
 		void UpdateDescriptorSets(UInt32 descriptorWriteCount, WriteDescriptorSet^ pDescriptorWrites, UInt32 descriptorCopyCount, CopyDescriptorSet^ pDescriptorCopies);
-		VkResult CreateFramebuffer(FramebufferCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkFramebuffer* pFramebuffer);
-		void DestroyFramebuffer(VkFramebuffer framebuffer, AllocationCallbacks^ pAllocator);
-		VkResult CreateRenderPass(RenderPassCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkRenderPass* pRenderPass);
-		void DestroyRenderPass(VkRenderPass renderPass, AllocationCallbacks^ pAllocator);
-		void GetRenderAreaGranularity(VkRenderPass renderPass, Extent2D^ pGranularity);
-		VkResult CreateCommandPool(CommandPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, VkCommandPool* pCommandPool);
-		void DestroyCommandPool(VkCommandPool commandPool, AllocationCallbacks^ pAllocator);
-		VkResult ResetCommandPool(VkCommandPool commandPool, VkCommandPoolResetFlags flags);
+		VkResult CreateFramebuffer(FramebufferCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Framebuffer^ pFramebuffer);
+		void DestroyFramebuffer(Framebuffer^ framebuffer, AllocationCallbacks^ pAllocator);
+		VkResult CreateRenderPass(RenderPassCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, RenderPass^ pRenderPass);
+		void DestroyRenderPass(RenderPass^ renderPass, AllocationCallbacks^ pAllocator);
+		void GetRenderAreaGranularity(RenderPass^ renderPass, Extent2D^ pGranularity);
+		VkResult CreateCommandPool(CommandPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, CommandPool^ pCommandPool);
+		void DestroyCommandPool(CommandPool^ commandPool, AllocationCallbacks^ pAllocator);
+		VkResult ResetCommandPool(CommandPool^ commandPool, VkCommandPoolResetFlags flags);
 		VkResult AllocateCommandBuffers(CommandBufferAllocateInfo^ pAllocateInfo, CommandBuffer^ pCommandBuffers);
-		void FreeCommandBuffers(VkCommandPool commandPool, UInt32 commandBufferCount, CommandBuffer^ pCommandBuffers);
-		VkResult CreateSharedSwapchainsKHR(UInt32 swapchainCount, SwapchainCreateInfoKHR^ pCreateInfos, AllocationCallbacks^ pAllocator, VkSwapchainKHR* pSwapchains);
-		VkResult CreateSwapchainKHR(SwapchainCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, VkSwapchainKHR* pSwapchain);
-		void DestroySwapchainKHR(VkSwapchainKHR swapchain, AllocationCallbacks^ pAllocator);
-		VkResult GetSwapchainImagesKHR(VkSwapchainKHR swapchain, ref UInt32 pSwapchainImageCount, VkImage* pSwapchainImages);
-		VkResult AcquireNextImageKHR(VkSwapchainKHR swapchain, uint64_t timeout, VkSemaphore semaphore, VkFence fence, ref UInt32 pImageIndex);
+		void FreeCommandBuffers(CommandPool^ commandPool, UInt32 commandBufferCount, CommandBuffer^ pCommandBuffers);
+		VkResult CreateSharedSwapchainsKHR(UInt32 swapchainCount, SwapchainCreateInfoKHR^ pCreateInfos, AllocationCallbacks^ pAllocator, SwapchainKHR^ pSwapchains);
+		VkResult CreateSwapchainKHR(SwapchainCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, SwapchainKHR^ pSwapchain);
+		void DestroySwapchainKHR(SwapchainKHR^ swapchain, AllocationCallbacks^ pAllocator);
+		VkResult GetSwapchainImagesKHR(array<Image^>^ pSwapchainImages);
+		VkResult AcquireNextImageKHR(SwapchainKHR^ swapchain, UInt64 timeout, Semaphore^ semaphore, Fence^ fence, ref UInt32 pImageIndex);
 	};
 
 	// VkPhysicalDevice
 	public interface class IVkPhysicalDevice
 	{
 		void GetPhysicalDeviceProperties(PhysicalDeviceProperties^ pProperties);
-		void GetPhysicalDeviceQueueFamilyProperties(ref UInt32 pQueueFamilyPropertyCount, QueueFamilyProperties^ pQueueFamilyProperties);
+		void GetPhysicalDeviceQueueFamilyProperties(array<QueueFamilyProperties^>^ pQueueFamilyProperties);
 		void GetPhysicalDeviceMemoryProperties(PhysicalDeviceMemoryProperties^ pMemoryProperties);
 		void GetPhysicalDeviceFeatures(PhysicalDeviceFeatures^ pFeatures);
 		void GetPhysicalDeviceFormatProperties(VkFormat format, FormatProperties^ pFormatProperties);
 		VkResult GetPhysicalDeviceImageFormatProperties(VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, ImageFormatProperties^ pImageFormatProperties);
 		VkResult CreateDevice(DeviceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Device^ pDevice);
-		VkResult EnumerateDeviceLayerProperties(ref UInt32 pPropertyCount, LayerProperties^ pProperties);
-		VkResult EnumerateDeviceExtensionProperties(String^ pLayerName, ref UInt32 pPropertyCount, ExtensionProperties^ pProperties);
-		void GetPhysicalDeviceSparseImageFormatProperties(VkFormat format, VkImageType type, VkSampleCountFlagBits samples, VkImageUsageFlags usage, VkImageTiling tiling, ref UInt32 pPropertyCount, SparseImageFormatProperties^ pProperties);
-		VkResult GetPhysicalDeviceDisplayPropertiesKHR(ref UInt32 pPropertyCount, DisplayPropertiesKHR^ pProperties);
+		VkResult EnumerateDeviceLayerProperties(array<LayerProperties^>^ pProperties);
+		VkResult EnumerateDeviceExtensionProperties(array<ExtensionProperties^>^ pProperties);
+		void GetPhysicalDeviceSparseImageFormatProperties(VkImageType type, VkSampleCountFlagBits samples, VkImageUsageFlags usage, VkImageTiling tiling, array<SparseImageFormatProperties^>^ pProperties);
+		VkResult GetPhysicalDeviceDisplayPropertiesKHR(array<DisplayPropertiesKHR^>^ pProperties);
 		VkResult GetPhysicalDeviceDisplayPlanePropertiesKHR(ref UInt32 pPropertyCount, DisplayPlanePropertiesKHR^ pProperties);
-		VkResult GetDisplayPlaneSupportedDisplaysKHR(UInt32 planeIndex, ref UInt32 pDisplayCount, VkDisplayKHR* pDisplays);
-		VkResult GetDisplayModePropertiesKHR(VkDisplayKHR display, ref UInt32 pPropertyCount, DisplayModePropertiesKHR^ pProperties);
-		VkResult CreateDisplayModeKHR(VkDisplayKHR display, const VkDisplayModeCreateInfoKHR*pCreateInfo, AllocationCallbacks^ pAllocator, VkDisplayModeKHR* pMode);
-		VkResult GetDisplayPlaneCapabilitiesKHR(VkDisplayModeKHR mode, UInt32 planeIndex, DisplayPlaneCapabilitiesKHR^ pCapabilities);
-		VkBool32 GetPhysicalDeviceMirPresentationSupportKHR(UInt32 queueFamilyIndex, MirConnection* connection);
-		VkResult GetPhysicalDeviceSurfaceSupportKHR(UInt32 queueFamilyIndex, VkSurfaceKHR surface, VkBool32* pSupported);
-		VkResult GetPhysicalDeviceSurfaceCapabilitiesKHR(VkSurfaceKHR surface, SurfaceCapabilitiesKHR^ pSurfaceCapabilities);
-		VkResult GetPhysicalDeviceSurfaceFormatsKHR(VkSurfaceKHR surface, ref UInt32 pSurfaceFormatCount, SurfaceFormatKHR^ pSurfaceFormats);
-		VkResult GetPhysicalDeviceSurfacePresentModesKHR(VkSurfaceKHR surface, ref UInt32 pPresentModeCount, VkPresentModeKHR* pPresentModes);
-		VkBool32 GetPhysicalDeviceWaylandPresentationSupportKHR(UInt32 queueFamilyIndex, wl_display* display);
-		VkBool32 GetPhysicalDeviceWin32PresentationSupportKHR(UInt32 queueFamilyIndex);
-		VkBool32 GetPhysicalDeviceXlibPresentationSupportKHR(UInt32 queueFamilyIndex, Display* dpy, VisualID visualID);
-		VkBool32 GetPhysicalDeviceXcbPresentationSupportKHR(UInt32 queueFamilyIndex, xcb_connection_t* connection, xcb_visualid_t visual_id);
+		VkResult GetDisplayPlaneSupportedDisplaysKHR(UInt32 planeIndex, ref UInt32 pDisplayCount, DisplayKHR^ pDisplays);
+		VkResult GetDisplayModePropertiesKHR(array<DisplayModePropertiesKHR^>^ pProperties);
+		VkResult CreateDisplayModeKHR(DisplayKHR^ display, const VkDisplayModeCreateInfoKHR*pCreateInfo, AllocationCallbacks^ pAllocator, DisplayModeKHR^ pMode);
+		VkResult GetDisplayPlaneCapabilitiesKHR(DisplayModeKHR^ mode, UInt32 planeIndex, DisplayPlaneCapabilitiesKHR^ pCapabilities);
+		bool GetPhysicalDeviceMirPresentationSupportKHR(UInt32 queueFamilyIndex, MirConnection* connection);
+		VkResult GetPhysicalDeviceSurfaceSupportKHR(UInt32 queueFamilyIndex, SurfaceKHR^ surface, VkBool32* pSupported);
+		VkResult GetPhysicalDeviceSurfaceCapabilitiesKHR(SurfaceKHR^ surface, SurfaceCapabilitiesKHR^ pSurfaceCapabilities);
+		VkResult GetPhysicalDeviceSurfaceFormatsKHR(array<SurfaceFormatKHR^>^ pSurfaceFormats);
+		VkResult GetPhysicalDeviceSurfacePresentModesKHR(array<VkPresentModeKHR>^ pPresentModes);
+		bool GetPhysicalDeviceWaylandPresentationSupportKHR(UInt32 queueFamilyIndex, wl_display* display);
+		bool GetPhysicalDeviceWin32PresentationSupportKHR(UInt32 queueFamilyIndex);
+		bool GetPhysicalDeviceXlibPresentationSupportKHR(UInt32 queueFamilyIndex, Display* dpy, VisualID visualID);
+		bool GetPhysicalDeviceXcbPresentationSupportKHR(UInt32 queueFamilyIndex, xcb_connection_t* connection, xcb_visualid_t visual_id);
 	};
 
 	public ref class PhysicalDevice : public IVkPhysicalDevice
@@ -11593,38 +11758,38 @@ namespace ManagedVulkan
 		VkPhysicalDevice mInst;
 	public:
 		void GetPhysicalDeviceProperties(PhysicalDeviceProperties^ pProperties);
-		void GetPhysicalDeviceQueueFamilyProperties(ref UInt32 pQueueFamilyPropertyCount, QueueFamilyProperties^ pQueueFamilyProperties);
+		void GetPhysicalDeviceQueueFamilyProperties(array<QueueFamilyProperties^>^ pQueueFamilyProperties);
 		void GetPhysicalDeviceMemoryProperties(PhysicalDeviceMemoryProperties^ pMemoryProperties);
 		void GetPhysicalDeviceFeatures(PhysicalDeviceFeatures^ pFeatures);
 		void GetPhysicalDeviceFormatProperties(VkFormat format, FormatProperties^ pFormatProperties);
 		VkResult GetPhysicalDeviceImageFormatProperties(VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, ImageFormatProperties^ pImageFormatProperties);
 		VkResult CreateDevice(DeviceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, Device^ pDevice);
-		VkResult EnumerateDeviceLayerProperties(ref UInt32 pPropertyCount, LayerProperties^ pProperties);
-		VkResult EnumerateDeviceExtensionProperties(String^ pLayerName, ref UInt32 pPropertyCount, ExtensionProperties^ pProperties);
-		void GetPhysicalDeviceSparseImageFormatProperties(VkFormat format, VkImageType type, VkSampleCountFlagBits samples, VkImageUsageFlags usage, VkImageTiling tiling, ref UInt32 pPropertyCount, SparseImageFormatProperties^ pProperties);
-		VkResult GetPhysicalDeviceDisplayPropertiesKHR(ref UInt32 pPropertyCount, DisplayPropertiesKHR^ pProperties);
+		VkResult EnumerateDeviceLayerProperties(array<LayerProperties^>^ pProperties);
+		VkResult EnumerateDeviceExtensionProperties(array<ExtensionProperties^>^ pProperties);
+		void GetPhysicalDeviceSparseImageFormatProperties(VkImageType type, VkSampleCountFlagBits samples, VkImageUsageFlags usage, VkImageTiling tiling, array<SparseImageFormatProperties^>^ pProperties);
+		VkResult GetPhysicalDeviceDisplayPropertiesKHR(array<DisplayPropertiesKHR^>^ pProperties);
 		VkResult GetPhysicalDeviceDisplayPlanePropertiesKHR(ref UInt32 pPropertyCount, DisplayPlanePropertiesKHR^ pProperties);
-		VkResult GetDisplayPlaneSupportedDisplaysKHR(UInt32 planeIndex, ref UInt32 pDisplayCount, VkDisplayKHR* pDisplays);
-		VkResult GetDisplayModePropertiesKHR(VkDisplayKHR display, ref UInt32 pPropertyCount, DisplayModePropertiesKHR^ pProperties);
-		VkResult CreateDisplayModeKHR(VkDisplayKHR display, const VkDisplayModeCreateInfoKHR*pCreateInfo, AllocationCallbacks^ pAllocator, VkDisplayModeKHR* pMode);
-		VkResult GetDisplayPlaneCapabilitiesKHR(VkDisplayModeKHR mode, UInt32 planeIndex, DisplayPlaneCapabilitiesKHR^ pCapabilities);
-		VkBool32 GetPhysicalDeviceMirPresentationSupportKHR(UInt32 queueFamilyIndex, MirConnection* connection);
-		VkResult GetPhysicalDeviceSurfaceSupportKHR(UInt32 queueFamilyIndex, VkSurfaceKHR surface, VkBool32* pSupported);
-		VkResult GetPhysicalDeviceSurfaceCapabilitiesKHR(VkSurfaceKHR surface, SurfaceCapabilitiesKHR^ pSurfaceCapabilities);
-		VkResult GetPhysicalDeviceSurfaceFormatsKHR(VkSurfaceKHR surface, ref UInt32 pSurfaceFormatCount, SurfaceFormatKHR^ pSurfaceFormats);
-		VkResult GetPhysicalDeviceSurfacePresentModesKHR(VkSurfaceKHR surface, ref UInt32 pPresentModeCount, VkPresentModeKHR* pPresentModes);
-		VkBool32 GetPhysicalDeviceWaylandPresentationSupportKHR(UInt32 queueFamilyIndex, wl_display* display);
-		VkBool32 GetPhysicalDeviceWin32PresentationSupportKHR(UInt32 queueFamilyIndex);
-		VkBool32 GetPhysicalDeviceXlibPresentationSupportKHR(UInt32 queueFamilyIndex, Display* dpy, VisualID visualID);
-		VkBool32 GetPhysicalDeviceXcbPresentationSupportKHR(UInt32 queueFamilyIndex, xcb_connection_t* connection, xcb_visualid_t visual_id);
+		VkResult GetDisplayPlaneSupportedDisplaysKHR(UInt32 planeIndex, ref UInt32 pDisplayCount, DisplayKHR^ pDisplays);
+		VkResult GetDisplayModePropertiesKHR(array<DisplayModePropertiesKHR^>^ pProperties);
+		VkResult CreateDisplayModeKHR(DisplayKHR^ display, const VkDisplayModeCreateInfoKHR*pCreateInfo, AllocationCallbacks^ pAllocator, DisplayModeKHR^ pMode);
+		VkResult GetDisplayPlaneCapabilitiesKHR(DisplayModeKHR^ mode, UInt32 planeIndex, DisplayPlaneCapabilitiesKHR^ pCapabilities);
+		bool GetPhysicalDeviceMirPresentationSupportKHR(UInt32 queueFamilyIndex, MirConnection* connection);
+		VkResult GetPhysicalDeviceSurfaceSupportKHR(UInt32 queueFamilyIndex, SurfaceKHR^ surface, VkBool32* pSupported);
+		VkResult GetPhysicalDeviceSurfaceCapabilitiesKHR(SurfaceKHR^ surface, SurfaceCapabilitiesKHR^ pSurfaceCapabilities);
+		VkResult GetPhysicalDeviceSurfaceFormatsKHR(array<SurfaceFormatKHR^>^ pSurfaceFormats);
+		VkResult GetPhysicalDeviceSurfacePresentModesKHR(array<VkPresentModeKHR>^ pPresentModes);
+		bool GetPhysicalDeviceWaylandPresentationSupportKHR(UInt32 queueFamilyIndex, wl_display* display);
+		bool GetPhysicalDeviceWin32PresentationSupportKHR(UInt32 queueFamilyIndex);
+		bool GetPhysicalDeviceXlibPresentationSupportKHR(UInt32 queueFamilyIndex, Display* dpy, VisualID visualID);
+		bool GetPhysicalDeviceXcbPresentationSupportKHR(UInt32 queueFamilyIndex, xcb_connection_t* connection, xcb_visualid_t visual_id);
 	};
 
 	// VkQueue
 	public interface class IVkQueue
 	{
-		VkResult QueueSubmit(UInt32 submitCount, SubmitInfo^ pSubmits, VkFence fence);
+		VkResult QueueSubmit(UInt32 submitCount, SubmitInfo^ pSubmits, Fence^ fence);
 		VkResult QueueWaitIdle();
-		VkResult QueueBindSparse(UInt32 bindInfoCount, BindSparseInfo^ pBindInfo, VkFence fence);
+		VkResult QueueBindSparse(UInt32 bindInfoCount, BindSparseInfo^ pBindInfo, Fence^ fence);
 		VkResult QueuePresentKHR(PresentInfoKHR^ pPresentInfo);
 	};
 
@@ -11633,9 +11798,9 @@ namespace ManagedVulkan
 	private:
 		VkQueue mInst;
 	public:
-		VkResult QueueSubmit(UInt32 submitCount, SubmitInfo^ pSubmits, VkFence fence);
+		VkResult QueueSubmit(UInt32 submitCount, SubmitInfo^ pSubmits, Fence^ fence);
 		VkResult QueueWaitIdle();
-		VkResult QueueBindSparse(UInt32 bindInfoCount, BindSparseInfo^ pBindInfo, VkFence fence);
+		VkResult QueueBindSparse(UInt32 bindInfoCount, BindSparseInfo^ pBindInfo, Fence^ fence);
 		VkResult QueuePresentKHR(PresentInfoKHR^ pPresentInfo);
 	};
 
@@ -11645,7 +11810,7 @@ namespace ManagedVulkan
 		VkResult BeginCommandBuffer(CommandBufferBeginInfo^ pBeginInfo);
 		VkResult EndCommandBuffer();
 		VkResult ResetCommandBuffer(VkCommandBufferResetFlags flags);
-		void CmdBindPipeline(VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline);
+		void CmdBindPipeline(VkPipelineBindPoint pipelineBindPoint, Pipeline^ pipeline);
 		void CmdSetViewport(UInt32 firstViewport, UInt32 viewportCount, Viewport^ pViewports);
 		void CmdSetScissor(UInt32 firstScissor, UInt32 scissorCount, Rect2D^ pScissors);
 		void CmdSetLineWidth(float lineWidth);
@@ -11655,36 +11820,36 @@ namespace ManagedVulkan
 		void CmdSetStencilCompareMask(VkStencilFaceFlags faceMask, UInt32 compareMask);
 		void CmdSetStencilWriteMask(VkStencilFaceFlags faceMask, UInt32 writeMask);
 		void CmdSetStencilReference(VkStencilFaceFlags faceMask, UInt32 reference);
-		void CmdBindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, UInt32 firstSet, UInt32 descriptorSetCount, VkDescriptorSet* pDescriptorSets, UInt32 dynamicOffsetCount, ref UInt32 pDynamicOffsets);
-		void CmdBindIndexBuffer(VkBuffer buffer, UInt64 offset, VkIndexType indexType);
-		void CmdBindVertexBuffers(UInt32 firstBinding, UInt32 bindingCount, VkBuffer* pBuffers, VkDeviceSize* pOffsets);
+		void CmdBindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, PipelineLayout^ layout, UInt32 firstSet, UInt32 descriptorSetCount, DescriptorSet^ pDescriptorSets, UInt32 dynamicOffsetCount, ref UInt32 pDynamicOffsets);
+		void CmdBindIndexBuffer(Buffer^ buffer, UInt64 offset, VkIndexType indexType);
+		void CmdBindVertexBuffers(UInt32 firstBinding, UInt32 bindingCount, Buffer^ pBuffers, ref UInt64 pOffsets);
 		void CmdDraw(UInt32 vertexCount, UInt32 instanceCount, UInt32 firstVertex, UInt32 firstInstance);
 		void CmdDrawIndexed(UInt32 indexCount, UInt32 instanceCount, UInt32 firstIndex, Int32 vertexOffset, UInt32 firstInstance);
-		void CmdDrawIndirect(VkBuffer buffer, UInt64 offset, UInt32 drawCount, UInt32 stride);
-		void CmdDrawIndexedIndirect(VkBuffer buffer, UInt64 offset, UInt32 drawCount, UInt32 stride);
+		void CmdDrawIndirect(Buffer^ buffer, UInt64 offset, UInt32 drawCount, UInt32 stride);
+		void CmdDrawIndexedIndirect(Buffer^ buffer, UInt64 offset, UInt32 drawCount, UInt32 stride);
 		void CmdDispatch(UInt32 x, UInt32 y, UInt32 z);
-		void CmdDispatchIndirect(VkBuffer buffer, UInt64 offset);
-		void CmdCopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, UInt32 regionCount, BufferCopy^ pRegions);
-		void CmdCopyImage(VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageCopy^ pRegions);
-		void CmdBlitImage(VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageBlit^ pRegions, VkFilter filter);
-		void CmdCopyBufferToImage(VkBuffer srcBuffer, VkImage dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, BufferImageCopy^ pRegions);
-		void CmdCopyImageToBuffer(VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer, UInt32 regionCount, BufferImageCopy^ pRegions);
-		void CmdUpdateBuffer(VkBuffer dstBuffer, UInt64 dstOffset, UInt64 dataSize, ref UInt32 pData);
-		void CmdFillBuffer(VkBuffer dstBuffer, UInt64 dstOffset, UInt64 size, UInt32 data);
-		void CmdClearColorImage(VkImage image, VkImageLayout imageLayout, VkClearColorValue* pColor, UInt32 rangeCount, ImageSubresourceRange^ pRanges);
-		void CmdClearDepthStencilImage(VkImage image, VkImageLayout imageLayout, ClearDepthStencilValue^ pDepthStencil, UInt32 rangeCount, ImageSubresourceRange^ pRanges);
+		void CmdDispatchIndirect(Buffer^ buffer, UInt64 offset);
+		void CmdCopyBuffer(Buffer^ srcBuffer, Buffer^ dstBuffer, UInt32 regionCount, BufferCopy^ pRegions);
+		void CmdCopyImage(Image^ srcImage, VkImageLayout srcImageLayout, Image^ dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageCopy^ pRegions);
+		void CmdBlitImage(Image^ srcImage, VkImageLayout srcImageLayout, Image^ dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageBlit^ pRegions, VkFilter filter);
+		void CmdCopyBufferToImage(Buffer^ srcBuffer, Image^ dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, BufferImageCopy^ pRegions);
+		void CmdCopyImageToBuffer(Image^ srcImage, VkImageLayout srcImageLayout, Buffer^ dstBuffer, UInt32 regionCount, BufferImageCopy^ pRegions);
+		void CmdUpdateBuffer(Buffer^ dstBuffer, UInt64 dstOffset, UInt64 dataSize, ref UInt32 pData);
+		void CmdFillBuffer(Buffer^ dstBuffer, UInt64 dstOffset, UInt64 size, UInt32 data);
+		void CmdClearColorImage(Image^ image, VkImageLayout imageLayout, VkClearColorValue* pColor, UInt32 rangeCount, ImageSubresourceRange^ pRanges);
+		void CmdClearDepthStencilImage(Image^ image, VkImageLayout imageLayout, ClearDepthStencilValue^ pDepthStencil, UInt32 rangeCount, ImageSubresourceRange^ pRanges);
 		void CmdClearAttachments(UInt32 attachmentCount, ClearAttachment^ pAttachments, UInt32 rectCount, ClearRect^ pRects);
-		void CmdResolveImage(VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageResolve^ pRegions);
-		void CmdSetEvent(VkEvent event, VkPipelineStageFlags stageMask);
-		void CmdResetEvent(VkEvent event, VkPipelineStageFlags stageMask);
-		void CmdWaitEvents(UInt32 eventCount, VkEvent* pEvents, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, UInt32 memoryBarrierCount, MemoryBarrier^ pMemoryBarriers, UInt32 bufferMemoryBarrierCount, BufferMemoryBarrier^ pBufferMemoryBarriers, UInt32 imageMemoryBarrierCount, ImageMemoryBarrier^ pImageMemoryBarriers);
+		void CmdResolveImage(Image^ srcImage, VkImageLayout srcImageLayout, Image^ dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageResolve^ pRegions);
+		void CmdSetEvent(Event^ event, VkPipelineStageFlags stageMask);
+		void CmdResetEvent(Event^ event, VkPipelineStageFlags stageMask);
+		void CmdWaitEvents(UInt32 eventCount, Event^ pEvents, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, UInt32 memoryBarrierCount, MemoryBarrier^ pMemoryBarriers, UInt32 bufferMemoryBarrierCount, BufferMemoryBarrier^ pBufferMemoryBarriers, UInt32 imageMemoryBarrierCount, ImageMemoryBarrier^ pImageMemoryBarriers);
 		void CmdPipelineBarrier(VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkDependencyFlags dependencyFlags, UInt32 memoryBarrierCount, MemoryBarrier^ pMemoryBarriers, UInt32 bufferMemoryBarrierCount, BufferMemoryBarrier^ pBufferMemoryBarriers, UInt32 imageMemoryBarrierCount, ImageMemoryBarrier^ pImageMemoryBarriers);
-		void CmdBeginQuery(VkQueryPool queryPool, UInt32 query, VkQueryControlFlags flags);
-		void CmdEndQuery(VkQueryPool queryPool, UInt32 query);
-		void CmdResetQueryPool(VkQueryPool queryPool, UInt32 firstQuery, UInt32 queryCount);
-		void CmdWriteTimestamp(VkPipelineStageFlagBits pipelineStage, VkQueryPool queryPool, UInt32 query);
-		void CmdCopyQueryPoolResults(VkQueryPool queryPool, UInt32 firstQuery, UInt32 queryCount, VkBuffer dstBuffer, UInt64 dstOffset, UInt64 stride, VkQueryResultFlags flags);
-		void CmdPushConstants(VkPipelineLayout layout, VkShaderStageFlags stageFlags, UInt32 offset, UInt32 size, void* pValues);
+		void CmdBeginQuery(QueryPool^ queryPool, UInt32 query, VkQueryControlFlags flags);
+		void CmdEndQuery(QueryPool^ queryPool, UInt32 query);
+		void CmdResetQueryPool(QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount);
+		void CmdWriteTimestamp(VkPipelineStageFlagBits pipelineStage, QueryPool^ queryPool, UInt32 query);
+		void CmdCopyQueryPoolResults(QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount, Buffer^ dstBuffer, UInt64 dstOffset, UInt64 stride, VkQueryResultFlags flags);
+		void CmdPushConstants(PipelineLayout^ layout, VkShaderStageFlags stageFlags, UInt32 offset, UInt32 size, IntPtr pValues);
 		void CmdBeginRenderPass(RenderPassBeginInfo^ pRenderPassBegin, VkSubpassContents contents);
 		void CmdNextSubpass(VkSubpassContents contents);
 		void CmdEndRenderPass();
@@ -11699,7 +11864,7 @@ namespace ManagedVulkan
 		VkResult BeginCommandBuffer(CommandBufferBeginInfo^ pBeginInfo);
 		VkResult EndCommandBuffer();
 		VkResult ResetCommandBuffer(VkCommandBufferResetFlags flags);
-		void CmdBindPipeline(VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline);
+		void CmdBindPipeline(VkPipelineBindPoint pipelineBindPoint, Pipeline^ pipeline);
 		void CmdSetViewport(UInt32 firstViewport, UInt32 viewportCount, Viewport^ pViewports);
 		void CmdSetScissor(UInt32 firstScissor, UInt32 scissorCount, Rect2D^ pScissors);
 		void CmdSetLineWidth(float lineWidth);
@@ -11709,36 +11874,36 @@ namespace ManagedVulkan
 		void CmdSetStencilCompareMask(VkStencilFaceFlags faceMask, UInt32 compareMask);
 		void CmdSetStencilWriteMask(VkStencilFaceFlags faceMask, UInt32 writeMask);
 		void CmdSetStencilReference(VkStencilFaceFlags faceMask, UInt32 reference);
-		void CmdBindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout, UInt32 firstSet, UInt32 descriptorSetCount, VkDescriptorSet* pDescriptorSets, UInt32 dynamicOffsetCount, ref UInt32 pDynamicOffsets);
-		void CmdBindIndexBuffer(VkBuffer buffer, UInt64 offset, VkIndexType indexType);
-		void CmdBindVertexBuffers(UInt32 firstBinding, UInt32 bindingCount, VkBuffer* pBuffers, VkDeviceSize* pOffsets);
+		void CmdBindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, PipelineLayout^ layout, UInt32 firstSet, UInt32 descriptorSetCount, DescriptorSet^ pDescriptorSets, UInt32 dynamicOffsetCount, ref UInt32 pDynamicOffsets);
+		void CmdBindIndexBuffer(Buffer^ buffer, UInt64 offset, VkIndexType indexType);
+		void CmdBindVertexBuffers(UInt32 firstBinding, UInt32 bindingCount, Buffer^ pBuffers, ref UInt64 pOffsets);
 		void CmdDraw(UInt32 vertexCount, UInt32 instanceCount, UInt32 firstVertex, UInt32 firstInstance);
 		void CmdDrawIndexed(UInt32 indexCount, UInt32 instanceCount, UInt32 firstIndex, Int32 vertexOffset, UInt32 firstInstance);
-		void CmdDrawIndirect(VkBuffer buffer, UInt64 offset, UInt32 drawCount, UInt32 stride);
-		void CmdDrawIndexedIndirect(VkBuffer buffer, UInt64 offset, UInt32 drawCount, UInt32 stride);
+		void CmdDrawIndirect(Buffer^ buffer, UInt64 offset, UInt32 drawCount, UInt32 stride);
+		void CmdDrawIndexedIndirect(Buffer^ buffer, UInt64 offset, UInt32 drawCount, UInt32 stride);
 		void CmdDispatch(UInt32 x, UInt32 y, UInt32 z);
-		void CmdDispatchIndirect(VkBuffer buffer, UInt64 offset);
-		void CmdCopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, UInt32 regionCount, BufferCopy^ pRegions);
-		void CmdCopyImage(VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageCopy^ pRegions);
-		void CmdBlitImage(VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageBlit^ pRegions, VkFilter filter);
-		void CmdCopyBufferToImage(VkBuffer srcBuffer, VkImage dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, BufferImageCopy^ pRegions);
-		void CmdCopyImageToBuffer(VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer, UInt32 regionCount, BufferImageCopy^ pRegions);
-		void CmdUpdateBuffer(VkBuffer dstBuffer, UInt64 dstOffset, UInt64 dataSize, ref UInt32 pData);
-		void CmdFillBuffer(VkBuffer dstBuffer, UInt64 dstOffset, UInt64 size, UInt32 data);
-		void CmdClearColorImage(VkImage image, VkImageLayout imageLayout, VkClearColorValue* pColor, UInt32 rangeCount, ImageSubresourceRange^ pRanges);
-		void CmdClearDepthStencilImage(VkImage image, VkImageLayout imageLayout, ClearDepthStencilValue^ pDepthStencil, UInt32 rangeCount, ImageSubresourceRange^ pRanges);
+		void CmdDispatchIndirect(Buffer^ buffer, UInt64 offset);
+		void CmdCopyBuffer(Buffer^ srcBuffer, Buffer^ dstBuffer, UInt32 regionCount, BufferCopy^ pRegions);
+		void CmdCopyImage(Image^ srcImage, VkImageLayout srcImageLayout, Image^ dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageCopy^ pRegions);
+		void CmdBlitImage(Image^ srcImage, VkImageLayout srcImageLayout, Image^ dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageBlit^ pRegions, VkFilter filter);
+		void CmdCopyBufferToImage(Buffer^ srcBuffer, Image^ dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, BufferImageCopy^ pRegions);
+		void CmdCopyImageToBuffer(Image^ srcImage, VkImageLayout srcImageLayout, Buffer^ dstBuffer, UInt32 regionCount, BufferImageCopy^ pRegions);
+		void CmdUpdateBuffer(Buffer^ dstBuffer, UInt64 dstOffset, UInt64 dataSize, ref UInt32 pData);
+		void CmdFillBuffer(Buffer^ dstBuffer, UInt64 dstOffset, UInt64 size, UInt32 data);
+		void CmdClearColorImage(Image^ image, VkImageLayout imageLayout, VkClearColorValue* pColor, UInt32 rangeCount, ImageSubresourceRange^ pRanges);
+		void CmdClearDepthStencilImage(Image^ image, VkImageLayout imageLayout, ClearDepthStencilValue^ pDepthStencil, UInt32 rangeCount, ImageSubresourceRange^ pRanges);
 		void CmdClearAttachments(UInt32 attachmentCount, ClearAttachment^ pAttachments, UInt32 rectCount, ClearRect^ pRects);
-		void CmdResolveImage(VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageResolve^ pRegions);
-		void CmdSetEvent(VkEvent event, VkPipelineStageFlags stageMask);
-		void CmdResetEvent(VkEvent event, VkPipelineStageFlags stageMask);
-		void CmdWaitEvents(UInt32 eventCount, VkEvent* pEvents, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, UInt32 memoryBarrierCount, MemoryBarrier^ pMemoryBarriers, UInt32 bufferMemoryBarrierCount, BufferMemoryBarrier^ pBufferMemoryBarriers, UInt32 imageMemoryBarrierCount, ImageMemoryBarrier^ pImageMemoryBarriers);
+		void CmdResolveImage(Image^ srcImage, VkImageLayout srcImageLayout, Image^ dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageResolve^ pRegions);
+		void CmdSetEvent(Event^ event, VkPipelineStageFlags stageMask);
+		void CmdResetEvent(Event^ event, VkPipelineStageFlags stageMask);
+		void CmdWaitEvents(UInt32 eventCount, Event^ pEvents, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, UInt32 memoryBarrierCount, MemoryBarrier^ pMemoryBarriers, UInt32 bufferMemoryBarrierCount, BufferMemoryBarrier^ pBufferMemoryBarriers, UInt32 imageMemoryBarrierCount, ImageMemoryBarrier^ pImageMemoryBarriers);
 		void CmdPipelineBarrier(VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkDependencyFlags dependencyFlags, UInt32 memoryBarrierCount, MemoryBarrier^ pMemoryBarriers, UInt32 bufferMemoryBarrierCount, BufferMemoryBarrier^ pBufferMemoryBarriers, UInt32 imageMemoryBarrierCount, ImageMemoryBarrier^ pImageMemoryBarriers);
-		void CmdBeginQuery(VkQueryPool queryPool, UInt32 query, VkQueryControlFlags flags);
-		void CmdEndQuery(VkQueryPool queryPool, UInt32 query);
-		void CmdResetQueryPool(VkQueryPool queryPool, UInt32 firstQuery, UInt32 queryCount);
-		void CmdWriteTimestamp(VkPipelineStageFlagBits pipelineStage, VkQueryPool queryPool, UInt32 query);
-		void CmdCopyQueryPoolResults(VkQueryPool queryPool, UInt32 firstQuery, UInt32 queryCount, VkBuffer dstBuffer, UInt64 dstOffset, UInt64 stride, VkQueryResultFlags flags);
-		void CmdPushConstants(VkPipelineLayout layout, VkShaderStageFlags stageFlags, UInt32 offset, UInt32 size, void* pValues);
+		void CmdBeginQuery(QueryPool^ queryPool, UInt32 query, VkQueryControlFlags flags);
+		void CmdEndQuery(QueryPool^ queryPool, UInt32 query);
+		void CmdResetQueryPool(QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount);
+		void CmdWriteTimestamp(VkPipelineStageFlagBits pipelineStage, QueryPool^ queryPool, UInt32 query);
+		void CmdCopyQueryPoolResults(QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount, Buffer^ dstBuffer, UInt64 dstOffset, UInt64 stride, VkQueryResultFlags flags);
+		void CmdPushConstants(PipelineLayout^ layout, VkShaderStageFlags stageFlags, UInt32 offset, UInt32 size, IntPtr pValues);
 		void CmdBeginRenderPass(RenderPassBeginInfo^ pRenderPassBegin, VkSubpassContents contents);
 		void CmdNextSubpass(VkSubpassContents contents);
 		void CmdEndRenderPass();

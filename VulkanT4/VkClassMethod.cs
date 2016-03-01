@@ -13,6 +13,7 @@ namespace VulkanT4
             Name = func.Name;
             //Parameters = func.Parameters.Skip(1).ToList();
             Function = func;
+            ReturnType = func.ReturnType;
         }
 
         // TODO : translate CppType into C++ / CLI types

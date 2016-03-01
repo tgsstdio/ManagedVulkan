@@ -12,8 +12,6 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            var outcome = ManagedVulkan.VkMemoryPropertyFlagBits.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-
             var extensions = vK.EnumerateInstanceExtensionProperties();
 
             foreach(var ext in extensions)
