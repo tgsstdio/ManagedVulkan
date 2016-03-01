@@ -26,155 +26,21 @@ var ns = "ManagedVulkan";
 #pragma once
 
 #include <vulkan\vulkan.h>
+#include "VkHandles.h"
+#include "VkEnums.h"
+#include "VkDelegates.h"
+#include "VkStructs.h"
 
 using namespace System;
 
 namespace <#= ns #> 
 {
-	// HANDLES
-<#	foreach(var h in generator.Handles.Values)
-	{
-#>
-	public ref class <#= h.Name #>
-	{
-	internal:
-		<#= h.Key #> mHandle;
-	};
-
-<#
-	}
-#>
-	// ENUMS
-<#	foreach(var el in generator.Enums)
-	{
-		var flags = el.UseFlags ? "[FlagsAttribute] ": "";
-#>
-	<#= flags #>public enum class <#= el.Name #> : Int32
-	{
-<#		
-		foreach(var i in el.Items)
-		{			
-			var finalValue = i.Value != null ? " = " + i.Value + "," : ((i.BitPosition != null) ? " = 1 << " + i.BitPosition + "," : ",");
-			var comments = i.Comment != null ? "// " + i.Comment : "";
-#>
-		<#= i.Name #><#= finalValue #> <#= comments #>
-<#		
-		}
-#>
-	};
-
-<# 
-	}
-#>
-	// STRUCTS 
-<#  foreach (var s in generator.Structs.Values)
-	{
-#>
-	public ref class <#= s.Name #>
-	{
-	private:
-<#		
-		foreach(var m in s.Members)
-		{
-			if (m.IncludeInDeclaration)
-			{
-				var initialValue = m.Translation != null ? m.Translation.Default : ";";
-#>
-		<#= m.CSharpType #> <#= m.FieldName #><#= initialValue #>
-<#
-			}
-		}
-#>
-	public:
-<#		
-		foreach(var m in s.Members)
-		{
-			if (m.IncludeInDeclaration)
-			{
-#>
-		property <#= m.CSharpType #> <#= m.Name #>
-		{
-			<#= m.CSharpType #> get()
-			{
-				return <#= m.FieldName #>;
-			}
-			void set(<#= m.CSharpType #> value)
-			{
-				<#= m.FieldName #> = value; 
-			}
-		}
-<#
-			}
-		}
-#>
-	};
-
-<#  
-	}	
-#>
-	// DELEGATES
-<#	foreach(var del in generator.Delegates)
-	{
-#>
-	public delegate void <#= del.Key #>(<#
-			var first = true;
-			var separator = "";
-			foreach(var param in del.Parameters)
-			{ 
-				var paramName = param.Name ?? "<NAME>";
-				var paramType = param.Translation != null ? param.Translation.MethodOnly : (param.CppType ?? "<TYPE>");	
-
-			#><#= separator #><#= paramType #> <#= paramName #><#
-				if (first)
-				{
-					separator = ", ";
-					first = false;
-				}	
-			} #>);
-
-<#
-	}
-#>
-
 	// INTERFACES
 <#
 	foreach (var proxy in generator.Proxies.Values)
 	{
 #>
-	// <#= proxy.Key #>
-	public interface class I<#= proxy.Key #>
-	{
-<#	
-		foreach (var m in proxy.Methods)
-		{
-			var returnType = m.Translation != null ? m.Translation.CSharpType : (m.Function.ReturnType ?? "<RETURN_TYPE>");	
-
-#>
-		<#= returnType #> <#= m.Name #>(<#
-			var first = true;
-			var separator = "";
-			foreach(var param in m.Parameters)
-			{ 
-				var paramName = param.Name ?? "<NAME>";
-				var paramType = param.Translation != null ? param.Translation.MethodOnly :  
-					(	param.CSharpType ?? 
-						(	
-							param.CppType ?? "<TYPE>"
-						)
-					);
-			#><#= separator #><#= paramType #> <#= paramName #><#
-				if (first)
-				{
-					separator = ", ";
-					first = false;
-				}	
-			} #>);
-<#
-		}
-#>
-	};
-
-	public ref class <#= proxy.Name #> : public I<#= proxy.Key #>
+	public ref class <#= proxy.Name #>
 	{
 <#
 	if (proxy.RequiresInstance)
@@ -196,14 +62,26 @@ namespace <#= ns #>
 			var separator = "";
 			foreach(var param in m.Parameters)
 			{ 
-				var paramName = param.Name ?? "<NAME>";
-				var paramType = param.Translation != null ? param.Translation.MethodOnly :  
-					(	param.CSharpType ?? 
-						(	
-							param.CppType ?? "<TYPE>"
-						)
-					);
 
+				var paramName = param.Name ?? "<NAME>";
+				
+				string paramType = "<TYPE>";
+
+				if (param.Translation != null)
+				{				
+					if (param.UseOutStatement)
+					{
+						paramType = "out " + param.Translation.CSharpType;
+					}
+					else
+					{
+						paramType = param.Translation.MethodOnly;
+					}
+				}
+				else 
+				{
+					paramType = param.CSharpType ?? param.CppType ?? "<TYPE>";
+				}
 			#><#= separator #><#= paramType #> <#= paramName #><#
 				if (first)
 				{
@@ -212,6 +90,7 @@ namespace <#= ns #>
 				}	
 			} #>);
 <#
+			
 		}
 #>
 	};

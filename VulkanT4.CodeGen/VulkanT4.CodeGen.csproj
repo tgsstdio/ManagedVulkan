@@ -56,6 +56,51 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ManagedVulkan.cpp</LastGenOutput>
     </None>
+    <Content Include="VkInterfaces.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>VkInterfaces.h</LastGenOutput>
+    </Content>
+    <Content Include="VkInterfaces.h">
+      <DependentUpon>VkInterfaces.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Content>
+    <Content Include="VkStructs.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>VkStructs.h</LastGenOutput>
+    </Content>
+    <Content Include="VkStructs.h">
+      <DependentUpon>VkStructs.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Content>
+    <Content Include="VkEnums.h">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VkEnums.tt</DependentUpon>
+    </Content>
+    <Content Include="VkDelegates.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>VkDelegates.h</LastGenOutput>
+    </Content>
+    <Content Include="VkDelegates.h">
+      <DependentUpon>VkDelegates.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Content>
+    <Content Include="VkHandles1.h">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VkHandles.tt</DependentUpon>
+    </Content>
+    <Content Include="VkHandles.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>VkHandles1.h</LastGenOutput>
+    </Content>
+    <Content Include="VkEnums.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>VkEnums.h</LastGenOutput>
+    </Content>
     <Content Include="ManagedVulkan.cpp">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

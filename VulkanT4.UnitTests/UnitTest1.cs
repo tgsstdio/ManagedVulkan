@@ -308,6 +308,37 @@ namespace VulkanT4.UnitTests
         }
 
         [TestMethod]
+        public void ParseOddPointer()
+        {
+            string xml =
+               @"<registry>
+                    <type category=""struct"" name=""VkDisplayModeCreateInfoKHR""></type>
+                    <command>
+                        <proto><type>VkResult</type> <name>vkCreateDisplayModeKHR</name></proto>
+                        <param><type>VkPhysicalDevice</type> <name>physicalDevice</name></param>
+                        <param>const <type>VkDisplayModeCreateInfoKHR</type>*<name>pCreateInfo</name></param>
+                    </command>
+                </registry>";
+
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(1, generator.Structs.Keys.Count);
+            Assert.AreEqual(2, generator.Proxies.Keys.Count);
+            var proxy = generator.Proxies.Values.First();
+            Assert.AreEqual("Vulkan", proxy.Name);
+            Assert.AreEqual(0, proxy.Methods.Count);
+            proxy = generator.Proxies.Values.ElementAt(1);
+            Assert.AreEqual("PhysicalDevice", proxy.Name);
+            Assert.AreEqual(1, proxy.Methods.Count);
+            var method = proxy.Methods[0];
+            Assert.AreEqual(1, method.Parameters.Count);
+            var parameter = method.Parameters[0];
+            Assert.IsNotNull(parameter.Translation);
+            Assert.IsNotNull("VkDisplayModeCreateInfoKHR*", parameter.Translation.CppType);
+        }
+
+        [TestMethod]
         public void ParseVkXML()
         {
             var doc = XDocument.Load("vk.xml", LoadOptions.PreserveWhitespace);

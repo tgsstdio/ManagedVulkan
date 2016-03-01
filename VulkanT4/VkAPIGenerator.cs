@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -74,15 +73,20 @@ namespace VulkanT4
             }
         }
 
+        /// <summary>
+        /// YOU NEED TO SET THIS UP LATER
+        /// </summary>
+        private Vk_WindowingInterface mAllowableInterfaces = Vk_WindowingInterface.Windows;
         public void Apply(XDocument doc)
         {
+            InitialiseLookups();
             GenerateTranslations();
             ExtractEnumsAndMasks(doc);
             ExtractStructs(doc);
             ExtractFunctions(doc);
             ExtractHandles(doc);
             ExtractDelegates(doc);
-            RetranslateMembers();
+            RetranslateStructMembers();
             RetranslateProxies();
             RetranslateDelegates();
         }
@@ -174,13 +178,13 @@ namespace VulkanT4
 
                         if (!mTranslations.ContainsKey(h.Key))
                         {
-                            mTranslations.Add(h.Key, new VkTypeTranslation { CppType = h.Key, CSharpType = h.Name + "^", Default = " = nullptr;", MethodOnly = h.Name + "^" });
+                            mTranslations.Add(h.Key, new VkTypeTranslation { CppType = h.Key, CSharpType = h.Name + "^", Default = " = nullptr;", MethodOnly = h.Name + "^", NeedsNamespace = true });
                         }
 
                         var pointerStmt = h.Key + "*";
                         if (!mTranslations.ContainsKey(pointerStmt))
                         {
-                            mTranslations.Add(pointerStmt, new VkTypeTranslation { CppType = pointerStmt, CSharpType = h.Name + "^", Default = " = nullptr;", MethodOnly = h.Name + "^" });
+                            mTranslations.Add(pointerStmt, new VkTypeTranslation { CppType = pointerStmt, CSharpType = h.Name + "^", Default = " = nullptr;", MethodOnly = h.Name + "^", NeedsNamespace = true });
                         }
                     }
                 }
@@ -265,126 +269,140 @@ namespace VulkanT4
                 if (category != null && category.Value == "struct")
                 {
                     var name = child.Attribute("name");
-                    var key = name != null ? name.Value : "<NAME>";
-                    var s = new VkStruct(key);
 
-                    foreach (var member in child.Descendants("member"))
+                    string keyValue = name.Value;
+
+                    Vk_WindowingInterface match;
+                    bool isWindowingStruct = mWindowingStructs.TryGetValue(keyValue, out match);
+
+                    /// ONLY SPECIFIC WINDOWING FUNCTIONS ALLOWED
+                    if (!isWindowingStruct || (isWindowingStruct && match == mAllowableInterfaces))
                     {
-                        var m = new VkStructMember();
-                        m.IncludeInDeclaration = true;
-                        var memberTokens = member.Value.Split(new[] { ' ', '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        if (IsNextPointer(memberTokens))
-                        {
-                            m.IncludeInDeclaration = false;
-                            m.FieldName = m.Name = m.Key = "pNext";
-                            m.CppType = "void*";
-                            m.CSharpType = "IntPtr";
-                            m.LengthConditions = new string[0];
-                        }
-                        else if (memberTokens.Length == 2)
-                        {
-                            m.CppType = memberTokens[0];
-                            m.Key = memberTokens[1];
-                        }
-                        else if (memberTokens.Length == 3)
-                        {
-                            var enumAttr = member.Element("enum");
-                            // fixed char buffer for strings
-                            if (enumAttr != null && memberTokens[0] == "char")
-                            {
-                                m.CppType = "char[]";
-                                m.Key = memberTokens[1];
-                                m.EnumValue = enumAttr.Value;
-                            }
-                            else
-                            {
-                                m.CppType = memberTokens[1];
-                                m.Key = memberTokens[2];
-                            }
-
-                        }
-                        else if (CheckForStringArray(memberTokens))
-                        {
-                            m.CppType = "const char* const*";
-                            m.Key = memberTokens[3];
-                        }
-                        else
-                        {
-                            m.CppType = "<TYPE>";
-                            m.Key = "<NAME>";
-                        }
-
-                        if (m.IncludeInDeclaration)
-                        {
-
-                            VkTypeTranslation sharpType = null;
-                            if (mTranslations.TryGetValue(m.CppType, out sharpType))
-                            {
-                                m.CSharpType = sharpType.CSharpType;
-                                m.Translation = sharpType;
-                            }
-                            else
-                            {
-                                m.CSharpType = m.CppType;
-                            }
-
-                            var fieldName = m.Key;
-
-                            var prefixes = new CleanPrefixRule[]{
-                                new CleanPrefixRule { Rule = (str) => str.StartsWith("pp"), Length = 2 },
-                                new CleanPrefixRule { Rule = (str) => str[0] == 'p' && char.IsUpper(str[1]), Length = 1 },
-                            };
-
-                            foreach (var pre in prefixes)
-                            {
-                                if (pre.Rule(fieldName))
-                                {
-                                    fieldName = fieldName.Substring(pre.Length);
-                                    break;
-                                }
-                            }
-                            m.Name = fieldName.Substring(0, 1).ToUpperInvariant() + fieldName.Substring(1);
-
-                            m.FieldName = "m" + m.Name;
-
-                            var optional = member.Attribute("optional");
-                            m.Optional = (optional != null);
-
-                            var len = member.Attribute("len");
-                            if (len != null)
-                            {
-                                m.LengthConditions = len.Value.Split(new[] { ',' });
-                            }
-                            else
-                            {
-                                m.LengthConditions = new string[0];
-                            }
-                        }
-
-                        s.Members.Add(m);
-                    }
-
-                    mStructs.Add(key, s);
-
-                    // POINTERS
-                    var pointerStmt = s.Key + "*";
-                    if (!mTranslations.ContainsKey(pointerStmt))
-                    {
-                        var item = new VkTypeTranslation { CppType = s.Key + "*", CSharpType = s.Name + "^", Default = " = nullptr;", MethodOnly = s.Name + "^" };
-                        mTranslations.Add(pointerStmt, item);
-                    }
-
-                    if (!mTranslations.ContainsKey(s.Key))
-                    {
-                        var item2 = new VkTypeTranslation { CppType = s.Key, CSharpType = s.Name + "^", Default = " = nullptr;", MethodOnly = s.Name + "^" };
-                        mTranslations.Add(item2.CppType, item2);
+                        ExtractStruct(child, keyValue);
                     }
                 }
             }
         }
 
-        private void RetranslateMembers()
+        private void ExtractStruct(XElement child, string keyValue)
+        {
+            var s = new VkStruct(keyValue);
+
+            foreach (var member in child.Descendants("member"))
+            {
+                var m = new VkStructMember();
+                m.IncludeInDeclaration = true;
+                var memberTokens = member.Value.Split(new[] { ' ', '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (IsNextPointer(memberTokens))
+                {
+                    m.IncludeInDeclaration = false;
+                    m.FieldName = m.Name = m.Key = "pNext";
+                    m.CppType = "void*";
+                    m.CSharpType = "IntPtr";
+                    m.LengthConditions = new string[0];
+                }
+                else if (memberTokens.Length == 2)
+                {
+                    m.CppType = memberTokens[0];
+                    m.Key = memberTokens[1];
+                }
+                else if (memberTokens.Length == 3)
+                {
+                    var enumAttr = member.Element("enum");
+                    // fixed char buffer for strings
+                    if (enumAttr != null && memberTokens[0] == "char")
+                    {
+                        m.CppType = "char[]";
+                        m.Key = memberTokens[1];
+                        m.EnumValue = enumAttr.Value;
+                    }
+                    else
+                    {
+                        m.CppType = memberTokens[1];
+                        m.Key = memberTokens[2];
+                    }
+
+                }
+                else if (CheckForStringArray(memberTokens))
+                {
+                    m.CppType = "const char* const*";
+                    m.Key = memberTokens[3];
+                }
+                else
+                {
+                    m.CppType = "<TYPE>";
+                    m.Key = "<NAME>";
+                }
+
+                if (m.IncludeInDeclaration)
+                {
+
+                    VkTypeTranslation sharpType = null;
+                    if (mTranslations.TryGetValue(m.CppType, out sharpType))
+                    {
+                        m.CSharpType = sharpType.CSharpType;
+                        m.Translation = sharpType;
+                    }
+                    else
+                    {
+                        m.CSharpType = m.CppType;
+                    }
+
+                    var fieldName = m.Key;
+
+                    var prefixes = new CleanPrefixRule[]{
+                                new CleanPrefixRule { Rule = (str) => str.StartsWith("pp"), Length = 2 },
+                                new CleanPrefixRule { Rule = (str) => str[0] == 'p' && char.IsUpper(str[1]), Length = 1 },
+                            };
+
+                    foreach (var pre in prefixes)
+                    {
+                        if (pre.Rule(fieldName))
+                        {
+                            fieldName = fieldName.Substring(pre.Length);
+                            break;
+                        }
+                    }
+                    m.Name = fieldName.Substring(0, 1).ToUpperInvariant() + fieldName.Substring(1);
+
+                    m.FieldName = "m" + m.Name;
+
+                    var optional = member.Attribute("optional");
+                    m.Optional = (optional != null);
+
+                    var len = member.Attribute("len");
+                    if (len != null)
+                    {
+                        m.LengthConditions = len.Value.Split(new[] { ',' });
+                    }
+                    else
+                    {
+                        m.LengthConditions = new string[0];
+                    }
+                }
+
+                s.Members.Add(m);
+            }
+
+            mStructs.Add(keyValue, s);
+
+            // POINTERS
+            var pointerStmt = s.Key + "*";
+            if (!mTranslations.ContainsKey(pointerStmt))
+            {
+                var item = new VkTypeTranslation { CppType = s.Key + "*", CSharpType = s.Name + "^", Default = " = nullptr;", MethodOnly = s.Name + "^", NeedsNamespace = true };
+                mTranslations.Add(pointerStmt, item);
+            }
+
+            if (!mTranslations.ContainsKey(s.Key))
+            {
+                var item2 = new VkTypeTranslation { CppType = s.Key, CSharpType = s.Name + "^", Default = " = nullptr;", MethodOnly = s.Name + "^", NeedsNamespace = true };
+                mTranslations.Add(item2.CppType, item2);
+            }
+        }
+
+        private void RetranslateStructMembers()
         {
             // second pass to match
             foreach (var s in mStructs.Values)
@@ -436,68 +454,170 @@ namespace VulkanT4
 
                 foreach (var method in proxy.Methods)
                 {
+                    FixCreateDisplayModeKHR(method);
                     ParseEnumerateMethods(method);
+                    ModifyCreateMethods(method);
+
+                }
+            }
+        }
+
+        private Dictionary<string, Vk_WindowingInterface> mWindowFunctions;
+        private Dictionary<string, Vk_WindowingInterface> mWindowingStructs;
+        private void InitialiseLookups()
+        {
+            mWindowFunctions = new Dictionary<string, Vk_WindowingInterface>();
+            mWindowingStructs = new Dictionary<string, Vk_WindowingInterface>();
+
+            // STRUCTS
+            mWindowingStructs.Add("VkAndroidSurfaceCreateInfoKHR", Vk_WindowingInterface.Android);
+            mWindowingStructs.Add("VkMirSurfaceCreateInfoKHR", Vk_WindowingInterface.Mir);
+            mWindowingStructs.Add("VkWaylandSurfaceCreateInfoKHR", Vk_WindowingInterface.Wayland);
+            mWindowingStructs.Add("VkWin32SurfaceCreateInfoKHR", Vk_WindowingInterface.Windows);
+            mWindowingStructs.Add("VkXlibSurfaceCreateInfoKHR", Vk_WindowingInterface.X11);
+            mWindowingStructs.Add("VkXcbSurfaceCreateInfoKHR", Vk_WindowingInterface.XCB);
+
+            // FUNCTIONS
+            mWindowFunctions.Add("vkCreateAndroidSurfaceKHR", Vk_WindowingInterface.Android);
+            mWindowFunctions.Add("vkCreateMirSurfaceKHR", Vk_WindowingInterface.Mir);
+            mWindowFunctions.Add("vkCreateWaylandSurfaceKHR", Vk_WindowingInterface.Wayland);
+            mWindowFunctions.Add("vkCreateWin32SurfaceKHR", Vk_WindowingInterface.Windows);
+            mWindowFunctions.Add("vkCreateXlibSurfaceKHR", Vk_WindowingInterface.X11);
+            mWindowFunctions.Add("vkCreateXcbSurfaceKHR", Vk_WindowingInterface.XCB);
+
+            mWindowFunctions.Add("vkGetPhysicalDeviceWin32PresentationSupportKHR", Vk_WindowingInterface.Windows);           
+            mWindowFunctions.Add("vkGetPhysicalDeviceWaylandPresentationSupportKHR", Vk_WindowingInterface.Wayland);
+            mWindowFunctions.Add("vkGetPhysicalDeviceXcbPresentationSupportKHR", Vk_WindowingInterface.XCB);
+            mWindowFunctions.Add("vkGetPhysicalDeviceXlibPresentationSupportKHR", Vk_WindowingInterface.X11);
+            mWindowFunctions.Add("vkGetPhysicalDeviceMirPresentationSupportKHR", Vk_WindowingInterface.Mir);
+
+            string[] actualFunctions = new string[] {
+                "vkGetImageSparseMemoryRequirements",
+                "vkGetSwapchainImagesKHR",
+                "vkGetPhysicalDeviceQueueFamilyProperties",
+                "vkGetPhysicalDeviceSparseImageFormatProperties",
+                "vkGetPhysicalDeviceDisplayPropertiesKHR",
+                "vkGetDisplayModePropertiesKHR",
+                "vkGetPhysicalDeviceSurfaceFormatsKHR",
+                "vkGetPhysicalDeviceSurfacePresentModesKHR",
+            };
+            mEnumerationFns = new HashSet<string>(actualFunctions);
+        }
+
+        private void FixCreateDisplayModeKHR(VkClassMethod method)
+        {
+            if (method.Function.Key == "vkCreateDisplayModeKHR")
+            {
+                foreach (var parameter in method.Parameters)
+                {
+                    // INCORRECT
+                    if (parameter.Name == "VkDisplayModeCreateInfoKHR*pCreateInfo")
+                    {
+                        // MANUAL OVERWRITE
+                        parameter.Name = "pCreateInfo";
+                        parameter.CppType = "VkDisplayModeCreateInfoKHR*";
+                        parameter.Text = "const VkDisplayModeCreateInfoKHR* pCreateInfo";
+                        parameter.Tokens = parameter.Text.Split(' ');
+
+                        VkTypeTranslation translation = null;
+                        if (mTranslations.TryGetValue(parameter.CppType, out translation))
+                        {
+                            parameter.Translation = translation;
+                        }
+
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// The last parameter should be an out parameter
+        /// </summary>
+        /// <param name="method"></param>
+        private void ModifyCreateMethods(VkClassMethod method)
+        {
+            if (method.Name.StartsWith("Create"))
+            {
+                var count = method.Parameters.Count;
+
+                if (count > 1)
+                {
+                    var lastParameter = method.Parameters[count - 1];
+                    lastParameter.UseOutStatement = true;
                 }
             }
         }
 
         private IDictionary<string, VkTypeTranslation> mTranslations;
+        private HashSet<string> mEnumerationFns;
+
         private void GenerateTranslations()
         {
             mTranslations = new Dictionary<string, VkTypeTranslation>();
 
             VkTypeTranslation item = null;
 
-            item = new VkTypeTranslation { CppType = "char*", CSharpType = "String^", Default = " = nullptr;", MethodOnly = "String^" };
+            item = new VkTypeTranslation { CppType = "char*", CSharpType = "String^", Default = " = nullptr;", MethodOnly = "String^", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "uint32_t", CSharpType = "UInt32", Default = " = 0;", MethodOnly = "UInt32" };
+            item = new VkTypeTranslation { CppType = "uint32_t", CSharpType = "UInt32", Default = " = 0;", MethodOnly = "UInt32", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "uint32_t*", CSharpType = "UInt32", Default = " = 0;", MethodOnly = "ref UInt32" };
+            item = new VkTypeTranslation { CppType = "uint32_t*", CSharpType = "UInt32", Default = " = 0;", MethodOnly = "ref UInt32", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "uint64_t", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64" };
+            item = new VkTypeTranslation { CppType = "uint64_t", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "uint64_t*", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64" };
+            item = new VkTypeTranslation { CppType = "uint64_t*", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "size_t", CSharpType = "IntPtr", Default = " = 0;", MethodOnly = "IntPtr" };
+            item = new VkTypeTranslation { CppType = "size_t", CSharpType = "IntPtr", Default = " = 0;", MethodOnly = "IntPtr", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "float", CSharpType = "float", Default = " = 0f;", MethodOnly = "float" };
+            item = new VkTypeTranslation { CppType = "size_t*", CSharpType = "IntPtr", Default = " = 0;", MethodOnly = "ref IntPtr", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "float*", CSharpType = "float", Default = " = 0f;", MethodOnly = "ref float" };
+            item = new VkTypeTranslation { CppType = "float", CSharpType = "float", Default = " = 0f;", MethodOnly = "float", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "int32_t", CSharpType = "Int32", Default = " = 0;", MethodOnly = "Int32" };
+            item = new VkTypeTranslation { CppType = "float*", CSharpType = "float", Default = " = 0f;", MethodOnly = "ref float", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "char[]", CSharpType = "String^", Default = " = nullptr;", MethodOnly = "String^" };
+            item = new VkTypeTranslation { CppType = "int32_t", CSharpType = "Int32", Default = " = 0;", MethodOnly = "Int32", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "const char* const*", CSharpType = "array<String^>^", Default = " = nullptr;", MethodOnly = "array<String^>^" };
+            item = new VkTypeTranslation { CppType = "char[]", CSharpType = "String^", Default = " = nullptr;", MethodOnly = "String^", NeedsNamespace = false };
+            mTranslations.Add(item.CppType, item);
+
+            item = new VkTypeTranslation { CppType = "const char* const*", CSharpType = "array<String^>^", Default = " = nullptr;", MethodOnly = "array<String^>^", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
             // need to check VKBool32
-            item = new VkTypeTranslation { CppType = "VkBool32", CSharpType = "bool", Default = " = false;", MethodOnly = "bool" };
+            item = new VkTypeTranslation { CppType = "VkBool32", CSharpType = "bool", Default = " = false;", MethodOnly = "bool", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "VkSampleMask", CSharpType = "UInt32", Default = " = 0;", MethodOnly = "UInt32" };
+            item = new VkTypeTranslation { CppType = "VkBool32*", CSharpType = "bool", Default = " = false;", MethodOnly = "ref bool", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "VkFlags", CSharpType = "UInt32", Default = " = 0;", MethodOnly = "UInt32" };
+            item = new VkTypeTranslation { CppType = "VkSampleMask", CSharpType = "UInt32", Default = " = 0;", MethodOnly = "UInt32", NeedsNamespace = true };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "VkDeviceSize", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64" };
+            item = new VkTypeTranslation { CppType = "VkFlags", CSharpType = "UInt32", Default = " = 0;", MethodOnly = "UInt32", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "VkDeviceSize*", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "ref UInt64" };
+            item = new VkTypeTranslation { CppType = "VkDeviceSize", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "void*", CSharpType = "IntPtr", Default = " = IntPtr.Zero;", MethodOnly = "IntPtr" };
+            item = new VkTypeTranslation { CppType = "VkDeviceSize*", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "ref UInt64", NeedsNamespace = false };
+            mTranslations.Add(item.CppType, item);
+
+            item = new VkTypeTranslation { CppType = "void*", CSharpType = "IntPtr", Default = " = IntPtr.Zero;", MethodOnly = "IntPtr", NeedsNamespace = false };
+            mTranslations.Add(item.CppType, item);
+
+            item = new VkTypeTranslation { CppType = "void**", CSharpType = "array<IntPtr>", Default = " = null;", MethodOnly = "ref IntPtr", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
         }
 
@@ -510,69 +630,19 @@ namespace VulkanT4
                 if (proto != null)
                 {
                     var key = proto.Element("name");
-                    var returnType = proto.Element("type");
 
-                    var fn = new VkFunction(key.Value);
-                    fn.ReturnType = returnType.Value;
+                    string keyValue = key.Value;
 
-                    var success = child.Attribute("successcodes");
-                    if (success != null)
+                    Vk_WindowingInterface match;
+                    bool isWindowingFunction = mWindowFunctions.TryGetValue(keyValue, out match);
+
+                    /// ONLY SPECIFIC WINDOWING FUNCTIONS ALLOWED
+                    if (!isWindowingFunction || (isWindowingFunction && match == mAllowableInterfaces))
                     {
-                        fn.SuccessCodes = success.Value.Split(',');
+                        VkFunction fn = ExtractFunction(child, proto, keyValue);
+                        mFunctions.Add(fn);
                     }
-                    else
-                    {
-                        fn.SuccessCodes = new string[0];
-                    }
-
-
-                    var failed = child.Attribute("errorcodes");
-                    if (failed != null)
-                    {
-                        fn.FailureCodes = failed.Value.Split(',');
-                    }
-                    else
-                    {
-                        fn.FailureCodes = new string[0];
-                    }
-
-                    foreach (var param in child.Descendants("param"))
-                    {
-                        var paramType = param.Element("type");
-                        if (paramType != null)
-                        {
-                            var p = new VkFunctionParam();
-                            p.Tokens = param.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-                            p.Text = string.Join(" ", p.Tokens);
-
-                            var len = param.Attribute("len");
-                            if (len != null)
-                            {
-                                p.LengthConditions = len.Value.Split(new[] { ',' });
-                            }
-                            else
-                            {
-                                p.LengthConditions = new string[0];
-                            }
-
-                            if (p.Tokens.Length == 2)
-                            {
-                                p.CppType = p.Tokens[0];
-                                p.Name = p.Tokens[1];
-                            }
-                            else if (p.Tokens.Length == 3)
-                            {
-                                p.CppType = p.Tokens[1];
-                                p.Name = p.Tokens[2];
-                            }
-                            fn.Parameters.Add(p);
-                        }
-                    }
-
-                    mFunctions.Add(fn);
                 }
-
-
             }
 
             // group them in classes
@@ -601,13 +671,13 @@ namespace VulkanT4
                         var pointerStmt = first.CppType + "*";
                         if (!mTranslations.ContainsKey(pointerStmt))
                         {
-                            var pointer = new VkTypeTranslation { CppType = pointerStmt, CSharpType = found.Name + "^", Default = " = nullptr;", MethodOnly = found.Name + "^" };
+                            var pointer = new VkTypeTranslation { CppType = pointerStmt, CSharpType = found.Name + "^", Default = " = nullptr;", MethodOnly = found.Name + "^", NeedsNamespace = true };
                             mTranslations.Add(pointerStmt, pointer);
                         }
 
                         if (!mTranslations.ContainsKey(first.CppType))
                         {
-                            var classRef = new VkTypeTranslation { CppType = first.CppType, CSharpType = found.Name + "^", Default = " = nullptr;", MethodOnly = found.Name + "^" };
+                            var classRef = new VkTypeTranslation { CppType = first.CppType, CSharpType = found.Name + "^", Default = " = nullptr;", MethodOnly = found.Name + "^", NeedsNamespace = true };
                             mTranslations.Add(classRef.CppType, classRef);
                         }
                     }
@@ -625,21 +695,73 @@ namespace VulkanT4
             }            
         }
 
+        private static VkFunction ExtractFunction(XElement child, XElement proto, string key)
+        {
+            var returnType = proto.Element("type");
+
+            var fn = new VkFunction(key);
+            fn.ReturnType = returnType.Value;
+
+            var success = child.Attribute("successcodes");
+            if (success != null)
+            {
+                fn.SuccessCodes = success.Value.Split(',');
+            }
+            else
+            {
+                fn.SuccessCodes = new string[0];
+            }
+
+
+            var failed = child.Attribute("errorcodes");
+            if (failed != null)
+            {
+                fn.FailureCodes = failed.Value.Split(',');
+            }
+            else
+            {
+                fn.FailureCodes = new string[0];
+            }
+
+            foreach (var param in child.Descendants("param"))
+            {
+                var paramType = param.Element("type");
+                if (paramType != null)
+                {
+                    var p = new VkFunctionParam();
+                    p.Tokens = param.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    p.Text = string.Join(" ", p.Tokens);
+
+                    var len = param.Attribute("len");
+                    if (len != null)
+                    {
+                        p.LengthConditions = len.Value.Split(new[] { ',' });
+                    }
+                    else
+                    {
+                        p.LengthConditions = new string[0];
+                    }
+
+                    if (p.Tokens.Length == 2)
+                    {
+                        p.CppType = p.Tokens[0];
+                        p.Name = p.Tokens[1];
+                    }
+                    else if (p.Tokens.Length == 3)
+                    {
+                        p.CppType = p.Tokens[1];
+                        p.Name = p.Tokens[2];
+                    }
+                    fn.Parameters.Add(p);
+                }
+            }
+
+            return fn;
+        }
+
         private void ParseEnumerateMethods(VkClassMethod method)
         {
-            string[] actualFunctions = new string[] {
-                "vkGetImageSparseMemoryRequirements",
-                "vkGetSwapchainImagesKHR",
-                "vkGetPhysicalDeviceQueueFamilyProperties",
-                "vkGetPhysicalDeviceSparseImageFormatProperties",
-                "vkGetPhysicalDeviceDisplayPropertiesKHR",
-                "vkGetDisplayModePropertiesKHR",
-                "vkGetPhysicalDeviceSurfaceFormatsKHR",
-                "vkGetPhysicalDeviceSurfacePresentModesKHR",
-            };
-            var exceptions = new HashSet<string>(actualFunctions);
-
-            if (method.Name.StartsWith("Enumerate") || exceptions.Contains(method.Function.Key))
+            if (method.Name.StartsWith("Enumerate") || mEnumerationFns.Contains(method.Function.Key))
             {
                 var lengthParams = new HashSet<string>();
                 var finalParams = new List<VkFunctionParam>();
@@ -657,10 +779,10 @@ namespace VulkanT4
                         a.Name = param.Name;
                         a.CppType = param.CppType;
 
-                        VkTypeTranslation paramType = null;
-                        if (mTranslations.TryGetValue(param.CppType, out paramType))
+                        VkTypeTranslation translation = null;
+                        if (mTranslations.TryGetValue(param.CppType, out translation))
                         {
-                            a.CSharpType = "array<" + paramType.MethodOnly + ">^";
+                            a.CSharpType = "array<" + translation.CSharpType + ">^";
                         }
                         else
                         {

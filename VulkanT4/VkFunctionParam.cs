@@ -8,6 +8,11 @@ namespace VulkanT4
 {
     public class VkFunctionParam
     {
+        public VkFunctionParam()
+        {
+            UseOutStatement = false;
+        }
+
         public string Text { get; set; }
         public string[] Tokens { get; set; }
         public string CppType { get; set; }
@@ -15,5 +20,6 @@ namespace VulkanT4
         public string CSharpType { get; set; }
         public VkTypeTranslation Translation { get; set; }
         public string[] LengthConditions { get; set; }
+        public bool UseOutStatement { get; internal set; }
     }
 }

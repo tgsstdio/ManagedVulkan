@@ -16,7 +16,6 @@ namespace VulkanT4
             ReturnType = func.ReturnType;
         }
 
-        // TODO : translate CppType into C++ / CLI types
         public string ReturnType { get; set; }
         public VkTypeTranslation Translation { get; set; }
         public VkFunction Function { get; private set; }
