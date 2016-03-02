@@ -8,6 +8,14 @@ using namespace System;
 
 namespace ManagedVulkan {
 
+	public union ClearColorValue
+	{
+	public:
+		float float32[4];
+		float int32m4[4];
+		float uint32m4[4];
+	};
+
 	public ref class ExtensionProperties
 	{
 		/**

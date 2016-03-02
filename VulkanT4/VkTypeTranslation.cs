@@ -8,5 +8,10 @@
         public string Default { get; set; }
         public string MethodOnly { get; set; }
         public bool NeedsNamespace { get; set; }
+        public VkStruct StructInfo { get; set; }
+        public VkEnum EnumInfo { get; set; }
+        public VkHandle HandleInfo { get; set; }
+        public VkProxy ProxyInfo { get; set; }
+        public VkFunction DelegateInfo { get; internal set; }
     }
 }

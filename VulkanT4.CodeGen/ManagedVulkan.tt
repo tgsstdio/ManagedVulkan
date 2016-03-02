@@ -71,11 +71,27 @@ namespace <#= ns #>
 				{				
 					if (param.UseOutStatement)
 					{
-						paramType = "out " + param.Translation.CSharpType;
+						paramType = "out ";
+						
+						if (param.IsArray)
+						{
+							paramType += "array<" + param.Translation.CSharpType + ">^";
+						}
+						else
+						{
+							paramType += param.Translation.CSharpType;
+						}
 					}
 					else
 					{
-						paramType = param.Translation.MethodOnly;
+						if (param.IsArray)
+						{
+							paramType = "array<" + param.Translation.CSharpType + ">^";
+						}
+						else
+						{
+							paramType = param.Translation.MethodOnly;
+						}						
 					}
 				}
 				else 

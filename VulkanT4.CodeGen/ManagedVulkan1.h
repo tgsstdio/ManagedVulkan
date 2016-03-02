@@ -17,8 +17,8 @@ namespace ManagedVulkan
 	{
 	public:
 		VkResult CreateInstance(InstanceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out Instance^ pInstance);
-		VkResult EnumerateInstanceLayerProperties(array<LayerProperties^>^ pProperties);
-		VkResult EnumerateInstanceExtensionProperties(array<ExtensionProperties^>^ pProperties);
+		VkResult EnumerateInstanceLayerProperties(out array<LayerProperties^>^ pProperties);
+		VkResult EnumerateInstanceExtensionProperties(String^ pLayerName, out array<ExtensionProperties^>^ pProperties);
 	};
 
 	public ref class Instance
@@ -27,8 +27,8 @@ namespace ManagedVulkan
 		VkInstance mInst;
 	public:
 		void DestroyInstance(AllocationCallbacks^ pAllocator);
-		VkResult EnumeratePhysicalDevices(array<PhysicalDevice^>^ pPhysicalDevices);
-		PFN_vkVoidFunction GetInstanceProcAddr(String^ pName);
+		VkResult EnumeratePhysicalDevices(out array<PhysicalDevice^>^ pPhysicalDevices);
+		PFN_vkVoidFunction^ GetInstanceProcAddr(String^ pName);
 		VkResult CreateDisplayPlaneSurfaceKHR(DisplaySurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, out SurfaceKHR^ pSurface);
 		void DestroySurfaceKHR(SurfaceKHR^ surface, AllocationCallbacks^ pAllocator);
 		VkResult CreateWin32SurfaceKHR(Win32SurfaceCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, out SurfaceKHR^ pSurface);
@@ -42,27 +42,27 @@ namespace ManagedVulkan
 	private:
 		VkDevice mInst;
 	public:
-		PFN_vkVoidFunction GetDeviceProcAddr(String^ pName);
+		PFN_vkVoidFunction^ GetDeviceProcAddr(String^ pName);
 		void DestroyDevice(AllocationCallbacks^ pAllocator);
-		void GetDeviceQueue(UInt32 queueFamilyIndex, UInt32 queueIndex, Queue^ pQueue);
+		void GetDeviceQueue(UInt32 queueFamilyIndex, UInt32 queueIndex, out Queue^ pQueue);
 		VkResult DeviceWaitIdle();
 		VkResult AllocateMemory(MemoryAllocateInfo^ pAllocateInfo, AllocationCallbacks^ pAllocator, DeviceMemory^ pMemory);
 		void FreeMemory(DeviceMemory^ memory, AllocationCallbacks^ pAllocator);
 		VkResult MapMemory(DeviceMemory^ memory, UInt64 offset, UInt64 size, VkMemoryMapFlags flags, ref IntPtr ppData);
 		void UnmapMemory(DeviceMemory^ memory);
-		VkResult FlushMappedMemoryRanges(UInt32 memoryRangeCount, MappedMemoryRange^ pMemoryRanges);
-		VkResult InvalidateMappedMemoryRanges(UInt32 memoryRangeCount, MappedMemoryRange^ pMemoryRanges);
+		VkResult FlushMappedMemoryRanges(array<MappedMemoryRange^>^ pMemoryRanges);
+		VkResult InvalidateMappedMemoryRanges(array<MappedMemoryRange^>^ pMemoryRanges);
 		void GetDeviceMemoryCommitment(DeviceMemory^ memory, ref UInt64 pCommittedMemoryInBytes);
-		void GetBufferMemoryRequirements(Buffer^ buffer, MemoryRequirements^ pMemoryRequirements);
+		void GetBufferMemoryRequirements(Buffer^ buffer, out MemoryRequirements^ pMemoryRequirements);
 		VkResult BindBufferMemory(Buffer^ buffer, DeviceMemory^ memory, UInt64 memoryOffset);
-		void GetImageMemoryRequirements(Image^ image, MemoryRequirements^ pMemoryRequirements);
+		void GetImageMemoryRequirements(Image^ image, out MemoryRequirements^ pMemoryRequirements);
 		VkResult BindImageMemory(Image^ image, DeviceMemory^ memory, UInt64 memoryOffset);
-		void GetImageSparseMemoryRequirements(array<SparseImageMemoryRequirements^>^ pSparseMemoryRequirements);
+		void GetImageSparseMemoryRequirements(Image^ image, out array<SparseImageMemoryRequirements^>^ pSparseMemoryRequirements);
 		VkResult CreateFence(FenceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out Fence^ pFence);
 		void DestroyFence(Fence^ fence, AllocationCallbacks^ pAllocator);
-		VkResult ResetFences(UInt32 fenceCount, Fence^ pFences);
+		VkResult ResetFences(array<Fence^>^ pFences);
 		VkResult GetFenceStatus(Fence^ fence);
-		VkResult WaitForFences(UInt32 fenceCount, Fence^ pFences, bool waitAll, UInt64 timeout);
+		VkResult WaitForFences(array<Fence^>^ pFences, bool waitAll, UInt64 timeout);
 		VkResult CreateSemaphore(SemaphoreCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out Semaphore^ pSemaphore);
 		void DestroySemaphore(Semaphore^ semaphore, AllocationCallbacks^ pAllocator);
 		VkResult CreateEvent(EventCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out Event^ pEvent);
@@ -79,7 +79,7 @@ namespace ManagedVulkan
 		void DestroyBufferView(BufferView^ bufferView, AllocationCallbacks^ pAllocator);
 		VkResult CreateImage(ImageCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out Image^ pImage);
 		void DestroyImage(Image^ image, AllocationCallbacks^ pAllocator);
-		void GetImageSubresourceLayout(Image^ image, ImageSubresource^ pSubresource, SubresourceLayout^ pLayout);
+		void GetImageSubresourceLayout(Image^ image, ImageSubresource^ pSubresource, out SubresourceLayout^ pLayout);
 		VkResult CreateImageView(ImageViewCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out ImageView^ pView);
 		void DestroyImageView(ImageView^ imageView, AllocationCallbacks^ pAllocator);
 		VkResult CreateShaderModule(ShaderModuleCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out ShaderModule^ pShaderModule);
@@ -87,9 +87,9 @@ namespace ManagedVulkan
 		VkResult CreatePipelineCache(PipelineCacheCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out PipelineCache^ pPipelineCache);
 		void DestroyPipelineCache(PipelineCache^ pipelineCache, AllocationCallbacks^ pAllocator);
 		VkResult GetPipelineCacheData(PipelineCache^ pipelineCache, ref IntPtr pDataSize, IntPtr pData);
-		VkResult MergePipelineCaches(PipelineCache^ dstCache, UInt32 srcCacheCount, PipelineCache^ pSrcCaches);
-		VkResult CreateGraphicsPipelines(PipelineCache^ pipelineCache, UInt32 createInfoCount, GraphicsPipelineCreateInfo^ pCreateInfos, AllocationCallbacks^ pAllocator, out Pipeline^ pPipelines);
-		VkResult CreateComputePipelines(PipelineCache^ pipelineCache, UInt32 createInfoCount, ComputePipelineCreateInfo^ pCreateInfos, AllocationCallbacks^ pAllocator, out Pipeline^ pPipelines);
+		VkResult MergePipelineCaches(PipelineCache^ dstCache, array<PipelineCache^>^ pSrcCaches);
+		VkResult CreateGraphicsPipelines(PipelineCache^ pipelineCache, array<GraphicsPipelineCreateInfo^>^ pCreateInfos, AllocationCallbacks^ pAllocator, out array<Pipeline^>^ pPipelines);
+		VkResult CreateComputePipelines(PipelineCache^ pipelineCache, array<ComputePipelineCreateInfo^>^ pCreateInfos, AllocationCallbacks^ pAllocator, out array<Pipeline^>^ pPipelines);
 		void DestroyPipeline(Pipeline^ pipeline, AllocationCallbacks^ pAllocator);
 		VkResult CreatePipelineLayout(PipelineLayoutCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out PipelineLayout^ pPipelineLayout);
 		void DestroyPipelineLayout(PipelineLayout^ pipelineLayout, AllocationCallbacks^ pAllocator);
@@ -107,16 +107,16 @@ namespace ManagedVulkan
 		void DestroyFramebuffer(Framebuffer^ framebuffer, AllocationCallbacks^ pAllocator);
 		VkResult CreateRenderPass(RenderPassCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out RenderPass^ pRenderPass);
 		void DestroyRenderPass(RenderPass^ renderPass, AllocationCallbacks^ pAllocator);
-		void GetRenderAreaGranularity(RenderPass^ renderPass, Extent2D^ pGranularity);
+		void GetRenderAreaGranularity(RenderPass^ renderPass, out Extent2D^ pGranularity);
 		VkResult CreateCommandPool(CommandPoolCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out CommandPool^ pCommandPool);
 		void DestroyCommandPool(CommandPool^ commandPool, AllocationCallbacks^ pAllocator);
 		VkResult ResetCommandPool(CommandPool^ commandPool, VkCommandPoolResetFlags flags);
 		VkResult AllocateCommandBuffers(CommandBufferAllocateInfo^ pAllocateInfo, CommandBuffer^ pCommandBuffers);
-		void FreeCommandBuffers(CommandPool^ commandPool, UInt32 commandBufferCount, CommandBuffer^ pCommandBuffers);
-		VkResult CreateSharedSwapchainsKHR(UInt32 swapchainCount, SwapchainCreateInfoKHR^ pCreateInfos, AllocationCallbacks^ pAllocator, out SwapchainKHR^ pSwapchains);
+		void FreeCommandBuffers(CommandPool^ commandPool, array<CommandBuffer^>^ pCommandBuffers);
+		VkResult CreateSharedSwapchainsKHR(array<SwapchainCreateInfoKHR^>^ pCreateInfos, AllocationCallbacks^ pAllocator, out array<SwapchainKHR^>^ pSwapchains);
 		VkResult CreateSwapchainKHR(SwapchainCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, out SwapchainKHR^ pSwapchain);
 		void DestroySwapchainKHR(SwapchainKHR^ swapchain, AllocationCallbacks^ pAllocator);
-		VkResult GetSwapchainImagesKHR(array<Image^>^ pSwapchainImages);
+		VkResult GetSwapchainImagesKHR(SwapchainKHR^ swapchain, out array<Image^>^ pSwapchainImages);
 		VkResult AcquireNextImageKHR(SwapchainKHR^ swapchain, UInt64 timeout, Semaphore^ semaphore, Fence^ fence, ref UInt32 pImageIndex);
 	};
 
@@ -125,27 +125,26 @@ namespace ManagedVulkan
 	private:
 		VkPhysicalDevice mInst;
 	public:
-		void GetPhysicalDeviceProperties(PhysicalDeviceProperties^ pProperties);
-		void GetPhysicalDeviceQueueFamilyProperties(array<QueueFamilyProperties^>^ pQueueFamilyProperties);
-		void GetPhysicalDeviceMemoryProperties(PhysicalDeviceMemoryProperties^ pMemoryProperties);
-		void GetPhysicalDeviceFeatures(PhysicalDeviceFeatures^ pFeatures);
-		void GetPhysicalDeviceFormatProperties(VkFormat format, FormatProperties^ pFormatProperties);
-		VkResult GetPhysicalDeviceImageFormatProperties(VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, ImageFormatProperties^ pImageFormatProperties);
+		void GetPhysicalDeviceProperties(out PhysicalDeviceProperties^ pProperties);
+		void GetPhysicalDeviceQueueFamilyProperties(out array<QueueFamilyProperties^>^ pQueueFamilyProperties);
+		void GetPhysicalDeviceMemoryProperties(out PhysicalDeviceMemoryProperties^ pMemoryProperties);
+		void GetPhysicalDeviceFeatures(out PhysicalDeviceFeatures^ pFeatures);
+		void GetPhysicalDeviceFormatProperties(VkFormat format, out FormatProperties^ pFormatProperties);
+		VkResult GetPhysicalDeviceImageFormatProperties(VkFormat format, VkImageType type, VkImageTiling tiling, VkImageUsageFlags usage, VkImageCreateFlags flags, out ImageFormatProperties^ pImageFormatProperties);
 		VkResult CreateDevice(DeviceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out Device^ pDevice);
-		VkResult EnumerateDeviceLayerProperties(array<LayerProperties^>^ pProperties);
-		VkResult EnumerateDeviceExtensionProperties(array<ExtensionProperties^>^ pProperties);
-		void GetPhysicalDeviceSparseImageFormatProperties(VkImageType type, VkSampleCountFlagBits samples, VkImageUsageFlags usage, VkImageTiling tiling, array<SparseImageFormatProperties^>^ pProperties);
-		VkResult GetPhysicalDeviceDisplayPropertiesKHR(array<DisplayPropertiesKHR^>^ pProperties);
-		VkResult GetPhysicalDeviceDisplayPlanePropertiesKHR(ref UInt32 pPropertyCount, DisplayPlanePropertiesKHR^ pProperties);
-		VkResult GetDisplayPlaneSupportedDisplaysKHR(UInt32 planeIndex, ref UInt32 pDisplayCount, DisplayKHR^ pDisplays);
-		VkResult GetDisplayModePropertiesKHR(array<DisplayModePropertiesKHR^>^ pProperties);
+		VkResult EnumerateDeviceLayerProperties(out array<LayerProperties^>^ pProperties);
+		VkResult EnumerateDeviceExtensionProperties(String^ pLayerName, out array<ExtensionProperties^>^ pProperties);
+		void GetPhysicalDeviceSparseImageFormatProperties(VkFormat format, VkImageType type, VkSampleCountFlagBits samples, VkImageUsageFlags usage, VkImageTiling tiling, out array<SparseImageFormatProperties^>^ pProperties);
+		VkResult GetPhysicalDeviceDisplayPropertiesKHR(out array<DisplayPropertiesKHR^>^ pProperties);
+		VkResult GetPhysicalDeviceDisplayPlanePropertiesKHR(out array<DisplayPlanePropertiesKHR^>^ pProperties);
+		VkResult GetDisplayPlaneSupportedDisplaysKHR(UInt32 planeIndex, out array<DisplayKHR^>^ pDisplays);
+		VkResult GetDisplayModePropertiesKHR(DisplayKHR^ display, out array<DisplayModePropertiesKHR^>^ pProperties);
 		VkResult CreateDisplayModeKHR(DisplayKHR^ display, DisplayModeCreateInfoKHR^ pCreateInfo, AllocationCallbacks^ pAllocator, out DisplayModeKHR^ pMode);
-		VkResult GetDisplayPlaneCapabilitiesKHR(DisplayModeKHR^ mode, UInt32 planeIndex, DisplayPlaneCapabilitiesKHR^ pCapabilities);
-		bool GetPhysicalDeviceMirPresentationSupportKHR(UInt32 queueFamilyIndex, MirConnection* connection);
+		VkResult GetDisplayPlaneCapabilitiesKHR(DisplayModeKHR^ mode, UInt32 planeIndex, out DisplayPlaneCapabilitiesKHR^ pCapabilities);
 		VkResult GetPhysicalDeviceSurfaceSupportKHR(UInt32 queueFamilyIndex, SurfaceKHR^ surface, ref bool pSupported);
-		VkResult GetPhysicalDeviceSurfaceCapabilitiesKHR(SurfaceKHR^ surface, SurfaceCapabilitiesKHR^ pSurfaceCapabilities);
-		VkResult GetPhysicalDeviceSurfaceFormatsKHR(array<SurfaceFormatKHR^>^ pSurfaceFormats);
-		VkResult GetPhysicalDeviceSurfacePresentModesKHR(array<array<VkPresentModeKHR>^>^ pPresentModes);
+		VkResult GetPhysicalDeviceSurfaceCapabilitiesKHR(SurfaceKHR^ surface, out SurfaceCapabilitiesKHR^ pSurfaceCapabilities);
+		VkResult GetPhysicalDeviceSurfaceFormatsKHR(SurfaceKHR^ surface, out array<SurfaceFormatKHR^>^ pSurfaceFormats);
+		VkResult GetPhysicalDeviceSurfacePresentModesKHR(SurfaceKHR^ surface, out array<VkPresentModeKHR>^ pPresentModes);
 		bool GetPhysicalDeviceWin32PresentationSupportKHR(UInt32 queueFamilyIndex);
 	};
 
@@ -154,9 +153,9 @@ namespace ManagedVulkan
 	private:
 		VkQueue mInst;
 	public:
-		VkResult QueueSubmit(UInt32 submitCount, SubmitInfo^ pSubmits, Fence^ fence);
+		VkResult QueueSubmit(array<SubmitInfo^>^ pSubmits, Fence^ fence);
 		VkResult QueueWaitIdle();
-		VkResult QueueBindSparse(UInt32 bindInfoCount, BindSparseInfo^ pBindInfo, Fence^ fence);
+		VkResult QueueBindSparse(array<BindSparseInfo^>^ pBindInfo, Fence^ fence);
 		VkResult QueuePresentKHR(PresentInfoKHR^ pPresentInfo);
 	};
 
@@ -169,8 +168,8 @@ namespace ManagedVulkan
 		VkResult EndCommandBuffer();
 		VkResult ResetCommandBuffer(VkCommandBufferResetFlags flags);
 		void CmdBindPipeline(VkPipelineBindPoint pipelineBindPoint, Pipeline^ pipeline);
-		void CmdSetViewport(UInt32 firstViewport, UInt32 viewportCount, Viewport^ pViewports);
-		void CmdSetScissor(UInt32 firstScissor, UInt32 scissorCount, Rect2D^ pScissors);
+		void CmdSetViewport(UInt32 firstViewport, UInt32 viewportCount, array<Viewport^>^ pViewports);
+		void CmdSetScissor(UInt32 firstScissor, UInt32 scissorCount, array<Rect2D^>^ pScissors);
 		void CmdSetLineWidth(float lineWidth);
 		void CmdSetDepthBias(float depthBiasConstantFactor, float depthBiasClamp, float depthBiasSlopeFactor);
 		void CmdSetBlendConstants(float blendConstants[4]);
@@ -178,30 +177,30 @@ namespace ManagedVulkan
 		void CmdSetStencilCompareMask(VkStencilFaceFlags faceMask, UInt32 compareMask);
 		void CmdSetStencilWriteMask(VkStencilFaceFlags faceMask, UInt32 writeMask);
 		void CmdSetStencilReference(VkStencilFaceFlags faceMask, UInt32 reference);
-		void CmdBindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, PipelineLayout^ layout, UInt32 firstSet, UInt32 descriptorSetCount, DescriptorSet^ pDescriptorSets, UInt32 dynamicOffsetCount, ref UInt32 pDynamicOffsets);
+		void CmdBindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, PipelineLayout^ layout, UInt32 firstSet, UInt32 descriptorSetCount, array<DescriptorSet^>^ pDescriptorSets, UInt32 dynamicOffsetCount, array<UInt32>^ pDynamicOffsets);
 		void CmdBindIndexBuffer(Buffer^ buffer, UInt64 offset, VkIndexType indexType);
-		void CmdBindVertexBuffers(UInt32 firstBinding, UInt32 bindingCount, Buffer^ pBuffers, ref UInt64 pOffsets);
+		void CmdBindVertexBuffers(UInt32 firstBinding, UInt32 bindingCount, array<Buffer^>^ pBuffers, array<UInt64>^ pOffsets);
 		void CmdDraw(UInt32 vertexCount, UInt32 instanceCount, UInt32 firstVertex, UInt32 firstInstance);
 		void CmdDrawIndexed(UInt32 indexCount, UInt32 instanceCount, UInt32 firstIndex, Int32 vertexOffset, UInt32 firstInstance);
 		void CmdDrawIndirect(Buffer^ buffer, UInt64 offset, UInt32 drawCount, UInt32 stride);
 		void CmdDrawIndexedIndirect(Buffer^ buffer, UInt64 offset, UInt32 drawCount, UInt32 stride);
 		void CmdDispatch(UInt32 x, UInt32 y, UInt32 z);
 		void CmdDispatchIndirect(Buffer^ buffer, UInt64 offset);
-		void CmdCopyBuffer(Buffer^ srcBuffer, Buffer^ dstBuffer, UInt32 regionCount, BufferCopy^ pRegions);
-		void CmdCopyImage(Image^ srcImage, VkImageLayout srcImageLayout, Image^ dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageCopy^ pRegions);
-		void CmdBlitImage(Image^ srcImage, VkImageLayout srcImageLayout, Image^ dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageBlit^ pRegions, VkFilter filter);
-		void CmdCopyBufferToImage(Buffer^ srcBuffer, Image^ dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, BufferImageCopy^ pRegions);
-		void CmdCopyImageToBuffer(Image^ srcImage, VkImageLayout srcImageLayout, Buffer^ dstBuffer, UInt32 regionCount, BufferImageCopy^ pRegions);
+		void CmdCopyBuffer(Buffer^ srcBuffer, Buffer^ dstBuffer, array<BufferCopy^>^ pRegions);
+		void CmdCopyImage(Image^ srcImage, VkImageLayout srcImageLayout, Image^ dstImage, VkImageLayout dstImageLayout, array<ImageCopy^>^ pRegions);
+		void CmdBlitImage(Image^ srcImage, VkImageLayout srcImageLayout, Image^ dstImage, VkImageLayout dstImageLayout, array<ImageBlit^>^ pRegions, VkFilter filter);
+		void CmdCopyBufferToImage(Buffer^ srcBuffer, Image^ dstImage, VkImageLayout dstImageLayout, array<BufferImageCopy^>^ pRegions);
+		void CmdCopyImageToBuffer(Image^ srcImage, VkImageLayout srcImageLayout, Buffer^ dstBuffer, array<BufferImageCopy^>^ pRegions);
 		void CmdUpdateBuffer(Buffer^ dstBuffer, UInt64 dstOffset, UInt64 dataSize, ref UInt32 pData);
 		void CmdFillBuffer(Buffer^ dstBuffer, UInt64 dstOffset, UInt64 size, UInt32 data);
-		void CmdClearColorImage(Image^ image, VkImageLayout imageLayout, VkClearColorValue* pColor, UInt32 rangeCount, ImageSubresourceRange^ pRanges);
-		void CmdClearDepthStencilImage(Image^ image, VkImageLayout imageLayout, ClearDepthStencilValue^ pDepthStencil, UInt32 rangeCount, ImageSubresourceRange^ pRanges);
-		void CmdClearAttachments(UInt32 attachmentCount, ClearAttachment^ pAttachments, UInt32 rectCount, ClearRect^ pRects);
-		void CmdResolveImage(Image^ srcImage, VkImageLayout srcImageLayout, Image^ dstImage, VkImageLayout dstImageLayout, UInt32 regionCount, ImageResolve^ pRegions);
+		void CmdClearColorImage(Image^ image, VkImageLayout imageLayout, ClearColorValue^ pColor, array<ImageSubresourceRange^>^ pRanges);
+		void CmdClearDepthStencilImage(Image^ image, VkImageLayout imageLayout, ClearDepthStencilValue^ pDepthStencil, array<ImageSubresourceRange^>^ pRanges);
+		void CmdClearAttachments(array<ClearAttachment^>^ pAttachments, array<ClearRect^>^ pRects);
+		void CmdResolveImage(Image^ srcImage, VkImageLayout srcImageLayout, Image^ dstImage, VkImageLayout dstImageLayout, array<ImageResolve^>^ pRegions);
 		void CmdSetEvent(Event^ event, VkPipelineStageFlags stageMask);
 		void CmdResetEvent(Event^ event, VkPipelineStageFlags stageMask);
-		void CmdWaitEvents(UInt32 eventCount, Event^ pEvents, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, UInt32 memoryBarrierCount, MemoryBarrier^ pMemoryBarriers, UInt32 bufferMemoryBarrierCount, BufferMemoryBarrier^ pBufferMemoryBarriers, UInt32 imageMemoryBarrierCount, ImageMemoryBarrier^ pImageMemoryBarriers);
-		void CmdPipelineBarrier(VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkDependencyFlags dependencyFlags, UInt32 memoryBarrierCount, MemoryBarrier^ pMemoryBarriers, UInt32 bufferMemoryBarrierCount, BufferMemoryBarrier^ pBufferMemoryBarriers, UInt32 imageMemoryBarrierCount, ImageMemoryBarrier^ pImageMemoryBarriers);
+		void CmdWaitEvents(array<Event^>^ pEvents, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, array<MemoryBarrier^>^ pMemoryBarriers, array<BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ImageMemoryBarrier^>^ pImageMemoryBarriers);
+		void CmdPipelineBarrier(VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkDependencyFlags dependencyFlags, array<MemoryBarrier^>^ pMemoryBarriers, array<BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ImageMemoryBarrier^>^ pImageMemoryBarriers);
 		void CmdBeginQuery(QueryPool^ queryPool, UInt32 query, VkQueryControlFlags flags);
 		void CmdEndQuery(QueryPool^ queryPool, UInt32 query);
 		void CmdResetQueryPool(QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount);
@@ -211,7 +210,7 @@ namespace ManagedVulkan
 		void CmdBeginRenderPass(RenderPassBeginInfo^ pRenderPassBegin, VkSubpassContents contents);
 		void CmdNextSubpass(VkSubpassContents contents);
 		void CmdEndRenderPass();
-		void CmdExecuteCommands(UInt32 commandBufferCount, CommandBuffer^ pCommandBuffers);
+		void CmdExecuteCommands(array<CommandBuffer^>^ pCommandBuffers);
 	};
 
 }

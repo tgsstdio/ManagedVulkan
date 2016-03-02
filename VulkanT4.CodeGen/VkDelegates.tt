@@ -31,15 +31,25 @@ using namespace System;
 
 namespace <#= ns #> 
 {
-	// HANDLES
-<#	foreach(var h in generator.Handles.Values)
+	// DELEGATES
+<#	foreach(var del in generator.Delegates)
 	{
 #>
-	public ref class <#= h.Name #>
-	{
-	internal:
-		<#= h.Key #> mHandle;
-	};
+	public delegate void <#= del.Key #>(<#
+			var first = true;
+			var separator = "";
+			foreach(var param in del.Parameters)
+			{ 
+				var paramName = param.Name ?? "<NAME>";
+				var paramType = param.Translation != null ? param.Translation.MethodOnly : (param.CppType ?? "<TYPE>");	
+
+			#><#= separator #><#= paramType #> <#= paramName #><#
+				if (first)
+				{
+					separator = ", ";
+					first = false;
+				}	
+			} #>);
 
 <#
 	}

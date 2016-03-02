@@ -16,6 +16,7 @@ namespace VulkanT4
             mEnums = new List<VkEnum>();
             mHandles = new Dictionary<string, VkHandle>();
             mDelegates = new List<VkFunction>();
+            mUnions = new Dictionary<string, VkStruct>();
         }
 
         private List<VkFunction> mFunctions;
@@ -70,6 +71,15 @@ namespace VulkanT4
             get
             {
                 return mDelegates;
+            }
+        }
+
+        private Dictionary<string, VkStruct> mUnions;
+        public IDictionary<string, VkStruct> Unions
+        {
+            get
+            {
+                return mUnions;
             }
         }
 
@@ -157,6 +167,18 @@ namespace VulkanT4
                         }
 
                         mDelegates.Add(del);
+
+                        if (!mTranslations.ContainsKey(del.Key))
+                        {
+                            mTranslations.Add(del.Key,
+                                new VkTypeTranslation {
+                                    CppType = del.Key,
+                                    CSharpType = del.Name + "^",
+                                    Default = " = nullptr;",
+                                    MethodOnly = del.Name + "^",
+                                    NeedsNamespace = true,
+                                    DelegateInfo = del });
+                        }
                     }
                 }
             }
@@ -178,13 +200,13 @@ namespace VulkanT4
 
                         if (!mTranslations.ContainsKey(h.Key))
                         {
-                            mTranslations.Add(h.Key, new VkTypeTranslation { CppType = h.Key, CSharpType = h.Name + "^", Default = " = nullptr;", MethodOnly = h.Name + "^", NeedsNamespace = true });
+                            mTranslations.Add(h.Key, new VkTypeTranslation { CppType = h.Key, CSharpType = h.Name + "^", Default = " = nullptr;", MethodOnly = h.Name + "^", NeedsNamespace = true, HandleInfo = h });
                         }
 
                         var pointerStmt = h.Key + "*";
                         if (!mTranslations.ContainsKey(pointerStmt))
                         {
-                            mTranslations.Add(pointerStmt, new VkTypeTranslation { CppType = pointerStmt, CSharpType = h.Name + "^", Default = " = nullptr;", MethodOnly = h.Name + "^", NeedsNamespace = true });
+                            mTranslations.Add(pointerStmt, new VkTypeTranslation { CppType = pointerStmt, CSharpType = h.Name + "^", Default = " = nullptr;", MethodOnly = h.Name + "^", NeedsNamespace = true, HandleInfo = h });
                         }
                     }
                 }
@@ -233,9 +255,8 @@ namespace VulkanT4
                         }
                         mEnums.Add(el);
 
-                        var arrayType = "array<" + el.Name + ">^";
                         var pointerType = el.Name + "*";
-                        mTranslations.Add(pointerType, new VkTypeTranslation { CppType = pointerType, CSharpType = arrayType, Default = " = nullptr;", MethodOnly = el.Name });
+                        mTranslations.Add(pointerType, new VkTypeTranslation { CppType = pointerType, CSharpType = el.Name, Default = " = nullptr;", MethodOnly = el.Name, EnumInfo = el });
                     }
                     
                 }
@@ -266,27 +287,105 @@ namespace VulkanT4
             {
                 var category = child.Attribute("category");
 
-                if (category != null && category.Value == "struct")
+                if (category != null)
                 {
-                    var name = child.Attribute("name");
-
-                    string keyValue = name.Value;
-
-                    Vk_WindowingInterface match;
-                    bool isWindowingStruct = mWindowingStructs.TryGetValue(keyValue, out match);
-
-                    /// ONLY SPECIFIC WINDOWING FUNCTIONS ALLOWED
-                    if (!isWindowingStruct || (isWindowingStruct && match == mAllowableInterfaces))
+                    if (category.Value == "struct")
                     {
-                        ExtractStruct(child, keyValue);
+
+                        var name = child.Attribute("name");
+
+                        string keyValue = name.Value;
+
+                        Vk_WindowingInterface match;
+                        bool isWindowingStruct = mWindowingStructs.TryGetValue(keyValue, out match);
+
+                        /// ONLY SPECIFIC WINDOWING FUNCTIONS ALLOWED
+                        if (!isWindowingStruct || (isWindowingStruct && match == mAllowableInterfaces))
+                        {
+                            var s = ExtractStruct(child, keyValue);
+                            mStructs.Add(keyValue, s);
+
+                            // POINTERS
+                            var pointerStmt = s.Key + "*";
+                            if (!mTranslations.ContainsKey(pointerStmt))
+                            {
+                                var item = new VkTypeTranslation
+                                {
+                                    CppType = s.Key + "*",
+                                    CSharpType = s.Name + "^",
+                                    Default = " = nullptr;",
+                                    MethodOnly = s.Name + "^",
+                                    NeedsNamespace = true,
+                                    StructInfo = s
+                                };
+                                mTranslations.Add(pointerStmt, item);
+                            }
+
+                            if (!mTranslations.ContainsKey(s.Key))
+                            {
+                                var item2 = new VkTypeTranslation
+                                {
+                                    CppType = s.Key,
+                                    CSharpType = s.Name + "^",
+                                    Default = " = nullptr;",
+                                    MethodOnly = s.Name + "^",
+                                    NeedsNamespace = true,
+                                    StructInfo = s
+                                };
+                                mTranslations.Add(item2.CppType, item2);
+                            }
+                        }
+                    }
+                    else if (category.Value == "union")
+                    {
+                        var name = child.Attribute("name");
+
+                        string keyValue = name.Value;
+
+                        var s = ExtractStruct(child, keyValue);
+                        mUnions.Add(keyValue, s);                        
+
+                        // POINTERS
+                        var pointerStmt = s.Key + "*";
+                        if (!mTranslations.ContainsKey(pointerStmt))
+                        {
+                            var item = new VkTypeTranslation
+                            {
+                                CppType = s.Key + "*",
+                                CSharpType = s.Name + "^",
+                                Default = " = nullptr;",
+                                MethodOnly = s.Name + "^",
+                                NeedsNamespace = true,
+                                StructInfo = s
+                            };
+                            mTranslations.Add(pointerStmt, item);
+                        }
+
+                        if (!mTranslations.ContainsKey(s.Key))
+                        {
+                            var item2 = new VkTypeTranslation
+                            {
+                                CppType = s.Key,
+                                CSharpType = s.Name + "^",
+                                Default = " = nullptr;",
+                                MethodOnly = s.Name + "^",
+                                NeedsNamespace = true,
+                                StructInfo = s
+                            };
+                            mTranslations.Add(item2.CppType, item2);
+                        }
                     }
                 }
+
             }
         }
 
-        private void ExtractStruct(XElement child, string keyValue)
+        private VkStruct ExtractStruct(XElement child, string keyValue)
         {
             var s = new VkStruct(keyValue);
+
+            var returnedOnly = child.Attribute("returnedonly");
+            s.IsOut = (returnedOnly != null);
 
             foreach (var member in child.Descendants("member"))
             {
@@ -385,21 +484,7 @@ namespace VulkanT4
                 s.Members.Add(m);
             }
 
-            mStructs.Add(keyValue, s);
-
-            // POINTERS
-            var pointerStmt = s.Key + "*";
-            if (!mTranslations.ContainsKey(pointerStmt))
-            {
-                var item = new VkTypeTranslation { CppType = s.Key + "*", CSharpType = s.Name + "^", Default = " = nullptr;", MethodOnly = s.Name + "^", NeedsNamespace = true };
-                mTranslations.Add(pointerStmt, item);
-            }
-
-            if (!mTranslations.ContainsKey(s.Key))
-            {
-                var item2 = new VkTypeTranslation { CppType = s.Key, CSharpType = s.Name + "^", Default = " = nullptr;", MethodOnly = s.Name + "^", NeedsNamespace = true };
-                mTranslations.Add(item2.CppType, item2);
-            }
+            return s;
         }
 
         private void RetranslateStructMembers()
@@ -456,14 +541,25 @@ namespace VulkanT4
                 {
                     FixCreateDisplayModeKHR(method);
                     ParseEnumerateMethods(method);
-                    ModifyCreateMethods(method);
-
+                    SetLastParameterAsOut(method);
                 }
             }
         }
 
+        private class VkArrayFunctionInfo
+        {
+            public VkArrayFunctionInfo(string key, bool keepCounts)
+            {
+                Key = key;
+                KeepCounts = keepCounts;
+            }
+            public string Key { get; private set; }
+            public bool KeepCounts { get; private set; }
+        }
+
         private Dictionary<string, Vk_WindowingInterface> mWindowFunctions;
         private Dictionary<string, Vk_WindowingInterface> mWindowingStructs;
+        private Dictionary<string, VkArrayFunctionInfo> mEnumerationFns;
         private void InitialiseLookups()
         {
             mWindowFunctions = new Dictionary<string, Vk_WindowingInterface>();
@@ -490,18 +586,204 @@ namespace VulkanT4
             mWindowFunctions.Add("vkGetPhysicalDeviceXcbPresentationSupportKHR", Vk_WindowingInterface.XCB);
             mWindowFunctions.Add("vkGetPhysicalDeviceXlibPresentationSupportKHR", Vk_WindowingInterface.X11);
             mWindowFunctions.Add("vkGetPhysicalDeviceMirPresentationSupportKHR", Vk_WindowingInterface.Mir);
+         
+            mEnumerationFns = new Dictionary<string, VkArrayFunctionInfo>();
+            var arrayFn = new VkArrayFunctionInfo("vkGetImageSparseMemoryRequirements", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
-            string[] actualFunctions = new string[] {
-                "vkGetImageSparseMemoryRequirements",
-                "vkGetSwapchainImagesKHR",
-                "vkGetPhysicalDeviceQueueFamilyProperties",
-                "vkGetPhysicalDeviceSparseImageFormatProperties",
-                "vkGetPhysicalDeviceDisplayPropertiesKHR",
-                "vkGetDisplayModePropertiesKHR",
+            arrayFn = new VkArrayFunctionInfo("vkGetSwapchainImagesKHR", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceQueueFamilyProperties", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceSparseImageFormatProperties", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceDisplayPropertiesKHR", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkGetDisplayModePropertiesKHR", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceSurfaceFormatsKHR", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceSurfacePresentModesKHR", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdPipelineBarrier", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdExecuteCommands", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdWaitEvents", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdResolveImage", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdClearAttachments", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdClearDepthStencilImage", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdClearColorImage", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdCopyImageToBuffer", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdCopyBufferToImage", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdBlitImage", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdCopyImage", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdCopyBuffer", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdBindVertexBuffers", true);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdBindDescriptorSets", true);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdSetScissor", true);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCmdSetViewport", true);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkFreeCommandBuffers", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkFlushMappedMemoryRanges", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkInvalidateMappedMemoryRanges", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCreateGraphicsPipelines", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCreateComputePipelines", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkMergePipelineCaches", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkCreateSharedSwapchainsKHR", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkEnumerateInstanceLayerProperties", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkEnumerateInstanceExtensionProperties", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkEnumeratePhysicalDevices", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkEnumerateDeviceLayerProperties", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkEnumerateDeviceExtensionProperties", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);            
+
+            arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceDisplayPlanePropertiesKHR", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);            
+
+            arrayFn = new VkArrayFunctionInfo("vkGetDisplayPlaneSupportedDisplaysKHR", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkResetFences", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkWaitForFences", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);            
+
+            arrayFn = new VkArrayFunctionInfo("vkQueueBindSparse", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+
+            arrayFn = new VkArrayFunctionInfo("vkQueueSubmit", false);
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);            
+
+            string[] outMethods =
+            {
+                "vkEnumerateInstanceLayerProperties",
+                "vkEnumerateInstanceExtensionProperties",
+                "vkEnumeratePhysicalDevices",
+                "vkEnumerateDeviceLayerProperties",
+                "vkEnumerateDeviceExtensionProperties",
+
                 "vkGetPhysicalDeviceSurfaceFormatsKHR",
                 "vkGetPhysicalDeviceSurfacePresentModesKHR",
+                "vkGetSwapchainImagesKHR",
+                "vkGetImageSparseMemoryRequirements",
+                "vkGetDisplayPlaneSupportedDisplaysKHR",
+                "vkGetPhysicalDeviceDisplayPlanePropertiesKHR",
+                "vkGetPhysicalDeviceDisplayPropertiesKHR",
+                "vkGetPhysicalDeviceQueueFamilyProperties",
+                "vkGetPhysicalDeviceFormatProperties",
+                "vkGetPhysicalDeviceFeatures",
+                "vkGetDisplayModePropertiesKHR",
+                "vkGetPhysicalDeviceSurfaceCapabilitiesKHR",
+                "vkGetDisplayPlaneCapabilitiesKHR",
+                "vkGetPhysicalDeviceMemoryProperties",
+                "vkGetPhysicalDeviceProperties",
+                "vkGetRenderAreaGranularity",
+                "vkGetImageSubresourceLayout",
+                "vkGetBufferMemoryRequirements",
+                "vkGetImageMemoryRequirements",
+                "vkGetDeviceQueue",
+                "vkGetPhysicalDeviceImageFormatProperties",
+
+                "vkCreateInstance",
+                "vkCreateDisplayPlaneSurfaceKHR",
+
+                "vkCreateAndroidSurfaceKHR",
+                "vkCreateMirSurfaceKHR",
+                "vkCreateWaylandSurfaceKHR",
+                "vkCreateWin32SurfaceKHR",
+                "vkCreateXlibSurfaceKHR",
+                "vkCreateXcbSurfaceKHR",
+
+                "vkCreateDebugReportCallbackEXT",
+                "vkCreateFence",
+                "vkCreateSemaphore",
+                "vkCreateEvent",
+                "vkCreateQueryPool",
+                "vkCreateBuffer",
+                "vkCreateBufferView",
+                "vkCreateImage",
+                "vkCreateImageView",
+                "vkCreateShaderModule",
+                "vkCreatePipelineCache",
+                "vkCreateGraphicsPipelines",
+                "vkCreateComputePipelines",
+                "vkCreatePipelineLayout",
+                "vkCreateSampler",
+                "vkCreateDescriptorSetLayout",
+                "vkCreateDescriptorPool",
+                "vkCreateFramebuffer",
+                "vkCreateRenderPass",
+                "vkCreateCommandPool",
+                "vkCreateSharedSwapchainsKHR",
+                "vkCreateSwapchainKHR",
+                "vkCreateDevice",
+                "vkCreateDisplayModeKHR",
+                "vkGetPhysicalDeviceSparseImageFormatProperties",
             };
-            mEnumerationFns = new HashSet<string>(actualFunctions);
+
+            mOutMethods = new HashSet<string>(outMethods);
+
+
         }
 
         private void FixCreateDisplayModeKHR(VkClassMethod method)
@@ -536,13 +818,13 @@ namespace VulkanT4
         /// The last parameter should be an out parameter
         /// </summary>
         /// <param name="method"></param>
-        private void ModifyCreateMethods(VkClassMethod method)
+        private void SetLastParameterAsOut(VkClassMethod method)
         {
-            if (method.Name.StartsWith("Create"))
+            if (mOutMethods.Contains(method.Function.Key))
             {
                 var count = method.Parameters.Count;
 
-                if (count > 1)
+                if (count >= 1)
                 {
                     var lastParameter = method.Parameters[count - 1];
                     lastParameter.UseOutStatement = true;
@@ -551,7 +833,8 @@ namespace VulkanT4
         }
 
         private IDictionary<string, VkTypeTranslation> mTranslations;
-        private HashSet<string> mEnumerationFns;
+
+        private HashSet<string> mOutMethods;
 
         private void GenerateTranslations()
         {
@@ -661,30 +944,42 @@ namespace VulkanT4
                 {
                     var first = fn.Parameters[0];
 
-                    VkProxy found = null;
-                    if (!mProxies.TryGetValue(first.CppType, out found))
+                    VkProxy proxy = null;
+                    if (!mProxies.TryGetValue(first.CppType, out proxy))
                     {
-                        found = new VkProxy(first.CppType);
-                        found.Name = first.CppType.Substring(2);
-                        mProxies[first.CppType] = found;
+                        proxy = new VkProxy(first.CppType);
+                        proxy.Name = first.CppType.Substring(2);
+                        mProxies[first.CppType] = proxy;
 
                         var pointerStmt = first.CppType + "*";
                         if (!mTranslations.ContainsKey(pointerStmt))
                         {
-                            var pointer = new VkTypeTranslation { CppType = pointerStmt, CSharpType = found.Name + "^", Default = " = nullptr;", MethodOnly = found.Name + "^", NeedsNamespace = true };
+                            var pointer = new VkTypeTranslation {
+                                CppType = pointerStmt,
+                                CSharpType = proxy.Name + "^",
+                                Default = " = nullptr;",
+                                MethodOnly = proxy.Name + "^",
+                                NeedsNamespace = true,
+                                ProxyInfo = proxy };
                             mTranslations.Add(pointerStmt, pointer);
                         }
 
                         if (!mTranslations.ContainsKey(first.CppType))
                         {
-                            var classRef = new VkTypeTranslation { CppType = first.CppType, CSharpType = found.Name + "^", Default = " = nullptr;", MethodOnly = found.Name + "^", NeedsNamespace = true };
+                            var classRef = new VkTypeTranslation {
+                                CppType = first.CppType,
+                                CSharpType = proxy.Name + "^",
+                                Default = " = nullptr;",
+                                MethodOnly = proxy.Name + "^",
+                                NeedsNamespace = true,
+                                ProxyInfo = proxy};
                             mTranslations.Add(classRef.CppType, classRef);
                         }
                     }
 
                     var method = new VkClassMethod(fn);                              
                     method.Parameters = fn.Parameters.Skip(1).ToList();
-                    found.Methods.Add(method);
+                    proxy.Methods.Add(method);
                 }
                 else
                 {
@@ -761,43 +1056,34 @@ namespace VulkanT4
 
         private void ParseEnumerateMethods(VkClassMethod method)
         {
-            if (method.Name.StartsWith("Enumerate") || mEnumerationFns.Contains(method.Function.Key))
+            VkArrayFunctionInfo found;
+            if (mEnumerationFns.TryGetValue(method.Function.Key, out found))
             {
                 var lengthParams = new HashSet<string>();
                 var finalParams = new List<VkFunctionParam>();
-                for (int i = method.Parameters.Count - 1; i > 0; --i)
+                for (int i = method.Parameters.Count - 1; i >= 0; --i)
                 {
                     var param = method.Parameters[i];
 
-                    if (param.LengthConditions.Length > 0)
+                    if (found.KeepCounts || !lengthParams.Contains(param.Name))
                     {
+                        bool isArray = false;
                         foreach (var l in param.LengthConditions)
                         {
-                            lengthParams.Add(l);
-                        }
-                        var a = new VkFunctionParam();
-                        a.Name = param.Name;
-                        a.CppType = param.CppType;
-
-                        VkTypeTranslation translation = null;
-                        if (mTranslations.TryGetValue(param.CppType, out translation))
-                        {
-                            a.CSharpType = "array<" + translation.CSharpType + ">^";
-                        }
-                        else
-                        {
-                            a.CSharpType = "<ARRAY TYPE>";
+                            if (l != "null-terminated")
+                            {
+                                lengthParams.Add(l);
+                                isArray = true;
+                            }
                         }
 
-                        a.Text = string.Join(" ", new[] { a.CSharpType, a.Name });
-                        a.Tokens = a.Text.Split(' ');
-                        a.LengthConditions = param.LengthConditions;
-                        finalParams.Add(a);
-                    }                    
-                    else if (!lengthParams.Contains(param.Name))
-                    {
-                        finalParams.Add(param);
-                    }
+                        if (isArray)
+                        {
+                            param.IsArray = true;
+                        }
+
+                        finalParams.Add(param);                        
+                    }                           
                 }
                
                 finalParams.Reverse();

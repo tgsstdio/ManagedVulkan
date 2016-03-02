@@ -265,6 +265,35 @@ namespace VulkanT4.UnitTests
             Assert.IsFalse(member.IncludeInDeclaration);
         }
 
+        [TestMethod]
+        public void ParseUnion()
+        {
+            string xml =
+               @"<registry>
+                    <type category=""union"" name=""VkClearColorValue"" comment=""// Union allowing specification of floating point, integer, or unsigned integer color data. Actual value selected is based on image/attachment being cleared."">
+                        <member><type>float</type>                  <name>float32</name>[4]</member>
+                        <member><type>int32_t</type>                <name>int32</name>[4]</member>
+                        <member><type>uint32_t</type>               <name>uint32</name>[4]</member>
+                    </type>
+                </registry>";
+
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(1, generator.Unions.Keys.Count);
+            var item = generator.Unions.Values.ElementAt(0);
+            Assert.AreEqual("VkClearColorValue", item.Key);
+            Assert.AreEqual("ClearColorValue", item.Name);
+            // TODO : PARSE ALL VALUES
+
+            Assert.AreEqual(3, item.Members.Count);
+        }
+
+        [TestMethod]
+        public void MustBeStruct()
+        {
+            // TODO : PARSE ALL VALUES
+        }
 
         [TestMethod]
         public void ParseDelegate()
@@ -336,6 +365,44 @@ namespace VulkanT4.UnitTests
             var parameter = method.Parameters[0];
             Assert.IsNotNull(parameter.Translation);
             Assert.IsNotNull("VkDisplayModeCreateInfoKHR*", parameter.Translation.CppType);
+        }
+
+        [TestMethod]
+        public void ParseNullTerminatorParam()
+        {
+            string xml =
+               @"<registry>
+                    <type category=""struct"" name=""VkExtensionProperties"" returnedonly=""true"">
+                    </type>
+                    <command>
+                        <proto><type>VkResult</type> <name>vkEnumerateInstanceExtensionProperties</name></proto>
+                        <param optional=""true"" len=""null-terminated"">const <type>char</type>* <name>pLayerName</name></param>
+                        <param optional=""false,true""><type>uint32_t</type>* <name>pPropertyCount</name></param>
+                        <param optional=""true"" len=""pPropertyCount""><type>VkExtensionProperties</type>* <name>pProperties</name></param>
+                    </command>
+                </registry>";
+
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(1, generator.Proxies.Keys.Count);
+            var proxy = generator.Proxies.Values.ElementAt(0);
+            Assert.AreEqual("Vulkan", proxy.Name);
+            Assert.AreEqual(1, proxy.Methods.Count);
+            var method = proxy.Methods[0];
+            Assert.AreEqual(2, method.Parameters.Count);
+            var param = method.Parameters[0];
+            Assert.AreEqual("char*", param.CppType);
+            Assert.IsNotNull(param.Translation);
+            Assert.AreEqual("String^", param.Translation.CSharpType);
+            Assert.AreEqual("pLayerName", param.Name);
+            param = method.Parameters[1];
+            Assert.AreEqual("VkExtensionProperties*", param.CppType);
+            Assert.IsNotNull(param.Translation);
+            Assert.AreEqual("ExtensionProperties^", param.CSharpType);
+            Assert.IsTrue(param.IsArray);
+            Assert.AreEqual("pProperties", param.Name);
+            Assert.IsTrue(param.UseOutStatement);
         }
 
         [TestMethod]

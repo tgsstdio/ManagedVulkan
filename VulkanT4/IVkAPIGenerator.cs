@@ -10,6 +10,7 @@ namespace VulkanT4
         IDictionary<string, VkHandle> Handles { get; }
         IDictionary<string, VkProxy> Proxies { get; }
         IDictionary<string, VkStruct> Structs { get; }
+        IDictionary<string, VkStruct> Unions { get; }
         IList<VkEnum> Enums { get; }
         void Apply(XDocument doc);
     }

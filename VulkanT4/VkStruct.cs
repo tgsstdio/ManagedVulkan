@@ -14,5 +14,6 @@ namespace VulkanT4
         public string Key { get; private set; }
         public string Name { get; set; }
         public List<VkStructMember> Members { get; private set; }
+        public bool IsOut { get; internal set; }
     }
 }

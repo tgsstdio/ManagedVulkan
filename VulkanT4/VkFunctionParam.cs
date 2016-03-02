@@ -11,6 +11,7 @@ namespace VulkanT4
         public VkFunctionParam()
         {
             UseOutStatement = false;
+            IsArray = false;
         }
 
         public string Text { get; set; }
@@ -21,5 +22,6 @@ namespace VulkanT4
         public VkTypeTranslation Translation { get; set; }
         public string[] LengthConditions { get; set; }
         public bool UseOutStatement { get; internal set; }
+        public bool IsArray { get; set; }
     }
 }

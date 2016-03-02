@@ -56,6 +56,15 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ManagedVulkan.cpp</LastGenOutput>
     </None>
+    <Content Include="VkUnions.h">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VkUnions.tt</DependentUpon>
+    </Content>
+    <Content Include="VkUnions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>VkUnions.h</LastGenOutput>
+    </Content>
     <Content Include="VkInterfaces.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>VkInterfaces.h</LastGenOutput>
