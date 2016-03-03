@@ -99,6 +99,25 @@ namespace VulkanT4
             RetranslateStructMembers();
             RetranslateProxies();
             RetranslateDelegates();
+            RetranslateFunctions();
+        }
+
+        private void RetranslateFunctions()
+        {
+            foreach(var f in mFunctions)
+            {
+                foreach (var param in f.Parameters)
+                {
+                    if (param.Translation == null)
+                    {
+                        VkTypeTranslation translation = null;
+                        if (mTranslations.TryGetValue(param.CppType, out translation))
+                        {
+                            param.Translation = translation;
+                        }
+                    }
+                }
+            }
         }
 
         private void RetranslateDelegates()
@@ -256,7 +275,11 @@ namespace VulkanT4
                         mEnums.Add(el);
 
                         var pointerType = el.Name + "*";
+                        // POINTER TYPE
                         mTranslations.Add(pointerType, new VkTypeTranslation { CppType = pointerType, CSharpType = el.Name, Default = " = nullptr;", MethodOnly = el.Name, EnumInfo = el });
+
+                        // PLAIN TYPE
+                        mTranslations.Add(el.Name, new VkTypeTranslation { CppType = el.Name, CSharpType = el.Name, Default = " = nullptr;", MethodOnly = el.Name, EnumInfo = el });
                     }
                     
                 }
@@ -544,17 +567,6 @@ namespace VulkanT4
                     SetLastParameterAsOut(method);
                 }
             }
-        }
-
-        private class VkArrayFunctionInfo
-        {
-            public VkArrayFunctionInfo(string key, bool keepCounts)
-            {
-                Key = key;
-                KeepCounts = keepCounts;
-            }
-            public string Key { get; private set; }
-            public bool KeepCounts { get; private set; }
         }
 
         private Dictionary<string, Vk_WindowingInterface> mWindowFunctions;
@@ -1018,12 +1030,15 @@ namespace VulkanT4
                 fn.FailureCodes = new string[0];
             }
 
+            var index = 0;
             foreach (var param in child.Descendants("param"))
             {
                 var paramType = param.Element("type");
                 if (paramType != null)
                 {
                     var p = new VkFunctionParam();
+                    p.Index = index;
+                    ++index;
                     p.Tokens = param.Value.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                     p.Text = string.Join(" ", p.Tokens);
 
@@ -1059,6 +1074,8 @@ namespace VulkanT4
             VkArrayFunctionInfo found;
             if (mEnumerationFns.TryGetValue(method.Function.Key, out found))
             {
+                method.ArrayInfo = found;
+
                 var lengthParams = new HashSet<string>();
                 var finalParams = new List<VkFunctionParam>();
                 for (int i = method.Parameters.Count - 1; i >= 0; --i)

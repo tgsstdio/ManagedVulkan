@@ -16,15 +16,15 @@ namespace VulkanT4.UnitTests
                     <command successcodes=""VK_SUCCESS"" errorcodes=""VK_ERROR_OUT_OF_HOST_MEMORY,VK_ERROR_OUT_OF_DEVICE_MEMORY,VK_ERROR_INITIALIZATION_FAILED,VK_ERROR_LAYER_NOT_PRESENT,VK_ERROR_EXTENSION_NOT_PRESENT,VK_ERROR_INCOMPATIBLE_DRIVER"">
                         <proto><type>VkResult</type> <name>vkCreateInstance</name></proto>
                         <param>const <type>VkInstanceCreateInfo</type>* <name>pCreateInfo</name></param>
-                        <param optional=""true"">const <type> VkAllocationCallbacks </type> * <name> pAllocator </name></param>
-                        <param><type> VkInstance </type> * <name> pInstance </name></param>
+                        <param optional=""true"">const <type>VkAllocationCallbacks</type>* <name> pAllocator </name></param>
+                        <param><type>VkInstance</type>* <name> pInstance </name></param>
                     </command>
                 </commands>";
             var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
             IVkAPIGenerator generator = new VkAPIGenerator();
             generator.Apply(doc);
             Assert.AreEqual(1, generator.Functions.Count);
-            var fn = generator.Functions[0];
+            var fn = generator.Functions.ElementAt(0);
             Assert.AreEqual("vkCreateInstance", fn.Key);
             Assert.AreEqual("CreateInstance", fn.Name);
             Assert.AreEqual("VkResult", fn.ReturnType);
@@ -290,9 +290,39 @@ namespace VulkanT4.UnitTests
         }
 
         [TestMethod]
-        public void MustBeStruct()
+        public void StructReusedForHandleTranslated()
         {
-            // TODO : PARSE ALL VALUES
+            string xml =
+               @"<registry>
+                    <type category=""handle""><type>VK_DEFINE_HANDLE</type>(<name>VkInstance</name>)</type>
+                    <command>
+                        <proto><type>VkBool32</type> <name>vkGetDeviceQueue</name></proto>
+                        <param><type>VkInstance</type> <name>instance</name></param>
+                    </command>
+                </registry>";
+
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(0, generator.Handles.Keys.Count);
+            Assert.AreEqual(2, generator.Proxies.Keys.Count);
+            Assert.AreEqual(1, generator.Functions.Count);
+            var proxy = generator.Proxies.Values.ElementAt(0);
+            Assert.AreEqual("Vulkan", proxy.Key);
+            var function = generator.Functions.ElementAt(0);
+            Assert.AreEqual("vkGetDeviceQueue", function.Key);
+            Assert.AreEqual(1, function.Parameters.Count);
+            proxy = generator.Proxies.Values.ElementAt(1);
+            Assert.AreEqual("VkInstance", proxy.Key);
+            Assert.AreEqual(1, proxy.Methods.Count);
+            var method = proxy.Methods[0];
+            Assert.AreEqual("GetDeviceQueue", method.Name);
+            Assert.AreSame(method.Function, function);
+
+            var param = function.Parameters[0];
+            Assert.IsNotNull(param.Translation);
+            Assert.IsNotNull(param.Translation.StructInfo);
+            Assert.AreSame(proxy, param.Translation.StructInfo);
         }
 
         [TestMethod]

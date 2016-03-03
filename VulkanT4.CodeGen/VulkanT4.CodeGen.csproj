@@ -56,6 +56,11 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ManagedVulkan.cpp</LastGenOutput>
     </None>
+    <Content Include="ManagedVulkan.cpp">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ManagedVulkan.tt2</DependentUpon>
+    </Content>
     <Content Include="VkUnions.h">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -109,11 +114,6 @@
     <Content Include="VkEnums.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>VkEnums.h</LastGenOutput>
-    </Content>
-    <Content Include="ManagedVulkan.cpp">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ManagedVulkan.tt2</DependentUpon>
     </Content>
     <Content Include="ManagedVulkan.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

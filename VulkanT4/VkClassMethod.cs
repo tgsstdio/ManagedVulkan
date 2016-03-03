@@ -21,5 +21,6 @@ namespace VulkanT4
         public VkFunction Function { get; private set; }
         public string Name { get; set; }
         public List<VkFunctionParam> Parameters { get; set; }
+        public VkArrayFunctionInfo ArrayInfo { get; set; }
     }
 }

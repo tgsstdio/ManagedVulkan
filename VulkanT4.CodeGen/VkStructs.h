@@ -41,6 +41,18 @@ namespace ManagedVulkan
 				mY = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkOffset2D* dst)
+		{
+			dst->x =	mX;
+			dst->y =	mY;
+		}
+
+		void CopyFrom(VkOffset2D* src)
+		{
+			mX = src->x;
+			mY = src->y;
+		}
 	};
 
 	public ref class Offset3D
@@ -83,6 +95,20 @@ namespace ManagedVulkan
 				mZ = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkOffset3D* dst)
+		{
+			dst->x =	mX;
+			dst->y =	mY;
+			dst->z =	mZ;
+		}
+
+		void CopyFrom(VkOffset3D* src)
+		{
+			mX = src->x;
+			mY = src->y;
+			mZ = src->z;
+		}
 	};
 
 	public ref class Extent2D
@@ -112,6 +138,18 @@ namespace ManagedVulkan
 			{
 				mHeight = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkExtent2D* dst)
+		{
+			dst->width =	mWidth;
+			dst->height =	mHeight;
+		}
+
+		void CopyFrom(VkExtent2D* src)
+		{
+			mWidth = src->width;
+			mHeight = src->height;
 		}
 	};
 
@@ -154,6 +192,20 @@ namespace ManagedVulkan
 			{
 				mDepth = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkExtent3D* dst)
+		{
+			dst->width =	mWidth;
+			dst->height =	mHeight;
+			dst->depth =	mDepth;
+		}
+
+		void CopyFrom(VkExtent3D* src)
+		{
+			mWidth = src->width;
+			mHeight = src->height;
+			mDepth = src->depth;
 		}
 	};
 
@@ -233,6 +285,26 @@ namespace ManagedVulkan
 				mMaxDepth = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkViewport* dst)
+		{
+			dst->x =	mX;
+			dst->y =	mY;
+			dst->width =	mWidth;
+			dst->height =	mHeight;
+			dst->minDepth =	mMinDepth;
+			dst->maxDepth =	mMaxDepth;
+		}
+
+		void CopyFrom(VkViewport* src)
+		{
+			mX = src->x;
+			mY = src->y;
+			mWidth = src->width;
+			mHeight = src->height;
+			mMinDepth = src->minDepth;
+			mMaxDepth = src->maxDepth;
+		}
 	};
 
 	public ref class Rect2D
@@ -263,6 +335,18 @@ namespace ManagedVulkan
 				mExtent = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkRect2D* dst)
+		{
+			dst->offset =	mOffset;
+			dst->extent =	mExtent;
+		}
+
+		void CopyFrom(VkRect2D* src)
+		{
+			mOffset = src->offset;
+			mExtent = src->extent;
+		}
 	};
 
 	public ref class Rect3D
@@ -292,6 +376,18 @@ namespace ManagedVulkan
 			{
 				mExtent = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkRect3D* dst)
+		{
+			dst->offset =	mOffset;
+			dst->extent =	mExtent;
+		}
+
+		void CopyFrom(VkRect3D* src)
+		{
+			mOffset = src->offset;
+			mExtent = src->extent;
 		}
 	};
 
@@ -334,6 +430,20 @@ namespace ManagedVulkan
 			{
 				mLayerCount = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkClearRect* dst)
+		{
+			dst->rect =	mRect;
+			dst->baseArrayLayer =	mBaseArrayLayer;
+			dst->layerCount =	mLayerCount;
+		}
+
+		void CopyFrom(VkClearRect* src)
+		{
+			mRect = src->rect;
+			mBaseArrayLayer = src->baseArrayLayer;
+			mLayerCount = src->layerCount;
 		}
 	};
 
@@ -388,6 +498,22 @@ namespace ManagedVulkan
 			{
 				mA = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkComponentMapping* dst)
+		{
+			dst->r =	mR;
+			dst->g =	mG;
+			dst->b =	mB;
+			dst->a =	mA;
+		}
+
+		void CopyFrom(VkComponentMapping* src)
+		{
+			mR = src->r;
+			mG = src->g;
+			mB = src->b;
+			mA = src->a;
 		}
 	};
 
@@ -503,6 +629,32 @@ namespace ManagedVulkan
 				mSparseProperties = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkPhysicalDeviceProperties* dst)
+		{
+			dst->apiVersion =	mApiVersion;
+			dst->driverVersion =	mDriverVersion;
+			dst->vendorID =	mVendorID;
+			dst->deviceID =	mDeviceID;
+			dst->deviceType =	mDeviceType;
+			dst->deviceName =	mDeviceName;
+			dst->VK_UUID_SIZE =	mVK_UUID_SIZE;
+			dst->limits =	mLimits;
+			dst->sparseProperties =	mSparseProperties;
+		}
+
+		void CopyFrom(VkPhysicalDeviceProperties* src)
+		{
+			mApiVersion = src->apiVersion;
+			mDriverVersion = src->driverVersion;
+			mVendorID = src->vendorID;
+			mDeviceID = src->deviceID;
+			mDeviceType = src->deviceType;
+			mDeviceName = src->deviceName;
+			mVK_UUID_SIZE = src->VK_UUID_SIZE;
+			mLimits = src->limits;
+			mSparseProperties = src->sparseProperties;
+		}
 	};
 
 	public ref class ExtensionProperties
@@ -532,6 +684,18 @@ namespace ManagedVulkan
 			{
 				mSpecVersion = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkExtensionProperties* dst)
+		{
+			dst->extensionName =	mExtensionName;
+			dst->specVersion =	mSpecVersion;
+		}
+
+		void CopyFrom(VkExtensionProperties* src)
+		{
+			mExtensionName = src->extensionName;
+			mSpecVersion = src->specVersion;
 		}
 	};
 
@@ -586,6 +750,22 @@ namespace ManagedVulkan
 			{
 				mDescription = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkLayerProperties* dst)
+		{
+			dst->layerName =	mLayerName;
+			dst->specVersion =	mSpecVersion;
+			dst->implementationVersion =	mImplementationVersion;
+			dst->description =	mDescription;
+		}
+
+		void CopyFrom(VkLayerProperties* src)
+		{
+			mLayerName = src->layerName;
+			mSpecVersion = src->specVersion;
+			mImplementationVersion = src->implementationVersion;
+			mDescription = src->description;
 		}
 	};
 
@@ -665,17 +845,39 @@ namespace ManagedVulkan
 				mApiVersion = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkApplicationInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->pApplicationName =	mApplicationName;
+			dst->applicationVersion =	mApplicationVersion;
+			dst->pEngineName =	mEngineName;
+			dst->engineVersion =	mEngineVersion;
+			dst->apiVersion =	mApiVersion;
+		}
+
+		void CopyFrom(VkApplicationInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mApplicationName = src->pApplicationName;
+			mApplicationVersion = src->applicationVersion;
+			mEngineName = src->pEngineName;
+			mEngineVersion = src->engineVersion;
+			mApiVersion = src->apiVersion;
+		}
 	};
 
 	public ref class AllocationCallbacks
 	{
 	private:
 		IntPtr mUserData = IntPtr.Zero;
-		PFN_vkAllocationFunction mPfnAllocation;
-		PFN_vkReallocationFunction mPfnReallocation;
-		PFN_vkFreeFunction mPfnFree;
-		PFN_vkInternalAllocationNotification mPfnInternalAllocation;
-		PFN_vkInternalFreeNotification mPfnInternalFree;
+		PFN_vkAllocationFunction^ mPfnAllocation = nullptr;
+		PFN_vkReallocationFunction^ mPfnReallocation = nullptr;
+		PFN_vkFreeFunction^ mPfnFree = nullptr;
+		PFN_vkInternalAllocationNotification^ mPfnInternalAllocation = nullptr;
+		PFN_vkInternalFreeNotification^ mPfnInternalFree = nullptr;
 	public:
 		property IntPtr UserData
 		{
@@ -688,60 +890,80 @@ namespace ManagedVulkan
 				mUserData = value; 
 			}
 		}
-		property PFN_vkAllocationFunction PfnAllocation
+		property PFN_vkAllocationFunction^ PfnAllocation
 		{
-			PFN_vkAllocationFunction get()
+			PFN_vkAllocationFunction^ get()
 			{
 				return mPfnAllocation;
 			}
-			void set(PFN_vkAllocationFunction value)
+			void set(PFN_vkAllocationFunction^ value)
 			{
 				mPfnAllocation = value; 
 			}
 		}
-		property PFN_vkReallocationFunction PfnReallocation
+		property PFN_vkReallocationFunction^ PfnReallocation
 		{
-			PFN_vkReallocationFunction get()
+			PFN_vkReallocationFunction^ get()
 			{
 				return mPfnReallocation;
 			}
-			void set(PFN_vkReallocationFunction value)
+			void set(PFN_vkReallocationFunction^ value)
 			{
 				mPfnReallocation = value; 
 			}
 		}
-		property PFN_vkFreeFunction PfnFree
+		property PFN_vkFreeFunction^ PfnFree
 		{
-			PFN_vkFreeFunction get()
+			PFN_vkFreeFunction^ get()
 			{
 				return mPfnFree;
 			}
-			void set(PFN_vkFreeFunction value)
+			void set(PFN_vkFreeFunction^ value)
 			{
 				mPfnFree = value; 
 			}
 		}
-		property PFN_vkInternalAllocationNotification PfnInternalAllocation
+		property PFN_vkInternalAllocationNotification^ PfnInternalAllocation
 		{
-			PFN_vkInternalAllocationNotification get()
+			PFN_vkInternalAllocationNotification^ get()
 			{
 				return mPfnInternalAllocation;
 			}
-			void set(PFN_vkInternalAllocationNotification value)
+			void set(PFN_vkInternalAllocationNotification^ value)
 			{
 				mPfnInternalAllocation = value; 
 			}
 		}
-		property PFN_vkInternalFreeNotification PfnInternalFree
+		property PFN_vkInternalFreeNotification^ PfnInternalFree
 		{
-			PFN_vkInternalFreeNotification get()
+			PFN_vkInternalFreeNotification^ get()
 			{
 				return mPfnInternalFree;
 			}
-			void set(PFN_vkInternalFreeNotification value)
+			void set(PFN_vkInternalFreeNotification^ value)
 			{
 				mPfnInternalFree = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkAllocationCallbacks* dst)
+		{
+			dst->pUserData =	mUserData;
+			dst->pfnAllocation =	mPfnAllocation;
+			dst->pfnReallocation =	mPfnReallocation;
+			dst->pfnFree =	mPfnFree;
+			dst->pfnInternalAllocation =	mPfnInternalAllocation;
+			dst->pfnInternalFree =	mPfnInternalFree;
+		}
+
+		void CopyFrom(VkAllocationCallbacks* src)
+		{
+			mUserData = src->pUserData;
+			mPfnAllocation = src->pfnAllocation;
+			mPfnReallocation = src->pfnReallocation;
+			mPfnFree = src->pfnFree;
+			mPfnInternalAllocation = src->pfnInternalAllocation;
+			mPfnInternalFree = src->pfnInternalFree;
 		}
 	};
 
@@ -808,6 +1030,26 @@ namespace ManagedVulkan
 			{
 				mQueuePriorities = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkDeviceQueueCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->queueFamilyIndex =	mQueueFamilyIndex;
+			dst->queueCount =	mQueueCount;
+			dst->pQueuePriorities =	mQueuePriorities;
+		}
+
+		void CopyFrom(VkDeviceQueueCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mQueueFamilyIndex = src->queueFamilyIndex;
+			mQueueCount = src->queueCount;
+			mQueuePriorities = src->pQueuePriorities;
 		}
 	};
 
@@ -923,6 +1165,34 @@ namespace ManagedVulkan
 				mEnabledFeatures = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkDeviceCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->queueCreateInfoCount =	mQueueCreateInfoCount;
+			dst->pQueueCreateInfos =	mQueueCreateInfos;
+			dst->enabledLayerCount =	mEnabledLayerCount;
+			dst->ppEnabledLayerNames =	mEnabledLayerNames;
+			dst->enabledExtensionCount =	mEnabledExtensionCount;
+			dst->ppEnabledExtensionNames =	mEnabledExtensionNames;
+			dst->pEnabledFeatures =	mEnabledFeatures;
+		}
+
+		void CopyFrom(VkDeviceCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mQueueCreateInfoCount = src->queueCreateInfoCount;
+			mQueueCreateInfos = src->pQueueCreateInfos;
+			mEnabledLayerCount = src->enabledLayerCount;
+			mEnabledLayerNames = src->ppEnabledLayerNames;
+			mEnabledExtensionCount = src->enabledExtensionCount;
+			mEnabledExtensionNames = src->ppEnabledExtensionNames;
+			mEnabledFeatures = src->pEnabledFeatures;
+		}
 	};
 
 	public ref class InstanceCreateInfo
@@ -1013,6 +1283,30 @@ namespace ManagedVulkan
 				mEnabledExtensionNames = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkInstanceCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->pApplicationInfo =	mApplicationInfo;
+			dst->enabledLayerCount =	mEnabledLayerCount;
+			dst->ppEnabledLayerNames =	mEnabledLayerNames;
+			dst->enabledExtensionCount =	mEnabledExtensionCount;
+			dst->ppEnabledExtensionNames =	mEnabledExtensionNames;
+		}
+
+		void CopyFrom(VkInstanceCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mApplicationInfo = src->pApplicationInfo;
+			mEnabledLayerCount = src->enabledLayerCount;
+			mEnabledLayerNames = src->ppEnabledLayerNames;
+			mEnabledExtensionCount = src->enabledExtensionCount;
+			mEnabledExtensionNames = src->ppEnabledExtensionNames;
+		}
 	};
 
 	public ref class QueueFamilyProperties
@@ -1066,6 +1360,22 @@ namespace ManagedVulkan
 			{
 				mMinImageTransferGranularity = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkQueueFamilyProperties* dst)
+		{
+			dst->queueFlags =	mQueueFlags;
+			dst->queueCount =	mQueueCount;
+			dst->timestampValidBits =	mTimestampValidBits;
+			dst->minImageTransferGranularity =	mMinImageTransferGranularity;
+		}
+
+		void CopyFrom(VkQueueFamilyProperties* src)
+		{
+			mQueueFlags = src->queueFlags;
+			mQueueCount = src->queueCount;
+			mTimestampValidBits = src->timestampValidBits;
+			mMinImageTransferGranularity = src->minImageTransferGranularity;
 		}
 	};
 
@@ -1121,6 +1431,22 @@ namespace ManagedVulkan
 				mVK_MAX_MEMORY_HEAPS = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkPhysicalDeviceMemoryProperties* dst)
+		{
+			dst->memoryTypeCount =	mMemoryTypeCount;
+			dst->VK_MAX_MEMORY_TYPES =	mVK_MAX_MEMORY_TYPES;
+			dst->memoryHeapCount =	mMemoryHeapCount;
+			dst->VK_MAX_MEMORY_HEAPS =	mVK_MAX_MEMORY_HEAPS;
+		}
+
+		void CopyFrom(VkPhysicalDeviceMemoryProperties* src)
+		{
+			mMemoryTypeCount = src->memoryTypeCount;
+			mVK_MAX_MEMORY_TYPES = src->VK_MAX_MEMORY_TYPES;
+			mMemoryHeapCount = src->memoryHeapCount;
+			mVK_MAX_MEMORY_HEAPS = src->VK_MAX_MEMORY_HEAPS;
+		}
 	};
 
 	public ref class MemoryAllocateInfo
@@ -1162,6 +1488,22 @@ namespace ManagedVulkan
 			{
 				mMemoryTypeIndex = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkMemoryAllocateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->allocationSize =	mAllocationSize;
+			dst->memoryTypeIndex =	mMemoryTypeIndex;
+		}
+
+		void CopyFrom(VkMemoryAllocateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mAllocationSize = src->allocationSize;
+			mMemoryTypeIndex = src->memoryTypeIndex;
 		}
 	};
 
@@ -1205,6 +1547,20 @@ namespace ManagedVulkan
 				mMemoryTypeBits = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkMemoryRequirements* dst)
+		{
+			dst->size =	mSize;
+			dst->alignment =	mAlignment;
+			dst->memoryTypeBits =	mMemoryTypeBits;
+		}
+
+		void CopyFrom(VkMemoryRequirements* src)
+		{
+			mSize = src->size;
+			mAlignment = src->alignment;
+			mMemoryTypeBits = src->memoryTypeBits;
+		}
 	};
 
 	public ref class SparseImageFormatProperties
@@ -1246,6 +1602,20 @@ namespace ManagedVulkan
 			{
 				mFlags = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkSparseImageFormatProperties* dst)
+		{
+			dst->aspectMask =	mAspectMask;
+			dst->imageGranularity =	mImageGranularity;
+			dst->flags =	mFlags;
+		}
+
+		void CopyFrom(VkSparseImageFormatProperties* src)
+		{
+			mAspectMask = src->aspectMask;
+			mImageGranularity = src->imageGranularity;
+			mFlags = src->flags;
 		}
 	};
 
@@ -1313,6 +1683,24 @@ namespace ManagedVulkan
 				mImageMipTailStride = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkSparseImageMemoryRequirements* dst)
+		{
+			dst->formatProperties =	mFormatProperties;
+			dst->imageMipTailFirstLod =	mImageMipTailFirstLod;
+			dst->imageMipTailSize =	mImageMipTailSize;
+			dst->imageMipTailOffset =	mImageMipTailOffset;
+			dst->imageMipTailStride =	mImageMipTailStride;
+		}
+
+		void CopyFrom(VkSparseImageMemoryRequirements* src)
+		{
+			mFormatProperties = src->formatProperties;
+			mImageMipTailFirstLod = src->imageMipTailFirstLod;
+			mImageMipTailSize = src->imageMipTailSize;
+			mImageMipTailOffset = src->imageMipTailOffset;
+			mImageMipTailStride = src->imageMipTailStride;
+		}
 	};
 
 	public ref class MemoryType
@@ -1343,6 +1731,18 @@ namespace ManagedVulkan
 				mHeapIndex = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkMemoryType* dst)
+		{
+			dst->propertyFlags =	mPropertyFlags;
+			dst->heapIndex =	mHeapIndex;
+		}
+
+		void CopyFrom(VkMemoryType* src)
+		{
+			mPropertyFlags = src->propertyFlags;
+			mHeapIndex = src->heapIndex;
+		}
 	};
 
 	public ref class MemoryHeap
@@ -1372,6 +1772,18 @@ namespace ManagedVulkan
 			{
 				mFlags = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkMemoryHeap* dst)
+		{
+			dst->size =	mSize;
+			dst->flags =	mFlags;
+		}
+
+		void CopyFrom(VkMemoryHeap* src)
+		{
+			mSize = src->size;
+			mFlags = src->flags;
 		}
 	};
 
@@ -1427,6 +1839,24 @@ namespace ManagedVulkan
 				mSize = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkMappedMemoryRange* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->memory =	mMemory;
+			dst->offset =	mOffset;
+			dst->size =	mSize;
+		}
+
+		void CopyFrom(VkMappedMemoryRange* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mMemory = src->memory;
+			mOffset = src->offset;
+			mSize = src->size;
+		}
 	};
 
 	public ref class FormatProperties
@@ -1468,6 +1898,20 @@ namespace ManagedVulkan
 			{
 				mBufferFeatures = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkFormatProperties* dst)
+		{
+			dst->linearTilingFeatures =	mLinearTilingFeatures;
+			dst->optimalTilingFeatures =	mOptimalTilingFeatures;
+			dst->bufferFeatures =	mBufferFeatures;
+		}
+
+		void CopyFrom(VkFormatProperties* src)
+		{
+			mLinearTilingFeatures = src->linearTilingFeatures;
+			mOptimalTilingFeatures = src->optimalTilingFeatures;
+			mBufferFeatures = src->bufferFeatures;
 		}
 	};
 
@@ -1535,6 +1979,24 @@ namespace ManagedVulkan
 				mMaxResourceSize = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkImageFormatProperties* dst)
+		{
+			dst->maxExtent =	mMaxExtent;
+			dst->maxMipLevels =	mMaxMipLevels;
+			dst->maxArrayLayers =	mMaxArrayLayers;
+			dst->sampleCounts =	mSampleCounts;
+			dst->maxResourceSize =	mMaxResourceSize;
+		}
+
+		void CopyFrom(VkImageFormatProperties* src)
+		{
+			mMaxExtent = src->maxExtent;
+			mMaxMipLevels = src->maxMipLevels;
+			mMaxArrayLayers = src->maxArrayLayers;
+			mSampleCounts = src->sampleCounts;
+			mMaxResourceSize = src->maxResourceSize;
+		}
 	};
 
 	public ref class DescriptorBufferInfo
@@ -1577,6 +2039,20 @@ namespace ManagedVulkan
 				mRange = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkDescriptorBufferInfo* dst)
+		{
+			dst->buffer =	mBuffer;
+			dst->offset =	mOffset;
+			dst->range =	mRange;
+		}
+
+		void CopyFrom(VkDescriptorBufferInfo* src)
+		{
+			mBuffer = src->buffer;
+			mOffset = src->offset;
+			mRange = src->range;
+		}
 	};
 
 	public ref class DescriptorImageInfo
@@ -1618,6 +2094,20 @@ namespace ManagedVulkan
 			{
 				mImageLayout = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkDescriptorImageInfo* dst)
+		{
+			dst->sampler =	mSampler;
+			dst->imageView =	mImageView;
+			dst->imageLayout =	mImageLayout;
+		}
+
+		void CopyFrom(VkDescriptorImageInfo* src)
+		{
+			mSampler = src->sampler;
+			mImageView = src->imageView;
+			mImageLayout = src->imageLayout;
 		}
 	};
 
@@ -1733,6 +2223,34 @@ namespace ManagedVulkan
 				mTexelBufferView = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkWriteDescriptorSet* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->dstSet =	mDstSet;
+			dst->dstBinding =	mDstBinding;
+			dst->dstArrayElement =	mDstArrayElement;
+			dst->descriptorCount =	mDescriptorCount;
+			dst->descriptorType =	mDescriptorType;
+			dst->pImageInfo =	mImageInfo;
+			dst->pBufferInfo =	mBufferInfo;
+			dst->pTexelBufferView =	mTexelBufferView;
+		}
+
+		void CopyFrom(VkWriteDescriptorSet* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mDstSet = src->dstSet;
+			mDstBinding = src->dstBinding;
+			mDstArrayElement = src->dstArrayElement;
+			mDescriptorCount = src->descriptorCount;
+			mDescriptorType = src->descriptorType;
+			mImageInfo = src->pImageInfo;
+			mBufferInfo = src->pBufferInfo;
+			mTexelBufferView = src->pTexelBufferView;
+		}
 	};
 
 	public ref class CopyDescriptorSet
@@ -1835,6 +2353,32 @@ namespace ManagedVulkan
 				mDescriptorCount = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkCopyDescriptorSet* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->srcSet =	mSrcSet;
+			dst->srcBinding =	mSrcBinding;
+			dst->srcArrayElement =	mSrcArrayElement;
+			dst->dstSet =	mDstSet;
+			dst->dstBinding =	mDstBinding;
+			dst->dstArrayElement =	mDstArrayElement;
+			dst->descriptorCount =	mDescriptorCount;
+		}
+
+		void CopyFrom(VkCopyDescriptorSet* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mSrcSet = src->srcSet;
+			mSrcBinding = src->srcBinding;
+			mSrcArrayElement = src->srcArrayElement;
+			mDstSet = src->dstSet;
+			mDstBinding = src->dstBinding;
+			mDstArrayElement = src->dstArrayElement;
+			mDescriptorCount = src->descriptorCount;
+		}
 	};
 
 	public ref class BufferCreateInfo
@@ -1925,6 +2469,30 @@ namespace ManagedVulkan
 				mQueueFamilyIndices = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkBufferCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->size =	mSize;
+			dst->usage =	mUsage;
+			dst->sharingMode =	mSharingMode;
+			dst->queueFamilyIndexCount =	mQueueFamilyIndexCount;
+			dst->pQueueFamilyIndices =	mQueueFamilyIndices;
+		}
+
+		void CopyFrom(VkBufferCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mSize = src->size;
+			mUsage = src->usage;
+			mSharingMode = src->sharingMode;
+			mQueueFamilyIndexCount = src->queueFamilyIndexCount;
+			mQueueFamilyIndices = src->pQueueFamilyIndices;
+		}
 	};
 
 	public ref class BufferViewCreateInfo
@@ -2003,6 +2571,28 @@ namespace ManagedVulkan
 				mRange = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkBufferViewCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst-><NAME> =	m<NAME>;
+			dst->buffer =	mBuffer;
+			dst->format =	mFormat;
+			dst->offset =	mOffset;
+			dst->range =	mRange;
+		}
+
+		void CopyFrom(VkBufferViewCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			m<NAME> = src-><NAME>;
+			mBuffer = src->buffer;
+			mFormat = src->format;
+			mOffset = src->offset;
+			mRange = src->range;
+		}
 	};
 
 	public ref class ImageSubresource
@@ -2044,6 +2634,20 @@ namespace ManagedVulkan
 			{
 				mArrayLayer = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkImageSubresource* dst)
+		{
+			dst->aspectMask =	mAspectMask;
+			dst->mipLevel =	mMipLevel;
+			dst->arrayLayer =	mArrayLayer;
+		}
+
+		void CopyFrom(VkImageSubresource* src)
+		{
+			mAspectMask = src->aspectMask;
+			mMipLevel = src->mipLevel;
+			mArrayLayer = src->arrayLayer;
 		}
 	};
 
@@ -2098,6 +2702,22 @@ namespace ManagedVulkan
 			{
 				mLayerCount = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkImageSubresourceLayers* dst)
+		{
+			dst->aspectMask =	mAspectMask;
+			dst->mipLevel =	mMipLevel;
+			dst->baseArrayLayer =	mBaseArrayLayer;
+			dst->layerCount =	mLayerCount;
+		}
+
+		void CopyFrom(VkImageSubresourceLayers* src)
+		{
+			mAspectMask = src->aspectMask;
+			mMipLevel = src->mipLevel;
+			mBaseArrayLayer = src->baseArrayLayer;
+			mLayerCount = src->layerCount;
 		}
 	};
 
@@ -2165,6 +2785,24 @@ namespace ManagedVulkan
 				mLayerCount = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkImageSubresourceRange* dst)
+		{
+			dst->aspectMask =	mAspectMask;
+			dst->baseMipLevel =	mBaseMipLevel;
+			dst->levelCount =	mLevelCount;
+			dst->baseArrayLayer =	mBaseArrayLayer;
+			dst->layerCount =	mLayerCount;
+		}
+
+		void CopyFrom(VkImageSubresourceRange* src)
+		{
+			mAspectMask = src->aspectMask;
+			mBaseMipLevel = src->baseMipLevel;
+			mLevelCount = src->levelCount;
+			mBaseArrayLayer = src->baseArrayLayer;
+			mLayerCount = src->layerCount;
+		}
 	};
 
 	public ref class MemoryBarrier
@@ -2206,6 +2844,22 @@ namespace ManagedVulkan
 			{
 				mDstAccessMask = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkMemoryBarrier* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->srcAccessMask =	mSrcAccessMask;
+			dst->dstAccessMask =	mDstAccessMask;
+		}
+
+		void CopyFrom(VkMemoryBarrier* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mSrcAccessMask = src->srcAccessMask;
+			mDstAccessMask = src->dstAccessMask;
 		}
 	};
 
@@ -2308,6 +2962,32 @@ namespace ManagedVulkan
 			{
 				mSize = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkBufferMemoryBarrier* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->srcAccessMask =	mSrcAccessMask;
+			dst->dstAccessMask =	mDstAccessMask;
+			dst->srcQueueFamilyIndex =	mSrcQueueFamilyIndex;
+			dst->dstQueueFamilyIndex =	mDstQueueFamilyIndex;
+			dst->buffer =	mBuffer;
+			dst->offset =	mOffset;
+			dst->size =	mSize;
+		}
+
+		void CopyFrom(VkBufferMemoryBarrier* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mSrcAccessMask = src->srcAccessMask;
+			mDstAccessMask = src->dstAccessMask;
+			mSrcQueueFamilyIndex = src->srcQueueFamilyIndex;
+			mDstQueueFamilyIndex = src->dstQueueFamilyIndex;
+			mBuffer = src->buffer;
+			mOffset = src->offset;
+			mSize = src->size;
 		}
 	};
 
@@ -2422,6 +3102,34 @@ namespace ManagedVulkan
 			{
 				mSubresourceRange = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkImageMemoryBarrier* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->srcAccessMask =	mSrcAccessMask;
+			dst->dstAccessMask =	mDstAccessMask;
+			dst->oldLayout =	mOldLayout;
+			dst->newLayout =	mNewLayout;
+			dst->srcQueueFamilyIndex =	mSrcQueueFamilyIndex;
+			dst->dstQueueFamilyIndex =	mDstQueueFamilyIndex;
+			dst->image =	mImage;
+			dst->subresourceRange =	mSubresourceRange;
+		}
+
+		void CopyFrom(VkImageMemoryBarrier* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mSrcAccessMask = src->srcAccessMask;
+			mDstAccessMask = src->dstAccessMask;
+			mOldLayout = src->oldLayout;
+			mNewLayout = src->newLayout;
+			mSrcQueueFamilyIndex = src->srcQueueFamilyIndex;
+			mDstQueueFamilyIndex = src->dstQueueFamilyIndex;
+			mImage = src->image;
+			mSubresourceRange = src->subresourceRange;
 		}
 	};
 
@@ -2597,6 +3305,44 @@ namespace ManagedVulkan
 				mInitialLayout = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkImageCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->imageType =	mImageType;
+			dst->format =	mFormat;
+			dst->extent =	mExtent;
+			dst->mipLevels =	mMipLevels;
+			dst->arrayLayers =	mArrayLayers;
+			dst->samples =	mSamples;
+			dst->tiling =	mTiling;
+			dst->usage =	mUsage;
+			dst->sharingMode =	mSharingMode;
+			dst->queueFamilyIndexCount =	mQueueFamilyIndexCount;
+			dst->pQueueFamilyIndices =	mQueueFamilyIndices;
+			dst->initialLayout =	mInitialLayout;
+		}
+
+		void CopyFrom(VkImageCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mImageType = src->imageType;
+			mFormat = src->format;
+			mExtent = src->extent;
+			mMipLevels = src->mipLevels;
+			mArrayLayers = src->arrayLayers;
+			mSamples = src->samples;
+			mTiling = src->tiling;
+			mUsage = src->usage;
+			mSharingMode = src->sharingMode;
+			mQueueFamilyIndexCount = src->queueFamilyIndexCount;
+			mQueueFamilyIndices = src->pQueueFamilyIndices;
+			mInitialLayout = src->initialLayout;
+		}
 	};
 
 	public ref class SubresourceLayout
@@ -2662,6 +3408,24 @@ namespace ManagedVulkan
 			{
 				mDepthPitch = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkSubresourceLayout* dst)
+		{
+			dst->offset =	mOffset;
+			dst->size =	mSize;
+			dst->rowPitch =	mRowPitch;
+			dst->arrayPitch =	mArrayPitch;
+			dst->depthPitch =	mDepthPitch;
+		}
+
+		void CopyFrom(VkSubresourceLayout* src)
+		{
+			mOffset = src->offset;
+			mSize = src->size;
+			mRowPitch = src->rowPitch;
+			mArrayPitch = src->arrayPitch;
+			mDepthPitch = src->depthPitch;
 		}
 	};
 
@@ -2753,6 +3517,30 @@ namespace ManagedVulkan
 				mSubresourceRange = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkImageViewCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->image =	mImage;
+			dst->viewType =	mViewType;
+			dst->format =	mFormat;
+			dst->components =	mComponents;
+			dst->subresourceRange =	mSubresourceRange;
+		}
+
+		void CopyFrom(VkImageViewCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mImage = src->image;
+			mViewType = src->viewType;
+			mFormat = src->format;
+			mComponents = src->components;
+			mSubresourceRange = src->subresourceRange;
+		}
 	};
 
 	public ref class BufferCopy
@@ -2794,6 +3582,20 @@ namespace ManagedVulkan
 			{
 				mSize = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkBufferCopy* dst)
+		{
+			dst->srcOffset =	mSrcOffset;
+			dst->dstOffset =	mDstOffset;
+			dst->size =	mSize;
+		}
+
+		void CopyFrom(VkBufferCopy* src)
+		{
+			mSrcOffset = src->srcOffset;
+			mDstOffset = src->dstOffset;
+			mSize = src->size;
 		}
 	};
 
@@ -2860,6 +3662,24 @@ namespace ManagedVulkan
 			{
 				m<NAME> = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkSparseMemoryBind* dst)
+		{
+			dst->resourceOffset =	mResourceOffset;
+			dst->size =	mSize;
+			dst->memory =	mMemory;
+			dst->memoryOffset =	mMemoryOffset;
+			dst-><NAME> =	m<NAME>;
+		}
+
+		void CopyFrom(VkSparseMemoryBind* src)
+		{
+			mResourceOffset = src->resourceOffset;
+			mSize = src->size;
+			mMemory = src->memory;
+			mMemoryOffset = src->memoryOffset;
+			m<NAME> = src-><NAME>;
 		}
 	};
 
@@ -2939,6 +3759,26 @@ namespace ManagedVulkan
 				m<NAME> = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkSparseImageMemoryBind* dst)
+		{
+			dst->subresource =	mSubresource;
+			dst->offset =	mOffset;
+			dst->extent =	mExtent;
+			dst->memory =	mMemory;
+			dst->memoryOffset =	mMemoryOffset;
+			dst-><NAME> =	m<NAME>;
+		}
+
+		void CopyFrom(VkSparseImageMemoryBind* src)
+		{
+			mSubresource = src->subresource;
+			mOffset = src->offset;
+			mExtent = src->extent;
+			mMemory = src->memory;
+			mMemoryOffset = src->memoryOffset;
+			m<NAME> = src-><NAME>;
+		}
 	};
 
 	public ref class SparseBufferMemoryBindInfo
@@ -2980,6 +3820,20 @@ namespace ManagedVulkan
 			{
 				mBinds = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkSparseBufferMemoryBindInfo* dst)
+		{
+			dst->buffer =	mBuffer;
+			dst->bindCount =	mBindCount;
+			dst->pBinds =	mBinds;
+		}
+
+		void CopyFrom(VkSparseBufferMemoryBindInfo* src)
+		{
+			mBuffer = src->buffer;
+			mBindCount = src->bindCount;
+			mBinds = src->pBinds;
 		}
 	};
 
@@ -3023,6 +3877,20 @@ namespace ManagedVulkan
 				mBinds = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkSparseImageOpaqueMemoryBindInfo* dst)
+		{
+			dst->image =	mImage;
+			dst->bindCount =	mBindCount;
+			dst->pBinds =	mBinds;
+		}
+
+		void CopyFrom(VkSparseImageOpaqueMemoryBindInfo* src)
+		{
+			mImage = src->image;
+			mBindCount = src->bindCount;
+			mBinds = src->pBinds;
+		}
 	};
 
 	public ref class SparseImageMemoryBindInfo
@@ -3064,6 +3932,20 @@ namespace ManagedVulkan
 			{
 				mBinds = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkSparseImageMemoryBindInfo* dst)
+		{
+			dst->image =	mImage;
+			dst->bindCount =	mBindCount;
+			dst->pBinds =	mBinds;
+		}
+
+		void CopyFrom(VkSparseImageMemoryBindInfo* src)
+		{
+			mImage = src->image;
+			mBindCount = src->bindCount;
+			mBinds = src->pBinds;
 		}
 	};
 
@@ -3203,6 +4085,38 @@ namespace ManagedVulkan
 				mSignalSemaphores = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkBindSparseInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->waitSemaphoreCount =	mWaitSemaphoreCount;
+			dst->pWaitSemaphores =	mWaitSemaphores;
+			dst->bufferBindCount =	mBufferBindCount;
+			dst->pBufferBinds =	mBufferBinds;
+			dst->imageOpaqueBindCount =	mImageOpaqueBindCount;
+			dst->pImageOpaqueBinds =	mImageOpaqueBinds;
+			dst->imageBindCount =	mImageBindCount;
+			dst->pImageBinds =	mImageBinds;
+			dst->signalSemaphoreCount =	mSignalSemaphoreCount;
+			dst->pSignalSemaphores =	mSignalSemaphores;
+		}
+
+		void CopyFrom(VkBindSparseInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mWaitSemaphoreCount = src->waitSemaphoreCount;
+			mWaitSemaphores = src->pWaitSemaphores;
+			mBufferBindCount = src->bufferBindCount;
+			mBufferBinds = src->pBufferBinds;
+			mImageOpaqueBindCount = src->imageOpaqueBindCount;
+			mImageOpaqueBinds = src->pImageOpaqueBinds;
+			mImageBindCount = src->imageBindCount;
+			mImageBinds = src->pImageBinds;
+			mSignalSemaphoreCount = src->signalSemaphoreCount;
+			mSignalSemaphores = src->pSignalSemaphores;
+		}
 	};
 
 	public ref class ImageCopy
@@ -3269,6 +4183,24 @@ namespace ManagedVulkan
 				mExtent = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkImageCopy* dst)
+		{
+			dst->srcSubresource =	mSrcSubresource;
+			dst->srcOffset =	mSrcOffset;
+			dst->dstSubresource =	mDstSubresource;
+			dst->dstOffset =	mDstOffset;
+			dst->extent =	mExtent;
+		}
+
+		void CopyFrom(VkImageCopy* src)
+		{
+			mSrcSubresource = src->srcSubresource;
+			mSrcOffset = src->srcOffset;
+			mDstSubresource = src->dstSubresource;
+			mDstOffset = src->dstOffset;
+			mExtent = src->extent;
+		}
 	};
 
 	public ref class ImageBlit
@@ -3322,6 +4254,22 @@ namespace ManagedVulkan
 			{
 				m2 = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkImageBlit* dst)
+		{
+			dst->srcSubresource =	mSrcSubresource;
+			dst->2 =	m2;
+			dst->dstSubresource =	mDstSubresource;
+			dst->2 =	m2;
+		}
+
+		void CopyFrom(VkImageBlit* src)
+		{
+			mSrcSubresource = src->srcSubresource;
+			m2 = src->2;
+			mDstSubresource = src->dstSubresource;
+			m2 = src->2;
 		}
 	};
 
@@ -3401,6 +4349,26 @@ namespace ManagedVulkan
 				mImageExtent = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkBufferImageCopy* dst)
+		{
+			dst->bufferOffset =	mBufferOffset;
+			dst->bufferRowLength =	mBufferRowLength;
+			dst->bufferImageHeight =	mBufferImageHeight;
+			dst->imageSubresource =	mImageSubresource;
+			dst->imageOffset =	mImageOffset;
+			dst->imageExtent =	mImageExtent;
+		}
+
+		void CopyFrom(VkBufferImageCopy* src)
+		{
+			mBufferOffset = src->bufferOffset;
+			mBufferRowLength = src->bufferRowLength;
+			mBufferImageHeight = src->bufferImageHeight;
+			mImageSubresource = src->imageSubresource;
+			mImageOffset = src->imageOffset;
+			mImageExtent = src->imageExtent;
+		}
 	};
 
 	public ref class ImageResolve
@@ -3467,6 +4435,24 @@ namespace ManagedVulkan
 				mExtent = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkImageResolve* dst)
+		{
+			dst->srcSubresource =	mSrcSubresource;
+			dst->srcOffset =	mSrcOffset;
+			dst->dstSubresource =	mDstSubresource;
+			dst->dstOffset =	mDstOffset;
+			dst->extent =	mExtent;
+		}
+
+		void CopyFrom(VkImageResolve* src)
+		{
+			mSrcSubresource = src->srcSubresource;
+			mSrcOffset = src->srcOffset;
+			mDstSubresource = src->dstSubresource;
+			mDstOffset = src->dstOffset;
+			mExtent = src->extent;
+		}
 	};
 
 	public ref class ShaderModuleCreateInfo
@@ -3520,6 +4506,24 @@ namespace ManagedVulkan
 			{
 				mCode = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkShaderModuleCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->codeSize =	mCodeSize;
+			dst->pCode =	mCode;
+		}
+
+		void CopyFrom(VkShaderModuleCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mCodeSize = src->codeSize;
+			mCode = src->pCode;
 		}
 	};
 
@@ -3587,6 +4591,24 @@ namespace ManagedVulkan
 				mImmutableSamplers = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkDescriptorSetLayoutBinding* dst)
+		{
+			dst->binding =	mBinding;
+			dst->descriptorType =	mDescriptorType;
+			dst->descriptorCount =	mDescriptorCount;
+			dst->stageFlags =	mStageFlags;
+			dst->pImmutableSamplers =	mImmutableSamplers;
+		}
+
+		void CopyFrom(VkDescriptorSetLayoutBinding* src)
+		{
+			mBinding = src->binding;
+			mDescriptorType = src->descriptorType;
+			mDescriptorCount = src->descriptorCount;
+			mStageFlags = src->stageFlags;
+			mImmutableSamplers = src->pImmutableSamplers;
+		}
 	};
 
 	public ref class DescriptorSetLayoutCreateInfo
@@ -3641,6 +4663,24 @@ namespace ManagedVulkan
 				mBindings = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkDescriptorSetLayoutCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->bindingCount =	mBindingCount;
+			dst->pBindings =	mBindings;
+		}
+
+		void CopyFrom(VkDescriptorSetLayoutCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mBindingCount = src->bindingCount;
+			mBindings = src->pBindings;
+		}
 	};
 
 	public ref class DescriptorPoolSize
@@ -3670,6 +4710,18 @@ namespace ManagedVulkan
 			{
 				mDescriptorCount = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkDescriptorPoolSize* dst)
+		{
+			dst->type =	mType;
+			dst->descriptorCount =	mDescriptorCount;
+		}
+
+		void CopyFrom(VkDescriptorPoolSize* src)
+		{
+			mType = src->type;
+			mDescriptorCount = src->descriptorCount;
 		}
 	};
 
@@ -3737,6 +4789,26 @@ namespace ManagedVulkan
 				mPoolSizes = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkDescriptorPoolCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->maxSets =	mMaxSets;
+			dst->poolSizeCount =	mPoolSizeCount;
+			dst->pPoolSizes =	mPoolSizes;
+		}
+
+		void CopyFrom(VkDescriptorPoolCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mMaxSets = src->maxSets;
+			mPoolSizeCount = src->poolSizeCount;
+			mPoolSizes = src->pPoolSizes;
+		}
 	};
 
 	public ref class DescriptorSetAllocateInfo
@@ -3791,6 +4863,24 @@ namespace ManagedVulkan
 				mSetLayouts = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkDescriptorSetAllocateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->descriptorPool =	mDescriptorPool;
+			dst->descriptorSetCount =	mDescriptorSetCount;
+			dst->pSetLayouts =	mSetLayouts;
+		}
+
+		void CopyFrom(VkDescriptorSetAllocateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mDescriptorPool = src->descriptorPool;
+			mDescriptorSetCount = src->descriptorSetCount;
+			mSetLayouts = src->pSetLayouts;
+		}
 	};
 
 	public ref class SpecializationMapEntry
@@ -3832,6 +4922,20 @@ namespace ManagedVulkan
 			{
 				mSize = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkSpecializationMapEntry* dst)
+		{
+			dst->constantID =	mConstantID;
+			dst->offset =	mOffset;
+			dst->size =	mSize;
+		}
+
+		void CopyFrom(VkSpecializationMapEntry* src)
+		{
+			mConstantID = src->constantID;
+			mOffset = src->offset;
+			mSize = src->size;
 		}
 	};
 
@@ -3886,6 +4990,22 @@ namespace ManagedVulkan
 			{
 				mData = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkSpecializationInfo* dst)
+		{
+			dst->mapEntryCount =	mMapEntryCount;
+			dst->pMapEntries =	mMapEntries;
+			dst->dataSize =	mDataSize;
+			dst->pData =	mData;
+		}
+
+		void CopyFrom(VkSpecializationInfo* src)
+		{
+			mMapEntryCount = src->mapEntryCount;
+			mMapEntries = src->pMapEntries;
+			mDataSize = src->dataSize;
+			mData = src->pData;
 		}
 	};
 
@@ -3965,6 +5085,28 @@ namespace ManagedVulkan
 				mSpecializationInfo = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkPipelineShaderStageCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->stage =	mStage;
+			dst->module =	mModule;
+			dst->pName =	mName;
+			dst->pSpecializationInfo =	mSpecializationInfo;
+		}
+
+		void CopyFrom(VkPipelineShaderStageCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mStage = src->stage;
+			mModule = src->module;
+			mName = src->pName;
+			mSpecializationInfo = src->pSpecializationInfo;
+		}
 	};
 
 	public ref class ComputePipelineCreateInfo
@@ -4043,6 +5185,28 @@ namespace ManagedVulkan
 				mBasePipelineIndex = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkComputePipelineCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->stage =	mStage;
+			dst->layout =	mLayout;
+			dst->basePipelineHandle =	mBasePipelineHandle;
+			dst->basePipelineIndex =	mBasePipelineIndex;
+		}
+
+		void CopyFrom(VkComputePipelineCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mStage = src->stage;
+			mLayout = src->layout;
+			mBasePipelineHandle = src->basePipelineHandle;
+			mBasePipelineIndex = src->basePipelineIndex;
+		}
 	};
 
 	public ref class VertexInputBindingDescription
@@ -4084,6 +5248,20 @@ namespace ManagedVulkan
 			{
 				mInputRate = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkVertexInputBindingDescription* dst)
+		{
+			dst->binding =	mBinding;
+			dst->stride =	mStride;
+			dst->inputRate =	mInputRate;
+		}
+
+		void CopyFrom(VkVertexInputBindingDescription* src)
+		{
+			mBinding = src->binding;
+			mStride = src->stride;
+			mInputRate = src->inputRate;
 		}
 	};
 
@@ -4138,6 +5316,22 @@ namespace ManagedVulkan
 			{
 				mOffset = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkVertexInputAttributeDescription* dst)
+		{
+			dst->location =	mLocation;
+			dst->binding =	mBinding;
+			dst->format =	mFormat;
+			dst->offset =	mOffset;
+		}
+
+		void CopyFrom(VkVertexInputAttributeDescription* src)
+		{
+			mLocation = src->location;
+			mBinding = src->binding;
+			mFormat = src->format;
+			mOffset = src->offset;
 		}
 	};
 
@@ -4217,6 +5411,28 @@ namespace ManagedVulkan
 				mVertexAttributeDescriptions = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkPipelineVertexInputStateCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->vertexBindingDescriptionCount =	mVertexBindingDescriptionCount;
+			dst->pVertexBindingDescriptions =	mVertexBindingDescriptions;
+			dst->vertexAttributeDescriptionCount =	mVertexAttributeDescriptionCount;
+			dst->pVertexAttributeDescriptions =	mVertexAttributeDescriptions;
+		}
+
+		void CopyFrom(VkPipelineVertexInputStateCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mVertexBindingDescriptionCount = src->vertexBindingDescriptionCount;
+			mVertexBindingDescriptions = src->pVertexBindingDescriptions;
+			mVertexAttributeDescriptionCount = src->vertexAttributeDescriptionCount;
+			mVertexAttributeDescriptions = src->pVertexAttributeDescriptions;
+		}
 	};
 
 	public ref class PipelineInputAssemblyStateCreateInfo
@@ -4271,6 +5487,24 @@ namespace ManagedVulkan
 				mPrimitiveRestartEnable = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkPipelineInputAssemblyStateCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->topology =	mTopology;
+			dst->primitiveRestartEnable =	mPrimitiveRestartEnable;
+		}
+
+		void CopyFrom(VkPipelineInputAssemblyStateCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mTopology = src->topology;
+			mPrimitiveRestartEnable = src->primitiveRestartEnable;
+		}
 	};
 
 	public ref class PipelineTessellationStateCreateInfo
@@ -4312,6 +5546,22 @@ namespace ManagedVulkan
 			{
 				mPatchControlPoints = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkPipelineTessellationStateCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->patchControlPoints =	mPatchControlPoints;
+		}
+
+		void CopyFrom(VkPipelineTessellationStateCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mPatchControlPoints = src->patchControlPoints;
 		}
 	};
 
@@ -4390,6 +5640,28 @@ namespace ManagedVulkan
 			{
 				mScissors = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkPipelineViewportStateCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->viewportCount =	mViewportCount;
+			dst->pViewports =	mViewports;
+			dst->scissorCount =	mScissorCount;
+			dst->pScissors =	mScissors;
+		}
+
+		void CopyFrom(VkPipelineViewportStateCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mViewportCount = src->viewportCount;
+			mViewports = src->pViewports;
+			mScissorCount = src->scissorCount;
+			mScissors = src->pScissors;
 		}
 	};
 
@@ -4541,6 +5813,40 @@ namespace ManagedVulkan
 				mLineWidth = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkPipelineRasterizationStateCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->depthClampEnable =	mDepthClampEnable;
+			dst->rasterizerDiscardEnable =	mRasterizerDiscardEnable;
+			dst->polygonMode =	mPolygonMode;
+			dst->cullMode =	mCullMode;
+			dst->frontFace =	mFrontFace;
+			dst->depthBiasEnable =	mDepthBiasEnable;
+			dst->depthBiasConstantFactor =	mDepthBiasConstantFactor;
+			dst->depthBiasClamp =	mDepthBiasClamp;
+			dst->depthBiasSlopeFactor =	mDepthBiasSlopeFactor;
+			dst->lineWidth =	mLineWidth;
+		}
+
+		void CopyFrom(VkPipelineRasterizationStateCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mDepthClampEnable = src->depthClampEnable;
+			mRasterizerDiscardEnable = src->rasterizerDiscardEnable;
+			mPolygonMode = src->polygonMode;
+			mCullMode = src->cullMode;
+			mFrontFace = src->frontFace;
+			mDepthBiasEnable = src->depthBiasEnable;
+			mDepthBiasConstantFactor = src->depthBiasConstantFactor;
+			mDepthBiasClamp = src->depthBiasClamp;
+			mDepthBiasSlopeFactor = src->depthBiasSlopeFactor;
+			mLineWidth = src->lineWidth;
+		}
 	};
 
 	public ref class PipelineMultisampleStateCreateInfo
@@ -4642,6 +5948,32 @@ namespace ManagedVulkan
 			{
 				mAlphaToOneEnable = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkPipelineMultisampleStateCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->rasterizationSamples =	mRasterizationSamples;
+			dst->sampleShadingEnable =	mSampleShadingEnable;
+			dst->minSampleShading =	mMinSampleShading;
+			dst->pSampleMask =	mSampleMask;
+			dst->alphaToCoverageEnable =	mAlphaToCoverageEnable;
+			dst->alphaToOneEnable =	mAlphaToOneEnable;
+		}
+
+		void CopyFrom(VkPipelineMultisampleStateCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mRasterizationSamples = src->rasterizationSamples;
+			mSampleShadingEnable = src->sampleShadingEnable;
+			mMinSampleShading = src->minSampleShading;
+			mSampleMask = src->pSampleMask;
+			mAlphaToCoverageEnable = src->alphaToCoverageEnable;
+			mAlphaToOneEnable = src->alphaToOneEnable;
 		}
 	};
 
@@ -4745,6 +6077,30 @@ namespace ManagedVulkan
 				mColorWriteMask = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkPipelineColorBlendAttachmentState* dst)
+		{
+			dst->blendEnable =	mBlendEnable;
+			dst->srcColorBlendFactor =	mSrcColorBlendFactor;
+			dst->dstColorBlendFactor =	mDstColorBlendFactor;
+			dst->colorBlendOp =	mColorBlendOp;
+			dst->srcAlphaBlendFactor =	mSrcAlphaBlendFactor;
+			dst->dstAlphaBlendFactor =	mDstAlphaBlendFactor;
+			dst->alphaBlendOp =	mAlphaBlendOp;
+			dst->colorWriteMask =	mColorWriteMask;
+		}
+
+		void CopyFrom(VkPipelineColorBlendAttachmentState* src)
+		{
+			mBlendEnable = src->blendEnable;
+			mSrcColorBlendFactor = src->srcColorBlendFactor;
+			mDstColorBlendFactor = src->dstColorBlendFactor;
+			mColorBlendOp = src->colorBlendOp;
+			mSrcAlphaBlendFactor = src->srcAlphaBlendFactor;
+			mDstAlphaBlendFactor = src->dstAlphaBlendFactor;
+			mAlphaBlendOp = src->alphaBlendOp;
+			mColorWriteMask = src->colorWriteMask;
+		}
 	};
 
 	public ref class PipelineColorBlendStateCreateInfo
@@ -4835,6 +6191,30 @@ namespace ManagedVulkan
 				m4 = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkPipelineColorBlendStateCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->logicOpEnable =	mLogicOpEnable;
+			dst->logicOp =	mLogicOp;
+			dst->attachmentCount =	mAttachmentCount;
+			dst->pAttachments =	mAttachments;
+			dst->4 =	m4;
+		}
+
+		void CopyFrom(VkPipelineColorBlendStateCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mLogicOpEnable = src->logicOpEnable;
+			mLogicOp = src->logicOp;
+			mAttachmentCount = src->attachmentCount;
+			mAttachments = src->pAttachments;
+			m4 = src->4;
+		}
 	};
 
 	public ref class PipelineDynamicStateCreateInfo
@@ -4843,7 +6223,7 @@ namespace ManagedVulkan
 		VkStructureType mSType;
 		VkPipelineDynamicStateCreateFlags mFlags;
 		UInt32 mDynamicStateCount = 0;
-		array<VkDynamicState>^ mDynamicStates = nullptr;
+		VkDynamicState mDynamicStates = nullptr;
 	public:
 		property VkStructureType SType
 		{
@@ -4878,16 +6258,34 @@ namespace ManagedVulkan
 				mDynamicStateCount = value; 
 			}
 		}
-		property array<VkDynamicState>^ DynamicStates
+		property VkDynamicState DynamicStates
 		{
-			array<VkDynamicState>^ get()
+			VkDynamicState get()
 			{
 				return mDynamicStates;
 			}
-			void set(array<VkDynamicState>^ value)
+			void set(VkDynamicState value)
 			{
 				mDynamicStates = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkPipelineDynamicStateCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->dynamicStateCount =	mDynamicStateCount;
+			dst->pDynamicStates =	mDynamicStates;
+		}
+
+		void CopyFrom(VkPipelineDynamicStateCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mDynamicStateCount = src->dynamicStateCount;
+			mDynamicStates = src->pDynamicStates;
 		}
 	};
 
@@ -4978,6 +6376,28 @@ namespace ManagedVulkan
 			{
 				mReference = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkStencilOpState* dst)
+		{
+			dst->failOp =	mFailOp;
+			dst->passOp =	mPassOp;
+			dst->depthFailOp =	mDepthFailOp;
+			dst->compareOp =	mCompareOp;
+			dst->compareMask =	mCompareMask;
+			dst->writeMask =	mWriteMask;
+			dst->reference =	mReference;
+		}
+
+		void CopyFrom(VkStencilOpState* src)
+		{
+			mFailOp = src->failOp;
+			mPassOp = src->passOp;
+			mDepthFailOp = src->depthFailOp;
+			mCompareOp = src->compareOp;
+			mCompareMask = src->compareMask;
+			mWriteMask = src->writeMask;
+			mReference = src->reference;
 		}
 	};
 
@@ -5116,6 +6536,38 @@ namespace ManagedVulkan
 			{
 				mMaxDepthBounds = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkPipelineDepthStencilStateCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->depthTestEnable =	mDepthTestEnable;
+			dst->depthWriteEnable =	mDepthWriteEnable;
+			dst->depthCompareOp =	mDepthCompareOp;
+			dst->depthBoundsTestEnable =	mDepthBoundsTestEnable;
+			dst->stencilTestEnable =	mStencilTestEnable;
+			dst->front =	mFront;
+			dst->back =	mBack;
+			dst->minDepthBounds =	mMinDepthBounds;
+			dst->maxDepthBounds =	mMaxDepthBounds;
+		}
+
+		void CopyFrom(VkPipelineDepthStencilStateCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mDepthTestEnable = src->depthTestEnable;
+			mDepthWriteEnable = src->depthWriteEnable;
+			mDepthCompareOp = src->depthCompareOp;
+			mDepthBoundsTestEnable = src->depthBoundsTestEnable;
+			mStencilTestEnable = src->stencilTestEnable;
+			mFront = src->front;
+			mBack = src->back;
+			mMinDepthBounds = src->minDepthBounds;
+			mMaxDepthBounds = src->maxDepthBounds;
 		}
 	};
 
@@ -5339,6 +6791,52 @@ namespace ManagedVulkan
 				mBasePipelineIndex = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkGraphicsPipelineCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->stageCount =	mStageCount;
+			dst->pStages =	mStages;
+			dst->pVertexInputState =	mVertexInputState;
+			dst->pInputAssemblyState =	mInputAssemblyState;
+			dst->pTessellationState =	mTessellationState;
+			dst->pViewportState =	mViewportState;
+			dst->pRasterizationState =	mRasterizationState;
+			dst->pMultisampleState =	mMultisampleState;
+			dst->pDepthStencilState =	mDepthStencilState;
+			dst->pColorBlendState =	mColorBlendState;
+			dst->pDynamicState =	mDynamicState;
+			dst->layout =	mLayout;
+			dst->renderPass =	mRenderPass;
+			dst->subpass =	mSubpass;
+			dst->basePipelineHandle =	mBasePipelineHandle;
+			dst->basePipelineIndex =	mBasePipelineIndex;
+		}
+
+		void CopyFrom(VkGraphicsPipelineCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mStageCount = src->stageCount;
+			mStages = src->pStages;
+			mVertexInputState = src->pVertexInputState;
+			mInputAssemblyState = src->pInputAssemblyState;
+			mTessellationState = src->pTessellationState;
+			mViewportState = src->pViewportState;
+			mRasterizationState = src->pRasterizationState;
+			mMultisampleState = src->pMultisampleState;
+			mDepthStencilState = src->pDepthStencilState;
+			mColorBlendState = src->pColorBlendState;
+			mDynamicState = src->pDynamicState;
+			mLayout = src->layout;
+			mRenderPass = src->renderPass;
+			mSubpass = src->subpass;
+			mBasePipelineHandle = src->basePipelineHandle;
+			mBasePipelineIndex = src->basePipelineIndex;
+		}
 	};
 
 	public ref class PipelineCacheCreateInfo
@@ -5393,6 +6891,24 @@ namespace ManagedVulkan
 				mInitialData = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkPipelineCacheCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->initialDataSize =	mInitialDataSize;
+			dst->pInitialData =	mInitialData;
+		}
+
+		void CopyFrom(VkPipelineCacheCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mInitialDataSize = src->initialDataSize;
+			mInitialData = src->pInitialData;
+		}
 	};
 
 	public ref class PushConstantRange
@@ -5434,6 +6950,20 @@ namespace ManagedVulkan
 			{
 				mSize = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkPushConstantRange* dst)
+		{
+			dst->stageFlags =	mStageFlags;
+			dst->offset =	mOffset;
+			dst->size =	mSize;
+		}
+
+		void CopyFrom(VkPushConstantRange* src)
+		{
+			mStageFlags = src->stageFlags;
+			mOffset = src->offset;
+			mSize = src->size;
 		}
 	};
 
@@ -5512,6 +7042,28 @@ namespace ManagedVulkan
 			{
 				mPushConstantRanges = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkPipelineLayoutCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->setLayoutCount =	mSetLayoutCount;
+			dst->pSetLayouts =	mSetLayouts;
+			dst->pushConstantRangeCount =	mPushConstantRangeCount;
+			dst->pPushConstantRanges =	mPushConstantRanges;
+		}
+
+		void CopyFrom(VkPipelineLayoutCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mSetLayoutCount = src->setLayoutCount;
+			mSetLayouts = src->pSetLayouts;
+			mPushConstantRangeCount = src->pushConstantRangeCount;
+			mPushConstantRanges = src->pPushConstantRanges;
 		}
 	};
 
@@ -5723,6 +7275,50 @@ namespace ManagedVulkan
 				mUnnormalizedCoordinates = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkSamplerCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->magFilter =	mMagFilter;
+			dst->minFilter =	mMinFilter;
+			dst->mipmapMode =	mMipmapMode;
+			dst->addressModeU =	mAddressModeU;
+			dst->addressModeV =	mAddressModeV;
+			dst->addressModeW =	mAddressModeW;
+			dst->mipLodBias =	mMipLodBias;
+			dst->anisotropyEnable =	mAnisotropyEnable;
+			dst->maxAnisotropy =	mMaxAnisotropy;
+			dst->compareEnable =	mCompareEnable;
+			dst->compareOp =	mCompareOp;
+			dst->minLod =	mMinLod;
+			dst->maxLod =	mMaxLod;
+			dst->borderColor =	mBorderColor;
+			dst->unnormalizedCoordinates =	mUnnormalizedCoordinates;
+		}
+
+		void CopyFrom(VkSamplerCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mMagFilter = src->magFilter;
+			mMinFilter = src->minFilter;
+			mMipmapMode = src->mipmapMode;
+			mAddressModeU = src->addressModeU;
+			mAddressModeV = src->addressModeV;
+			mAddressModeW = src->addressModeW;
+			mMipLodBias = src->mipLodBias;
+			mAnisotropyEnable = src->anisotropyEnable;
+			mMaxAnisotropy = src->maxAnisotropy;
+			mCompareEnable = src->compareEnable;
+			mCompareOp = src->compareOp;
+			mMinLod = src->minLod;
+			mMaxLod = src->maxLod;
+			mBorderColor = src->borderColor;
+			mUnnormalizedCoordinates = src->unnormalizedCoordinates;
+		}
 	};
 
 	public ref class CommandPoolCreateInfo
@@ -5764,6 +7360,22 @@ namespace ManagedVulkan
 			{
 				mQueueFamilyIndex = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkCommandPoolCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->queueFamilyIndex =	mQueueFamilyIndex;
+		}
+
+		void CopyFrom(VkCommandPoolCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mQueueFamilyIndex = src->queueFamilyIndex;
 		}
 	};
 
@@ -5818,6 +7430,24 @@ namespace ManagedVulkan
 			{
 				mCommandBufferCount = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkCommandBufferAllocateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->commandPool =	mCommandPool;
+			dst->level =	mLevel;
+			dst->commandBufferCount =	mCommandBufferCount;
+		}
+
+		void CopyFrom(VkCommandBufferAllocateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mCommandPool = src->commandPool;
+			mLevel = src->level;
+			mCommandBufferCount = src->commandBufferCount;
 		}
 	};
 
@@ -5909,6 +7539,30 @@ namespace ManagedVulkan
 				mPipelineStatistics = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkCommandBufferInheritanceInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->renderPass =	mRenderPass;
+			dst->subpass =	mSubpass;
+			dst->framebuffer =	mFramebuffer;
+			dst->occlusionQueryEnable =	mOcclusionQueryEnable;
+			dst->queryFlags =	mQueryFlags;
+			dst->pipelineStatistics =	mPipelineStatistics;
+		}
+
+		void CopyFrom(VkCommandBufferInheritanceInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mRenderPass = src->renderPass;
+			mSubpass = src->subpass;
+			mFramebuffer = src->framebuffer;
+			mOcclusionQueryEnable = src->occlusionQueryEnable;
+			mQueryFlags = src->queryFlags;
+			mPipelineStatistics = src->pipelineStatistics;
+		}
 	};
 
 	public ref class CommandBufferBeginInfo
@@ -5951,6 +7605,22 @@ namespace ManagedVulkan
 				mInheritanceInfo = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkCommandBufferBeginInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->pInheritanceInfo =	mInheritanceInfo;
+		}
+
+		void CopyFrom(VkCommandBufferBeginInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mInheritanceInfo = src->pInheritanceInfo;
+		}
 	};
 
 	public ref class RenderPassBeginInfo
@@ -5961,7 +7631,7 @@ namespace ManagedVulkan
 		Framebuffer^ mFramebuffer = nullptr;
 		Rect2D^ mRenderArea = nullptr;
 		UInt32 mClearValueCount = 0;
-		VkClearValue* mClearValues;
+		ClearValue^ mClearValues = nullptr;
 	public:
 		property VkStructureType SType
 		{
@@ -6018,16 +7688,38 @@ namespace ManagedVulkan
 				mClearValueCount = value; 
 			}
 		}
-		property VkClearValue* ClearValues
+		property ClearValue^ ClearValues
 		{
-			VkClearValue* get()
+			ClearValue^ get()
 			{
 				return mClearValues;
 			}
-			void set(VkClearValue* value)
+			void set(ClearValue^ value)
 			{
 				mClearValues = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkRenderPassBeginInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->renderPass =	mRenderPass;
+			dst->framebuffer =	mFramebuffer;
+			dst->renderArea =	mRenderArea;
+			dst->clearValueCount =	mClearValueCount;
+			dst->pClearValues =	mClearValues;
+		}
+
+		void CopyFrom(VkRenderPassBeginInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mRenderPass = src->renderPass;
+			mFramebuffer = src->framebuffer;
+			mRenderArea = src->renderArea;
+			mClearValueCount = src->clearValueCount;
+			mClearValues = src->pClearValues;
 		}
 	};
 
@@ -6059,6 +7751,18 @@ namespace ManagedVulkan
 				mStencil = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkClearDepthStencilValue* dst)
+		{
+			dst->depth =	mDepth;
+			dst->stencil =	mStencil;
+		}
+
+		void CopyFrom(VkClearDepthStencilValue* src)
+		{
+			mDepth = src->depth;
+			mStencil = src->stencil;
+		}
 	};
 
 	public ref class ClearAttachment
@@ -6066,7 +7770,7 @@ namespace ManagedVulkan
 	private:
 		VkImageAspectFlags mAspectMask;
 		UInt32 mColorAttachment = 0;
-		VkClearValue mClearValue;
+		ClearValue^ mClearValue = nullptr;
 	public:
 		property VkImageAspectFlags AspectMask
 		{
@@ -6090,16 +7794,30 @@ namespace ManagedVulkan
 				mColorAttachment = value; 
 			}
 		}
-		property VkClearValue ClearValue
+		property ClearValue^ ClearValue
 		{
-			VkClearValue get()
+			ClearValue^ get()
 			{
 				return mClearValue;
 			}
-			void set(VkClearValue value)
+			void set(ClearValue^ value)
 			{
 				mClearValue = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkClearAttachment* dst)
+		{
+			dst->aspectMask =	mAspectMask;
+			dst->colorAttachment =	mColorAttachment;
+			dst->clearValue =	mClearValue;
+		}
+
+		void CopyFrom(VkClearAttachment* src)
+		{
+			mAspectMask = src->aspectMask;
+			mColorAttachment = src->colorAttachment;
+			mClearValue = src->clearValue;
 		}
 	};
 
@@ -6215,6 +7933,32 @@ namespace ManagedVulkan
 				mFinalLayout = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkAttachmentDescription* dst)
+		{
+			dst->flags =	mFlags;
+			dst->format =	mFormat;
+			dst->samples =	mSamples;
+			dst->loadOp =	mLoadOp;
+			dst->storeOp =	mStoreOp;
+			dst->stencilLoadOp =	mStencilLoadOp;
+			dst->stencilStoreOp =	mStencilStoreOp;
+			dst->initialLayout =	mInitialLayout;
+			dst->finalLayout =	mFinalLayout;
+		}
+
+		void CopyFrom(VkAttachmentDescription* src)
+		{
+			mFlags = src->flags;
+			mFormat = src->format;
+			mSamples = src->samples;
+			mLoadOp = src->loadOp;
+			mStoreOp = src->storeOp;
+			mStencilLoadOp = src->stencilLoadOp;
+			mStencilStoreOp = src->stencilStoreOp;
+			mInitialLayout = src->initialLayout;
+			mFinalLayout = src->finalLayout;
+		}
 	};
 
 	public ref class AttachmentReference
@@ -6244,6 +7988,18 @@ namespace ManagedVulkan
 			{
 				mLayout = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkAttachmentReference* dst)
+		{
+			dst->attachment =	mAttachment;
+			dst->layout =	mLayout;
+		}
+
+		void CopyFrom(VkAttachmentReference* src)
+		{
+			mAttachment = src->attachment;
+			mLayout = src->layout;
 		}
 	};
 
@@ -6371,6 +8127,34 @@ namespace ManagedVulkan
 				mPreserveAttachments = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkSubpassDescription* dst)
+		{
+			dst->flags =	mFlags;
+			dst->pipelineBindPoint =	mPipelineBindPoint;
+			dst->inputAttachmentCount =	mInputAttachmentCount;
+			dst->pInputAttachments =	mInputAttachments;
+			dst->colorAttachmentCount =	mColorAttachmentCount;
+			dst->pColorAttachments =	mColorAttachments;
+			dst->pResolveAttachments =	mResolveAttachments;
+			dst->pDepthStencilAttachment =	mDepthStencilAttachment;
+			dst->preserveAttachmentCount =	mPreserveAttachmentCount;
+			dst->pPreserveAttachments =	mPreserveAttachments;
+		}
+
+		void CopyFrom(VkSubpassDescription* src)
+		{
+			mFlags = src->flags;
+			mPipelineBindPoint = src->pipelineBindPoint;
+			mInputAttachmentCount = src->inputAttachmentCount;
+			mInputAttachments = src->pInputAttachments;
+			mColorAttachmentCount = src->colorAttachmentCount;
+			mColorAttachments = src->pColorAttachments;
+			mResolveAttachments = src->pResolveAttachments;
+			mDepthStencilAttachment = src->pDepthStencilAttachment;
+			mPreserveAttachmentCount = src->preserveAttachmentCount;
+			mPreserveAttachments = src->pPreserveAttachments;
+		}
 	};
 
 	public ref class SubpassDependency
@@ -6460,6 +8244,28 @@ namespace ManagedVulkan
 			{
 				mDependencyFlags = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkSubpassDependency* dst)
+		{
+			dst->srcSubpass =	mSrcSubpass;
+			dst->dstSubpass =	mDstSubpass;
+			dst->srcStageMask =	mSrcStageMask;
+			dst->dstStageMask =	mDstStageMask;
+			dst->srcAccessMask =	mSrcAccessMask;
+			dst->dstAccessMask =	mDstAccessMask;
+			dst->dependencyFlags =	mDependencyFlags;
+		}
+
+		void CopyFrom(VkSubpassDependency* src)
+		{
+			mSrcSubpass = src->srcSubpass;
+			mDstSubpass = src->dstSubpass;
+			mSrcStageMask = src->srcStageMask;
+			mDstStageMask = src->dstStageMask;
+			mSrcAccessMask = src->srcAccessMask;
+			mDstAccessMask = src->dstAccessMask;
+			mDependencyFlags = src->dependencyFlags;
 		}
 	};
 
@@ -6563,6 +8369,32 @@ namespace ManagedVulkan
 				mDependencies = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkRenderPassCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->attachmentCount =	mAttachmentCount;
+			dst->pAttachments =	mAttachments;
+			dst->subpassCount =	mSubpassCount;
+			dst->pSubpasses =	mSubpasses;
+			dst->dependencyCount =	mDependencyCount;
+			dst->pDependencies =	mDependencies;
+		}
+
+		void CopyFrom(VkRenderPassCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mAttachmentCount = src->attachmentCount;
+			mAttachments = src->pAttachments;
+			mSubpassCount = src->subpassCount;
+			mSubpasses = src->pSubpasses;
+			mDependencyCount = src->dependencyCount;
+			mDependencies = src->pDependencies;
+		}
 	};
 
 	public ref class EventCreateInfo
@@ -6593,6 +8425,20 @@ namespace ManagedVulkan
 				mFlags = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkEventCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+		}
+
+		void CopyFrom(VkEventCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+		}
 	};
 
 	public ref class FenceCreateInfo
@@ -6622,6 +8468,20 @@ namespace ManagedVulkan
 			{
 				mFlags = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkFenceCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+		}
+
+		void CopyFrom(VkFenceCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
 		}
 	};
 
@@ -7289,6 +9149,124 @@ namespace ManagedVulkan
 				mInheritedQueries = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkPhysicalDeviceFeatures* dst)
+		{
+			dst->robustBufferAccess =	mRobustBufferAccess;
+			dst->fullDrawIndexUint32 =	mFullDrawIndexUint32;
+			dst->imageCubeArray =	mImageCubeArray;
+			dst->independentBlend =	mIndependentBlend;
+			dst->geometryShader =	mGeometryShader;
+			dst->tessellationShader =	mTessellationShader;
+			dst->sampleRateShading =	mSampleRateShading;
+			dst->dualSrcBlend =	mDualSrcBlend;
+			dst->logicOp =	mLogicOp;
+			dst->multiDrawIndirect =	mMultiDrawIndirect;
+			dst->drawIndirectFirstInstance =	mDrawIndirectFirstInstance;
+			dst->depthClamp =	mDepthClamp;
+			dst->depthBiasClamp =	mDepthBiasClamp;
+			dst->fillModeNonSolid =	mFillModeNonSolid;
+			dst->depthBounds =	mDepthBounds;
+			dst->wideLines =	mWideLines;
+			dst->largePoints =	mLargePoints;
+			dst->alphaToOne =	mAlphaToOne;
+			dst->multiViewport =	mMultiViewport;
+			dst->samplerAnisotropy =	mSamplerAnisotropy;
+			dst->textureCompressionETC2 =	mTextureCompressionETC2;
+			dst->textureCompressionASTC_LDR =	mTextureCompressionASTC_LDR;
+			dst->textureCompressionBC =	mTextureCompressionBC;
+			dst->occlusionQueryPrecise =	mOcclusionQueryPrecise;
+			dst->pipelineStatisticsQuery =	mPipelineStatisticsQuery;
+			dst->vertexPipelineStoresAndAtomics =	mVertexPipelineStoresAndAtomics;
+			dst->fragmentStoresAndAtomics =	mFragmentStoresAndAtomics;
+			dst->shaderTessellationAndGeometryPointSize =	mShaderTessellationAndGeometryPointSize;
+			dst->shaderImageGatherExtended =	mShaderImageGatherExtended;
+			dst->shaderStorageImageExtendedFormats =	mShaderStorageImageExtendedFormats;
+			dst->shaderStorageImageMultisample =	mShaderStorageImageMultisample;
+			dst->shaderStorageImageReadWithoutFormat =	mShaderStorageImageReadWithoutFormat;
+			dst->shaderStorageImageWriteWithoutFormat =	mShaderStorageImageWriteWithoutFormat;
+			dst->shaderUniformBufferArrayDynamicIndexing =	mShaderUniformBufferArrayDynamicIndexing;
+			dst->shaderSampledImageArrayDynamicIndexing =	mShaderSampledImageArrayDynamicIndexing;
+			dst->shaderStorageBufferArrayDynamicIndexing =	mShaderStorageBufferArrayDynamicIndexing;
+			dst->shaderStorageImageArrayDynamicIndexing =	mShaderStorageImageArrayDynamicIndexing;
+			dst->shaderClipDistance =	mShaderClipDistance;
+			dst->shaderCullDistance =	mShaderCullDistance;
+			dst->shaderFloat64 =	mShaderFloat64;
+			dst->shaderInt64 =	mShaderInt64;
+			dst->shaderInt16 =	mShaderInt16;
+			dst->shaderResourceResidency =	mShaderResourceResidency;
+			dst->shaderResourceMinLod =	mShaderResourceMinLod;
+			dst->sparseBinding =	mSparseBinding;
+			dst->sparseResidencyBuffer =	mSparseResidencyBuffer;
+			dst->sparseResidencyImage2D =	mSparseResidencyImage2D;
+			dst->sparseResidencyImage3D =	mSparseResidencyImage3D;
+			dst->sparseResidency2Samples =	mSparseResidency2Samples;
+			dst->sparseResidency4Samples =	mSparseResidency4Samples;
+			dst->sparseResidency8Samples =	mSparseResidency8Samples;
+			dst->sparseResidency16Samples =	mSparseResidency16Samples;
+			dst->sparseResidencyAliased =	mSparseResidencyAliased;
+			dst->variableMultisampleRate =	mVariableMultisampleRate;
+			dst->inheritedQueries =	mInheritedQueries;
+		}
+
+		void CopyFrom(VkPhysicalDeviceFeatures* src)
+		{
+			mRobustBufferAccess = src->robustBufferAccess;
+			mFullDrawIndexUint32 = src->fullDrawIndexUint32;
+			mImageCubeArray = src->imageCubeArray;
+			mIndependentBlend = src->independentBlend;
+			mGeometryShader = src->geometryShader;
+			mTessellationShader = src->tessellationShader;
+			mSampleRateShading = src->sampleRateShading;
+			mDualSrcBlend = src->dualSrcBlend;
+			mLogicOp = src->logicOp;
+			mMultiDrawIndirect = src->multiDrawIndirect;
+			mDrawIndirectFirstInstance = src->drawIndirectFirstInstance;
+			mDepthClamp = src->depthClamp;
+			mDepthBiasClamp = src->depthBiasClamp;
+			mFillModeNonSolid = src->fillModeNonSolid;
+			mDepthBounds = src->depthBounds;
+			mWideLines = src->wideLines;
+			mLargePoints = src->largePoints;
+			mAlphaToOne = src->alphaToOne;
+			mMultiViewport = src->multiViewport;
+			mSamplerAnisotropy = src->samplerAnisotropy;
+			mTextureCompressionETC2 = src->textureCompressionETC2;
+			mTextureCompressionASTC_LDR = src->textureCompressionASTC_LDR;
+			mTextureCompressionBC = src->textureCompressionBC;
+			mOcclusionQueryPrecise = src->occlusionQueryPrecise;
+			mPipelineStatisticsQuery = src->pipelineStatisticsQuery;
+			mVertexPipelineStoresAndAtomics = src->vertexPipelineStoresAndAtomics;
+			mFragmentStoresAndAtomics = src->fragmentStoresAndAtomics;
+			mShaderTessellationAndGeometryPointSize = src->shaderTessellationAndGeometryPointSize;
+			mShaderImageGatherExtended = src->shaderImageGatherExtended;
+			mShaderStorageImageExtendedFormats = src->shaderStorageImageExtendedFormats;
+			mShaderStorageImageMultisample = src->shaderStorageImageMultisample;
+			mShaderStorageImageReadWithoutFormat = src->shaderStorageImageReadWithoutFormat;
+			mShaderStorageImageWriteWithoutFormat = src->shaderStorageImageWriteWithoutFormat;
+			mShaderUniformBufferArrayDynamicIndexing = src->shaderUniformBufferArrayDynamicIndexing;
+			mShaderSampledImageArrayDynamicIndexing = src->shaderSampledImageArrayDynamicIndexing;
+			mShaderStorageBufferArrayDynamicIndexing = src->shaderStorageBufferArrayDynamicIndexing;
+			mShaderStorageImageArrayDynamicIndexing = src->shaderStorageImageArrayDynamicIndexing;
+			mShaderClipDistance = src->shaderClipDistance;
+			mShaderCullDistance = src->shaderCullDistance;
+			mShaderFloat64 = src->shaderFloat64;
+			mShaderInt64 = src->shaderInt64;
+			mShaderInt16 = src->shaderInt16;
+			mShaderResourceResidency = src->shaderResourceResidency;
+			mShaderResourceMinLod = src->shaderResourceMinLod;
+			mSparseBinding = src->sparseBinding;
+			mSparseResidencyBuffer = src->sparseResidencyBuffer;
+			mSparseResidencyImage2D = src->sparseResidencyImage2D;
+			mSparseResidencyImage3D = src->sparseResidencyImage3D;
+			mSparseResidency2Samples = src->sparseResidency2Samples;
+			mSparseResidency4Samples = src->sparseResidency4Samples;
+			mSparseResidency8Samples = src->sparseResidency8Samples;
+			mSparseResidency16Samples = src->sparseResidency16Samples;
+			mSparseResidencyAliased = src->sparseResidencyAliased;
+			mVariableMultisampleRate = src->variableMultisampleRate;
+			mInheritedQueries = src->inheritedQueries;
+		}
 	};
 
 	public ref class PhysicalDeviceSparseProperties
@@ -7354,6 +9332,24 @@ namespace ManagedVulkan
 			{
 				mResidencyNonResidentStrict = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkPhysicalDeviceSparseProperties* dst)
+		{
+			dst->residencyStandard2DBlockShape =	mResidencyStandard2DBlockShape;
+			dst->residencyStandard2DMultisampleBlockShape =	mResidencyStandard2DMultisampleBlockShape;
+			dst->residencyStandard3DBlockShape =	mResidencyStandard3DBlockShape;
+			dst->residencyAlignedMipSize =	mResidencyAlignedMipSize;
+			dst->residencyNonResidentStrict =	mResidencyNonResidentStrict;
+		}
+
+		void CopyFrom(VkPhysicalDeviceSparseProperties* src)
+		{
+			mResidencyStandard2DBlockShape = src->residencyStandard2DBlockShape;
+			mResidencyStandard2DMultisampleBlockShape = src->residencyStandard2DMultisampleBlockShape;
+			mResidencyStandard3DBlockShape = src->residencyStandard3DBlockShape;
+			mResidencyAlignedMipSize = src->residencyAlignedMipSize;
+			mResidencyNonResidentStrict = src->residencyNonResidentStrict;
 		}
 	};
 
@@ -8633,6 +10629,226 @@ namespace ManagedVulkan
 				mNonCoherentAtomSize = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkPhysicalDeviceLimits* dst)
+		{
+			dst->maxImageDimension1D =	mMaxImageDimension1D;
+			dst->maxImageDimension2D =	mMaxImageDimension2D;
+			dst->maxImageDimension3D =	mMaxImageDimension3D;
+			dst->maxImageDimensionCube =	mMaxImageDimensionCube;
+			dst->maxImageArrayLayers =	mMaxImageArrayLayers;
+			dst->maxTexelBufferElements =	mMaxTexelBufferElements;
+			dst->maxUniformBufferRange =	mMaxUniformBufferRange;
+			dst->maxStorageBufferRange =	mMaxStorageBufferRange;
+			dst->maxPushConstantsSize =	mMaxPushConstantsSize;
+			dst->maxMemoryAllocationCount =	mMaxMemoryAllocationCount;
+			dst->maxSamplerAllocationCount =	mMaxSamplerAllocationCount;
+			dst->bufferImageGranularity =	mBufferImageGranularity;
+			dst->sparseAddressSpaceSize =	mSparseAddressSpaceSize;
+			dst->maxBoundDescriptorSets =	mMaxBoundDescriptorSets;
+			dst->maxPerStageDescriptorSamplers =	mMaxPerStageDescriptorSamplers;
+			dst->maxPerStageDescriptorUniformBuffers =	mMaxPerStageDescriptorUniformBuffers;
+			dst->maxPerStageDescriptorStorageBuffers =	mMaxPerStageDescriptorStorageBuffers;
+			dst->maxPerStageDescriptorSampledImages =	mMaxPerStageDescriptorSampledImages;
+			dst->maxPerStageDescriptorStorageImages =	mMaxPerStageDescriptorStorageImages;
+			dst->maxPerStageDescriptorInputAttachments =	mMaxPerStageDescriptorInputAttachments;
+			dst->maxPerStageResources =	mMaxPerStageResources;
+			dst->maxDescriptorSetSamplers =	mMaxDescriptorSetSamplers;
+			dst->maxDescriptorSetUniformBuffers =	mMaxDescriptorSetUniformBuffers;
+			dst->maxDescriptorSetUniformBuffersDynamic =	mMaxDescriptorSetUniformBuffersDynamic;
+			dst->maxDescriptorSetStorageBuffers =	mMaxDescriptorSetStorageBuffers;
+			dst->maxDescriptorSetStorageBuffersDynamic =	mMaxDescriptorSetStorageBuffersDynamic;
+			dst->maxDescriptorSetSampledImages =	mMaxDescriptorSetSampledImages;
+			dst->maxDescriptorSetStorageImages =	mMaxDescriptorSetStorageImages;
+			dst->maxDescriptorSetInputAttachments =	mMaxDescriptorSetInputAttachments;
+			dst->maxVertexInputAttributes =	mMaxVertexInputAttributes;
+			dst->maxVertexInputBindings =	mMaxVertexInputBindings;
+			dst->maxVertexInputAttributeOffset =	mMaxVertexInputAttributeOffset;
+			dst->maxVertexInputBindingStride =	mMaxVertexInputBindingStride;
+			dst->maxVertexOutputComponents =	mMaxVertexOutputComponents;
+			dst->maxTessellationGenerationLevel =	mMaxTessellationGenerationLevel;
+			dst->maxTessellationPatchSize =	mMaxTessellationPatchSize;
+			dst->maxTessellationControlPerVertexInputComponents =	mMaxTessellationControlPerVertexInputComponents;
+			dst->maxTessellationControlPerVertexOutputComponents =	mMaxTessellationControlPerVertexOutputComponents;
+			dst->maxTessellationControlPerPatchOutputComponents =	mMaxTessellationControlPerPatchOutputComponents;
+			dst->maxTessellationControlTotalOutputComponents =	mMaxTessellationControlTotalOutputComponents;
+			dst->maxTessellationEvaluationInputComponents =	mMaxTessellationEvaluationInputComponents;
+			dst->maxTessellationEvaluationOutputComponents =	mMaxTessellationEvaluationOutputComponents;
+			dst->maxGeometryShaderInvocations =	mMaxGeometryShaderInvocations;
+			dst->maxGeometryInputComponents =	mMaxGeometryInputComponents;
+			dst->maxGeometryOutputComponents =	mMaxGeometryOutputComponents;
+			dst->maxGeometryOutputVertices =	mMaxGeometryOutputVertices;
+			dst->maxGeometryTotalOutputComponents =	mMaxGeometryTotalOutputComponents;
+			dst->maxFragmentInputComponents =	mMaxFragmentInputComponents;
+			dst->maxFragmentOutputAttachments =	mMaxFragmentOutputAttachments;
+			dst->maxFragmentDualSrcAttachments =	mMaxFragmentDualSrcAttachments;
+			dst->maxFragmentCombinedOutputResources =	mMaxFragmentCombinedOutputResources;
+			dst->maxComputeSharedMemorySize =	mMaxComputeSharedMemorySize;
+			dst->3 =	m3;
+			dst->maxComputeWorkGroupInvocations =	mMaxComputeWorkGroupInvocations;
+			dst->3 =	m3;
+			dst->subPixelPrecisionBits =	mSubPixelPrecisionBits;
+			dst->subTexelPrecisionBits =	mSubTexelPrecisionBits;
+			dst->mipmapPrecisionBits =	mMipmapPrecisionBits;
+			dst->maxDrawIndexedIndexValue =	mMaxDrawIndexedIndexValue;
+			dst->maxDrawIndirectCount =	mMaxDrawIndirectCount;
+			dst->maxSamplerLodBias =	mMaxSamplerLodBias;
+			dst->maxSamplerAnisotropy =	mMaxSamplerAnisotropy;
+			dst->maxViewports =	mMaxViewports;
+			dst->2 =	m2;
+			dst->2 =	m2;
+			dst->viewportSubPixelBits =	mViewportSubPixelBits;
+			dst->minMemoryMapAlignment =	mMinMemoryMapAlignment;
+			dst->minTexelBufferOffsetAlignment =	mMinTexelBufferOffsetAlignment;
+			dst->minUniformBufferOffsetAlignment =	mMinUniformBufferOffsetAlignment;
+			dst->minStorageBufferOffsetAlignment =	mMinStorageBufferOffsetAlignment;
+			dst->minTexelOffset =	mMinTexelOffset;
+			dst->maxTexelOffset =	mMaxTexelOffset;
+			dst->minTexelGatherOffset =	mMinTexelGatherOffset;
+			dst->maxTexelGatherOffset =	mMaxTexelGatherOffset;
+			dst->minInterpolationOffset =	mMinInterpolationOffset;
+			dst->maxInterpolationOffset =	mMaxInterpolationOffset;
+			dst->subPixelInterpolationOffsetBits =	mSubPixelInterpolationOffsetBits;
+			dst->maxFramebufferWidth =	mMaxFramebufferWidth;
+			dst->maxFramebufferHeight =	mMaxFramebufferHeight;
+			dst->maxFramebufferLayers =	mMaxFramebufferLayers;
+			dst->framebufferColorSampleCounts =	mFramebufferColorSampleCounts;
+			dst->framebufferDepthSampleCounts =	mFramebufferDepthSampleCounts;
+			dst->framebufferStencilSampleCounts =	mFramebufferStencilSampleCounts;
+			dst->framebufferNoAttachmentsSampleCounts =	mFramebufferNoAttachmentsSampleCounts;
+			dst->maxColorAttachments =	mMaxColorAttachments;
+			dst->sampledImageColorSampleCounts =	mSampledImageColorSampleCounts;
+			dst->sampledImageIntegerSampleCounts =	mSampledImageIntegerSampleCounts;
+			dst->sampledImageDepthSampleCounts =	mSampledImageDepthSampleCounts;
+			dst->sampledImageStencilSampleCounts =	mSampledImageStencilSampleCounts;
+			dst->storageImageSampleCounts =	mStorageImageSampleCounts;
+			dst->maxSampleMaskWords =	mMaxSampleMaskWords;
+			dst->timestampComputeAndGraphics =	mTimestampComputeAndGraphics;
+			dst->timestampPeriod =	mTimestampPeriod;
+			dst->maxClipDistances =	mMaxClipDistances;
+			dst->maxCullDistances =	mMaxCullDistances;
+			dst->maxCombinedClipAndCullDistances =	mMaxCombinedClipAndCullDistances;
+			dst->discreteQueuePriorities =	mDiscreteQueuePriorities;
+			dst->2 =	m2;
+			dst->2 =	m2;
+			dst->pointSizeGranularity =	mPointSizeGranularity;
+			dst->lineWidthGranularity =	mLineWidthGranularity;
+			dst->strictLines =	mStrictLines;
+			dst->standardSampleLocations =	mStandardSampleLocations;
+			dst->optimalBufferCopyOffsetAlignment =	mOptimalBufferCopyOffsetAlignment;
+			dst->optimalBufferCopyRowPitchAlignment =	mOptimalBufferCopyRowPitchAlignment;
+			dst->nonCoherentAtomSize =	mNonCoherentAtomSize;
+		}
+
+		void CopyFrom(VkPhysicalDeviceLimits* src)
+		{
+			mMaxImageDimension1D = src->maxImageDimension1D;
+			mMaxImageDimension2D = src->maxImageDimension2D;
+			mMaxImageDimension3D = src->maxImageDimension3D;
+			mMaxImageDimensionCube = src->maxImageDimensionCube;
+			mMaxImageArrayLayers = src->maxImageArrayLayers;
+			mMaxTexelBufferElements = src->maxTexelBufferElements;
+			mMaxUniformBufferRange = src->maxUniformBufferRange;
+			mMaxStorageBufferRange = src->maxStorageBufferRange;
+			mMaxPushConstantsSize = src->maxPushConstantsSize;
+			mMaxMemoryAllocationCount = src->maxMemoryAllocationCount;
+			mMaxSamplerAllocationCount = src->maxSamplerAllocationCount;
+			mBufferImageGranularity = src->bufferImageGranularity;
+			mSparseAddressSpaceSize = src->sparseAddressSpaceSize;
+			mMaxBoundDescriptorSets = src->maxBoundDescriptorSets;
+			mMaxPerStageDescriptorSamplers = src->maxPerStageDescriptorSamplers;
+			mMaxPerStageDescriptorUniformBuffers = src->maxPerStageDescriptorUniformBuffers;
+			mMaxPerStageDescriptorStorageBuffers = src->maxPerStageDescriptorStorageBuffers;
+			mMaxPerStageDescriptorSampledImages = src->maxPerStageDescriptorSampledImages;
+			mMaxPerStageDescriptorStorageImages = src->maxPerStageDescriptorStorageImages;
+			mMaxPerStageDescriptorInputAttachments = src->maxPerStageDescriptorInputAttachments;
+			mMaxPerStageResources = src->maxPerStageResources;
+			mMaxDescriptorSetSamplers = src->maxDescriptorSetSamplers;
+			mMaxDescriptorSetUniformBuffers = src->maxDescriptorSetUniformBuffers;
+			mMaxDescriptorSetUniformBuffersDynamic = src->maxDescriptorSetUniformBuffersDynamic;
+			mMaxDescriptorSetStorageBuffers = src->maxDescriptorSetStorageBuffers;
+			mMaxDescriptorSetStorageBuffersDynamic = src->maxDescriptorSetStorageBuffersDynamic;
+			mMaxDescriptorSetSampledImages = src->maxDescriptorSetSampledImages;
+			mMaxDescriptorSetStorageImages = src->maxDescriptorSetStorageImages;
+			mMaxDescriptorSetInputAttachments = src->maxDescriptorSetInputAttachments;
+			mMaxVertexInputAttributes = src->maxVertexInputAttributes;
+			mMaxVertexInputBindings = src->maxVertexInputBindings;
+			mMaxVertexInputAttributeOffset = src->maxVertexInputAttributeOffset;
+			mMaxVertexInputBindingStride = src->maxVertexInputBindingStride;
+			mMaxVertexOutputComponents = src->maxVertexOutputComponents;
+			mMaxTessellationGenerationLevel = src->maxTessellationGenerationLevel;
+			mMaxTessellationPatchSize = src->maxTessellationPatchSize;
+			mMaxTessellationControlPerVertexInputComponents = src->maxTessellationControlPerVertexInputComponents;
+			mMaxTessellationControlPerVertexOutputComponents = src->maxTessellationControlPerVertexOutputComponents;
+			mMaxTessellationControlPerPatchOutputComponents = src->maxTessellationControlPerPatchOutputComponents;
+			mMaxTessellationControlTotalOutputComponents = src->maxTessellationControlTotalOutputComponents;
+			mMaxTessellationEvaluationInputComponents = src->maxTessellationEvaluationInputComponents;
+			mMaxTessellationEvaluationOutputComponents = src->maxTessellationEvaluationOutputComponents;
+			mMaxGeometryShaderInvocations = src->maxGeometryShaderInvocations;
+			mMaxGeometryInputComponents = src->maxGeometryInputComponents;
+			mMaxGeometryOutputComponents = src->maxGeometryOutputComponents;
+			mMaxGeometryOutputVertices = src->maxGeometryOutputVertices;
+			mMaxGeometryTotalOutputComponents = src->maxGeometryTotalOutputComponents;
+			mMaxFragmentInputComponents = src->maxFragmentInputComponents;
+			mMaxFragmentOutputAttachments = src->maxFragmentOutputAttachments;
+			mMaxFragmentDualSrcAttachments = src->maxFragmentDualSrcAttachments;
+			mMaxFragmentCombinedOutputResources = src->maxFragmentCombinedOutputResources;
+			mMaxComputeSharedMemorySize = src->maxComputeSharedMemorySize;
+			m3 = src->3;
+			mMaxComputeWorkGroupInvocations = src->maxComputeWorkGroupInvocations;
+			m3 = src->3;
+			mSubPixelPrecisionBits = src->subPixelPrecisionBits;
+			mSubTexelPrecisionBits = src->subTexelPrecisionBits;
+			mMipmapPrecisionBits = src->mipmapPrecisionBits;
+			mMaxDrawIndexedIndexValue = src->maxDrawIndexedIndexValue;
+			mMaxDrawIndirectCount = src->maxDrawIndirectCount;
+			mMaxSamplerLodBias = src->maxSamplerLodBias;
+			mMaxSamplerAnisotropy = src->maxSamplerAnisotropy;
+			mMaxViewports = src->maxViewports;
+			m2 = src->2;
+			m2 = src->2;
+			mViewportSubPixelBits = src->viewportSubPixelBits;
+			mMinMemoryMapAlignment = src->minMemoryMapAlignment;
+			mMinTexelBufferOffsetAlignment = src->minTexelBufferOffsetAlignment;
+			mMinUniformBufferOffsetAlignment = src->minUniformBufferOffsetAlignment;
+			mMinStorageBufferOffsetAlignment = src->minStorageBufferOffsetAlignment;
+			mMinTexelOffset = src->minTexelOffset;
+			mMaxTexelOffset = src->maxTexelOffset;
+			mMinTexelGatherOffset = src->minTexelGatherOffset;
+			mMaxTexelGatherOffset = src->maxTexelGatherOffset;
+			mMinInterpolationOffset = src->minInterpolationOffset;
+			mMaxInterpolationOffset = src->maxInterpolationOffset;
+			mSubPixelInterpolationOffsetBits = src->subPixelInterpolationOffsetBits;
+			mMaxFramebufferWidth = src->maxFramebufferWidth;
+			mMaxFramebufferHeight = src->maxFramebufferHeight;
+			mMaxFramebufferLayers = src->maxFramebufferLayers;
+			mFramebufferColorSampleCounts = src->framebufferColorSampleCounts;
+			mFramebufferDepthSampleCounts = src->framebufferDepthSampleCounts;
+			mFramebufferStencilSampleCounts = src->framebufferStencilSampleCounts;
+			mFramebufferNoAttachmentsSampleCounts = src->framebufferNoAttachmentsSampleCounts;
+			mMaxColorAttachments = src->maxColorAttachments;
+			mSampledImageColorSampleCounts = src->sampledImageColorSampleCounts;
+			mSampledImageIntegerSampleCounts = src->sampledImageIntegerSampleCounts;
+			mSampledImageDepthSampleCounts = src->sampledImageDepthSampleCounts;
+			mSampledImageStencilSampleCounts = src->sampledImageStencilSampleCounts;
+			mStorageImageSampleCounts = src->storageImageSampleCounts;
+			mMaxSampleMaskWords = src->maxSampleMaskWords;
+			mTimestampComputeAndGraphics = src->timestampComputeAndGraphics;
+			mTimestampPeriod = src->timestampPeriod;
+			mMaxClipDistances = src->maxClipDistances;
+			mMaxCullDistances = src->maxCullDistances;
+			mMaxCombinedClipAndCullDistances = src->maxCombinedClipAndCullDistances;
+			mDiscreteQueuePriorities = src->discreteQueuePriorities;
+			m2 = src->2;
+			m2 = src->2;
+			mPointSizeGranularity = src->pointSizeGranularity;
+			mLineWidthGranularity = src->lineWidthGranularity;
+			mStrictLines = src->strictLines;
+			mStandardSampleLocations = src->standardSampleLocations;
+			mOptimalBufferCopyOffsetAlignment = src->optimalBufferCopyOffsetAlignment;
+			mOptimalBufferCopyRowPitchAlignment = src->optimalBufferCopyRowPitchAlignment;
+			mNonCoherentAtomSize = src->nonCoherentAtomSize;
+		}
 	};
 
 	public ref class SemaphoreCreateInfo
@@ -8662,6 +10878,20 @@ namespace ManagedVulkan
 			{
 				mFlags = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkSemaphoreCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+		}
+
+		void CopyFrom(VkSemaphoreCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
 		}
 	};
 
@@ -8728,6 +10958,26 @@ namespace ManagedVulkan
 			{
 				mPipelineStatistics = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkQueryPoolCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->queryType =	mQueryType;
+			dst->queryCount =	mQueryCount;
+			dst->pipelineStatistics =	mPipelineStatistics;
+		}
+
+		void CopyFrom(VkQueryPoolCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mQueryType = src->queryType;
+			mQueryCount = src->queryCount;
+			mPipelineStatistics = src->pipelineStatistics;
 		}
 	};
 
@@ -8831,6 +11081,32 @@ namespace ManagedVulkan
 				mLayers = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkFramebufferCreateInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->renderPass =	mRenderPass;
+			dst->attachmentCount =	mAttachmentCount;
+			dst->pAttachments =	mAttachments;
+			dst->width =	mWidth;
+			dst->height =	mHeight;
+			dst->layers =	mLayers;
+		}
+
+		void CopyFrom(VkFramebufferCreateInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mRenderPass = src->renderPass;
+			mAttachmentCount = src->attachmentCount;
+			mAttachments = src->pAttachments;
+			mWidth = src->width;
+			mHeight = src->height;
+			mLayers = src->layers;
+		}
 	};
 
 	public ref class DrawIndirectCommand
@@ -8884,6 +11160,22 @@ namespace ManagedVulkan
 			{
 				mFirstInstance = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkDrawIndirectCommand* dst)
+		{
+			dst->vertexCount =	mVertexCount;
+			dst->instanceCount =	mInstanceCount;
+			dst->firstVertex =	mFirstVertex;
+			dst->firstInstance =	mFirstInstance;
+		}
+
+		void CopyFrom(VkDrawIndirectCommand* src)
+		{
+			mVertexCount = src->vertexCount;
+			mInstanceCount = src->instanceCount;
+			mFirstVertex = src->firstVertex;
+			mFirstInstance = src->firstInstance;
 		}
 	};
 
@@ -8951,6 +11243,24 @@ namespace ManagedVulkan
 				mFirstInstance = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkDrawIndexedIndirectCommand* dst)
+		{
+			dst->indexCount =	mIndexCount;
+			dst->instanceCount =	mInstanceCount;
+			dst->firstIndex =	mFirstIndex;
+			dst->vertexOffset =	mVertexOffset;
+			dst->firstInstance =	mFirstInstance;
+		}
+
+		void CopyFrom(VkDrawIndexedIndirectCommand* src)
+		{
+			mIndexCount = src->indexCount;
+			mInstanceCount = src->instanceCount;
+			mFirstIndex = src->firstIndex;
+			mVertexOffset = src->vertexOffset;
+			mFirstInstance = src->firstInstance;
+		}
 	};
 
 	public ref class DispatchIndirectCommand
@@ -8992,6 +11302,20 @@ namespace ManagedVulkan
 			{
 				mZ = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkDispatchIndirectCommand* dst)
+		{
+			dst->x =	mX;
+			dst->y =	mY;
+			dst->z =	mZ;
+		}
+
+		void CopyFrom(VkDispatchIndirectCommand* src)
+		{
+			mX = src->x;
+			mY = src->y;
+			mZ = src->z;
 		}
 	};
 
@@ -9095,6 +11419,32 @@ namespace ManagedVulkan
 				mSignalSemaphores = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkSubmitInfo* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->waitSemaphoreCount =	mWaitSemaphoreCount;
+			dst->pWaitSemaphores =	mWaitSemaphores;
+			dst->pWaitDstStageMask =	mWaitDstStageMask;
+			dst->commandBufferCount =	mCommandBufferCount;
+			dst->pCommandBuffers =	mCommandBuffers;
+			dst->signalSemaphoreCount =	mSignalSemaphoreCount;
+			dst->pSignalSemaphores =	mSignalSemaphores;
+		}
+
+		void CopyFrom(VkSubmitInfo* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mWaitSemaphoreCount = src->waitSemaphoreCount;
+			mWaitSemaphores = src->pWaitSemaphores;
+			mWaitDstStageMask = src->pWaitDstStageMask;
+			mCommandBufferCount = src->commandBufferCount;
+			mCommandBuffers = src->pCommandBuffers;
+			mSignalSemaphoreCount = src->signalSemaphoreCount;
+			mSignalSemaphores = src->pSignalSemaphores;
+		}
 	};
 
 	public ref class DisplayPropertiesKHR
@@ -9185,6 +11535,28 @@ namespace ManagedVulkan
 				mPersistentContent = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkDisplayPropertiesKHR* dst)
+		{
+			dst->display =	mDisplay;
+			dst->displayName =	mDisplayName;
+			dst->physicalDimensions =	mPhysicalDimensions;
+			dst->physicalResolution =	mPhysicalResolution;
+			dst->supportedTransforms =	mSupportedTransforms;
+			dst->planeReorderPossible =	mPlaneReorderPossible;
+			dst->persistentContent =	mPersistentContent;
+		}
+
+		void CopyFrom(VkDisplayPropertiesKHR* src)
+		{
+			mDisplay = src->display;
+			mDisplayName = src->displayName;
+			mPhysicalDimensions = src->physicalDimensions;
+			mPhysicalResolution = src->physicalResolution;
+			mSupportedTransforms = src->supportedTransforms;
+			mPlaneReorderPossible = src->planeReorderPossible;
+			mPersistentContent = src->persistentContent;
+		}
 	};
 
 	public ref class DisplayPlanePropertiesKHR
@@ -9214,6 +11586,18 @@ namespace ManagedVulkan
 			{
 				mCurrentStackIndex = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkDisplayPlanePropertiesKHR* dst)
+		{
+			dst->currentDisplay =	mCurrentDisplay;
+			dst->currentStackIndex =	mCurrentStackIndex;
+		}
+
+		void CopyFrom(VkDisplayPlanePropertiesKHR* src)
+		{
+			mCurrentDisplay = src->currentDisplay;
+			mCurrentStackIndex = src->currentStackIndex;
 		}
 	};
 
@@ -9245,6 +11629,18 @@ namespace ManagedVulkan
 				mRefreshRate = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkDisplayModeParametersKHR* dst)
+		{
+			dst->visibleRegion =	mVisibleRegion;
+			dst->refreshRate =	mRefreshRate;
+		}
+
+		void CopyFrom(VkDisplayModeParametersKHR* src)
+		{
+			mVisibleRegion = src->visibleRegion;
+			mRefreshRate = src->refreshRate;
+		}
 	};
 
 	public ref class DisplayModePropertiesKHR
@@ -9274,6 +11670,18 @@ namespace ManagedVulkan
 			{
 				mParameters = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkDisplayModePropertiesKHR* dst)
+		{
+			dst->displayMode =	mDisplayMode;
+			dst->parameters =	mParameters;
+		}
+
+		void CopyFrom(VkDisplayModePropertiesKHR* src)
+		{
+			mDisplayMode = src->displayMode;
+			mParameters = src->parameters;
 		}
 	};
 
@@ -9316,6 +11724,22 @@ namespace ManagedVulkan
 			{
 				mParameters = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkDisplayModeCreateInfoKHR* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->parameters =	mParameters;
+		}
+
+		void CopyFrom(VkDisplayModeCreateInfoKHR* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mParameters = src->parameters;
 		}
 	};
 
@@ -9431,6 +11855,32 @@ namespace ManagedVulkan
 				mMaxDstExtent = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkDisplayPlaneCapabilitiesKHR* dst)
+		{
+			dst->supportedAlpha =	mSupportedAlpha;
+			dst->minSrcPosition =	mMinSrcPosition;
+			dst->maxSrcPosition =	mMaxSrcPosition;
+			dst->minSrcExtent =	mMinSrcExtent;
+			dst->maxSrcExtent =	mMaxSrcExtent;
+			dst->minDstPosition =	mMinDstPosition;
+			dst->maxDstPosition =	mMaxDstPosition;
+			dst->minDstExtent =	mMinDstExtent;
+			dst->maxDstExtent =	mMaxDstExtent;
+		}
+
+		void CopyFrom(VkDisplayPlaneCapabilitiesKHR* src)
+		{
+			mSupportedAlpha = src->supportedAlpha;
+			mMinSrcPosition = src->minSrcPosition;
+			mMaxSrcPosition = src->maxSrcPosition;
+			mMinSrcExtent = src->minSrcExtent;
+			mMaxSrcExtent = src->maxSrcExtent;
+			mMinDstPosition = src->minDstPosition;
+			mMaxDstPosition = src->maxDstPosition;
+			mMinDstExtent = src->minDstExtent;
+			mMaxDstExtent = src->maxDstExtent;
+		}
 	};
 
 	public ref class DisplaySurfaceCreateInfoKHR
@@ -9545,6 +11995,34 @@ namespace ManagedVulkan
 				mImageExtent = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkDisplaySurfaceCreateInfoKHR* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->displayMode =	mDisplayMode;
+			dst->planeIndex =	mPlaneIndex;
+			dst->planeStackIndex =	mPlaneStackIndex;
+			dst->transform =	mTransform;
+			dst->globalAlpha =	mGlobalAlpha;
+			dst->alphaMode =	mAlphaMode;
+			dst->imageExtent =	mImageExtent;
+		}
+
+		void CopyFrom(VkDisplaySurfaceCreateInfoKHR* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mDisplayMode = src->displayMode;
+			mPlaneIndex = src->planeIndex;
+			mPlaneStackIndex = src->planeStackIndex;
+			mTransform = src->transform;
+			mGlobalAlpha = src->globalAlpha;
+			mAlphaMode = src->alphaMode;
+			mImageExtent = src->imageExtent;
+		}
 	};
 
 	public ref class DisplayPresentInfoKHR
@@ -9598,6 +12076,24 @@ namespace ManagedVulkan
 			{
 				mPersistent = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkDisplayPresentInfoKHR* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->srcRect =	mSrcRect;
+			dst->dstRect =	mDstRect;
+			dst->persistent =	mPersistent;
+		}
+
+		void CopyFrom(VkDisplayPresentInfoKHR* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mSrcRect = src->srcRect;
+			mDstRect = src->dstRect;
+			mPersistent = src->persistent;
 		}
 	};
 
@@ -9725,6 +12221,34 @@ namespace ManagedVulkan
 				mSupportedUsageFlags = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkSurfaceCapabilitiesKHR* dst)
+		{
+			dst->minImageCount =	mMinImageCount;
+			dst->maxImageCount =	mMaxImageCount;
+			dst->currentExtent =	mCurrentExtent;
+			dst->minImageExtent =	mMinImageExtent;
+			dst->maxImageExtent =	mMaxImageExtent;
+			dst->maxImageArrayLayers =	mMaxImageArrayLayers;
+			dst->supportedTransforms =	mSupportedTransforms;
+			dst->currentTransform =	mCurrentTransform;
+			dst->supportedCompositeAlpha =	mSupportedCompositeAlpha;
+			dst->supportedUsageFlags =	mSupportedUsageFlags;
+		}
+
+		void CopyFrom(VkSurfaceCapabilitiesKHR* src)
+		{
+			mMinImageCount = src->minImageCount;
+			mMaxImageCount = src->maxImageCount;
+			mCurrentExtent = src->currentExtent;
+			mMinImageExtent = src->minImageExtent;
+			mMaxImageExtent = src->maxImageExtent;
+			mMaxImageArrayLayers = src->maxImageArrayLayers;
+			mSupportedTransforms = src->supportedTransforms;
+			mCurrentTransform = src->currentTransform;
+			mSupportedCompositeAlpha = src->supportedCompositeAlpha;
+			mSupportedUsageFlags = src->supportedUsageFlags;
+		}
 	};
 
 	public ref class Win32SurfaceCreateInfoKHR
@@ -9779,6 +12303,24 @@ namespace ManagedVulkan
 				mHwnd = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkWin32SurfaceCreateInfoKHR* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->hinstance =	mHinstance;
+			dst->hwnd =	mHwnd;
+		}
+
+		void CopyFrom(VkWin32SurfaceCreateInfoKHR* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mHinstance = src->hinstance;
+			mHwnd = src->hwnd;
+		}
 	};
 
 	public ref class SurfaceFormatKHR
@@ -9808,6 +12350,18 @@ namespace ManagedVulkan
 			{
 				mColorSpace = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkSurfaceFormatKHR* dst)
+		{
+			dst->format =	mFormat;
+			dst->colorSpace =	mColorSpace;
+		}
+
+		void CopyFrom(VkSurfaceFormatKHR* src)
+		{
+			mFormat = src->format;
+			mColorSpace = src->colorSpace;
 		}
 	};
 
@@ -10019,6 +12573,50 @@ namespace ManagedVulkan
 				mOldSwapchain = value; 
 			}
 		}
+	internal:
+		void CopyTo(VkSwapchainCreateInfoKHR* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->surface =	mSurface;
+			dst->minImageCount =	mMinImageCount;
+			dst->imageFormat =	mImageFormat;
+			dst->imageColorSpace =	mImageColorSpace;
+			dst->imageExtent =	mImageExtent;
+			dst->imageArrayLayers =	mImageArrayLayers;
+			dst->imageUsage =	mImageUsage;
+			dst->imageSharingMode =	mImageSharingMode;
+			dst->queueFamilyIndexCount =	mQueueFamilyIndexCount;
+			dst->pQueueFamilyIndices =	mQueueFamilyIndices;
+			dst->preTransform =	mPreTransform;
+			dst->compositeAlpha =	mCompositeAlpha;
+			dst->presentMode =	mPresentMode;
+			dst->clipped =	mClipped;
+			dst->oldSwapchain =	mOldSwapchain;
+		}
+
+		void CopyFrom(VkSwapchainCreateInfoKHR* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mSurface = src->surface;
+			mMinImageCount = src->minImageCount;
+			mImageFormat = src->imageFormat;
+			mImageColorSpace = src->imageColorSpace;
+			mImageExtent = src->imageExtent;
+			mImageArrayLayers = src->imageArrayLayers;
+			mImageUsage = src->imageUsage;
+			mImageSharingMode = src->imageSharingMode;
+			mQueueFamilyIndexCount = src->queueFamilyIndexCount;
+			mQueueFamilyIndices = src->pQueueFamilyIndices;
+			mPreTransform = src->preTransform;
+			mCompositeAlpha = src->compositeAlpha;
+			mPresentMode = src->presentMode;
+			mClipped = src->clipped;
+			mOldSwapchain = src->oldSwapchain;
+		}
 	};
 
 	public ref class PresentInfoKHR
@@ -10030,7 +12628,7 @@ namespace ManagedVulkan
 		UInt32 mSwapchainCount = 0;
 		SwapchainKHR^ mSwapchains = nullptr;
 		UInt32 mImageIndices = 0;
-		array<VkResult>^ mResults = nullptr;
+		VkResult mResults = nullptr;
 	public:
 		property VkStructureType SType
 		{
@@ -10098,16 +12696,40 @@ namespace ManagedVulkan
 				mImageIndices = value; 
 			}
 		}
-		property array<VkResult>^ Results
+		property VkResult Results
 		{
-			array<VkResult>^ get()
+			VkResult get()
 			{
 				return mResults;
 			}
-			void set(array<VkResult>^ value)
+			void set(VkResult value)
 			{
 				mResults = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkPresentInfoKHR* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->waitSemaphoreCount =	mWaitSemaphoreCount;
+			dst->pWaitSemaphores =	mWaitSemaphores;
+			dst->swapchainCount =	mSwapchainCount;
+			dst->pSwapchains =	mSwapchains;
+			dst->pImageIndices =	mImageIndices;
+			dst->pResults =	mResults;
+		}
+
+		void CopyFrom(VkPresentInfoKHR* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mWaitSemaphoreCount = src->waitSemaphoreCount;
+			mWaitSemaphores = src->pWaitSemaphores;
+			mSwapchainCount = src->swapchainCount;
+			mSwapchains = src->pSwapchains;
+			mImageIndices = src->pImageIndices;
+			mResults = src->pResults;
 		}
 	};
 
@@ -10116,7 +12738,7 @@ namespace ManagedVulkan
 	private:
 		VkStructureType mSType;
 		VkDebugReportFlagsEXT mFlags;
-		PFN_vkDebugReportCallbackEXT mPfnCallback;
+		PFN_vkDebugReportCallbackEXT^ mPfnCallback = nullptr;
 		IntPtr mUserData = IntPtr.Zero;
 	public:
 		property VkStructureType SType
@@ -10141,13 +12763,13 @@ namespace ManagedVulkan
 				mFlags = value; 
 			}
 		}
-		property PFN_vkDebugReportCallbackEXT PfnCallback
+		property PFN_vkDebugReportCallbackEXT^ PfnCallback
 		{
-			PFN_vkDebugReportCallbackEXT get()
+			PFN_vkDebugReportCallbackEXT^ get()
 			{
 				return mPfnCallback;
 			}
-			void set(PFN_vkDebugReportCallbackEXT value)
+			void set(PFN_vkDebugReportCallbackEXT^ value)
 			{
 				mPfnCallback = value; 
 			}
@@ -10162,6 +12784,24 @@ namespace ManagedVulkan
 			{
 				mUserData = value; 
 			}
+		}
+	internal:
+		void CopyTo(VkDebugReportCallbackCreateInfoEXT* dst)
+		{
+			dst->sType =	mSType;
+			dst->pNext =	pNext;
+			dst->flags =	mFlags;
+			dst->pfnCallback =	mPfnCallback;
+			dst->pUserData =	mUserData;
+		}
+
+		void CopyFrom(VkDebugReportCallbackCreateInfoEXT* src)
+		{
+			mSType = src->sType;
+			pNext = src->pNext;
+			mFlags = src->flags;
+			mPfnCallback = src->pfnCallback;
+			mUserData = src->pUserData;
 		}
 	};
 

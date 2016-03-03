@@ -24,7 +24,7 @@ namespace ManagedVulkan
 	public ref class Instance
 	{
 	private:
-		VkInstance mInst;
+		VkInstance mHandle;
 	public:
 		void DestroyInstance(AllocationCallbacks^ pAllocator);
 		VkResult EnumeratePhysicalDevices(out array<PhysicalDevice^>^ pPhysicalDevices);
@@ -40,7 +40,7 @@ namespace ManagedVulkan
 	public ref class Device
 	{
 	private:
-		VkDevice mInst;
+		VkDevice mHandle;
 	public:
 		PFN_vkVoidFunction^ GetDeviceProcAddr(String^ pName);
 		void DestroyDevice(AllocationCallbacks^ pAllocator);
@@ -123,7 +123,7 @@ namespace ManagedVulkan
 	public ref class PhysicalDevice
 	{
 	private:
-		VkPhysicalDevice mInst;
+		VkPhysicalDevice mHandle;
 	public:
 		void GetPhysicalDeviceProperties(out PhysicalDeviceProperties^ pProperties);
 		void GetPhysicalDeviceQueueFamilyProperties(out array<QueueFamilyProperties^>^ pQueueFamilyProperties);
@@ -151,7 +151,7 @@ namespace ManagedVulkan
 	public ref class Queue
 	{
 	private:
-		VkQueue mInst;
+		VkQueue mHandle;
 	public:
 		VkResult QueueSubmit(array<SubmitInfo^>^ pSubmits, Fence^ fence);
 		VkResult QueueWaitIdle();
@@ -162,7 +162,7 @@ namespace ManagedVulkan
 	public ref class CommandBuffer
 	{
 	private:
-		VkCommandBuffer mInst;
+		VkCommandBuffer mHandle;
 	public:
 		VkResult BeginCommandBuffer(CommandBufferBeginInfo^ pBeginInfo);
 		VkResult EndCommandBuffer();

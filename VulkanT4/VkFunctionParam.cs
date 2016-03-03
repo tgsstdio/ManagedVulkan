@@ -23,5 +23,6 @@ namespace VulkanT4
         public string[] LengthConditions { get; set; }
         public bool UseOutStatement { get; internal set; }
         public bool IsArray { get; set; }
+        public int Index { get; internal set; }
     }
 }

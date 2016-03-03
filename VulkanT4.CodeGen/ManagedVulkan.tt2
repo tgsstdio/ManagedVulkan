@@ -29,6 +29,7 @@ var ns = "ManagedVulkan";
 	foreach (var proxy in generator.Proxies.Values)
 	{
 #>
+
 // <#= proxy.Key #>
 <#
 		foreach (var m in proxy.Methods)
@@ -41,7 +42,40 @@ var ns = "ManagedVulkan";
 			foreach(var param in m.Parameters)
 			{ 
 				var paramName = param.Name ?? "<NAME>";
-				var paramType = param.CppType ?? "<TYPE>";
+				
+				string paramType = "<TYPE>";
+
+				if (param.Translation != null)
+				{				
+					if (param.UseOutStatement)
+					{
+						paramType = "out ";
+						
+						if (param.IsArray)
+						{
+							paramType += "array<" + param.Translation.CSharpType + ">^";
+						}
+						else
+						{
+							paramType += param.Translation.CSharpType;
+						}
+					}
+					else
+					{
+						if (param.IsArray)
+						{
+							paramType = "array<" + param.Translation.CSharpType + ">^";
+						}
+						else
+						{
+							paramType = param.Translation.MethodOnly;
+						}						
+					}
+				}
+				else 
+				{
+					paramType = param.CSharpType ?? param.CppType ?? "<TYPE>";
+				}
 			#><#= separator #><#= paramType #> <#= paramName #><#
 				if (first)
 				{
@@ -50,7 +84,241 @@ var ns = "ManagedVulkan";
 				}	
 			} #>)
 {
+<#
+			// ARRAY VARIABLES
+			foreach(var param in m.Function.Parameters)
+			{  
+				string variableName = "arg_" + param.Index;
+				string valueStmt = "nullptr";
 
+				if (param.IsArray)
+				{
+#>
+	<#= param.CppType #> <#= variableName #> = <#= valueStmt #>;
+<#
+				}
+			}
+#>
+	try
+	{
+<#
+// BEGIN -- C++ ARGUMENT INITIALISATION
+			for(int i =0; i < m.Function.Parameters.Count; ++i)
+			{ 
+				var param = m.Function.Parameters[i];
+				string variableName = "arg_" + i;
+				string valueStmt = "0";
+
+				if (i == 0 && proxy.RequiresInstance)
+				{
+					valueStmt = "this->mHandle";
+				}
+				// IS METHOD PARAMETER A HANDLE => STRAIGHT COPY
+				else if (param.Translation != null && param.Translation.HandleInfo != null)
+				{
+					valueStmt = param.Name + "->mHandle";
+				}
+				else if (param.Translation != null && param.Translation.EnumInfo != null)
+				{
+					valueStmt = param.Name;
+				}
+#>
+		// <#= param.Index #> - <#= param.Name #>
+<#
+				if (param.IsArray)
+				{
+					var elementType = "<TYPE>";
+					if (param.Translation != null)
+					{
+						if (param.Translation.StructInfo != null)
+						{
+							elementType = param.Translation.StructInfo.Key;
+						}
+						else if (param.Translation.HandleInfo != null)
+						{
+							elementType = param.Translation.HandleInfo.Key;
+						}
+						else if (param.Translation.ProxyInfo != null)
+						{
+							elementType = param.Translation.ProxyInfo.Key;
+						}		
+					}					
+#>
+		<#= variableName #> = new <#= elementType#>[<#= param.LengthConditions[0] #>];
+<#
+				}
+				else
+				{
+					bool needCallVariable =
+						param.Translation != null
+						&& (
+							param.Translation.StructInfo != null 
+							|| param.Translation.HandleInfo != null
+							|| param.Translation.ProxyInfo != null
+						)	
+						&&
+						(
+								(param.UseOutStatement)
+							||  (!param.UseOutStatement && !proxy.RequiresInstance)	
+							||  (!param.UseOutStatement && proxy.RequiresInstance && i > 0 && param.Translation.HandleInfo == null)				   
+						);
+						
+
+					if (needCallVariable)
+					{
+						// NEED TO INITIALISE PINNED DATA
+						var pinnedVariable = "inst_" + i;
+						var pinnedType = param.CppType;
+
+						if (param.Translation.StructInfo != null)
+						{
+							pinnedType = param.Translation.StructInfo.Key;
+						}
+						else if (param.Translation.HandleInfo != null)
+						{
+							pinnedType = param.Translation.HandleInfo.Key;
+						}
+						else if (param.Translation.ProxyInfo != null)
+						{
+							pinnedType = param.Translation.ProxyInfo.Key;
+						}		
+#>		<#= pinnedType #> <#= pinnedVariable #>;
+<#					
+						valueStmt = "&" + pinnedVariable;			
+					}
+#>
+		<#= param.CppType #> <#= variableName #> = <#= valueStmt #>;
+<#
+// BEGIN -- PARAMETER COPY TO INSTANCE
+					if (param.Translation != null && param.Translation.StructInfo != null)
+					{
+#>
+		<#= param.Name #>->CopyTo(<#= variableName #>);
+<#						
+					}					
+// END -- PARAMETER COPY TO INSTANCE
+				}
+			}		
+// END -- C++ ARGUMENT INITIALISATION
+#>
+
+<#
+// BEGIN -- C++ FUNCTION CALL
+			var callReturnStmt = (m.Function.ReturnType == "void") ? ""	: "var result = ";			
+#>
+
+		<#= callReturnStmt #><#= m.Function.Key #>(<#
+			first = true;
+			separator = "";
+			foreach(var param in m.Function.Parameters)
+			{ 
+				string variableName = "arg_" + param.Index;
+
+			#><#= separator #><#= variableName #><#
+				if (first)
+				{
+					separator = ", ";
+					first = false;
+				}
+			} #>);
+<#
+// END -- C++ FUNCTION CALL
+#>
+
+<#	
+// BEGIN -- OUT PARAMETER INITIALISATION
+			foreach(var param in m.Parameters)
+			{ 
+				var paramType = "<TYPE>";
+				var paramValue = "";
+
+				if (param.UseOutStatement && param.Translation != null)
+				{
+					if (param.IsArray)
+					{
+						paramType = "array<" + param.Translation.CSharpType + ">^";
+						paramValue = "count";
+#>			
+		int count = <#= param.LengthConditions[0] #>;	
+		<#= param.Name #> = gcnew <#= paramType #>(<#= paramValue #>);
+		for	(int i = 0; i < count; ++i)
+		{	
+			<#= param.Name #>[i] = gcnew <#= param.Translation.CSharpType #>();	
+			<#= param.Name #>[i]->CopyFrom(arg_<#= param.Index #>[i]);
+		}	
+<#
+
+					}
+					else
+					{
+						paramType = param.Translation.CSharpType;
+#>								
+		<#= param.Name #> = gcnew <#= paramType #>(<#= paramValue #>);
+<#
+//  BEGIN - SET INTERNAL HANDLE INST MEMBER
+						if (param.Translation.ProxyInfo != null || param.Translation.HandleInfo != null)
+						{
+							var pinnedVariable = "inst_" + param.Index;
+#>
+		<#= param.Name #>->mHandle = <#= pinnedVariable #>;
+<#
+						}
+	//  END - SET INTERNAL HANDLE INST MEMBER
+
+	//  BEGIN - OUT SINGLE LEVEL COPY FROM
+						else if (param.Translation.StructInfo != null)
+						{
+							string variableName = "arg_" + param.Index;
+#>
+			<#= param.Name #>->CopyFrom(<#= variableName #>);						
+<#
+						}
+					}
+	//  END - OUT SINGLE LEVEL COPY FROM
+				}
+			}
+// END --  OUT PARAMETER INITIALISATION
+#>
+
+<#
+// BEGIN -- FINAL RETURN STATEMENT
+			var finalReturnStmt = ""; // VOID 
+			if (m.Function.ReturnType == "VkBool32") 
+			{
+				finalReturnStmt = "return result != 0;";
+			}
+			else if (m.Function.ReturnType != "void")		
+			{
+				finalReturnStmt = "return (" + m.Function.ReturnType + ") result;"; 
+			}
+#>
+		<#= finalReturnStmt #>
+<# 
+// END --  FINAL RETURN STATEMENT
+#>
+	}
+	finally
+	{
+<#
+// BEGIN -- DELETE ARRAY VARIABLES
+			for(int i =0; i < m.Function.Parameters.Count; ++i)
+			{ 
+				var param = m.Function.Parameters[i];
+				string variableName = "arg_" + i;
+
+				if (param.IsArray)
+				{
+#>
+		if (<#= variableName #> != nullptr)
+		{
+			delete[] <#= variableName #>;
+		}
+<#
+				}
+			}
+// END -- DELETE ARRAY VARIABLES
+#>
+	}
 }
 
 <#

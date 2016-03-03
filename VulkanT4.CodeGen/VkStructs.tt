@@ -76,6 +76,30 @@ namespace <#= ns #>
 			}
 		}
 #>
+	internal:
+		void CopyTo(<#= s.Key #>* dst)
+		{
+<#
+		foreach(var m in s.Members)
+		{
+#>
+			dst-><#= m.Key #> =	<#= m.FieldName #>;
+<#
+		}
+#>
+		}
+
+		void CopyFrom(<#= s.Key #>* src)
+		{
+<#
+		foreach(var m in s.Members)
+		{
+#>
+			<#= m.FieldName #> = src-><#= m.Key #>;
+<#
+		}
+#>
+		}
 	};
 
 <#  

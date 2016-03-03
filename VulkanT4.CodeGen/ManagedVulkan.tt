@@ -47,7 +47,7 @@ namespace <#= ns #>
 	{
 #>
 	private:
-		<#= proxy.Key #> mInst;
+		<#= proxy.Key #> mHandle;
 <#
 	}
 #>
