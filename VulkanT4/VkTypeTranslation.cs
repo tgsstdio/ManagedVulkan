@@ -13,5 +13,6 @@
         public VkHandle HandleInfo { get; set; }
         public VkProxy ProxyInfo { get; set; }
         public VkFunction DelegateInfo { get; internal set; }
+        public string Length { get; internal set; }
     }
 }

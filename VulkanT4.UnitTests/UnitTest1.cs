@@ -321,8 +321,9 @@ namespace VulkanT4.UnitTests
 
             var param = function.Parameters[0];
             Assert.IsNotNull(param.Translation);
-            Assert.IsNotNull(param.Translation.StructInfo);
-            Assert.AreSame(proxy, param.Translation.StructInfo);
+            Assert.IsNull(param.Translation.StructInfo);
+            Assert.IsNotNull(param.Translation.ProxyInfo);
+            Assert.AreSame(proxy, param.Translation.ProxyInfo);
         }
 
         [TestMethod]

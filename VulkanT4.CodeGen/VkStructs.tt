@@ -77,14 +77,27 @@ namespace <#= ns #>
 		}
 #>
 	internal:
-		void CopyTo(<#= s.Key #>* dst)
+		void CopyTo(<#= s.Key #>* dst, List<IntPtr>^ pins)
 		{
 <#
 		foreach(var m in s.Members)
 		{
+			if (m.CppType == "char*")
+			{
+#>
+
+			IntPtr str_<#= m.Key #> = Marshal::StringToHGlobalAnsi(src-><#= m.Key #>);
+			pins->Add(str_<#= m.Key #>);			
+			dst-><#= m.Key #> = static_cast <char*> (str_<#= m.Key #>.ToPointer());
+
+<#
+			}
+			else
+			{
 #>
 			dst-><#= m.Key #> =	<#= m.FieldName #>;
 <#
+			}
 		}
 #>
 		}
@@ -94,9 +107,18 @@ namespace <#= ns #>
 <#
 		foreach(var m in s.Members)
 		{
+			if (m.CppType == "char*")
+			{
+#>
+			<#= m.FieldName #> = gcnew String(<#= m.FieldName #>);
+<#
+			}
+			else 
+			{
 #>
 			<#= m.FieldName #> = src-><#= m.Key #>;
 <#
+			}
 		}
 #>
 		}

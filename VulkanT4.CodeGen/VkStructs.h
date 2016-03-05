@@ -42,7 +42,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkOffset2D* dst)
+		void CopyTo(VkOffset2D* dst, List<IntPtr>^ pins)
 		{
 			dst->x =	mX;
 			dst->y =	mY;
@@ -96,7 +96,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkOffset3D* dst)
+		void CopyTo(VkOffset3D* dst, List<IntPtr>^ pins)
 		{
 			dst->x =	mX;
 			dst->y =	mY;
@@ -140,7 +140,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkExtent2D* dst)
+		void CopyTo(VkExtent2D* dst, List<IntPtr>^ pins)
 		{
 			dst->width =	mWidth;
 			dst->height =	mHeight;
@@ -194,7 +194,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkExtent3D* dst)
+		void CopyTo(VkExtent3D* dst, List<IntPtr>^ pins)
 		{
 			dst->width =	mWidth;
 			dst->height =	mHeight;
@@ -286,7 +286,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkViewport* dst)
+		void CopyTo(VkViewport* dst, List<IntPtr>^ pins)
 		{
 			dst->x =	mX;
 			dst->y =	mY;
@@ -336,7 +336,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkRect2D* dst)
+		void CopyTo(VkRect2D* dst, List<IntPtr>^ pins)
 		{
 			dst->offset =	mOffset;
 			dst->extent =	mExtent;
@@ -378,7 +378,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkRect3D* dst)
+		void CopyTo(VkRect3D* dst, List<IntPtr>^ pins)
 		{
 			dst->offset =	mOffset;
 			dst->extent =	mExtent;
@@ -432,7 +432,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkClearRect* dst)
+		void CopyTo(VkClearRect* dst, List<IntPtr>^ pins)
 		{
 			dst->rect =	mRect;
 			dst->baseArrayLayer =	mBaseArrayLayer;
@@ -450,10 +450,10 @@ namespace ManagedVulkan
 	public ref class ComponentMapping
 	{
 	private:
-		VkComponentSwizzle mR;
-		VkComponentSwizzle mG;
-		VkComponentSwizzle mB;
-		VkComponentSwizzle mA;
+		VkComponentSwizzle mR = nullptr;
+		VkComponentSwizzle mG = nullptr;
+		VkComponentSwizzle mB = nullptr;
+		VkComponentSwizzle mA = nullptr;
 	public:
 		property VkComponentSwizzle R
 		{
@@ -500,7 +500,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkComponentMapping* dst)
+		void CopyTo(VkComponentMapping* dst, List<IntPtr>^ pins)
 		{
 			dst->r =	mR;
 			dst->g =	mG;
@@ -524,7 +524,7 @@ namespace ManagedVulkan
 		UInt32 mDriverVersion = 0;
 		UInt32 mVendorID = 0;
 		UInt32 mDeviceID = 0;
-		VkPhysicalDeviceType mDeviceType;
+		VkPhysicalDeviceType mDeviceType = nullptr;
 		String^ mDeviceName = nullptr;
 		pipelineCacheUUID mVK_UUID_SIZE;
 		PhysicalDeviceLimits^ mLimits = nullptr;
@@ -630,7 +630,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPhysicalDeviceProperties* dst)
+		void CopyTo(VkPhysicalDeviceProperties* dst, List<IntPtr>^ pins)
 		{
 			dst->apiVersion =	mApiVersion;
 			dst->driverVersion =	mDriverVersion;
@@ -686,7 +686,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkExtensionProperties* dst)
+		void CopyTo(VkExtensionProperties* dst, List<IntPtr>^ pins)
 		{
 			dst->extensionName =	mExtensionName;
 			dst->specVersion =	mSpecVersion;
@@ -752,7 +752,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkLayerProperties* dst)
+		void CopyTo(VkLayerProperties* dst, List<IntPtr>^ pins)
 		{
 			dst->layerName =	mLayerName;
 			dst->specVersion =	mSpecVersion;
@@ -772,7 +772,7 @@ namespace ManagedVulkan
 	public ref class ApplicationInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		String^ mApplicationName = nullptr;
 		UInt32 mApplicationVersion = 0;
 		String^ mEngineName = nullptr;
@@ -846,13 +846,21 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkApplicationInfo* dst)
+		void CopyTo(VkApplicationInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
-			dst->pApplicationName =	mApplicationName;
+
+			IntPtr str_pApplicationName = Marshal::StringToHGlobalAnsi(src->pApplicationName);
+			pins->Add(str_pApplicationName);			
+			dst->pApplicationName = static_cast <char*> (str_pApplicationName.ToPointer());
+
 			dst->applicationVersion =	mApplicationVersion;
-			dst->pEngineName =	mEngineName;
+
+			IntPtr str_pEngineName = Marshal::StringToHGlobalAnsi(src->pEngineName);
+			pins->Add(str_pEngineName);			
+			dst->pEngineName = static_cast <char*> (str_pEngineName.ToPointer());
+
 			dst->engineVersion =	mEngineVersion;
 			dst->apiVersion =	mApiVersion;
 		}
@@ -861,9 +869,9 @@ namespace ManagedVulkan
 		{
 			mSType = src->sType;
 			pNext = src->pNext;
-			mApplicationName = src->pApplicationName;
+			mApplicationName = gcnew String(mApplicationName);
 			mApplicationVersion = src->applicationVersion;
-			mEngineName = src->pEngineName;
+			mEngineName = gcnew String(mEngineName);
 			mEngineVersion = src->engineVersion;
 			mApiVersion = src->apiVersion;
 		}
@@ -946,7 +954,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkAllocationCallbacks* dst)
+		void CopyTo(VkAllocationCallbacks* dst, List<IntPtr>^ pins)
 		{
 			dst->pUserData =	mUserData;
 			dst->pfnAllocation =	mPfnAllocation;
@@ -970,7 +978,7 @@ namespace ManagedVulkan
 	public ref class DeviceQueueCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkDeviceQueueCreateFlags mFlags;
 		UInt32 mQueueFamilyIndex = 0;
 		UInt32 mQueueCount = 0;
@@ -1032,7 +1040,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDeviceQueueCreateInfo* dst)
+		void CopyTo(VkDeviceQueueCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -1056,7 +1064,7 @@ namespace ManagedVulkan
 	public ref class DeviceCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkDeviceCreateFlags mFlags;
 		UInt32 mQueueCreateInfoCount = 0;
 		DeviceQueueCreateInfo^ mQueueCreateInfos = nullptr;
@@ -1166,7 +1174,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDeviceCreateInfo* dst)
+		void CopyTo(VkDeviceCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -1198,7 +1206,7 @@ namespace ManagedVulkan
 	public ref class InstanceCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkInstanceCreateFlags mFlags;
 		ApplicationInfo^ mApplicationInfo = nullptr;
 		UInt32 mEnabledLayerCount = 0;
@@ -1284,7 +1292,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkInstanceCreateInfo* dst)
+		void CopyTo(VkInstanceCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -1362,7 +1370,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkQueueFamilyProperties* dst)
+		void CopyTo(VkQueueFamilyProperties* dst, List<IntPtr>^ pins)
 		{
 			dst->queueFlags =	mQueueFlags;
 			dst->queueCount =	mQueueCount;
@@ -1432,7 +1440,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPhysicalDeviceMemoryProperties* dst)
+		void CopyTo(VkPhysicalDeviceMemoryProperties* dst, List<IntPtr>^ pins)
 		{
 			dst->memoryTypeCount =	mMemoryTypeCount;
 			dst->VK_MAX_MEMORY_TYPES =	mVK_MAX_MEMORY_TYPES;
@@ -1452,7 +1460,7 @@ namespace ManagedVulkan
 	public ref class MemoryAllocateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		UInt64 mAllocationSize = 0;
 		UInt32 mMemoryTypeIndex = 0;
 	public:
@@ -1490,7 +1498,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkMemoryAllocateInfo* dst)
+		void CopyTo(VkMemoryAllocateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -1548,7 +1556,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkMemoryRequirements* dst)
+		void CopyTo(VkMemoryRequirements* dst, List<IntPtr>^ pins)
 		{
 			dst->size =	mSize;
 			dst->alignment =	mAlignment;
@@ -1604,7 +1612,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSparseImageFormatProperties* dst)
+		void CopyTo(VkSparseImageFormatProperties* dst, List<IntPtr>^ pins)
 		{
 			dst->aspectMask =	mAspectMask;
 			dst->imageGranularity =	mImageGranularity;
@@ -1684,7 +1692,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSparseImageMemoryRequirements* dst)
+		void CopyTo(VkSparseImageMemoryRequirements* dst, List<IntPtr>^ pins)
 		{
 			dst->formatProperties =	mFormatProperties;
 			dst->imageMipTailFirstLod =	mImageMipTailFirstLod;
@@ -1732,7 +1740,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkMemoryType* dst)
+		void CopyTo(VkMemoryType* dst, List<IntPtr>^ pins)
 		{
 			dst->propertyFlags =	mPropertyFlags;
 			dst->heapIndex =	mHeapIndex;
@@ -1774,7 +1782,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkMemoryHeap* dst)
+		void CopyTo(VkMemoryHeap* dst, List<IntPtr>^ pins)
 		{
 			dst->size =	mSize;
 			dst->flags =	mFlags;
@@ -1790,7 +1798,7 @@ namespace ManagedVulkan
 	public ref class MappedMemoryRange
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		DeviceMemory^ mMemory = nullptr;
 		UInt64 mOffset = 0;
 		UInt64 mSize = 0;
@@ -1840,7 +1848,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkMappedMemoryRange* dst)
+		void CopyTo(VkMappedMemoryRange* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -1900,7 +1908,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkFormatProperties* dst)
+		void CopyTo(VkFormatProperties* dst, List<IntPtr>^ pins)
 		{
 			dst->linearTilingFeatures =	mLinearTilingFeatures;
 			dst->optimalTilingFeatures =	mOptimalTilingFeatures;
@@ -1980,7 +1988,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkImageFormatProperties* dst)
+		void CopyTo(VkImageFormatProperties* dst, List<IntPtr>^ pins)
 		{
 			dst->maxExtent =	mMaxExtent;
 			dst->maxMipLevels =	mMaxMipLevels;
@@ -2040,7 +2048,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDescriptorBufferInfo* dst)
+		void CopyTo(VkDescriptorBufferInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->buffer =	mBuffer;
 			dst->offset =	mOffset;
@@ -2060,7 +2068,7 @@ namespace ManagedVulkan
 	private:
 		Sampler^ mSampler = nullptr;
 		ImageView^ mImageView = nullptr;
-		VkImageLayout mImageLayout;
+		VkImageLayout mImageLayout = nullptr;
 	public:
 		property Sampler^ Sampler
 		{
@@ -2096,7 +2104,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDescriptorImageInfo* dst)
+		void CopyTo(VkDescriptorImageInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sampler =	mSampler;
 			dst->imageView =	mImageView;
@@ -2114,12 +2122,12 @@ namespace ManagedVulkan
 	public ref class WriteDescriptorSet
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		DescriptorSet^ mDstSet = nullptr;
 		UInt32 mDstBinding = 0;
 		UInt32 mDstArrayElement = 0;
 		UInt32 mDescriptorCount = 0;
-		VkDescriptorType mDescriptorType;
+		VkDescriptorType mDescriptorType = nullptr;
 		DescriptorImageInfo^ mImageInfo = nullptr;
 		DescriptorBufferInfo^ mBufferInfo = nullptr;
 		BufferView^ mTexelBufferView = nullptr;
@@ -2224,7 +2232,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkWriteDescriptorSet* dst)
+		void CopyTo(VkWriteDescriptorSet* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -2256,7 +2264,7 @@ namespace ManagedVulkan
 	public ref class CopyDescriptorSet
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		DescriptorSet^ mSrcSet = nullptr;
 		UInt32 mSrcBinding = 0;
 		UInt32 mSrcArrayElement = 0;
@@ -2354,7 +2362,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkCopyDescriptorSet* dst)
+		void CopyTo(VkCopyDescriptorSet* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -2384,11 +2392,11 @@ namespace ManagedVulkan
 	public ref class BufferCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkBufferCreateFlags mFlags;
 		UInt64 mSize = 0;
 		VkBufferUsageFlags mUsage;
-		VkSharingMode mSharingMode;
+		VkSharingMode mSharingMode = nullptr;
 		UInt32 mQueueFamilyIndexCount = 0;
 		UInt32 mQueueFamilyIndices = 0;
 	public:
@@ -2470,7 +2478,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkBufferCreateInfo* dst)
+		void CopyTo(VkBufferCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -2498,10 +2506,10 @@ namespace ManagedVulkan
 	public ref class BufferViewCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		<TYPE> m<NAME>;
 		Buffer^ mBuffer = nullptr;
-		VkFormat mFormat;
+		VkFormat mFormat = nullptr;
 		UInt64 mOffset = 0;
 		UInt64 mRange = 0;
 	public:
@@ -2572,7 +2580,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkBufferViewCreateInfo* dst)
+		void CopyTo(VkBufferViewCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -2636,7 +2644,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkImageSubresource* dst)
+		void CopyTo(VkImageSubresource* dst, List<IntPtr>^ pins)
 		{
 			dst->aspectMask =	mAspectMask;
 			dst->mipLevel =	mMipLevel;
@@ -2704,7 +2712,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkImageSubresourceLayers* dst)
+		void CopyTo(VkImageSubresourceLayers* dst, List<IntPtr>^ pins)
 		{
 			dst->aspectMask =	mAspectMask;
 			dst->mipLevel =	mMipLevel;
@@ -2786,7 +2794,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkImageSubresourceRange* dst)
+		void CopyTo(VkImageSubresourceRange* dst, List<IntPtr>^ pins)
 		{
 			dst->aspectMask =	mAspectMask;
 			dst->baseMipLevel =	mBaseMipLevel;
@@ -2808,7 +2816,7 @@ namespace ManagedVulkan
 	public ref class MemoryBarrier
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkAccessFlags mSrcAccessMask;
 		VkAccessFlags mDstAccessMask;
 	public:
@@ -2846,7 +2854,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkMemoryBarrier* dst)
+		void CopyTo(VkMemoryBarrier* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -2866,7 +2874,7 @@ namespace ManagedVulkan
 	public ref class BufferMemoryBarrier
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkAccessFlags mSrcAccessMask;
 		VkAccessFlags mDstAccessMask;
 		UInt32 mSrcQueueFamilyIndex = 0;
@@ -2964,7 +2972,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkBufferMemoryBarrier* dst)
+		void CopyTo(VkBufferMemoryBarrier* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -2994,11 +3002,11 @@ namespace ManagedVulkan
 	public ref class ImageMemoryBarrier
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkAccessFlags mSrcAccessMask;
 		VkAccessFlags mDstAccessMask;
-		VkImageLayout mOldLayout;
-		VkImageLayout mNewLayout;
+		VkImageLayout mOldLayout = nullptr;
+		VkImageLayout mNewLayout = nullptr;
 		UInt32 mSrcQueueFamilyIndex = 0;
 		UInt32 mDstQueueFamilyIndex = 0;
 		Image^ mImage = nullptr;
@@ -3104,7 +3112,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkImageMemoryBarrier* dst)
+		void CopyTo(VkImageMemoryBarrier* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -3136,20 +3144,20 @@ namespace ManagedVulkan
 	public ref class ImageCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkImageCreateFlags mFlags;
-		VkImageType mImageType;
-		VkFormat mFormat;
+		VkImageType mImageType = nullptr;
+		VkFormat mFormat = nullptr;
 		Extent3D^ mExtent = nullptr;
 		UInt32 mMipLevels = 0;
 		UInt32 mArrayLayers = 0;
-		VkSampleCountFlagBits mSamples;
-		VkImageTiling mTiling;
+		VkSampleCountFlagBits mSamples = nullptr;
+		VkImageTiling mTiling = nullptr;
 		VkImageUsageFlags mUsage;
-		VkSharingMode mSharingMode;
+		VkSharingMode mSharingMode = nullptr;
 		UInt32 mQueueFamilyIndexCount = 0;
 		UInt32 mQueueFamilyIndices = 0;
-		VkImageLayout mInitialLayout;
+		VkImageLayout mInitialLayout = nullptr;
 	public:
 		property VkStructureType SType
 		{
@@ -3306,7 +3314,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkImageCreateInfo* dst)
+		void CopyTo(VkImageCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -3410,7 +3418,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSubresourceLayout* dst)
+		void CopyTo(VkSubresourceLayout* dst, List<IntPtr>^ pins)
 		{
 			dst->offset =	mOffset;
 			dst->size =	mSize;
@@ -3432,11 +3440,11 @@ namespace ManagedVulkan
 	public ref class ImageViewCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkImageViewCreateFlags mFlags;
 		Image^ mImage = nullptr;
-		VkImageViewType mViewType;
-		VkFormat mFormat;
+		VkImageViewType mViewType = nullptr;
+		VkFormat mFormat = nullptr;
 		ComponentMapping^ mComponents = nullptr;
 		ImageSubresourceRange^ mSubresourceRange = nullptr;
 	public:
@@ -3518,7 +3526,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkImageViewCreateInfo* dst)
+		void CopyTo(VkImageViewCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -3584,7 +3592,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkBufferCopy* dst)
+		void CopyTo(VkBufferCopy* dst, List<IntPtr>^ pins)
 		{
 			dst->srcOffset =	mSrcOffset;
 			dst->dstOffset =	mDstOffset;
@@ -3664,7 +3672,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSparseMemoryBind* dst)
+		void CopyTo(VkSparseMemoryBind* dst, List<IntPtr>^ pins)
 		{
 			dst->resourceOffset =	mResourceOffset;
 			dst->size =	mSize;
@@ -3760,7 +3768,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSparseImageMemoryBind* dst)
+		void CopyTo(VkSparseImageMemoryBind* dst, List<IntPtr>^ pins)
 		{
 			dst->subresource =	mSubresource;
 			dst->offset =	mOffset;
@@ -3822,7 +3830,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSparseBufferMemoryBindInfo* dst)
+		void CopyTo(VkSparseBufferMemoryBindInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->buffer =	mBuffer;
 			dst->bindCount =	mBindCount;
@@ -3878,7 +3886,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSparseImageOpaqueMemoryBindInfo* dst)
+		void CopyTo(VkSparseImageOpaqueMemoryBindInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->image =	mImage;
 			dst->bindCount =	mBindCount;
@@ -3934,7 +3942,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSparseImageMemoryBindInfo* dst)
+		void CopyTo(VkSparseImageMemoryBindInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->image =	mImage;
 			dst->bindCount =	mBindCount;
@@ -3952,7 +3960,7 @@ namespace ManagedVulkan
 	public ref class BindSparseInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		UInt32 mWaitSemaphoreCount = 0;
 		Semaphore^ mWaitSemaphores = nullptr;
 		UInt32 mBufferBindCount = 0;
@@ -4086,7 +4094,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkBindSparseInfo* dst)
+		void CopyTo(VkBindSparseInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -4184,7 +4192,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkImageCopy* dst)
+		void CopyTo(VkImageCopy* dst, List<IntPtr>^ pins)
 		{
 			dst->srcSubresource =	mSrcSubresource;
 			dst->srcOffset =	mSrcOffset;
@@ -4256,7 +4264,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkImageBlit* dst)
+		void CopyTo(VkImageBlit* dst, List<IntPtr>^ pins)
 		{
 			dst->srcSubresource =	mSrcSubresource;
 			dst->2 =	m2;
@@ -4350,7 +4358,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkBufferImageCopy* dst)
+		void CopyTo(VkBufferImageCopy* dst, List<IntPtr>^ pins)
 		{
 			dst->bufferOffset =	mBufferOffset;
 			dst->bufferRowLength =	mBufferRowLength;
@@ -4436,7 +4444,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkImageResolve* dst)
+		void CopyTo(VkImageResolve* dst, List<IntPtr>^ pins)
 		{
 			dst->srcSubresource =	mSrcSubresource;
 			dst->srcOffset =	mSrcOffset;
@@ -4458,7 +4466,7 @@ namespace ManagedVulkan
 	public ref class ShaderModuleCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkShaderModuleCreateFlags mFlags;
 		IntPtr mCodeSize = 0;
 		UInt32 mCode = 0;
@@ -4508,7 +4516,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkShaderModuleCreateInfo* dst)
+		void CopyTo(VkShaderModuleCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -4531,7 +4539,7 @@ namespace ManagedVulkan
 	{
 	private:
 		UInt32 mBinding = 0;
-		VkDescriptorType mDescriptorType;
+		VkDescriptorType mDescriptorType = nullptr;
 		UInt32 mDescriptorCount = 0;
 		VkShaderStageFlags mStageFlags;
 		Sampler^ mImmutableSamplers = nullptr;
@@ -4592,7 +4600,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDescriptorSetLayoutBinding* dst)
+		void CopyTo(VkDescriptorSetLayoutBinding* dst, List<IntPtr>^ pins)
 		{
 			dst->binding =	mBinding;
 			dst->descriptorType =	mDescriptorType;
@@ -4614,7 +4622,7 @@ namespace ManagedVulkan
 	public ref class DescriptorSetLayoutCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkDescriptorSetLayoutCreateFlags mFlags;
 		UInt32 mBindingCount = 0;
 		DescriptorSetLayoutBinding^ mBindings = nullptr;
@@ -4664,7 +4672,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDescriptorSetLayoutCreateInfo* dst)
+		void CopyTo(VkDescriptorSetLayoutCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -4686,7 +4694,7 @@ namespace ManagedVulkan
 	public ref class DescriptorPoolSize
 	{
 	private:
-		VkDescriptorType mType;
+		VkDescriptorType mType = nullptr;
 		UInt32 mDescriptorCount = 0;
 	public:
 		property VkDescriptorType Type
@@ -4712,7 +4720,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDescriptorPoolSize* dst)
+		void CopyTo(VkDescriptorPoolSize* dst, List<IntPtr>^ pins)
 		{
 			dst->type =	mType;
 			dst->descriptorCount =	mDescriptorCount;
@@ -4728,7 +4736,7 @@ namespace ManagedVulkan
 	public ref class DescriptorPoolCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkDescriptorPoolCreateFlags mFlags;
 		UInt32 mMaxSets = 0;
 		UInt32 mPoolSizeCount = 0;
@@ -4790,7 +4798,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDescriptorPoolCreateInfo* dst)
+		void CopyTo(VkDescriptorPoolCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -4814,7 +4822,7 @@ namespace ManagedVulkan
 	public ref class DescriptorSetAllocateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		DescriptorPool^ mDescriptorPool = nullptr;
 		UInt32 mDescriptorSetCount = 0;
 		DescriptorSetLayout^ mSetLayouts = nullptr;
@@ -4864,7 +4872,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDescriptorSetAllocateInfo* dst)
+		void CopyTo(VkDescriptorSetAllocateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -4924,7 +4932,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSpecializationMapEntry* dst)
+		void CopyTo(VkSpecializationMapEntry* dst, List<IntPtr>^ pins)
 		{
 			dst->constantID =	mConstantID;
 			dst->offset =	mOffset;
@@ -4992,7 +5000,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSpecializationInfo* dst)
+		void CopyTo(VkSpecializationInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->mapEntryCount =	mMapEntryCount;
 			dst->pMapEntries =	mMapEntries;
@@ -5012,9 +5020,9 @@ namespace ManagedVulkan
 	public ref class PipelineShaderStageCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineShaderStageCreateFlags mFlags;
-		VkShaderStageFlagBits mStage;
+		VkShaderStageFlagBits mStage = nullptr;
 		ShaderModule^ mModule = nullptr;
 		String^ mName = nullptr;
 		SpecializationInfo^ mSpecializationInfo = nullptr;
@@ -5086,14 +5094,18 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineShaderStageCreateInfo* dst)
+		void CopyTo(VkPipelineShaderStageCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
 			dst->flags =	mFlags;
 			dst->stage =	mStage;
 			dst->module =	mModule;
-			dst->pName =	mName;
+
+			IntPtr str_pName = Marshal::StringToHGlobalAnsi(src->pName);
+			pins->Add(str_pName);			
+			dst->pName = static_cast <char*> (str_pName.ToPointer());
+
 			dst->pSpecializationInfo =	mSpecializationInfo;
 		}
 
@@ -5104,7 +5116,7 @@ namespace ManagedVulkan
 			mFlags = src->flags;
 			mStage = src->stage;
 			mModule = src->module;
-			mName = src->pName;
+			mName = gcnew String(mName);
 			mSpecializationInfo = src->pSpecializationInfo;
 		}
 	};
@@ -5112,7 +5124,7 @@ namespace ManagedVulkan
 	public ref class ComputePipelineCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineCreateFlags mFlags;
 		PipelineShaderStageCreateInfo^ mStage = nullptr;
 		PipelineLayout^ mLayout = nullptr;
@@ -5186,7 +5198,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkComputePipelineCreateInfo* dst)
+		void CopyTo(VkComputePipelineCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -5214,7 +5226,7 @@ namespace ManagedVulkan
 	private:
 		UInt32 mBinding = 0;
 		UInt32 mStride = 0;
-		VkVertexInputRate mInputRate;
+		VkVertexInputRate mInputRate = nullptr;
 	public:
 		property UInt32 Binding
 		{
@@ -5250,7 +5262,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkVertexInputBindingDescription* dst)
+		void CopyTo(VkVertexInputBindingDescription* dst, List<IntPtr>^ pins)
 		{
 			dst->binding =	mBinding;
 			dst->stride =	mStride;
@@ -5270,7 +5282,7 @@ namespace ManagedVulkan
 	private:
 		UInt32 mLocation = 0;
 		UInt32 mBinding = 0;
-		VkFormat mFormat;
+		VkFormat mFormat = nullptr;
 		UInt32 mOffset = 0;
 	public:
 		property UInt32 Location
@@ -5318,7 +5330,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkVertexInputAttributeDescription* dst)
+		void CopyTo(VkVertexInputAttributeDescription* dst, List<IntPtr>^ pins)
 		{
 			dst->location =	mLocation;
 			dst->binding =	mBinding;
@@ -5338,7 +5350,7 @@ namespace ManagedVulkan
 	public ref class PipelineVertexInputStateCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineVertexInputStateCreateFlags mFlags;
 		UInt32 mVertexBindingDescriptionCount = 0;
 		VertexInputBindingDescription^ mVertexBindingDescriptions = nullptr;
@@ -5412,7 +5424,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineVertexInputStateCreateInfo* dst)
+		void CopyTo(VkPipelineVertexInputStateCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -5438,9 +5450,9 @@ namespace ManagedVulkan
 	public ref class PipelineInputAssemblyStateCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineInputAssemblyStateCreateFlags mFlags;
-		VkPrimitiveTopology mTopology;
+		VkPrimitiveTopology mTopology = nullptr;
 		bool mPrimitiveRestartEnable = false;
 	public:
 		property VkStructureType SType
@@ -5488,7 +5500,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineInputAssemblyStateCreateInfo* dst)
+		void CopyTo(VkPipelineInputAssemblyStateCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -5510,7 +5522,7 @@ namespace ManagedVulkan
 	public ref class PipelineTessellationStateCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineTessellationStateCreateFlags mFlags;
 		UInt32 mPatchControlPoints = 0;
 	public:
@@ -5548,7 +5560,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineTessellationStateCreateInfo* dst)
+		void CopyTo(VkPipelineTessellationStateCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -5568,7 +5580,7 @@ namespace ManagedVulkan
 	public ref class PipelineViewportStateCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineViewportStateCreateFlags mFlags;
 		UInt32 mViewportCount = 0;
 		Viewport^ mViewports = nullptr;
@@ -5642,7 +5654,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineViewportStateCreateInfo* dst)
+		void CopyTo(VkPipelineViewportStateCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -5668,13 +5680,13 @@ namespace ManagedVulkan
 	public ref class PipelineRasterizationStateCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineRasterizationStateCreateFlags mFlags;
 		bool mDepthClampEnable = false;
 		bool mRasterizerDiscardEnable = false;
-		VkPolygonMode mPolygonMode;
+		VkPolygonMode mPolygonMode = nullptr;
 		VkCullModeFlags mCullMode;
-		VkFrontFace mFrontFace;
+		VkFrontFace mFrontFace = nullptr;
 		bool mDepthBiasEnable = false;
 		float mDepthBiasConstantFactor = 0f;
 		float mDepthBiasClamp = 0f;
@@ -5814,7 +5826,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineRasterizationStateCreateInfo* dst)
+		void CopyTo(VkPipelineRasterizationStateCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -5852,9 +5864,9 @@ namespace ManagedVulkan
 	public ref class PipelineMultisampleStateCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineMultisampleStateCreateFlags mFlags;
-		VkSampleCountFlagBits mRasterizationSamples;
+		VkSampleCountFlagBits mRasterizationSamples = nullptr;
 		bool mSampleShadingEnable = false;
 		float mMinSampleShading = 0f;
 		VkSampleMask* mSampleMask;
@@ -5950,7 +5962,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineMultisampleStateCreateInfo* dst)
+		void CopyTo(VkPipelineMultisampleStateCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -5981,12 +5993,12 @@ namespace ManagedVulkan
 	{
 	private:
 		bool mBlendEnable = false;
-		VkBlendFactor mSrcColorBlendFactor;
-		VkBlendFactor mDstColorBlendFactor;
-		VkBlendOp mColorBlendOp;
-		VkBlendFactor mSrcAlphaBlendFactor;
-		VkBlendFactor mDstAlphaBlendFactor;
-		VkBlendOp mAlphaBlendOp;
+		VkBlendFactor mSrcColorBlendFactor = nullptr;
+		VkBlendFactor mDstColorBlendFactor = nullptr;
+		VkBlendOp mColorBlendOp = nullptr;
+		VkBlendFactor mSrcAlphaBlendFactor = nullptr;
+		VkBlendFactor mDstAlphaBlendFactor = nullptr;
+		VkBlendOp mAlphaBlendOp = nullptr;
 		VkColorComponentFlags mColorWriteMask;
 	public:
 		property bool BlendEnable
@@ -6078,7 +6090,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineColorBlendAttachmentState* dst)
+		void CopyTo(VkPipelineColorBlendAttachmentState* dst, List<IntPtr>^ pins)
 		{
 			dst->blendEnable =	mBlendEnable;
 			dst->srcColorBlendFactor =	mSrcColorBlendFactor;
@@ -6106,10 +6118,10 @@ namespace ManagedVulkan
 	public ref class PipelineColorBlendStateCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineColorBlendStateCreateFlags mFlags;
 		bool mLogicOpEnable = false;
-		VkLogicOp mLogicOp;
+		VkLogicOp mLogicOp = nullptr;
 		UInt32 mAttachmentCount = 0;
 		PipelineColorBlendAttachmentState^ mAttachments = nullptr;
 		blendConstants m4;
@@ -6192,7 +6204,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineColorBlendStateCreateInfo* dst)
+		void CopyTo(VkPipelineColorBlendStateCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -6220,7 +6232,7 @@ namespace ManagedVulkan
 	public ref class PipelineDynamicStateCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineDynamicStateCreateFlags mFlags;
 		UInt32 mDynamicStateCount = 0;
 		VkDynamicState mDynamicStates = nullptr;
@@ -6270,7 +6282,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineDynamicStateCreateInfo* dst)
+		void CopyTo(VkPipelineDynamicStateCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -6292,10 +6304,10 @@ namespace ManagedVulkan
 	public ref class StencilOpState
 	{
 	private:
-		VkStencilOp mFailOp;
-		VkStencilOp mPassOp;
-		VkStencilOp mDepthFailOp;
-		VkCompareOp mCompareOp;
+		VkStencilOp mFailOp = nullptr;
+		VkStencilOp mPassOp = nullptr;
+		VkStencilOp mDepthFailOp = nullptr;
+		VkCompareOp mCompareOp = nullptr;
 		UInt32 mCompareMask = 0;
 		UInt32 mWriteMask = 0;
 		UInt32 mReference = 0;
@@ -6378,7 +6390,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkStencilOpState* dst)
+		void CopyTo(VkStencilOpState* dst, List<IntPtr>^ pins)
 		{
 			dst->failOp =	mFailOp;
 			dst->passOp =	mPassOp;
@@ -6404,11 +6416,11 @@ namespace ManagedVulkan
 	public ref class PipelineDepthStencilStateCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineDepthStencilStateCreateFlags mFlags;
 		bool mDepthTestEnable = false;
 		bool mDepthWriteEnable = false;
-		VkCompareOp mDepthCompareOp;
+		VkCompareOp mDepthCompareOp = nullptr;
 		bool mDepthBoundsTestEnable = false;
 		bool mStencilTestEnable = false;
 		StencilOpState^ mFront = nullptr;
@@ -6538,7 +6550,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineDepthStencilStateCreateInfo* dst)
+		void CopyTo(VkPipelineDepthStencilStateCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -6574,7 +6586,7 @@ namespace ManagedVulkan
 	public ref class GraphicsPipelineCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineCreateFlags mFlags;
 		UInt32 mStageCount = 0;
 		PipelineShaderStageCreateInfo^ mStages = nullptr;
@@ -6792,7 +6804,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkGraphicsPipelineCreateInfo* dst)
+		void CopyTo(VkGraphicsPipelineCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -6842,7 +6854,7 @@ namespace ManagedVulkan
 	public ref class PipelineCacheCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineCacheCreateFlags mFlags;
 		IntPtr mInitialDataSize = 0;
 		IntPtr mInitialData = IntPtr.Zero;
@@ -6892,7 +6904,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineCacheCreateInfo* dst)
+		void CopyTo(VkPipelineCacheCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -6952,7 +6964,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPushConstantRange* dst)
+		void CopyTo(VkPushConstantRange* dst, List<IntPtr>^ pins)
 		{
 			dst->stageFlags =	mStageFlags;
 			dst->offset =	mOffset;
@@ -6970,7 +6982,7 @@ namespace ManagedVulkan
 	public ref class PipelineLayoutCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkPipelineLayoutCreateFlags mFlags;
 		UInt32 mSetLayoutCount = 0;
 		DescriptorSetLayout^ mSetLayouts = nullptr;
@@ -7044,7 +7056,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPipelineLayoutCreateInfo* dst)
+		void CopyTo(VkPipelineLayoutCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -7070,22 +7082,22 @@ namespace ManagedVulkan
 	public ref class SamplerCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkSamplerCreateFlags mFlags;
-		VkFilter mMagFilter;
-		VkFilter mMinFilter;
-		VkSamplerMipmapMode mMipmapMode;
-		VkSamplerAddressMode mAddressModeU;
-		VkSamplerAddressMode mAddressModeV;
-		VkSamplerAddressMode mAddressModeW;
+		VkFilter mMagFilter = nullptr;
+		VkFilter mMinFilter = nullptr;
+		VkSamplerMipmapMode mMipmapMode = nullptr;
+		VkSamplerAddressMode mAddressModeU = nullptr;
+		VkSamplerAddressMode mAddressModeV = nullptr;
+		VkSamplerAddressMode mAddressModeW = nullptr;
 		float mMipLodBias = 0f;
 		bool mAnisotropyEnable = false;
 		float mMaxAnisotropy = 0f;
 		bool mCompareEnable = false;
-		VkCompareOp mCompareOp;
+		VkCompareOp mCompareOp = nullptr;
 		float mMinLod = 0f;
 		float mMaxLod = 0f;
-		VkBorderColor mBorderColor;
+		VkBorderColor mBorderColor = nullptr;
 		bool mUnnormalizedCoordinates = false;
 	public:
 		property VkStructureType SType
@@ -7276,7 +7288,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSamplerCreateInfo* dst)
+		void CopyTo(VkSamplerCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -7324,7 +7336,7 @@ namespace ManagedVulkan
 	public ref class CommandPoolCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkCommandPoolCreateFlags mFlags;
 		UInt32 mQueueFamilyIndex = 0;
 	public:
@@ -7362,7 +7374,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkCommandPoolCreateInfo* dst)
+		void CopyTo(VkCommandPoolCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -7382,9 +7394,9 @@ namespace ManagedVulkan
 	public ref class CommandBufferAllocateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		CommandPool^ mCommandPool = nullptr;
-		VkCommandBufferLevel mLevel;
+		VkCommandBufferLevel mLevel = nullptr;
 		UInt32 mCommandBufferCount = 0;
 	public:
 		property VkStructureType SType
@@ -7432,7 +7444,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkCommandBufferAllocateInfo* dst)
+		void CopyTo(VkCommandBufferAllocateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -7454,7 +7466,7 @@ namespace ManagedVulkan
 	public ref class CommandBufferInheritanceInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		RenderPass^ mRenderPass = nullptr;
 		UInt32 mSubpass = 0;
 		Framebuffer^ mFramebuffer = nullptr;
@@ -7540,7 +7552,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkCommandBufferInheritanceInfo* dst)
+		void CopyTo(VkCommandBufferInheritanceInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -7568,7 +7580,7 @@ namespace ManagedVulkan
 	public ref class CommandBufferBeginInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkCommandBufferUsageFlags mFlags;
 		CommandBufferInheritanceInfo^ mInheritanceInfo = nullptr;
 	public:
@@ -7606,7 +7618,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkCommandBufferBeginInfo* dst)
+		void CopyTo(VkCommandBufferBeginInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -7626,7 +7638,7 @@ namespace ManagedVulkan
 	public ref class RenderPassBeginInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		RenderPass^ mRenderPass = nullptr;
 		Framebuffer^ mFramebuffer = nullptr;
 		Rect2D^ mRenderArea = nullptr;
@@ -7700,7 +7712,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkRenderPassBeginInfo* dst)
+		void CopyTo(VkRenderPassBeginInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -7752,7 +7764,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkClearDepthStencilValue* dst)
+		void CopyTo(VkClearDepthStencilValue* dst, List<IntPtr>^ pins)
 		{
 			dst->depth =	mDepth;
 			dst->stencil =	mStencil;
@@ -7806,7 +7818,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkClearAttachment* dst)
+		void CopyTo(VkClearAttachment* dst, List<IntPtr>^ pins)
 		{
 			dst->aspectMask =	mAspectMask;
 			dst->colorAttachment =	mColorAttachment;
@@ -7825,14 +7837,14 @@ namespace ManagedVulkan
 	{
 	private:
 		VkAttachmentDescriptionFlags mFlags;
-		VkFormat mFormat;
-		VkSampleCountFlagBits mSamples;
-		VkAttachmentLoadOp mLoadOp;
-		VkAttachmentStoreOp mStoreOp;
-		VkAttachmentLoadOp mStencilLoadOp;
-		VkAttachmentStoreOp mStencilStoreOp;
-		VkImageLayout mInitialLayout;
-		VkImageLayout mFinalLayout;
+		VkFormat mFormat = nullptr;
+		VkSampleCountFlagBits mSamples = nullptr;
+		VkAttachmentLoadOp mLoadOp = nullptr;
+		VkAttachmentStoreOp mStoreOp = nullptr;
+		VkAttachmentLoadOp mStencilLoadOp = nullptr;
+		VkAttachmentStoreOp mStencilStoreOp = nullptr;
+		VkImageLayout mInitialLayout = nullptr;
+		VkImageLayout mFinalLayout = nullptr;
 	public:
 		property VkAttachmentDescriptionFlags Flags
 		{
@@ -7934,7 +7946,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkAttachmentDescription* dst)
+		void CopyTo(VkAttachmentDescription* dst, List<IntPtr>^ pins)
 		{
 			dst->flags =	mFlags;
 			dst->format =	mFormat;
@@ -7965,7 +7977,7 @@ namespace ManagedVulkan
 	{
 	private:
 		UInt32 mAttachment = 0;
-		VkImageLayout mLayout;
+		VkImageLayout mLayout = nullptr;
 	public:
 		property UInt32 Attachment
 		{
@@ -7990,7 +8002,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkAttachmentReference* dst)
+		void CopyTo(VkAttachmentReference* dst, List<IntPtr>^ pins)
 		{
 			dst->attachment =	mAttachment;
 			dst->layout =	mLayout;
@@ -8007,7 +8019,7 @@ namespace ManagedVulkan
 	{
 	private:
 		VkSubpassDescriptionFlags mFlags;
-		VkPipelineBindPoint mPipelineBindPoint;
+		VkPipelineBindPoint mPipelineBindPoint = nullptr;
 		UInt32 mInputAttachmentCount = 0;
 		AttachmentReference^ mInputAttachments = nullptr;
 		UInt32 mColorAttachmentCount = 0;
@@ -8128,7 +8140,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSubpassDescription* dst)
+		void CopyTo(VkSubpassDescription* dst, List<IntPtr>^ pins)
 		{
 			dst->flags =	mFlags;
 			dst->pipelineBindPoint =	mPipelineBindPoint;
@@ -8246,7 +8258,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSubpassDependency* dst)
+		void CopyTo(VkSubpassDependency* dst, List<IntPtr>^ pins)
 		{
 			dst->srcSubpass =	mSrcSubpass;
 			dst->dstSubpass =	mDstSubpass;
@@ -8272,7 +8284,7 @@ namespace ManagedVulkan
 	public ref class RenderPassCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkRenderPassCreateFlags mFlags;
 		UInt32 mAttachmentCount = 0;
 		AttachmentDescription^ mAttachments = nullptr;
@@ -8370,7 +8382,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkRenderPassCreateInfo* dst)
+		void CopyTo(VkRenderPassCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -8400,7 +8412,7 @@ namespace ManagedVulkan
 	public ref class EventCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkEventCreateFlags mFlags;
 	public:
 		property VkStructureType SType
@@ -8426,7 +8438,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkEventCreateInfo* dst)
+		void CopyTo(VkEventCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -8444,7 +8456,7 @@ namespace ManagedVulkan
 	public ref class FenceCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkFenceCreateFlags mFlags;
 	public:
 		property VkStructureType SType
@@ -8470,7 +8482,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkFenceCreateInfo* dst)
+		void CopyTo(VkFenceCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -9150,7 +9162,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPhysicalDeviceFeatures* dst)
+		void CopyTo(VkPhysicalDeviceFeatures* dst, List<IntPtr>^ pins)
 		{
 			dst->robustBufferAccess =	mRobustBufferAccess;
 			dst->fullDrawIndexUint32 =	mFullDrawIndexUint32;
@@ -9334,7 +9346,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPhysicalDeviceSparseProperties* dst)
+		void CopyTo(VkPhysicalDeviceSparseProperties* dst, List<IntPtr>^ pins)
 		{
 			dst->residencyStandard2DBlockShape =	mResidencyStandard2DBlockShape;
 			dst->residencyStandard2DMultisampleBlockShape =	mResidencyStandard2DMultisampleBlockShape;
@@ -10630,7 +10642,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPhysicalDeviceLimits* dst)
+		void CopyTo(VkPhysicalDeviceLimits* dst, List<IntPtr>^ pins)
 		{
 			dst->maxImageDimension1D =	mMaxImageDimension1D;
 			dst->maxImageDimension2D =	mMaxImageDimension2D;
@@ -10854,7 +10866,7 @@ namespace ManagedVulkan
 	public ref class SemaphoreCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkSemaphoreCreateFlags mFlags;
 	public:
 		property VkStructureType SType
@@ -10880,7 +10892,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSemaphoreCreateInfo* dst)
+		void CopyTo(VkSemaphoreCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -10898,9 +10910,9 @@ namespace ManagedVulkan
 	public ref class QueryPoolCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkQueryPoolCreateFlags mFlags;
-		VkQueryType mQueryType;
+		VkQueryType mQueryType = nullptr;
 		UInt32 mQueryCount = 0;
 		VkQueryPipelineStatisticFlags mPipelineStatistics;
 	public:
@@ -10960,7 +10972,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkQueryPoolCreateInfo* dst)
+		void CopyTo(VkQueryPoolCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -10984,7 +10996,7 @@ namespace ManagedVulkan
 	public ref class FramebufferCreateInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkFramebufferCreateFlags mFlags;
 		RenderPass^ mRenderPass = nullptr;
 		UInt32 mAttachmentCount = 0;
@@ -11082,7 +11094,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkFramebufferCreateInfo* dst)
+		void CopyTo(VkFramebufferCreateInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -11162,7 +11174,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDrawIndirectCommand* dst)
+		void CopyTo(VkDrawIndirectCommand* dst, List<IntPtr>^ pins)
 		{
 			dst->vertexCount =	mVertexCount;
 			dst->instanceCount =	mInstanceCount;
@@ -11244,7 +11256,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDrawIndexedIndirectCommand* dst)
+		void CopyTo(VkDrawIndexedIndirectCommand* dst, List<IntPtr>^ pins)
 		{
 			dst->indexCount =	mIndexCount;
 			dst->instanceCount =	mInstanceCount;
@@ -11304,7 +11316,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDispatchIndirectCommand* dst)
+		void CopyTo(VkDispatchIndirectCommand* dst, List<IntPtr>^ pins)
 		{
 			dst->x =	mX;
 			dst->y =	mY;
@@ -11322,7 +11334,7 @@ namespace ManagedVulkan
 	public ref class SubmitInfo
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		UInt32 mWaitSemaphoreCount = 0;
 		Semaphore^ mWaitSemaphores = nullptr;
 		VkPipelineStageFlags* mWaitDstStageMask;
@@ -11420,7 +11432,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSubmitInfo* dst)
+		void CopyTo(VkSubmitInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -11536,10 +11548,14 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDisplayPropertiesKHR* dst)
+		void CopyTo(VkDisplayPropertiesKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->display =	mDisplay;
-			dst->displayName =	mDisplayName;
+
+			IntPtr str_displayName = Marshal::StringToHGlobalAnsi(src->displayName);
+			pins->Add(str_displayName);			
+			dst->displayName = static_cast <char*> (str_displayName.ToPointer());
+
 			dst->physicalDimensions =	mPhysicalDimensions;
 			dst->physicalResolution =	mPhysicalResolution;
 			dst->supportedTransforms =	mSupportedTransforms;
@@ -11550,7 +11566,7 @@ namespace ManagedVulkan
 		void CopyFrom(VkDisplayPropertiesKHR* src)
 		{
 			mDisplay = src->display;
-			mDisplayName = src->displayName;
+			mDisplayName = gcnew String(mDisplayName);
 			mPhysicalDimensions = src->physicalDimensions;
 			mPhysicalResolution = src->physicalResolution;
 			mSupportedTransforms = src->supportedTransforms;
@@ -11588,7 +11604,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDisplayPlanePropertiesKHR* dst)
+		void CopyTo(VkDisplayPlanePropertiesKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->currentDisplay =	mCurrentDisplay;
 			dst->currentStackIndex =	mCurrentStackIndex;
@@ -11630,7 +11646,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDisplayModeParametersKHR* dst)
+		void CopyTo(VkDisplayModeParametersKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->visibleRegion =	mVisibleRegion;
 			dst->refreshRate =	mRefreshRate;
@@ -11672,7 +11688,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDisplayModePropertiesKHR* dst)
+		void CopyTo(VkDisplayModePropertiesKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->displayMode =	mDisplayMode;
 			dst->parameters =	mParameters;
@@ -11688,7 +11704,7 @@ namespace ManagedVulkan
 	public ref class DisplayModeCreateInfoKHR
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkDisplayModeCreateFlagsKHR mFlags;
 		DisplayModeParametersKHR^ mParameters = nullptr;
 	public:
@@ -11726,7 +11742,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDisplayModeCreateInfoKHR* dst)
+		void CopyTo(VkDisplayModeCreateInfoKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -11856,7 +11872,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDisplayPlaneCapabilitiesKHR* dst)
+		void CopyTo(VkDisplayPlaneCapabilitiesKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->supportedAlpha =	mSupportedAlpha;
 			dst->minSrcPosition =	mMinSrcPosition;
@@ -11886,14 +11902,14 @@ namespace ManagedVulkan
 	public ref class DisplaySurfaceCreateInfoKHR
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkDisplaySurfaceCreateFlagsKHR mFlags;
 		DisplayModeKHR^ mDisplayMode = nullptr;
 		UInt32 mPlaneIndex = 0;
 		UInt32 mPlaneStackIndex = 0;
-		VkSurfaceTransformFlagBitsKHR mTransform;
+		VkSurfaceTransformFlagBitsKHR mTransform = nullptr;
 		float mGlobalAlpha = 0f;
-		VkDisplayPlaneAlphaFlagBitsKHR mAlphaMode;
+		VkDisplayPlaneAlphaFlagBitsKHR mAlphaMode = nullptr;
 		Extent2D^ mImageExtent = nullptr;
 	public:
 		property VkStructureType SType
@@ -11996,7 +12012,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDisplaySurfaceCreateInfoKHR* dst)
+		void CopyTo(VkDisplaySurfaceCreateInfoKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -12028,7 +12044,7 @@ namespace ManagedVulkan
 	public ref class DisplayPresentInfoKHR
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		Rect2D^ mSrcRect = nullptr;
 		Rect2D^ mDstRect = nullptr;
 		bool mPersistent = false;
@@ -12078,7 +12094,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDisplayPresentInfoKHR* dst)
+		void CopyTo(VkDisplayPresentInfoKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -12107,7 +12123,7 @@ namespace ManagedVulkan
 		Extent2D^ mMaxImageExtent = nullptr;
 		UInt32 mMaxImageArrayLayers = 0;
 		VkSurfaceTransformFlagsKHR mSupportedTransforms;
-		VkSurfaceTransformFlagBitsKHR mCurrentTransform;
+		VkSurfaceTransformFlagBitsKHR mCurrentTransform = nullptr;
 		VkCompositeAlphaFlagsKHR mSupportedCompositeAlpha;
 		VkImageUsageFlags mSupportedUsageFlags;
 	public:
@@ -12222,7 +12238,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSurfaceCapabilitiesKHR* dst)
+		void CopyTo(VkSurfaceCapabilitiesKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->minImageCount =	mMinImageCount;
 			dst->maxImageCount =	mMaxImageCount;
@@ -12254,7 +12270,7 @@ namespace ManagedVulkan
 	public ref class Win32SurfaceCreateInfoKHR
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkWin32SurfaceCreateFlagsKHR mFlags;
 		HINSTANCE mHinstance;
 		HWND mHwnd;
@@ -12304,7 +12320,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkWin32SurfaceCreateInfoKHR* dst)
+		void CopyTo(VkWin32SurfaceCreateInfoKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -12326,8 +12342,8 @@ namespace ManagedVulkan
 	public ref class SurfaceFormatKHR
 	{
 	private:
-		VkFormat mFormat;
-		VkColorSpaceKHR mColorSpace;
+		VkFormat mFormat = nullptr;
+		VkColorSpaceKHR mColorSpace = nullptr;
 	public:
 		property VkFormat Format
 		{
@@ -12352,7 +12368,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSurfaceFormatKHR* dst)
+		void CopyTo(VkSurfaceFormatKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->format =	mFormat;
 			dst->colorSpace =	mColorSpace;
@@ -12368,21 +12384,21 @@ namespace ManagedVulkan
 	public ref class SwapchainCreateInfoKHR
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkSwapchainCreateFlagsKHR mFlags;
 		SurfaceKHR^ mSurface = nullptr;
 		UInt32 mMinImageCount = 0;
-		VkFormat mImageFormat;
-		VkColorSpaceKHR mImageColorSpace;
+		VkFormat mImageFormat = nullptr;
+		VkColorSpaceKHR mImageColorSpace = nullptr;
 		Extent2D^ mImageExtent = nullptr;
 		UInt32 mImageArrayLayers = 0;
 		VkImageUsageFlags mImageUsage;
-		VkSharingMode mImageSharingMode;
+		VkSharingMode mImageSharingMode = nullptr;
 		UInt32 mQueueFamilyIndexCount = 0;
 		UInt32 mQueueFamilyIndices = 0;
-		VkSurfaceTransformFlagBitsKHR mPreTransform;
-		VkCompositeAlphaFlagBitsKHR mCompositeAlpha;
-		VkPresentModeKHR mPresentMode;
+		VkSurfaceTransformFlagBitsKHR mPreTransform = nullptr;
+		VkCompositeAlphaFlagBitsKHR mCompositeAlpha = nullptr;
+		VkPresentModeKHR mPresentMode = nullptr;
 		bool mClipped = false;
 		SwapchainKHR^ mOldSwapchain = nullptr;
 	public:
@@ -12574,7 +12590,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkSwapchainCreateInfoKHR* dst)
+		void CopyTo(VkSwapchainCreateInfoKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -12622,7 +12638,7 @@ namespace ManagedVulkan
 	public ref class PresentInfoKHR
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		UInt32 mWaitSemaphoreCount = 0;
 		Semaphore^ mWaitSemaphores = nullptr;
 		UInt32 mSwapchainCount = 0;
@@ -12708,7 +12724,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkPresentInfoKHR* dst)
+		void CopyTo(VkPresentInfoKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
@@ -12736,7 +12752,7 @@ namespace ManagedVulkan
 	public ref class DebugReportCallbackCreateInfoEXT
 	{
 	private:
-		VkStructureType mSType;
+		VkStructureType mSType = nullptr;
 		VkDebugReportFlagsEXT mFlags;
 		PFN_vkDebugReportCallbackEXT^ mPfnCallback = nullptr;
 		IntPtr mUserData = IntPtr.Zero;
@@ -12786,7 +12802,7 @@ namespace ManagedVulkan
 			}
 		}
 	internal:
-		void CopyTo(VkDebugReportCallbackCreateInfoEXT* dst)
+		void CopyTo(VkDebugReportCallbackCreateInfoEXT* dst, List<IntPtr>^ pins)
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;

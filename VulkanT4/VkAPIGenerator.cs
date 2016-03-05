@@ -694,18 +694,23 @@ namespace VulkanT4
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkEnumerateInstanceLayerProperties", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkEnumerateInstanceExtensionProperties", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkEnumeratePhysicalDevices", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkEnumerateDeviceLayerProperties", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkEnumerateDeviceExtensionProperties", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);            
 
             arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceDisplayPlanePropertiesKHR", false);

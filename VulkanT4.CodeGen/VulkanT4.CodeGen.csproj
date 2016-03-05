@@ -61,6 +61,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ManagedVulkan.tt2</DependentUpon>
     </Content>
+    <Content Include="VkStructs.h">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VkStructs.tt</DependentUpon>
+    </Content>
     <Content Include="VkUnions.h">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -82,11 +87,6 @@
     <Content Include="VkStructs.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>VkStructs.h</LastGenOutput>
-    </Content>
-    <Content Include="VkStructs.h">
-      <DependentUpon>VkStructs.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
     </Content>
     <Content Include="VkEnums.h">
       <AutoGen>True</AutoGen>

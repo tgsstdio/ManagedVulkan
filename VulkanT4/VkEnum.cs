@@ -9,9 +9,9 @@ namespace VulkanT4
             Items = new List<VkEnumItem>();
         }
 
-        public string Name { get; internal set; }
-        public bool UseFlags { get; internal set; }
+        public string Name { get; set; }
+        public bool UseFlags { get; set; }
         public List<VkEnumItem> Items { get; private set; }
-        public string Expand { get; internal set; }
+        public string Expand { get; set; }
     }
 }

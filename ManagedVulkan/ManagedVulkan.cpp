@@ -63,8 +63,8 @@ using namespace System::Collections::Generic;
 
 ManagedVulkan::Instance ^ ManagedVulkan::Vulkan::CreateInstance(ManagedVulkan::CreateInstanceInfo^ createInfo)
 {
-	char* layerNames = nullptr;
-	char* enabledExtensions = nullptr;
+	char** layerNames = nullptr;
+	char** enabledExtensions = nullptr;
 		
 	List<IntPtr>^ disposables = gcnew List<IntPtr>();
 
@@ -119,21 +119,30 @@ ManagedVulkan::Instance ^ ManagedVulkan::Vulkan::CreateInstance(ManagedVulkan::C
 	
 		// enabled layer names
 		input.enabledLayerCount = (UInt32) createInfo->EnabledLayerNames->Length;
-		for each (String^ layer in createInfo->EnabledLayerNames)
+		
+		layerNames = new char*[input.enabledLayerCount];
+		int i = 0;
+		for each (String^ item in createInfo->EnabledLayerNames)
 		{
-			IntPtr layerName = Marshal::StringToHGlobalAnsi(layer);
+			IntPtr layerName = Marshal::StringToHGlobalAnsi(item);
 			disposables->Add(layerName);
-			appInfo.pEngineName = static_cast<char*>(layerName.ToPointer());
+			layerNames[i] = static_cast<char*>(layerName.ToPointer());
+			++i;
 		}
 
 		// enabled extensions
 		input.enabledExtensionCount = (UInt32)createInfo->EnabledExtensionNames->Length;
-		for each (String^ extension in createInfo->EnabledExtensionNames)
+
+		enabledExtensions = new char*[input.enabledExtensionCount];
+		int j = 0;
+		for each (String^ item in createInfo->EnabledLayerNames)
 		{
-			IntPtr extensionName = Marshal::StringToHGlobalAnsi(extension);
+			IntPtr extensionName = Marshal::StringToHGlobalAnsi(item);
 			disposables->Add(extensionName);
-			appInfo.pEngineName = static_cast<char*>(extensionName.ToPointer());
+			enabledExtensions[j] = static_cast<char*>(extensionName.ToPointer());
+			++j;
 		}
+		input.ppEnabledLayerNames = enabledExtensions;
 
 		VkInstance inst;
 		VkResult result = vkCreateInstance(&input, nullptr, &inst);

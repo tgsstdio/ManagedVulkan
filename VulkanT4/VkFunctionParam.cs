@@ -21,8 +21,28 @@ namespace VulkanT4
         public string CSharpType { get; set; }
         public VkTypeTranslation Translation { get; set; }
         public string[] LengthConditions { get; set; }
-        public bool UseOutStatement { get; internal set; }
+        public bool UseOutStatement { get; set; }
         public bool IsArray { get; set; }
-        public int Index { get; internal set; }
+        public int Index { get; set; }
+
+        public bool IsStruct()
+        {
+            return (Translation != null && Translation.StructInfo != null);
+        }
+
+        public bool IsEnum()
+        {
+            return (Translation != null && Translation.EnumInfo != null);
+        }
+
+        public bool IsHandle()
+        {
+            return (Translation != null && Translation.HandleInfo != null);
+        }
+
+        public bool IsProxy()
+        {
+            return (Translation != null && Translation.ProxyInfo != null);
+        }
     }
 }

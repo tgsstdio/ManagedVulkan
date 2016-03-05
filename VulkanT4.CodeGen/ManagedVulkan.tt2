@@ -7,6 +7,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Xml.Linq" #>
 <#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Collections.Specialized" #>
 <#@ import namespace="VulkanT4" #>
 <#@ assembly name="$(SolutionDir)Lib\VulkanT4.dll" #>
 <#@ output extension=".cpp" #>
@@ -24,6 +25,8 @@ var ns = "ManagedVulkan";
 // This is the main DLL file.
 #include <vulkan/vulkan.h>
 #include "ManagedVulkan.h"
+
+using namespace System.Collection.Generic;
 
 <#	
 	foreach (var proxy in generator.Proxies.Values)
@@ -85,6 +88,12 @@ var ns = "ManagedVulkan";
 			} #>)
 {
 <#
+			var declare = new VariableDeclaration();
+			var commands = declare.Parse(m.Function);
+			var lengths = new StringCollection();
+#>
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+<#
 			// ARRAY VARIABLES
 			foreach(var param in m.Function.Parameters)
 			{  
@@ -102,14 +111,174 @@ var ns = "ManagedVulkan";
 	try
 	{
 <#
+// BEGIN -- FIRST C++ FUNCTION CALL
+			bool makeSecondCall = (m.ArrayInfo != null && m.ArrayInfo.SecondCall);
+			if (makeSecondCall)
+			{
+				var firstReturnStmt = (m.Function.ReturnType == "void") ? ""	: "var firstResult = ";	
+
+				foreach(var command in commands)
+				{ 		
+					var param = command.Parameter;					
+					if (param != null && command.MemberType != null)
+					{
+						string variableName = command.ArgumentName;
+
+						if (lengths.Contains(command.Parameter.Name))
+						{	
+							command.IsInitialised = true;
+
+							command.PriorStatements.Add("// " + param.Index + " - " + param.Name);
+							command.PriorStatements.Add(command.MemberType.CSharpType + " " + param.Name);
+							command.PriorStatements.Add(<command.MemberType.CSharpType + "* " + command.ArgumentName+ " = &" + param.Name);
+	
+						}
+						else if (!command.Parameter.UseOutStatement)
+						{
+
+							string valueStmt = "0";
+
+							if (param.Index == 0 && proxy.RequiresInstance)
+							{
+								valueStmt = "this->mHandle";
+							}
+							// IS METHOD PARAMETER A HANDLE => STRAIGHT COPY
+							else if (param.Translation.HandleInfo != null)
+							{
+								valueStmt = param.Name + "->mHandle";
+							}
+							else if (param.Translation.EnumInfo != null)
+							{
+								valueStmt = param.Name;
+							}
+
+							command.IsInitialised = true;
+
+							command.PriorStatements.Add("// " + param.Index + " - " + param.Name);
+
+							if (param.IsArray)
+							{
+								var elementType = "<TYPE>";
+								if (param.Translation != null)
+								{
+									if (param.Translation.StructInfo != null)
+									{
+										elementType = param.Translation.StructInfo.Key;
+									}
+									else if (param.Translation.HandleInfo != null)
+									{
+										elementType = param.Translation.HandleInfo.Key;
+									}
+									else if (param.Translation.ProxyInfo != null)
+									{
+										elementType = param.Translation.ProxyInfo.Key;
+									}									
+								}					
+								command.PriorStatements.Add(variableName + " = new " + elementType + "[" + param.LengthConditions[0] + "]");
+							}
+							else
+							{
+								bool needCallVariable =
+									param.Translation != null
+									&& (
+										param.Translation.StructInfo != null 
+										|| param.Translation.HandleInfo != null
+										|| param.Translation.ProxyInfo != null
+									)	
+									&&
+									(
+											(param.UseOutStatement)
+										||  (!param.UseOutStatement && !proxy.RequiresInstance)	
+										||  (!param.UseOutStatement && proxy.RequiresInstance && param.Index > 0 && !param.IsHandle())
+									);						
+
+								if (needCallVariable)
+								{
+									// NEED TO INITIALISE PINNED DATA
+									var pinnedVariable = command.InstanceName;
+									var pinnedType = param.CppType;
+
+									if (param.Translation.StructInfo != null)
+									{
+										pinnedType = param.Translation.StructInfo.Key;
+									}
+									else if (param.Translation.HandleInfo != null)
+									{
+										pinnedType = param.Translation.HandleInfo.Key;
+									}
+									else if (param.Translation.ProxyInfo != null)
+									{
+										pinnedType = param.Translation.ProxyInfo.Key;
+									}		
+									valueStmt = "&" + pinnedVariable;																								
+									command.PriorStatements.Add(pinnedType + "  " + pinnedVariable);					
+								}
+								else if (param.Translation.CSharpType == "String^")
+								{
+									command.PriorStatements.Add("IntPtr " + command.InstanceName + " = Marshal::StringToHGlobalAnsi(" + variableName + ")");
+									command.PriorStatements.Add("pins->Add(" + command.InstanceName ")");
+									valueStmt = "static_cast<char*>(" + command.InstanceName + ".ToPointer())";								
+								}
+
+								command.PriorStatements.Add(param.CppType + " " + variableName + " " + valueStmt + ";");
+								if (param.Translation != null && param.Translation.StructInfo != null)
+								{	
+									command.PriorStatements.Add(param.Name + "->CopyTo(" + variableName + ");");
+								}				
+							}											
+						}
+					}
+				}													
+#>
+
+		<#= firstReturnStmt #><#= m.Function.Key #>(<#
+			first = true;
+			separator = "";
+				foreach(var command in commands)
+				{ 	
+					string variableName =  command.IsInitialised ? command.ArgumentName : "nullptr";
+
+			#><#= separator #><#= variableName #><#
+					if (first)
+					{
+						separator = ", ";
+						first = false;
+					}				
+				} #>);
+<#
+				if (m.Function.ReturnType == "VkResult") 
+				{
+#>
+
+		if (firstResult != VK_SUCCESS)
+		{
+			return firstResult;
+		}
+
+<#
+				}
+			}
+// END -- FIRST C++ FUNCTION CALL
+#>
+<#
 // BEGIN -- C++ ARGUMENT INITIALISATION
-			for(int i =0; i < m.Function.Parameters.Count; ++i)
+			foreach(var command in commands)	
 			{ 
-				var param = m.Function.Parameters[i];
-				string variableName = "arg_" + i;
+				var param = command.Parameter;
+				if (param == null)
+				{
+					continue;
+				}
+
+				if (command.IsInitialised)
+				{
+					continue;
+				}
+
+				string variableName = command.ArgumentName;
 				string valueStmt = "0";
 
-				if (i == 0 && proxy.RequiresInstance)
+				if (param.Index == 0 && proxy.RequiresInstance)
 				{
 					valueStmt = "this->mHandle";
 				}
@@ -160,14 +329,14 @@ var ns = "ManagedVulkan";
 						(
 								(param.UseOutStatement)
 							||  (!param.UseOutStatement && !proxy.RequiresInstance)	
-							||  (!param.UseOutStatement && proxy.RequiresInstance && i > 0 && param.Translation.HandleInfo == null)				   
+							||  (!param.UseOutStatement && proxy.RequiresInstance && param.Index > 0 && param.Translation.HandleInfo == null)				   
 						);
 						
 
 					if (needCallVariable)
 					{
 						// NEED TO INITIALISE PINNED DATA
-						var pinnedVariable = "inst_" + i;
+						var pinnedVariable = command.InstanceName;
 						var pinnedType = param.CppType;
 
 						if (param.Translation.StructInfo != null)
@@ -206,7 +375,6 @@ var ns = "ManagedVulkan";
 // BEGIN -- C++ FUNCTION CALL
 			var callReturnStmt = (m.Function.ReturnType == "void") ? ""	: "var result = ";			
 #>
-
 		<#= callReturnStmt #><#= m.Function.Key #>(<#
 			first = true;
 			separator = "";
@@ -318,6 +486,11 @@ var ns = "ManagedVulkan";
 			}
 // END -- DELETE ARRAY VARIABLES
 #>
+		// FREE ALL PINNED STRINGS
+		foreach(var str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
 	}
 }
 
