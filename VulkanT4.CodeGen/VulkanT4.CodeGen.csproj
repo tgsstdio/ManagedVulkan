@@ -54,9 +54,9 @@
   <ItemGroup>
     <None Include="ManagedVulkan.tt2">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ManagedVulkan.cpp</LastGenOutput>
+      <LastGenOutput>ManagedVulkan1.cpp</LastGenOutput>
     </None>
-    <Content Include="ManagedVulkan.cpp">
+    <Content Include="ManagedVulkan1.cpp">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ManagedVulkan.tt2</DependentUpon>

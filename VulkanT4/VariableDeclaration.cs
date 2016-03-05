@@ -11,6 +11,9 @@ namespace VulkanT4
             public int Index { get; internal set; }
             public VkTypeTranslation Translation { get; internal set; }
             public string Prefix { get; internal set; }
+            public string NullCheck { get; set; }
+            public string Parent { get; set; }
+            public string FieldPath { get; set; }
             public int Children { get; set; }
             public bool NotGenerated { get; internal set; }
         }
@@ -28,6 +31,9 @@ namespace VulkanT4
                 {
                     Parameter = param,
                     Prefix = rootPrefix + "_" + param.Index,
+                    FieldPath = rootPrefix + "_" + param.Index,
+                    NullCheck = param.Name + " != nullptr",
+                    Parent = param.Name,
                     Index = param.Index,
                     Translation = param.Translation,
                     NotGenerated = true,
@@ -46,9 +52,11 @@ namespace VulkanT4
                                 Parameter = top.Parameter,
                                 ArgumentName = top.Prefix,
                                 MemberType = top.Translation,
+                                NullCheck = top.NullCheck,
                                 InstanceName = top.Prefix.Replace("arg_", "inst_"),
+                                FieldPath = top.FieldPath,
                             });
-                        top.Children = DecomposeParam(stack, top.Prefix, top.Translation);
+                        top.Children = DecomposeParam(stack, top.Prefix, top.Translation, top.FieldPath, top.NullCheck, top.Parent);
                         top.NotGenerated = false;
                     }
                     else
@@ -66,7 +74,7 @@ namespace VulkanT4
             return commands;
         }
 
-        private static int DecomposeParam(Stack<VkCommandInput> stack, string prefix, VkTypeTranslation parentTranslation)
+        private static int DecomposeParam(Stack<VkCommandInput> stack, string prefix, VkTypeTranslation parentTranslation, string fieldPath, string nullCheck, string parent)
         {
             int count = 0;
             // structs 
@@ -84,6 +92,9 @@ namespace VulkanT4
                         {
                             NotGenerated = true,
                             Prefix = fieldPrefix,
+                            Parent = parent,
+                            NullCheck = nullCheck + " && " + parent + "->" + members[i].Name + " != nullptr",
+                            FieldPath = fieldPath + "->" + members[i].Name,
                             Index = i,
                             Translation = members[i].Translation
                         };

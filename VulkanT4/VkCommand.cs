@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace VulkanT4
 {
@@ -16,35 +17,41 @@ namespace VulkanT4
         public string InstanceName { get; set; }
         public VkTypeTranslation MemberType { get; set; }
         public List<string> PriorStatements { get; private set; }
+        public string FieldPath { get; set; }
+        public string NullCheck { get; set; }
 
         public void Initialise(VkProxy proxy)
         {
             string valueStmt = "0";
 
-            if (Parameter != null)
+            if (Parameter == null)
             {
+                ParseFieldOnly(proxy);
                 return;
             }
 
-            if (Parameter.Index == 0 && proxy.RequiresInstance)
+            if (Parameter != null)
             {
-                valueStmt = "this->mHandle";
-            }
-            // IS METHOD PARAMETER A HANDLE => STRAIGHT COPY
-            else if (Parameter.Translation.HandleInfo != null)
-            {
-                valueStmt = Parameter.Name + "->mHandle";
-            }
-            else if (Parameter.Translation.EnumInfo != null)
-            {
-                valueStmt = Parameter.Name;
+                if (Parameter.Index == 0 && proxy.RequiresInstance)
+                {
+                    valueStmt = "this->mHandle";
+                }
+                // IS METHOD PARAMETER A HANDLE => STRAIGHT COPY
+                else if (Parameter.Translation.HandleInfo != null)
+                {
+                    valueStmt = Parameter.Name + "->mHandle";
+                }
+                else if (Parameter.Translation.EnumInfo != null)
+                {
+                    valueStmt = Parameter.Name;
+                }
+
+                PriorStatements.Add("// " + Parameter.Index + " - " + Parameter.Name);
             }
 
             //command.IsInitialised = true;
 
-            PriorStatements.Add("// " + Parameter.Index + " - " + Parameter.Name);
-
-            if (Parameter.IsArray)
+            if (Parameter != null && Parameter.IsArray)
             {
                 var elementType = "<TYPE>";
                 if (Parameter.Translation != null)
@@ -67,55 +74,104 @@ namespace VulkanT4
             else
             {
                 bool needCallVariable =
-                    Parameter.Translation != null
+                    MemberType != null
                     && (
-                        Parameter.Translation.StructInfo != null
-                        || Parameter.Translation.HandleInfo != null
-                        || Parameter.Translation.ProxyInfo != null
+                        MemberType.StructInfo != null
+                        || MemberType.HandleInfo != null
+                        || MemberType.ProxyInfo != null
                     )
                     &&
                     (
-                            (Parameter.UseOutStatement)
-                        || (!Parameter.UseOutStatement && !proxy.RequiresInstance)
-                        || (!Parameter.UseOutStatement && proxy.RequiresInstance && Parameter.Index > 0 && !Parameter.IsHandle())
+                            (Parameter != null && Parameter.UseOutStatement)
+                        || (Parameter != null && !Parameter.UseOutStatement && !proxy.RequiresInstance)
+                        || (Parameter != null && !Parameter.UseOutStatement && proxy.RequiresInstance && Parameter.Index > 0 && !Parameter.IsHandle())
                     );
 
                 if (needCallVariable)
                 {
                     // NEED TO INITIALISE PINNED DATA
                     var pinnedVariable = InstanceName;
-                    var pinnedType = Parameter.CppType;
+                    var pinnedType = MemberType.CppType;
 
-                    if (Parameter.Translation.StructInfo != null)
+                    if (MemberType.StructInfo != null)
                     {
-                        pinnedType = Parameter.Translation.StructInfo.Key;
+                        pinnedType = MemberType.StructInfo.Key;
                     }
-                    else if (Parameter.Translation.HandleInfo != null)
+                    else if (MemberType.HandleInfo != null)
                     {
-                        pinnedType = Parameter.Translation.HandleInfo.Key;
+                        pinnedType = MemberType.HandleInfo.Key;
                     }
-                    else if (Parameter.Translation.ProxyInfo != null)
+                    else if (MemberType.ProxyInfo != null)
                     {
-                        pinnedType = Parameter.Translation.ProxyInfo.Key;
+                        pinnedType = MemberType.ProxyInfo.Key;
                     }
                     valueStmt = "&" + pinnedVariable;
                     PriorStatements.Add(pinnedType + "  " + pinnedVariable);
                 }
-                else if (Parameter.Translation.CSharpType == "String^")
+                else if (MemberType.CSharpType == "String^")
                 {
                     PriorStatements.Add("IntPtr " + InstanceName + " = Marshal::StringToHGlobalAnsi(" + ArgumentName + ")");
                     PriorStatements.Add("pins->Add(" + InstanceName + ")");
                     valueStmt = "static_cast<char*>(" + InstanceName + ".ToPointer())";
                 }
 
-                PriorStatements.Add(Parameter.CppType + " " + ArgumentName + " " + valueStmt + ";");
-                if (Parameter.Translation != null && Parameter.Translation.StructInfo != null)
+                PriorStatements.Add(MemberType.CppType + " " + ArgumentName + " = " + valueStmt + ";");
+                if (Parameter.Translation != null && MemberType.StructInfo != null)
                 {
-                    PriorStatements.Add(Parameter.Name + "->CopyTo(" + ArgumentName + ");");
+                    PriorStatements.Add(Parameter.Name + "->CopyTo(" + ArgumentName + ", pins);");
                 }
             }
 
         }
 
+        private void ParseFieldOnly(VkProxy proxy)
+        {
+            string valueStmt = "0";
+
+            PriorStatements.Add("// FIELD - " + ArgumentName + " " + FieldPath);
+
+            PriorStatements.Add(MemberType.CppType + " " + ArgumentName + " = nullptr;");
+
+            bool needCallVariable =
+                MemberType != null
+                && (
+                    MemberType.StructInfo != null
+                    || MemberType.HandleInfo != null
+                    || MemberType.ProxyInfo != null
+                );
+
+            if (needCallVariable)
+            {
+                // NEED TO INITIALISE PINNED DATA
+                var pinnedVariable = InstanceName;
+                var pinnedType = MemberType.CppType;
+
+                if (MemberType.StructInfo != null)
+                {
+                    pinnedType = MemberType.StructInfo.Key;
+                }
+                else if (MemberType.HandleInfo != null)
+                {
+                    pinnedType = MemberType.HandleInfo.Key;
+                }
+                else if (MemberType.ProxyInfo != null)
+                {
+                    pinnedType = MemberType.ProxyInfo.Key;
+                }
+                valueStmt = "&" + pinnedVariable;
+                PriorStatements.Add(pinnedType + "  " + pinnedVariable + ";");
+            }
+
+            PriorStatements.Add("if (" + NullCheck + ")");
+            PriorStatements.Add("{");
+            
+            if (needCallVariable)
+            {
+                PriorStatements.Add('\t' + ArgumentName + " = " + valueStmt + ";");
+                PriorStatements.Add('\t' + FieldPath + " = " + ArgumentName + ";");
+            }
+
+            PriorStatements.Add("}\n");
+        }
     }
 }

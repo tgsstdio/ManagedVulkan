@@ -95,13 +95,21 @@ using namespace System.Collection.Generic;
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 <#
 			// ARRAY VARIABLES
-			foreach(var param in m.Function.Parameters)
-			{  
-				string variableName = "arg_" + param.Index;
-				string valueStmt = "nullptr";
-
-				if (param.IsArray)
+			foreach(var command in commands)
+			{ 
+				var param = command.Parameter;
+				if (param != null && param.IsArray)
 				{
+					string variableName = command.ArgumentName;
+					string valueStmt = "nullptr";
+
+					foreach(var l in param.LengthConditions)
+					{
+						if (l != "null-terminated" && !lengths.Contains(l))
+						{
+							lengths.Add(l);
+						}
+					}
 #>
 	<#= param.CppType #> <#= variableName #> = <#= valueStmt #>;
 <#
@@ -115,6 +123,8 @@ using namespace System.Collection.Generic;
 			bool makeSecondCall = (m.ArrayInfo != null && m.ArrayInfo.SecondCall);
 			if (makeSecondCall)
 			{
+#>		
+		// 1ST CALL<#	
 				var firstReturnStmt = (m.Function.ReturnType == "void") ? ""	: "var firstResult = ";	
 
 				foreach(var command in commands)
@@ -125,111 +135,31 @@ using namespace System.Collection.Generic;
 						string variableName = command.ArgumentName;
 
 						if (lengths.Contains(command.Parameter.Name))
-						{	
-							command.IsInitialised = true;
-
+						{
 							command.PriorStatements.Add("// " + param.Index + " - " + param.Name);
-							command.PriorStatements.Add(command.MemberType.CSharpType + " " + param.Name);
-							command.PriorStatements.Add(<command.MemberType.CSharpType + "* " + command.ArgumentName+ " = &" + param.Name);
+							command.PriorStatements.Add(command.MemberType.CSharpType + " " + param.Name + " = 0;");
+							command.PriorStatements.Add(command.MemberType.CSharpType + "* " + command.ArgumentName+ " = &" + param.Name + ";");
 	
+							command.IsInitialised = true;	
 						}
 						else if (!command.Parameter.UseOutStatement)
 						{
+							command.Initialise(proxy);	
+							command.IsInitialised = true;								
+						}
 
-							string valueStmt = "0";
 
-							if (param.Index == 0 && proxy.RequiresInstance)
-							{
-								valueStmt = "this->mHandle";
-							}
-							// IS METHOD PARAMETER A HANDLE => STRAIGHT COPY
-							else if (param.Translation.HandleInfo != null)
-							{
-								valueStmt = param.Name + "->mHandle";
-							}
-							else if (param.Translation.EnumInfo != null)
-							{
-								valueStmt = param.Name;
-							}
-
-							command.IsInitialised = true;
-
-							command.PriorStatements.Add("// " + param.Index + " - " + param.Name);
-
-							if (param.IsArray)
-							{
-								var elementType = "<TYPE>";
-								if (param.Translation != null)
-								{
-									if (param.Translation.StructInfo != null)
-									{
-										elementType = param.Translation.StructInfo.Key;
-									}
-									else if (param.Translation.HandleInfo != null)
-									{
-										elementType = param.Translation.HandleInfo.Key;
-									}
-									else if (param.Translation.ProxyInfo != null)
-									{
-										elementType = param.Translation.ProxyInfo.Key;
-									}									
-								}					
-								command.PriorStatements.Add(variableName + " = new " + elementType + "[" + param.LengthConditions[0] + "]");
-							}
-							else
-							{
-								bool needCallVariable =
-									param.Translation != null
-									&& (
-										param.Translation.StructInfo != null 
-										|| param.Translation.HandleInfo != null
-										|| param.Translation.ProxyInfo != null
-									)	
-									&&
-									(
-											(param.UseOutStatement)
-										||  (!param.UseOutStatement && !proxy.RequiresInstance)	
-										||  (!param.UseOutStatement && proxy.RequiresInstance && param.Index > 0 && !param.IsHandle())
-									);						
-
-								if (needCallVariable)
-								{
-									// NEED TO INITIALISE PINNED DATA
-									var pinnedVariable = command.InstanceName;
-									var pinnedType = param.CppType;
-
-									if (param.Translation.StructInfo != null)
-									{
-										pinnedType = param.Translation.StructInfo.Key;
-									}
-									else if (param.Translation.HandleInfo != null)
-									{
-										pinnedType = param.Translation.HandleInfo.Key;
-									}
-									else if (param.Translation.ProxyInfo != null)
-									{
-										pinnedType = param.Translation.ProxyInfo.Key;
-									}		
-									valueStmt = "&" + pinnedVariable;																								
-									command.PriorStatements.Add(pinnedType + "  " + pinnedVariable);					
-								}
-								else if (param.Translation.CSharpType == "String^")
-								{
-									command.PriorStatements.Add("IntPtr " + command.InstanceName + " = Marshal::StringToHGlobalAnsi(" + variableName + ")");
-									command.PriorStatements.Add("pins->Add(" + command.InstanceName ")");
-									valueStmt = "static_cast<char*>(" + command.InstanceName + ".ToPointer())";								
-								}
-
-								command.PriorStatements.Add(param.CppType + " " + variableName + " " + valueStmt + ";");
-								if (param.Translation != null && param.Translation.StructInfo != null)
-								{	
-									command.PriorStatements.Add(param.Name + "->CopyTo(" + variableName + ");");
-								}				
-							}											
+						if (command.IsInitialised)
+						{
+							foreach(var line in command.PriorStatements)
+							{#>		
+		<#= line #><#							
+							}							
 						}
 					}
 				}													
 #>
+
 
 		<#= firstReturnStmt #><#= m.Function.Key #>(<#
 			first = true;
@@ -262,11 +192,20 @@ using namespace System.Collection.Generic;
 #>
 <#
 // BEGIN -- C++ ARGUMENT INITIALISATION
+#>
+		// MAIN INIT
+<#
+
 			foreach(var command in commands)	
 			{ 
 				var param = command.Parameter;
 				if (param == null)
 				{
+					command.Initialise(proxy);
+					foreach(var line in command.PriorStatements)
+					{#>		
+			<#= line #><#							
+					}	
 					continue;
 				}
 
@@ -291,9 +230,8 @@ using namespace System.Collection.Generic;
 				{
 					valueStmt = param.Name;
 				}
-#>
-		// <#= param.Index #> - <#= param.Name #>
-<#
+
+				command.PriorStatements.Add("// INITS " + param.Index + " - " + param.Name);
 				if (param.IsArray)
 				{
 					var elementType = "<TYPE>";
@@ -311,10 +249,9 @@ using namespace System.Collection.Generic;
 						{
 							elementType = param.Translation.ProxyInfo.Key;
 						}		
-					}					
-#>
-		<#= variableName #> = new <#= elementType#>[<#= param.LengthConditions[0] #>];
-<#
+					}
+					command.PriorStatements.Add(variableName + " = new " + elementType + "[" + param.LengthConditions[0] + "];");
+										
 				}
 				else
 				{
@@ -351,30 +288,38 @@ using namespace System.Collection.Generic;
 						{
 							pinnedType = param.Translation.ProxyInfo.Key;
 						}		
-#>		<#= pinnedType #> <#= pinnedVariable #>;
-<#					
+						command.PriorStatements.Add(pinnedType + " "  + pinnedVariable);
+			
 						valueStmt = "&" + pinnedVariable;			
 					}
-#>
-		<#= param.CppType #> <#= variableName #> = <#= valueStmt #>;
-<#
-// BEGIN -- PARAMETER COPY TO INSTANCE
+					else if (param.Translation != null && param.Translation.CSharpType == "String^")
+					{
+						command.PriorStatements.Add("IntPtr " + command.InstanceName + " = Marshal::StringToHGlobalAnsi(" + command.ArgumentName + ")");
+						command.PriorStatements.Add("pins->Add(" + command.InstanceName + ")");
+						valueStmt = "static_cast<char*>(" + command.InstanceName + ".ToPointer())";
+					}
+
+					command.PriorStatements.Add(param.CppType + " " + variableName + " = " + valueStmt + ";");
+
 					if (param.Translation != null && param.Translation.StructInfo != null)
 					{
-#>
-		<#= param.Name #>->CopyTo(<#= variableName #>);
-<#						
-					}					
-// END -- PARAMETER COPY TO INSTANCE
+			
+						command.PriorStatements.Add(param.Name + "->CopyTo(" + variableName + " , pins);");		
+					}									
 				}
+				command.IsInitialised = true;
+				foreach(var line in command.PriorStatements)
+				{#>		
+		<#= line #><#							
+				}	
 			}		
-// END -- C++ ARGUMENT INITIALISATION
 #>
-
 <#
 // BEGIN -- C++ FUNCTION CALL
 			var callReturnStmt = (m.Function.ReturnType == "void") ? ""	: "var result = ";			
 #>
+
+
 		<#= callReturnStmt #><#= m.Function.Key #>(<#
 			first = true;
 			separator = "";
@@ -392,7 +337,6 @@ using namespace System.Collection.Generic;
 <#
 // END -- C++ FUNCTION CALL
 #>
-
 <#	
 // BEGIN -- OUT PARAMETER INITIALISATION
 			foreach(var param in m.Parameters)
@@ -407,7 +351,7 @@ using namespace System.Collection.Generic;
 						paramType = "array<" + param.Translation.CSharpType + ">^";
 						paramValue = "count";
 #>			
-		int count = <#= param.LengthConditions[0] #>;	
+		int count = (int) <#= param.LengthConditions[0] #>;	
 		<#= param.Name #> = gcnew <#= paramType #>(<#= paramValue #>);
 		for	(int i = 0; i < count; ++i)
 		{	
@@ -415,7 +359,6 @@ using namespace System.Collection.Generic;
 			<#= param.Name #>[i]->CopyFrom(arg_<#= param.Index #>[i]);
 		}	
 <#
-
 					}
 					else
 					{
