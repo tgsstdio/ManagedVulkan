@@ -9,29 +9,59 @@ using namespace System.Collection.Generic;
 VkResult ManagedVulkan::Vulkan::CreateInstance(InstanceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out Instance^ pInstance)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	const char* const* arg_0_5 = nullptr;
+	const char* const* arg_0_7 = nullptr;
 	try
 	{
 		// MAIN INIT
 		
 		// INITS 0 - pCreateInfo		
-		VkInstanceCreateInfo inst_0		
+		VkInstanceCreateInfo inst_0;		
 		VkInstanceCreateInfo* arg_0 = &inst_0;		
 		pCreateInfo->CopyTo(arg_0 , pins);		
-			// FIELD - arg_0_3 arg_0->ApplicationInfo		
+			// FIELD - arg_0_3 pCreateInfo->ApplicationInfo		
 			VkApplicationInfo* arg_0_3 = nullptr;		
 			VkApplicationInfo  inst_0_3;		
 			if (pCreateInfo != nullptr && pCreateInfo->ApplicationInfo != nullptr)		
 			{		
 				arg_0_3 = &inst_0_3;		
-				arg_0->ApplicationInfo = arg_0_3;		
-			}
-		
+				pCreateInfo->ApplicationInfo->CopyTo(arg_0_3, pins);		
+				arg_0->pApplicationInfo = arg_0_3;		
+			}		
+			// FIELD - arg_0_5 pCreateInfo->EnabledLayerNames		
+			if (pCreateInfo != nullptr && pCreateInfo->EnabledLayerNames != nullptr)		
+			{		
+				int enabledLayerCount = (int) pCreateInfo->EnabledLayerNames->Length;		
+				arg_0_5 = new char*[enabledLayerCount];		
+				for (int j = 0; j < enabledLayerCount; ++j)		
+				{		
+					IntPtr inst_0_5 = Marshal::StringToHGlobalAnsi(pCreateInfo->EnabledLayerNames[j]);		
+					pins->Add(inst_0_5);		
+					arg_0_5[j] = static_cast<char*>(inst_0_5.ToPointer());		
+				}		
+				arg_0->ppEnabledLayerNames = arg_0_5;		
+				arg_0->enabledLayerCount = enabledLayerCount;		
+			}		
+			// FIELD - arg_0_7 pCreateInfo->EnabledExtensionNames		
+			if (pCreateInfo != nullptr && pCreateInfo->EnabledExtensionNames != nullptr)		
+			{		
+				int enabledExtensionCount = (int) pCreateInfo->EnabledExtensionNames->Length;		
+				arg_0_7 = new char*[enabledExtensionCount];		
+				for (int j = 0; j < enabledExtensionCount; ++j)		
+				{		
+					IntPtr inst_0_7 = Marshal::StringToHGlobalAnsi(pCreateInfo->EnabledExtensionNames[j]);		
+					pins->Add(inst_0_7);		
+					arg_0_7[j] = static_cast<char*>(inst_0_7.ToPointer());		
+				}		
+				arg_0->ppEnabledExtensionNames = arg_0_7;		
+				arg_0->enabledExtensionCount = enabledExtensionCount;		
+			}		
 		// INITS 1 - pAllocator		
-		VkAllocationCallbacks inst_1		
+		VkAllocationCallbacks inst_1;		
 		VkAllocationCallbacks* arg_1 = &inst_1;		
 		pAllocator->CopyTo(arg_1 , pins);		
 		// INITS 2 - pInstance		
-		VkInstance inst_2		
+		VkInstance inst_2;		
 		VkInstance* arg_2 = &inst_2;
 
 		var result = vkCreateInstance(arg_0, arg_1, arg_2);
@@ -43,6 +73,14 @@ VkResult ManagedVulkan::Vulkan::CreateInstance(InstanceCreateInfo^ pCreateInfo, 
 	}
 	finally
 	{
+		if (arg_0_5 != nullptr)
+		{
+			delete[] arg_0_5;
+		}
+		if (arg_0_7 != nullptr)
+		{
+			delete[] arg_0_7;
+		}
 		// FREE ALL PINNED STRINGS
 		foreach(var str in pins)
 		{
@@ -167,7 +205,7 @@ void ManagedVulkan::Instance::DestroyInstance(AllocationCallbacks^ pAllocator)
 		// INITS 0 - instance		
 		VkInstance arg_0 = this->mHandle;		
 		// INITS 1 - pAllocator		
-		VkAllocationCallbacks inst_1		
+		VkAllocationCallbacks inst_1;		
 		VkAllocationCallbacks* arg_1 = &inst_1;		
 		pAllocator->CopyTo(arg_1 , pins);
 
@@ -247,9 +285,9 @@ PFN_vkVoidFunction ManagedVulkan::Instance::GetInstanceProcAddr(String^ pName)
 		// INITS 0 - instance		
 		VkInstance arg_0 = this->mHandle;		
 		// INITS 1 - pName		
-		IntPtr inst_1 = Marshal::StringToHGlobalAnsi(arg_1)		
-		pins->Add(inst_1)		
-		char* arg_1 = static_cast<char*>(inst_1.ToPointer());
+		IntPtr inst_1 = Marshal::StringToHGlobalAnsi(arg_1);		
+		pins->Add(inst_1);		
+		char* arg_1 = static_cast<char*>(inst_1.ToPointer());;
 
 		var result = vkGetInstanceProcAddr(arg_0, arg_1);
 
@@ -275,24 +313,24 @@ VkResult ManagedVulkan::Instance::CreateDisplayPlaneSurfaceKHR(DisplaySurfaceCre
 		// INITS 0 - instance		
 		VkInstance arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkDisplaySurfaceCreateInfoKHR inst_1		
+		VkDisplaySurfaceCreateInfoKHR inst_1;		
 		VkDisplaySurfaceCreateInfoKHR* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
-			// FIELD - arg_1_9 arg_1->ImageExtent		
+			// FIELD - arg_1_9 pCreateInfo->ImageExtent		
 			VkExtent2D arg_1_9 = nullptr;		
 			VkExtent2D  inst_1_9;		
 			if (pCreateInfo != nullptr && pCreateInfo->ImageExtent != nullptr)		
 			{		
 				arg_1_9 = &inst_1_9;		
-				arg_1->ImageExtent = arg_1_9;		
-			}
-		
+				pCreateInfo->ImageExtent->CopyTo(arg_1_9, pins);		
+				arg_1->imageExtent = arg_1_9;		
+			}		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pSurface		
-		VkSurfaceKHR inst_3		
+		VkSurfaceKHR inst_3;		
 		VkSurfaceKHR* arg_3 = &inst_3;
 
 		var result = vkCreateDisplayPlaneSurfaceKHR(arg_0, arg_1, arg_2, arg_3);
@@ -324,7 +362,7 @@ void ManagedVulkan::Instance::DestroySurfaceKHR(SurfaceKHR^ surface, AllocationC
 		// INITS 1 - surface		
 		VkSurfaceKHR arg_1 = surface->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -352,15 +390,15 @@ VkResult ManagedVulkan::Instance::CreateWin32SurfaceKHR(Win32SurfaceCreateInfoKH
 		// INITS 0 - instance		
 		VkInstance arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkWin32SurfaceCreateInfoKHR inst_1		
+		VkWin32SurfaceCreateInfoKHR inst_1;		
 		VkWin32SurfaceCreateInfoKHR* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pSurface		
-		VkSurfaceKHR inst_3		
+		VkSurfaceKHR inst_3;		
 		VkSurfaceKHR* arg_3 = &inst_3;
 
 		var result = vkCreateWin32SurfaceKHR(arg_0, arg_1, arg_2, arg_3);
@@ -390,15 +428,15 @@ VkResult ManagedVulkan::Instance::CreateDebugReportCallbackEXT(DebugReportCallba
 		// INITS 0 - instance		
 		VkInstance arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkDebugReportCallbackCreateInfoEXT inst_1		
+		VkDebugReportCallbackCreateInfoEXT inst_1;		
 		VkDebugReportCallbackCreateInfoEXT* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pCallback		
-		VkDebugReportCallbackEXT inst_3		
+		VkDebugReportCallbackEXT inst_3;		
 		VkDebugReportCallbackEXT* arg_3 = &inst_3;
 
 		var result = vkCreateDebugReportCallbackEXT(arg_0, arg_1, arg_2, arg_3);
@@ -430,7 +468,7 @@ void ManagedVulkan::Instance::DestroyDebugReportCallbackEXT(DebugReportCallbackE
 		// INITS 1 - callback		
 		VkDebugReportCallbackEXT arg_1 = callback->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -462,19 +500,19 @@ void ManagedVulkan::Instance::DebugReportMessageEXT(VkDebugReportFlagsEXT flags,
 		// INITS 2 - objectType		
 		VkDebugReportObjectTypeEXT arg_2 = objectType;		
 		// INITS 3 - object		
-		uint64_t arg_3 = 0;		
+		uint64_t arg_3 = object;		
 		// INITS 4 - location		
-		size_t arg_4 = 0;		
+		size_t arg_4 = (size_t)  location;		
 		// INITS 5 - messageCode		
-		int32_t arg_5 = 0;		
+		int32_t arg_5 = messageCode;		
 		// INITS 6 - pLayerPrefix		
-		IntPtr inst_6 = Marshal::StringToHGlobalAnsi(arg_6)		
-		pins->Add(inst_6)		
-		char* arg_6 = static_cast<char*>(inst_6.ToPointer());		
+		IntPtr inst_6 = Marshal::StringToHGlobalAnsi(arg_6);		
+		pins->Add(inst_6);		
+		char* arg_6 = static_cast<char*>(inst_6.ToPointer());;		
 		// INITS 7 - pMessage		
-		IntPtr inst_7 = Marshal::StringToHGlobalAnsi(arg_7)		
-		pins->Add(inst_7)		
-		char* arg_7 = static_cast<char*>(inst_7.ToPointer());
+		IntPtr inst_7 = Marshal::StringToHGlobalAnsi(arg_7);		
+		pins->Add(inst_7);		
+		char* arg_7 = static_cast<char*>(inst_7.ToPointer());;
 
 		vkDebugReportMessageEXT(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7);
 
@@ -502,9 +540,9 @@ PFN_vkVoidFunction ManagedVulkan::Device::GetDeviceProcAddr(String^ pName)
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pName		
-		IntPtr inst_1 = Marshal::StringToHGlobalAnsi(arg_1)		
-		pins->Add(inst_1)		
-		char* arg_1 = static_cast<char*>(inst_1.ToPointer());
+		IntPtr inst_1 = Marshal::StringToHGlobalAnsi(arg_1);		
+		pins->Add(inst_1);		
+		char* arg_1 = static_cast<char*>(inst_1.ToPointer());;
 
 		var result = vkGetDeviceProcAddr(arg_0, arg_1);
 
@@ -530,7 +568,7 @@ void ManagedVulkan::Device::DestroyDevice(AllocationCallbacks^ pAllocator)
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pAllocator		
-		VkAllocationCallbacks inst_1		
+		VkAllocationCallbacks inst_1;		
 		VkAllocationCallbacks* arg_1 = &inst_1;		
 		pAllocator->CopyTo(arg_1 , pins);
 
@@ -558,11 +596,11 @@ void ManagedVulkan::Device::GetDeviceQueue(UInt32 queueFamilyIndex, UInt32 queue
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - queueFamilyIndex		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = queueFamilyIndex;		
 		// INITS 2 - queueIndex		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = queueIndex;		
 		// INITS 3 - pQueue		
-		VkQueue inst_3		
+		VkQueue inst_3;		
 		VkQueue* arg_3 = &inst_3;
 
 		vkGetDeviceQueue(arg_0, arg_1, arg_2, arg_3);
@@ -616,11 +654,11 @@ VkResult ManagedVulkan::Device::AllocateMemory(MemoryAllocateInfo^ pAllocateInfo
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pAllocateInfo		
-		VkMemoryAllocateInfo inst_1		
+		VkMemoryAllocateInfo inst_1;		
 		VkMemoryAllocateInfo* arg_1 = &inst_1;		
 		pAllocateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pMemory		
@@ -652,7 +690,7 @@ void ManagedVulkan::Device::FreeMemory(DeviceMemory^ memory, AllocationCallbacks
 		// INITS 1 - memory		
 		VkDeviceMemory arg_1 = memory->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -682,9 +720,9 @@ VkResult ManagedVulkan::Device::MapMemory(DeviceMemory^ memory, UInt64 offset, U
 		// INITS 1 - memory		
 		VkDeviceMemory arg_1 = memory->mHandle;		
 		// INITS 2 - offset		
-		VkDeviceSize arg_2 = 0;		
+		VkDeviceSize arg_2 = offset;		
 		// INITS 3 - size		
-		VkDeviceSize arg_3 = 0;		
+		VkDeviceSize arg_3 = size;		
 		// INITS 4 - flags		
 		VkMemoryMapFlags arg_4 = 0;		
 		// INITS 5 - ppData		
@@ -741,7 +779,7 @@ VkResult ManagedVulkan::Device::FlushMappedMemoryRanges(array<MappedMemoryRange^
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - memoryRangeCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = memoryRangeCount;		
 		// INITS 2 - pMemoryRanges		
 		arg_2 = new VkMappedMemoryRange[memoryRangeCount];
 
@@ -774,7 +812,7 @@ VkResult ManagedVulkan::Device::InvalidateMappedMemoryRanges(array<MappedMemoryR
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - memoryRangeCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = memoryRangeCount;		
 		// INITS 2 - pMemoryRanges		
 		arg_2 = new VkMappedMemoryRange[memoryRangeCount];
 
@@ -808,7 +846,7 @@ void ManagedVulkan::Device::GetDeviceMemoryCommitment(DeviceMemory^ memory, ref 
 		// INITS 1 - memory		
 		VkDeviceMemory arg_1 = memory->mHandle;		
 		// INITS 2 - pCommittedMemoryInBytes		
-		VkDeviceSize* arg_2 = 0;
+		VkDeviceSize* arg_2 = pCommittedMemoryInBytes;
 
 		vkGetDeviceMemoryCommitment(arg_0, arg_1, arg_2);
 
@@ -836,7 +874,7 @@ void ManagedVulkan::Device::GetBufferMemoryRequirements(Buffer^ buffer, out Memo
 		// INITS 1 - buffer		
 		VkBuffer arg_1 = buffer->mHandle;		
 		// INITS 2 - pMemoryRequirements		
-		VkMemoryRequirements inst_2		
+		VkMemoryRequirements inst_2;		
 		VkMemoryRequirements* arg_2 = &inst_2;		
 		pMemoryRequirements->CopyTo(arg_2 , pins);
 
@@ -871,7 +909,7 @@ VkResult ManagedVulkan::Device::BindBufferMemory(Buffer^ buffer, DeviceMemory^ m
 		// INITS 2 - memory		
 		VkDeviceMemory arg_2 = memory->mHandle;		
 		// INITS 3 - memoryOffset		
-		VkDeviceSize arg_3 = 0;
+		VkDeviceSize arg_3 = memoryOffset;
 
 		var result = vkBindBufferMemory(arg_0, arg_1, arg_2, arg_3);
 
@@ -899,7 +937,7 @@ void ManagedVulkan::Device::GetImageMemoryRequirements(Image^ image, out MemoryR
 		// INITS 1 - image		
 		VkImage arg_1 = image->mHandle;		
 		// INITS 2 - pMemoryRequirements		
-		VkMemoryRequirements inst_2		
+		VkMemoryRequirements inst_2;		
 		VkMemoryRequirements* arg_2 = &inst_2;		
 		pMemoryRequirements->CopyTo(arg_2 , pins);
 
@@ -934,7 +972,7 @@ VkResult ManagedVulkan::Device::BindImageMemory(Image^ image, DeviceMemory^ memo
 		// INITS 2 - memory		
 		VkDeviceMemory arg_2 = memory->mHandle;		
 		// INITS 3 - memoryOffset		
-		VkDeviceSize arg_3 = 0;
+		VkDeviceSize arg_3 = memoryOffset;
 
 		var result = vkBindImageMemory(arg_0, arg_1, arg_2, arg_3);
 
@@ -963,27 +1001,27 @@ void ManagedVulkan::Device::GetImageSparseMemoryRequirements(Image^ image, out a
 		// INITS 1 - image		
 		VkImage arg_1 = image->mHandle;		
 		// INITS 2 - pSparseMemoryRequirementCount		
-		uint32_t* arg_2 = 0;		
+		uint32_t* arg_2 = pSparseMemoryRequirementCount;		
 		// INITS 3 - pSparseMemoryRequirements		
 		arg_3 = new VkSparseImageMemoryRequirements[pSparseMemoryRequirementCount];		
-			// FIELD - arg_3_0 arg_3->FormatProperties		
+			// FIELD - arg_3_0 pSparseMemoryRequirements->FormatProperties		
 			VkSparseImageFormatProperties arg_3_0 = nullptr;		
 			VkSparseImageFormatProperties  inst_3_0;		
 			if (pSparseMemoryRequirements != nullptr && pSparseMemoryRequirements->FormatProperties != nullptr)		
 			{		
 				arg_3_0 = &inst_3_0;		
-				arg_3->FormatProperties = arg_3_0;		
-			}
-		
-			// FIELD - arg_3_0_1 arg_3->FormatProperties->ImageGranularity		
+				pSparseMemoryRequirements->FormatProperties->CopyTo(arg_3_0, pins);		
+				arg_3->formatProperties = arg_3_0;		
+			}		
+			// FIELD - arg_3_0_1 pSparseMemoryRequirements->FormatProperties->ImageGranularity		
 			VkExtent3D arg_3_0_1 = nullptr;		
 			VkExtent3D  inst_3_0_1;		
 			if (pSparseMemoryRequirements != nullptr && pSparseMemoryRequirements->FormatProperties != nullptr && pSparseMemoryRequirements->ImageGranularity != nullptr)		
 			{		
 				arg_3_0_1 = &inst_3_0_1;		
-				arg_3->FormatProperties->ImageGranularity = arg_3_0_1;		
+				pSparseMemoryRequirements->FormatProperties->ImageGranularity->CopyTo(arg_3_0_1, pins);		
+				arg_3->formatProperties->imageGranularity = arg_3_0_1;		
 			}
-
 
 		vkGetImageSparseMemoryRequirements(arg_0, arg_1, arg_2, arg_3);
 			
@@ -1021,15 +1059,15 @@ VkResult ManagedVulkan::Device::CreateFence(FenceCreateInfo^ pCreateInfo, Alloca
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkFenceCreateInfo inst_1		
+		VkFenceCreateInfo inst_1;		
 		VkFenceCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pFence		
-		VkFence inst_3		
+		VkFence inst_3;		
 		VkFence* arg_3 = &inst_3;
 
 		var result = vkCreateFence(arg_0, arg_1, arg_2, arg_3);
@@ -1061,7 +1099,7 @@ void ManagedVulkan::Device::DestroyFence(Fence^ fence, AllocationCallbacks^ pAll
 		// INITS 1 - fence		
 		VkFence arg_1 = fence->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -1090,7 +1128,7 @@ VkResult ManagedVulkan::Device::ResetFences(array<Fence^>^ pFences)
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - fenceCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = fenceCount;		
 		// INITS 2 - pFences		
 		arg_2 = new VkFence[fenceCount];
 
@@ -1149,13 +1187,13 @@ VkResult ManagedVulkan::Device::WaitForFences(array<Fence^>^ pFences, bool waitA
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - fenceCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = fenceCount;		
 		// INITS 2 - pFences		
 		arg_2 = new VkFence[fenceCount];		
 		// INITS 3 - waitAll		
-		VkBool32 arg_3 = 0;		
+		VkBool32 arg_3 = waitAll;		
 		// INITS 4 - timeout		
-		uint64_t arg_4 = 0;
+		uint64_t arg_4 = timeout;
 
 		var result = vkWaitForFences(arg_0, arg_1, arg_2, arg_3, arg_4);
 
@@ -1185,15 +1223,15 @@ VkResult ManagedVulkan::Device::CreateSemaphore(SemaphoreCreateInfo^ pCreateInfo
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkSemaphoreCreateInfo inst_1		
+		VkSemaphoreCreateInfo inst_1;		
 		VkSemaphoreCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pSemaphore		
-		VkSemaphore inst_3		
+		VkSemaphore inst_3;		
 		VkSemaphore* arg_3 = &inst_3;
 
 		var result = vkCreateSemaphore(arg_0, arg_1, arg_2, arg_3);
@@ -1225,7 +1263,7 @@ void ManagedVulkan::Device::DestroySemaphore(Semaphore^ semaphore, AllocationCal
 		// INITS 1 - semaphore		
 		VkSemaphore arg_1 = semaphore->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -1253,15 +1291,15 @@ VkResult ManagedVulkan::Device::CreateEvent(EventCreateInfo^ pCreateInfo, Alloca
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkEventCreateInfo inst_1		
+		VkEventCreateInfo inst_1;		
 		VkEventCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pEvent		
-		VkEvent inst_3		
+		VkEvent inst_3;		
 		VkEvent* arg_3 = &inst_3;
 
 		var result = vkCreateEvent(arg_0, arg_1, arg_2, arg_3);
@@ -1293,7 +1331,7 @@ void ManagedVulkan::Device::DestroyEvent(Event^ event, AllocationCallbacks^ pAll
 		// INITS 1 - event		
 		VkEvent arg_1 = event->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -1399,15 +1437,15 @@ VkResult ManagedVulkan::Device::CreateQueryPool(QueryPoolCreateInfo^ pCreateInfo
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkQueryPoolCreateInfo inst_1		
+		VkQueryPoolCreateInfo inst_1;		
 		VkQueryPoolCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pQueryPool		
-		VkQueryPool inst_3		
+		VkQueryPool inst_3;		
 		VkQueryPool* arg_3 = &inst_3;
 
 		var result = vkCreateQueryPool(arg_0, arg_1, arg_2, arg_3);
@@ -1439,7 +1477,7 @@ void ManagedVulkan::Device::DestroyQueryPool(QueryPool^ queryPool, AllocationCal
 		// INITS 1 - queryPool		
 		VkQueryPool arg_1 = queryPool->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -1469,15 +1507,15 @@ VkResult ManagedVulkan::Device::GetQueryPoolResults(QueryPool^ queryPool, UInt32
 		// INITS 1 - queryPool		
 		VkQueryPool arg_1 = queryPool->mHandle;		
 		// INITS 2 - firstQuery		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = firstQuery;		
 		// INITS 3 - queryCount		
-		uint32_t arg_3 = 0;		
+		uint32_t arg_3 = queryCount;		
 		// INITS 4 - dataSize		
-		size_t arg_4 = 0;		
+		size_t arg_4 = (size_t)  dataSize;		
 		// INITS 5 - pData		
 		void* arg_5 = 0;		
 		// INITS 6 - stride		
-		VkDeviceSize arg_6 = 0;		
+		VkDeviceSize arg_6 = stride;		
 		// INITS 7 - flags		
 		VkQueryResultFlags arg_7 = 0;
 
@@ -1505,15 +1543,15 @@ VkResult ManagedVulkan::Device::CreateBuffer(BufferCreateInfo^ pCreateInfo, Allo
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkBufferCreateInfo inst_1		
+		VkBufferCreateInfo inst_1;		
 		VkBufferCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pBuffer		
-		VkBuffer inst_3		
+		VkBuffer inst_3;		
 		VkBuffer* arg_3 = &inst_3;
 
 		var result = vkCreateBuffer(arg_0, arg_1, arg_2, arg_3);
@@ -1545,7 +1583,7 @@ void ManagedVulkan::Device::DestroyBuffer(Buffer^ buffer, AllocationCallbacks^ p
 		// INITS 1 - buffer		
 		VkBuffer arg_1 = buffer->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -1573,15 +1611,15 @@ VkResult ManagedVulkan::Device::CreateBufferView(BufferViewCreateInfo^ pCreateIn
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkBufferViewCreateInfo inst_1		
+		VkBufferViewCreateInfo inst_1;		
 		VkBufferViewCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pView		
-		VkBufferView inst_3		
+		VkBufferView inst_3;		
 		VkBufferView* arg_3 = &inst_3;
 
 		var result = vkCreateBufferView(arg_0, arg_1, arg_2, arg_3);
@@ -1613,7 +1651,7 @@ void ManagedVulkan::Device::DestroyBufferView(BufferView^ bufferView, Allocation
 		// INITS 1 - bufferView		
 		VkBufferView arg_1 = bufferView->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -1641,24 +1679,24 @@ VkResult ManagedVulkan::Device::CreateImage(ImageCreateInfo^ pCreateInfo, Alloca
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkImageCreateInfo inst_1		
+		VkImageCreateInfo inst_1;		
 		VkImageCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
-			// FIELD - arg_1_5 arg_1->Extent		
+			// FIELD - arg_1_5 pCreateInfo->Extent		
 			VkExtent3D arg_1_5 = nullptr;		
 			VkExtent3D  inst_1_5;		
 			if (pCreateInfo != nullptr && pCreateInfo->Extent != nullptr)		
 			{		
 				arg_1_5 = &inst_1_5;		
-				arg_1->Extent = arg_1_5;		
-			}
-		
+				pCreateInfo->Extent->CopyTo(arg_1_5, pins);		
+				arg_1->extent = arg_1_5;		
+			}		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pImage		
-		VkImage inst_3		
+		VkImage inst_3;		
 		VkImage* arg_3 = &inst_3;
 
 		var result = vkCreateImage(arg_0, arg_1, arg_2, arg_3);
@@ -1690,7 +1728,7 @@ void ManagedVulkan::Device::DestroyImage(Image^ image, AllocationCallbacks^ pAll
 		// INITS 1 - image		
 		VkImage arg_1 = image->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -1720,11 +1758,11 @@ void ManagedVulkan::Device::GetImageSubresourceLayout(Image^ image, ImageSubreso
 		// INITS 1 - image		
 		VkImage arg_1 = image->mHandle;		
 		// INITS 2 - pSubresource		
-		VkImageSubresource inst_2		
+		VkImageSubresource inst_2;		
 		VkImageSubresource* arg_2 = &inst_2;		
 		pSubresource->CopyTo(arg_2 , pins);		
 		// INITS 3 - pLayout		
-		VkSubresourceLayout inst_3		
+		VkSubresourceLayout inst_3;		
 		VkSubresourceLayout* arg_3 = &inst_3;		
 		pLayout->CopyTo(arg_3 , pins);
 
@@ -1755,33 +1793,33 @@ VkResult ManagedVulkan::Device::CreateImageView(ImageViewCreateInfo^ pCreateInfo
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkImageViewCreateInfo inst_1		
+		VkImageViewCreateInfo inst_1;		
 		VkImageViewCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
-			// FIELD - arg_1_6 arg_1->Components		
+			// FIELD - arg_1_6 pCreateInfo->Components		
 			VkComponentMapping arg_1_6 = nullptr;		
 			VkComponentMapping  inst_1_6;		
 			if (pCreateInfo != nullptr && pCreateInfo->Components != nullptr)		
 			{		
 				arg_1_6 = &inst_1_6;		
-				arg_1->Components = arg_1_6;		
-			}
-		
-			// FIELD - arg_1_7 arg_1->SubresourceRange		
+				pCreateInfo->Components->CopyTo(arg_1_6, pins);		
+				arg_1->components = arg_1_6;		
+			}		
+			// FIELD - arg_1_7 pCreateInfo->SubresourceRange		
 			VkImageSubresourceRange arg_1_7 = nullptr;		
 			VkImageSubresourceRange  inst_1_7;		
 			if (pCreateInfo != nullptr && pCreateInfo->SubresourceRange != nullptr)		
 			{		
 				arg_1_7 = &inst_1_7;		
-				arg_1->SubresourceRange = arg_1_7;		
-			}
-		
+				pCreateInfo->SubresourceRange->CopyTo(arg_1_7, pins);		
+				arg_1->subresourceRange = arg_1_7;		
+			}		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pView		
-		VkImageView inst_3		
+		VkImageView inst_3;		
 		VkImageView* arg_3 = &inst_3;
 
 		var result = vkCreateImageView(arg_0, arg_1, arg_2, arg_3);
@@ -1813,7 +1851,7 @@ void ManagedVulkan::Device::DestroyImageView(ImageView^ imageView, AllocationCal
 		// INITS 1 - imageView		
 		VkImageView arg_1 = imageView->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -1841,15 +1879,15 @@ VkResult ManagedVulkan::Device::CreateShaderModule(ShaderModuleCreateInfo^ pCrea
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkShaderModuleCreateInfo inst_1		
+		VkShaderModuleCreateInfo inst_1;		
 		VkShaderModuleCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pShaderModule		
-		VkShaderModule inst_3		
+		VkShaderModule inst_3;		
 		VkShaderModule* arg_3 = &inst_3;
 
 		var result = vkCreateShaderModule(arg_0, arg_1, arg_2, arg_3);
@@ -1881,7 +1919,7 @@ void ManagedVulkan::Device::DestroyShaderModule(ShaderModule^ shaderModule, Allo
 		// INITS 1 - shaderModule		
 		VkShaderModule arg_1 = shaderModule->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -1909,15 +1947,15 @@ VkResult ManagedVulkan::Device::CreatePipelineCache(PipelineCacheCreateInfo^ pCr
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkPipelineCacheCreateInfo inst_1		
+		VkPipelineCacheCreateInfo inst_1;		
 		VkPipelineCacheCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pPipelineCache		
-		VkPipelineCache inst_3		
+		VkPipelineCache inst_3;		
 		VkPipelineCache* arg_3 = &inst_3;
 
 		var result = vkCreatePipelineCache(arg_0, arg_1, arg_2, arg_3);
@@ -1949,7 +1987,7 @@ void ManagedVulkan::Device::DestroyPipelineCache(PipelineCache^ pipelineCache, A
 		// INITS 1 - pipelineCache		
 		VkPipelineCache arg_1 = pipelineCache->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -2010,7 +2048,7 @@ VkResult ManagedVulkan::Device::MergePipelineCaches(PipelineCache^ dstCache, arr
 		// INITS 1 - dstCache		
 		VkPipelineCache arg_1 = dstCache->mHandle;		
 		// INITS 2 - srcCacheCount		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = srcCacheCount;		
 		// INITS 3 - pSrcCaches		
 		arg_3 = new VkPipelineCache[srcCacheCount];
 
@@ -2046,200 +2084,200 @@ VkResult ManagedVulkan::Device::CreateGraphicsPipelines(PipelineCache^ pipelineC
 		// INITS 1 - pipelineCache		
 		VkPipelineCache arg_1 = pipelineCache->mHandle;		
 		// INITS 2 - createInfoCount		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = createInfoCount;		
 		// INITS 3 - pCreateInfos		
 		arg_3 = new VkGraphicsPipelineCreateInfo[createInfoCount];		
-			// FIELD - arg_3_4 arg_3->Stages		
+			// FIELD - arg_3_4 pCreateInfos->Stages		
 			VkPipelineShaderStageCreateInfo* arg_3_4 = nullptr;		
 			VkPipelineShaderStageCreateInfo  inst_3_4;		
 			if (pCreateInfos != nullptr && pCreateInfos->Stages != nullptr)		
 			{		
 				arg_3_4 = &inst_3_4;		
-				arg_3->Stages = arg_3_4;		
-			}
-		
-			// FIELD - arg_3_4_6 arg_3->Stages->SpecializationInfo		
+				pCreateInfos->Stages->CopyTo(arg_3_4, pins);		
+				arg_3->pStages = arg_3_4;		
+			}		
+			// FIELD - arg_3_4_6 pCreateInfos->Stages->SpecializationInfo		
 			VkSpecializationInfo* arg_3_4_6 = nullptr;		
 			VkSpecializationInfo  inst_3_4_6;		
 			if (pCreateInfos != nullptr && pCreateInfos->Stages != nullptr && pCreateInfos->SpecializationInfo != nullptr)		
 			{		
 				arg_3_4_6 = &inst_3_4_6;		
-				arg_3->Stages->SpecializationInfo = arg_3_4_6;		
-			}
-		
-			// FIELD - arg_3_4_6_1 arg_3->Stages->SpecializationInfo->MapEntries		
+				pCreateInfos->Stages->SpecializationInfo->CopyTo(arg_3_4_6, pins);		
+				arg_3->pStages->pSpecializationInfo = arg_3_4_6;		
+			}		
+			// FIELD - arg_3_4_6_1 pCreateInfos->Stages->SpecializationInfo->MapEntries		
 			VkSpecializationMapEntry* arg_3_4_6_1 = nullptr;		
 			VkSpecializationMapEntry  inst_3_4_6_1;		
 			if (pCreateInfos != nullptr && pCreateInfos->Stages != nullptr && pCreateInfos->SpecializationInfo != nullptr && pCreateInfos->MapEntries != nullptr)		
 			{		
 				arg_3_4_6_1 = &inst_3_4_6_1;		
-				arg_3->Stages->SpecializationInfo->MapEntries = arg_3_4_6_1;		
-			}
-		
-			// FIELD - arg_3_5 arg_3->VertexInputState		
+				pCreateInfos->Stages->SpecializationInfo->MapEntries->CopyTo(arg_3_4_6_1, pins);		
+				arg_3->pStages->pSpecializationInfo->pMapEntries = arg_3_4_6_1;		
+			}		
+			// FIELD - arg_3_5 pCreateInfos->VertexInputState		
 			VkPipelineVertexInputStateCreateInfo* arg_3_5 = nullptr;		
 			VkPipelineVertexInputStateCreateInfo  inst_3_5;		
 			if (pCreateInfos != nullptr && pCreateInfos->VertexInputState != nullptr)		
 			{		
 				arg_3_5 = &inst_3_5;		
-				arg_3->VertexInputState = arg_3_5;		
-			}
-		
-			// FIELD - arg_3_5_4 arg_3->VertexInputState->VertexBindingDescriptions		
+				pCreateInfos->VertexInputState->CopyTo(arg_3_5, pins);		
+				arg_3->pVertexInputState = arg_3_5;		
+			}		
+			// FIELD - arg_3_5_4 pCreateInfos->VertexInputState->VertexBindingDescriptions		
 			VkVertexInputBindingDescription* arg_3_5_4 = nullptr;		
 			VkVertexInputBindingDescription  inst_3_5_4;		
 			if (pCreateInfos != nullptr && pCreateInfos->VertexInputState != nullptr && pCreateInfos->VertexBindingDescriptions != nullptr)		
 			{		
 				arg_3_5_4 = &inst_3_5_4;		
-				arg_3->VertexInputState->VertexBindingDescriptions = arg_3_5_4;		
-			}
-		
-			// FIELD - arg_3_5_6 arg_3->VertexInputState->VertexAttributeDescriptions		
+				pCreateInfos->VertexInputState->VertexBindingDescriptions->CopyTo(arg_3_5_4, pins);		
+				arg_3->pVertexInputState->pVertexBindingDescriptions = arg_3_5_4;		
+			}		
+			// FIELD - arg_3_5_6 pCreateInfos->VertexInputState->VertexAttributeDescriptions		
 			VkVertexInputAttributeDescription* arg_3_5_6 = nullptr;		
 			VkVertexInputAttributeDescription  inst_3_5_6;		
 			if (pCreateInfos != nullptr && pCreateInfos->VertexInputState != nullptr && pCreateInfos->VertexAttributeDescriptions != nullptr)		
 			{		
 				arg_3_5_6 = &inst_3_5_6;		
-				arg_3->VertexInputState->VertexAttributeDescriptions = arg_3_5_6;		
-			}
-		
-			// FIELD - arg_3_6 arg_3->InputAssemblyState		
+				pCreateInfos->VertexInputState->VertexAttributeDescriptions->CopyTo(arg_3_5_6, pins);		
+				arg_3->pVertexInputState->pVertexAttributeDescriptions = arg_3_5_6;		
+			}		
+			// FIELD - arg_3_6 pCreateInfos->InputAssemblyState		
 			VkPipelineInputAssemblyStateCreateInfo* arg_3_6 = nullptr;		
 			VkPipelineInputAssemblyStateCreateInfo  inst_3_6;		
 			if (pCreateInfos != nullptr && pCreateInfos->InputAssemblyState != nullptr)		
 			{		
 				arg_3_6 = &inst_3_6;		
-				arg_3->InputAssemblyState = arg_3_6;		
-			}
-		
-			// FIELD - arg_3_7 arg_3->TessellationState		
+				pCreateInfos->InputAssemblyState->CopyTo(arg_3_6, pins);		
+				arg_3->pInputAssemblyState = arg_3_6;		
+			}		
+			// FIELD - arg_3_7 pCreateInfos->TessellationState		
 			VkPipelineTessellationStateCreateInfo* arg_3_7 = nullptr;		
 			VkPipelineTessellationStateCreateInfo  inst_3_7;		
 			if (pCreateInfos != nullptr && pCreateInfos->TessellationState != nullptr)		
 			{		
 				arg_3_7 = &inst_3_7;		
-				arg_3->TessellationState = arg_3_7;		
-			}
-		
-			// FIELD - arg_3_8 arg_3->ViewportState		
+				pCreateInfos->TessellationState->CopyTo(arg_3_7, pins);		
+				arg_3->pTessellationState = arg_3_7;		
+			}		
+			// FIELD - arg_3_8 pCreateInfos->ViewportState		
 			VkPipelineViewportStateCreateInfo* arg_3_8 = nullptr;		
 			VkPipelineViewportStateCreateInfo  inst_3_8;		
 			if (pCreateInfos != nullptr && pCreateInfos->ViewportState != nullptr)		
 			{		
 				arg_3_8 = &inst_3_8;		
-				arg_3->ViewportState = arg_3_8;		
-			}
-		
-			// FIELD - arg_3_8_4 arg_3->ViewportState->Viewports		
+				pCreateInfos->ViewportState->CopyTo(arg_3_8, pins);		
+				arg_3->pViewportState = arg_3_8;		
+			}		
+			// FIELD - arg_3_8_4 pCreateInfos->ViewportState->Viewports		
 			VkViewport* arg_3_8_4 = nullptr;		
 			VkViewport  inst_3_8_4;		
 			if (pCreateInfos != nullptr && pCreateInfos->ViewportState != nullptr && pCreateInfos->Viewports != nullptr)		
 			{		
 				arg_3_8_4 = &inst_3_8_4;		
-				arg_3->ViewportState->Viewports = arg_3_8_4;		
-			}
-		
-			// FIELD - arg_3_8_6 arg_3->ViewportState->Scissors		
+				pCreateInfos->ViewportState->Viewports->CopyTo(arg_3_8_4, pins);		
+				arg_3->pViewportState->pViewports = arg_3_8_4;		
+			}		
+			// FIELD - arg_3_8_6 pCreateInfos->ViewportState->Scissors		
 			VkRect2D* arg_3_8_6 = nullptr;		
 			VkRect2D  inst_3_8_6;		
 			if (pCreateInfos != nullptr && pCreateInfos->ViewportState != nullptr && pCreateInfos->Scissors != nullptr)		
 			{		
 				arg_3_8_6 = &inst_3_8_6;		
-				arg_3->ViewportState->Scissors = arg_3_8_6;		
-			}
-		
-			// FIELD - arg_3_8_6_0 arg_3->ViewportState->Scissors->Offset		
+				pCreateInfos->ViewportState->Scissors->CopyTo(arg_3_8_6, pins);		
+				arg_3->pViewportState->pScissors = arg_3_8_6;		
+			}		
+			// FIELD - arg_3_8_6_0 pCreateInfos->ViewportState->Scissors->Offset		
 			VkOffset2D arg_3_8_6_0 = nullptr;		
 			VkOffset2D  inst_3_8_6_0;		
 			if (pCreateInfos != nullptr && pCreateInfos->ViewportState != nullptr && pCreateInfos->Scissors != nullptr && pCreateInfos->Offset != nullptr)		
 			{		
 				arg_3_8_6_0 = &inst_3_8_6_0;		
-				arg_3->ViewportState->Scissors->Offset = arg_3_8_6_0;		
-			}
-		
-			// FIELD - arg_3_8_6_1 arg_3->ViewportState->Scissors->Extent		
+				pCreateInfos->ViewportState->Scissors->Offset->CopyTo(arg_3_8_6_0, pins);		
+				arg_3->pViewportState->pScissors->offset = arg_3_8_6_0;		
+			}		
+			// FIELD - arg_3_8_6_1 pCreateInfos->ViewportState->Scissors->Extent		
 			VkExtent2D arg_3_8_6_1 = nullptr;		
 			VkExtent2D  inst_3_8_6_1;		
 			if (pCreateInfos != nullptr && pCreateInfos->ViewportState != nullptr && pCreateInfos->Scissors != nullptr && pCreateInfos->Extent != nullptr)		
 			{		
 				arg_3_8_6_1 = &inst_3_8_6_1;		
-				arg_3->ViewportState->Scissors->Extent = arg_3_8_6_1;		
-			}
-		
-			// FIELD - arg_3_9 arg_3->RasterizationState		
+				pCreateInfos->ViewportState->Scissors->Extent->CopyTo(arg_3_8_6_1, pins);		
+				arg_3->pViewportState->pScissors->extent = arg_3_8_6_1;		
+			}		
+			// FIELD - arg_3_9 pCreateInfos->RasterizationState		
 			VkPipelineRasterizationStateCreateInfo* arg_3_9 = nullptr;		
 			VkPipelineRasterizationStateCreateInfo  inst_3_9;		
 			if (pCreateInfos != nullptr && pCreateInfos->RasterizationState != nullptr)		
 			{		
 				arg_3_9 = &inst_3_9;		
-				arg_3->RasterizationState = arg_3_9;		
-			}
-		
-			// FIELD - arg_3_10 arg_3->MultisampleState		
+				pCreateInfos->RasterizationState->CopyTo(arg_3_9, pins);		
+				arg_3->pRasterizationState = arg_3_9;		
+			}		
+			// FIELD - arg_3_10 pCreateInfos->MultisampleState		
 			VkPipelineMultisampleStateCreateInfo* arg_3_10 = nullptr;		
 			VkPipelineMultisampleStateCreateInfo  inst_3_10;		
 			if (pCreateInfos != nullptr && pCreateInfos->MultisampleState != nullptr)		
 			{		
 				arg_3_10 = &inst_3_10;		
-				arg_3->MultisampleState = arg_3_10;		
-			}
-		
-			// FIELD - arg_3_11 arg_3->DepthStencilState		
+				pCreateInfos->MultisampleState->CopyTo(arg_3_10, pins);		
+				arg_3->pMultisampleState = arg_3_10;		
+			}		
+			// FIELD - arg_3_11 pCreateInfos->DepthStencilState		
 			VkPipelineDepthStencilStateCreateInfo* arg_3_11 = nullptr;		
 			VkPipelineDepthStencilStateCreateInfo  inst_3_11;		
 			if (pCreateInfos != nullptr && pCreateInfos->DepthStencilState != nullptr)		
 			{		
 				arg_3_11 = &inst_3_11;		
-				arg_3->DepthStencilState = arg_3_11;		
-			}
-		
-			// FIELD - arg_3_11_8 arg_3->DepthStencilState->Front		
+				pCreateInfos->DepthStencilState->CopyTo(arg_3_11, pins);		
+				arg_3->pDepthStencilState = arg_3_11;		
+			}		
+			// FIELD - arg_3_11_8 pCreateInfos->DepthStencilState->Front		
 			VkStencilOpState arg_3_11_8 = nullptr;		
 			VkStencilOpState  inst_3_11_8;		
 			if (pCreateInfos != nullptr && pCreateInfos->DepthStencilState != nullptr && pCreateInfos->Front != nullptr)		
 			{		
 				arg_3_11_8 = &inst_3_11_8;		
-				arg_3->DepthStencilState->Front = arg_3_11_8;		
-			}
-		
-			// FIELD - arg_3_11_9 arg_3->DepthStencilState->Back		
+				pCreateInfos->DepthStencilState->Front->CopyTo(arg_3_11_8, pins);		
+				arg_3->pDepthStencilState->front = arg_3_11_8;		
+			}		
+			// FIELD - arg_3_11_9 pCreateInfos->DepthStencilState->Back		
 			VkStencilOpState arg_3_11_9 = nullptr;		
 			VkStencilOpState  inst_3_11_9;		
 			if (pCreateInfos != nullptr && pCreateInfos->DepthStencilState != nullptr && pCreateInfos->Back != nullptr)		
 			{		
 				arg_3_11_9 = &inst_3_11_9;		
-				arg_3->DepthStencilState->Back = arg_3_11_9;		
-			}
-		
-			// FIELD - arg_3_12 arg_3->ColorBlendState		
+				pCreateInfos->DepthStencilState->Back->CopyTo(arg_3_11_9, pins);		
+				arg_3->pDepthStencilState->back = arg_3_11_9;		
+			}		
+			// FIELD - arg_3_12 pCreateInfos->ColorBlendState		
 			VkPipelineColorBlendStateCreateInfo* arg_3_12 = nullptr;		
 			VkPipelineColorBlendStateCreateInfo  inst_3_12;		
 			if (pCreateInfos != nullptr && pCreateInfos->ColorBlendState != nullptr)		
 			{		
 				arg_3_12 = &inst_3_12;		
-				arg_3->ColorBlendState = arg_3_12;		
-			}
-		
-			// FIELD - arg_3_12_6 arg_3->ColorBlendState->Attachments		
+				pCreateInfos->ColorBlendState->CopyTo(arg_3_12, pins);		
+				arg_3->pColorBlendState = arg_3_12;		
+			}		
+			// FIELD - arg_3_12_6 pCreateInfos->ColorBlendState->Attachments		
 			VkPipelineColorBlendAttachmentState* arg_3_12_6 = nullptr;		
 			VkPipelineColorBlendAttachmentState  inst_3_12_6;		
 			if (pCreateInfos != nullptr && pCreateInfos->ColorBlendState != nullptr && pCreateInfos->Attachments != nullptr)		
 			{		
 				arg_3_12_6 = &inst_3_12_6;		
-				arg_3->ColorBlendState->Attachments = arg_3_12_6;		
-			}
-		
-			// FIELD - arg_3_13 arg_3->DynamicState		
+				pCreateInfos->ColorBlendState->Attachments->CopyTo(arg_3_12_6, pins);		
+				arg_3->pColorBlendState->pAttachments = arg_3_12_6;		
+			}		
+			// FIELD - arg_3_13 pCreateInfos->DynamicState		
 			VkPipelineDynamicStateCreateInfo* arg_3_13 = nullptr;		
 			VkPipelineDynamicStateCreateInfo  inst_3_13;		
 			if (pCreateInfos != nullptr && pCreateInfos->DynamicState != nullptr)		
 			{		
 				arg_3_13 = &inst_3_13;		
-				arg_3->DynamicState = arg_3_13;		
-			}
-		
+				pCreateInfos->DynamicState->CopyTo(arg_3_13, pins);		
+				arg_3->pDynamicState = arg_3_13;		
+			}		
 		// INITS 4 - pAllocator		
-		VkAllocationCallbacks inst_4		
+		VkAllocationCallbacks inst_4;		
 		VkAllocationCallbacks* arg_4 = &inst_4;		
 		pAllocator->CopyTo(arg_4 , pins);		
 		// INITS 5 - pPipelines		
@@ -2289,38 +2327,38 @@ VkResult ManagedVulkan::Device::CreateComputePipelines(PipelineCache^ pipelineCa
 		// INITS 1 - pipelineCache		
 		VkPipelineCache arg_1 = pipelineCache->mHandle;		
 		// INITS 2 - createInfoCount		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = createInfoCount;		
 		// INITS 3 - pCreateInfos		
 		arg_3 = new VkComputePipelineCreateInfo[createInfoCount];		
-			// FIELD - arg_3_3 arg_3->Stage		
+			// FIELD - arg_3_3 pCreateInfos->Stage		
 			VkPipelineShaderStageCreateInfo arg_3_3 = nullptr;		
 			VkPipelineShaderStageCreateInfo  inst_3_3;		
 			if (pCreateInfos != nullptr && pCreateInfos->Stage != nullptr)		
 			{		
 				arg_3_3 = &inst_3_3;		
-				arg_3->Stage = arg_3_3;		
-			}
-		
-			// FIELD - arg_3_3_6 arg_3->Stage->SpecializationInfo		
+				pCreateInfos->Stage->CopyTo(arg_3_3, pins);		
+				arg_3->stage = arg_3_3;		
+			}		
+			// FIELD - arg_3_3_6 pCreateInfos->Stage->SpecializationInfo		
 			VkSpecializationInfo* arg_3_3_6 = nullptr;		
 			VkSpecializationInfo  inst_3_3_6;		
 			if (pCreateInfos != nullptr && pCreateInfos->Stage != nullptr && pCreateInfos->SpecializationInfo != nullptr)		
 			{		
 				arg_3_3_6 = &inst_3_3_6;		
-				arg_3->Stage->SpecializationInfo = arg_3_3_6;		
-			}
-		
-			// FIELD - arg_3_3_6_1 arg_3->Stage->SpecializationInfo->MapEntries		
+				pCreateInfos->Stage->SpecializationInfo->CopyTo(arg_3_3_6, pins);		
+				arg_3->stage->pSpecializationInfo = arg_3_3_6;		
+			}		
+			// FIELD - arg_3_3_6_1 pCreateInfos->Stage->SpecializationInfo->MapEntries		
 			VkSpecializationMapEntry* arg_3_3_6_1 = nullptr;		
 			VkSpecializationMapEntry  inst_3_3_6_1;		
 			if (pCreateInfos != nullptr && pCreateInfos->Stage != nullptr && pCreateInfos->SpecializationInfo != nullptr && pCreateInfos->MapEntries != nullptr)		
 			{		
 				arg_3_3_6_1 = &inst_3_3_6_1;		
-				arg_3->Stage->SpecializationInfo->MapEntries = arg_3_3_6_1;		
-			}
-		
+				pCreateInfos->Stage->SpecializationInfo->MapEntries->CopyTo(arg_3_3_6_1, pins);		
+				arg_3->stage->pSpecializationInfo->pMapEntries = arg_3_3_6_1;		
+			}		
 		// INITS 4 - pAllocator		
-		VkAllocationCallbacks inst_4		
+		VkAllocationCallbacks inst_4;		
 		VkAllocationCallbacks* arg_4 = &inst_4;		
 		pAllocator->CopyTo(arg_4 , pins);		
 		// INITS 5 - pPipelines		
@@ -2368,7 +2406,7 @@ void ManagedVulkan::Device::DestroyPipeline(Pipeline^ pipeline, AllocationCallba
 		// INITS 1 - pipeline		
 		VkPipeline arg_1 = pipeline->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -2396,24 +2434,24 @@ VkResult ManagedVulkan::Device::CreatePipelineLayout(PipelineLayoutCreateInfo^ p
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkPipelineLayoutCreateInfo inst_1		
+		VkPipelineLayoutCreateInfo inst_1;		
 		VkPipelineLayoutCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
-			// FIELD - arg_1_6 arg_1->PushConstantRanges		
+			// FIELD - arg_1_6 pCreateInfo->PushConstantRanges		
 			VkPushConstantRange* arg_1_6 = nullptr;		
 			VkPushConstantRange  inst_1_6;		
 			if (pCreateInfo != nullptr && pCreateInfo->PushConstantRanges != nullptr)		
 			{		
 				arg_1_6 = &inst_1_6;		
-				arg_1->PushConstantRanges = arg_1_6;		
-			}
-		
+				pCreateInfo->PushConstantRanges->CopyTo(arg_1_6, pins);		
+				arg_1->pPushConstantRanges = arg_1_6;		
+			}		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pPipelineLayout		
-		VkPipelineLayout inst_3		
+		VkPipelineLayout inst_3;		
 		VkPipelineLayout* arg_3 = &inst_3;
 
 		var result = vkCreatePipelineLayout(arg_0, arg_1, arg_2, arg_3);
@@ -2445,7 +2483,7 @@ void ManagedVulkan::Device::DestroyPipelineLayout(PipelineLayout^ pipelineLayout
 		// INITS 1 - pipelineLayout		
 		VkPipelineLayout arg_1 = pipelineLayout->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -2473,15 +2511,15 @@ VkResult ManagedVulkan::Device::CreateSampler(SamplerCreateInfo^ pCreateInfo, Al
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkSamplerCreateInfo inst_1		
+		VkSamplerCreateInfo inst_1;		
 		VkSamplerCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pSampler		
-		VkSampler inst_3		
+		VkSampler inst_3;		
 		VkSampler* arg_3 = &inst_3;
 
 		var result = vkCreateSampler(arg_0, arg_1, arg_2, arg_3);
@@ -2513,7 +2551,7 @@ void ManagedVulkan::Device::DestroySampler(Sampler^ sampler, AllocationCallbacks
 		// INITS 1 - sampler		
 		VkSampler arg_1 = sampler->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -2541,24 +2579,24 @@ VkResult ManagedVulkan::Device::CreateDescriptorSetLayout(DescriptorSetLayoutCre
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkDescriptorSetLayoutCreateInfo inst_1		
+		VkDescriptorSetLayoutCreateInfo inst_1;		
 		VkDescriptorSetLayoutCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
-			// FIELD - arg_1_4 arg_1->Bindings		
+			// FIELD - arg_1_4 pCreateInfo->Bindings		
 			VkDescriptorSetLayoutBinding* arg_1_4 = nullptr;		
 			VkDescriptorSetLayoutBinding  inst_1_4;		
 			if (pCreateInfo != nullptr && pCreateInfo->Bindings != nullptr)		
 			{		
 				arg_1_4 = &inst_1_4;		
-				arg_1->Bindings = arg_1_4;		
-			}
-		
+				pCreateInfo->Bindings->CopyTo(arg_1_4, pins);		
+				arg_1->pBindings = arg_1_4;		
+			}		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pSetLayout		
-		VkDescriptorSetLayout inst_3		
+		VkDescriptorSetLayout inst_3;		
 		VkDescriptorSetLayout* arg_3 = &inst_3;
 
 		var result = vkCreateDescriptorSetLayout(arg_0, arg_1, arg_2, arg_3);
@@ -2590,7 +2628,7 @@ void ManagedVulkan::Device::DestroyDescriptorSetLayout(DescriptorSetLayout^ desc
 		// INITS 1 - descriptorSetLayout		
 		VkDescriptorSetLayout arg_1 = descriptorSetLayout->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -2618,24 +2656,24 @@ VkResult ManagedVulkan::Device::CreateDescriptorPool(DescriptorPoolCreateInfo^ p
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkDescriptorPoolCreateInfo inst_1		
+		VkDescriptorPoolCreateInfo inst_1;		
 		VkDescriptorPoolCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
-			// FIELD - arg_1_5 arg_1->PoolSizes		
+			// FIELD - arg_1_5 pCreateInfo->PoolSizes		
 			VkDescriptorPoolSize* arg_1_5 = nullptr;		
 			VkDescriptorPoolSize  inst_1_5;		
 			if (pCreateInfo != nullptr && pCreateInfo->PoolSizes != nullptr)		
 			{		
 				arg_1_5 = &inst_1_5;		
-				arg_1->PoolSizes = arg_1_5;		
-			}
-		
+				pCreateInfo->PoolSizes->CopyTo(arg_1_5, pins);		
+				arg_1->pPoolSizes = arg_1_5;		
+			}		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pDescriptorPool		
-		VkDescriptorPool inst_3		
+		VkDescriptorPool inst_3;		
 		VkDescriptorPool* arg_3 = &inst_3;
 
 		var result = vkCreateDescriptorPool(arg_0, arg_1, arg_2, arg_3);
@@ -2667,7 +2705,7 @@ void ManagedVulkan::Device::DestroyDescriptorPool(DescriptorPool^ descriptorPool
 		// INITS 1 - descriptorPool		
 		VkDescriptorPool arg_1 = descriptorPool->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -2723,7 +2761,7 @@ VkResult ManagedVulkan::Device::AllocateDescriptorSets(DescriptorSetAllocateInfo
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pAllocateInfo		
-		VkDescriptorSetAllocateInfo inst_1		
+		VkDescriptorSetAllocateInfo inst_1;		
 		VkDescriptorSetAllocateInfo* arg_1 = &inst_1;		
 		pAllocateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pDescriptorSets		
@@ -2755,7 +2793,7 @@ VkResult ManagedVulkan::Device::FreeDescriptorSets(DescriptorPool^ descriptorPoo
 		// INITS 1 - descriptorPool		
 		VkDescriptorPool arg_1 = descriptorPool->mHandle;		
 		// INITS 2 - descriptorSetCount		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = descriptorSetCount;		
 		// INITS 3 - pDescriptorSets		
 		VkDescriptorSet* arg_3 = pDescriptorSets->mHandle;
 
@@ -2783,33 +2821,33 @@ void ManagedVulkan::Device::UpdateDescriptorSets(UInt32 descriptorWriteCount, Wr
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - descriptorWriteCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = descriptorWriteCount;		
 		// INITS 2 - pDescriptorWrites		
-		VkWriteDescriptorSet inst_2		
+		VkWriteDescriptorSet inst_2;		
 		VkWriteDescriptorSet* arg_2 = &inst_2;		
 		pDescriptorWrites->CopyTo(arg_2 , pins);		
-			// FIELD - arg_2_7 arg_2->ImageInfo		
+			// FIELD - arg_2_7 pDescriptorWrites->ImageInfo		
 			VkDescriptorImageInfo* arg_2_7 = nullptr;		
 			VkDescriptorImageInfo  inst_2_7;		
 			if (pDescriptorWrites != nullptr && pDescriptorWrites->ImageInfo != nullptr)		
 			{		
 				arg_2_7 = &inst_2_7;		
-				arg_2->ImageInfo = arg_2_7;		
-			}
-		
-			// FIELD - arg_2_8 arg_2->BufferInfo		
+				pDescriptorWrites->ImageInfo->CopyTo(arg_2_7, pins);		
+				arg_2->pImageInfo = arg_2_7;		
+			}		
+			// FIELD - arg_2_8 pDescriptorWrites->BufferInfo		
 			VkDescriptorBufferInfo* arg_2_8 = nullptr;		
 			VkDescriptorBufferInfo  inst_2_8;		
 			if (pDescriptorWrites != nullptr && pDescriptorWrites->BufferInfo != nullptr)		
 			{		
 				arg_2_8 = &inst_2_8;		
-				arg_2->BufferInfo = arg_2_8;		
-			}
-		
+				pDescriptorWrites->BufferInfo->CopyTo(arg_2_8, pins);		
+				arg_2->pBufferInfo = arg_2_8;		
+			}		
 		// INITS 3 - descriptorCopyCount		
-		uint32_t arg_3 = 0;		
+		uint32_t arg_3 = descriptorCopyCount;		
 		// INITS 4 - pDescriptorCopies		
-		VkCopyDescriptorSet inst_4		
+		VkCopyDescriptorSet inst_4;		
 		VkCopyDescriptorSet* arg_4 = &inst_4;		
 		pDescriptorCopies->CopyTo(arg_4 , pins);
 
@@ -2837,15 +2875,15 @@ VkResult ManagedVulkan::Device::CreateFramebuffer(FramebufferCreateInfo^ pCreate
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkFramebufferCreateInfo inst_1		
+		VkFramebufferCreateInfo inst_1;		
 		VkFramebufferCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pFramebuffer		
-		VkFramebuffer inst_3		
+		VkFramebuffer inst_3;		
 		VkFramebuffer* arg_3 = &inst_3;
 
 		var result = vkCreateFramebuffer(arg_0, arg_1, arg_2, arg_3);
@@ -2877,7 +2915,7 @@ void ManagedVulkan::Device::DestroyFramebuffer(Framebuffer^ framebuffer, Allocat
 		// INITS 1 - framebuffer		
 		VkFramebuffer arg_1 = framebuffer->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -2905,78 +2943,78 @@ VkResult ManagedVulkan::Device::CreateRenderPass(RenderPassCreateInfo^ pCreateIn
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkRenderPassCreateInfo inst_1		
+		VkRenderPassCreateInfo inst_1;		
 		VkRenderPassCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
-			// FIELD - arg_1_4 arg_1->Attachments		
+			// FIELD - arg_1_4 pCreateInfo->Attachments		
 			VkAttachmentDescription* arg_1_4 = nullptr;		
 			VkAttachmentDescription  inst_1_4;		
 			if (pCreateInfo != nullptr && pCreateInfo->Attachments != nullptr)		
 			{		
 				arg_1_4 = &inst_1_4;		
-				arg_1->Attachments = arg_1_4;		
-			}
-		
-			// FIELD - arg_1_6 arg_1->Subpasses		
+				pCreateInfo->Attachments->CopyTo(arg_1_4, pins);		
+				arg_1->pAttachments = arg_1_4;		
+			}		
+			// FIELD - arg_1_6 pCreateInfo->Subpasses		
 			VkSubpassDescription* arg_1_6 = nullptr;		
 			VkSubpassDescription  inst_1_6;		
 			if (pCreateInfo != nullptr && pCreateInfo->Subpasses != nullptr)		
 			{		
 				arg_1_6 = &inst_1_6;		
-				arg_1->Subpasses = arg_1_6;		
-			}
-		
-			// FIELD - arg_1_6_3 arg_1->Subpasses->InputAttachments		
+				pCreateInfo->Subpasses->CopyTo(arg_1_6, pins);		
+				arg_1->pSubpasses = arg_1_6;		
+			}		
+			// FIELD - arg_1_6_3 pCreateInfo->Subpasses->InputAttachments		
 			VkAttachmentReference* arg_1_6_3 = nullptr;		
 			VkAttachmentReference  inst_1_6_3;		
 			if (pCreateInfo != nullptr && pCreateInfo->Subpasses != nullptr && pCreateInfo->InputAttachments != nullptr)		
 			{		
 				arg_1_6_3 = &inst_1_6_3;		
-				arg_1->Subpasses->InputAttachments = arg_1_6_3;		
-			}
-		
-			// FIELD - arg_1_6_5 arg_1->Subpasses->ColorAttachments		
+				pCreateInfo->Subpasses->InputAttachments->CopyTo(arg_1_6_3, pins);		
+				arg_1->pSubpasses->pInputAttachments = arg_1_6_3;		
+			}		
+			// FIELD - arg_1_6_5 pCreateInfo->Subpasses->ColorAttachments		
 			VkAttachmentReference* arg_1_6_5 = nullptr;		
 			VkAttachmentReference  inst_1_6_5;		
 			if (pCreateInfo != nullptr && pCreateInfo->Subpasses != nullptr && pCreateInfo->ColorAttachments != nullptr)		
 			{		
 				arg_1_6_5 = &inst_1_6_5;		
-				arg_1->Subpasses->ColorAttachments = arg_1_6_5;		
-			}
-		
-			// FIELD - arg_1_6_6 arg_1->Subpasses->ResolveAttachments		
+				pCreateInfo->Subpasses->ColorAttachments->CopyTo(arg_1_6_5, pins);		
+				arg_1->pSubpasses->pColorAttachments = arg_1_6_5;		
+			}		
+			// FIELD - arg_1_6_6 pCreateInfo->Subpasses->ResolveAttachments		
 			VkAttachmentReference* arg_1_6_6 = nullptr;		
 			VkAttachmentReference  inst_1_6_6;		
 			if (pCreateInfo != nullptr && pCreateInfo->Subpasses != nullptr && pCreateInfo->ResolveAttachments != nullptr)		
 			{		
 				arg_1_6_6 = &inst_1_6_6;		
-				arg_1->Subpasses->ResolveAttachments = arg_1_6_6;		
-			}
-		
-			// FIELD - arg_1_6_7 arg_1->Subpasses->DepthStencilAttachment		
+				pCreateInfo->Subpasses->ResolveAttachments->CopyTo(arg_1_6_6, pins);		
+				arg_1->pSubpasses->pResolveAttachments = arg_1_6_6;		
+			}		
+			// FIELD - arg_1_6_7 pCreateInfo->Subpasses->DepthStencilAttachment		
 			VkAttachmentReference* arg_1_6_7 = nullptr;		
 			VkAttachmentReference  inst_1_6_7;		
 			if (pCreateInfo != nullptr && pCreateInfo->Subpasses != nullptr && pCreateInfo->DepthStencilAttachment != nullptr)		
 			{		
 				arg_1_6_7 = &inst_1_6_7;		
-				arg_1->Subpasses->DepthStencilAttachment = arg_1_6_7;		
-			}
-		
-			// FIELD - arg_1_8 arg_1->Dependencies		
+				pCreateInfo->Subpasses->DepthStencilAttachment->CopyTo(arg_1_6_7, pins);		
+				arg_1->pSubpasses->pDepthStencilAttachment = arg_1_6_7;		
+			}		
+			// FIELD - arg_1_8 pCreateInfo->Dependencies		
 			VkSubpassDependency* arg_1_8 = nullptr;		
 			VkSubpassDependency  inst_1_8;		
 			if (pCreateInfo != nullptr && pCreateInfo->Dependencies != nullptr)		
 			{		
 				arg_1_8 = &inst_1_8;		
-				arg_1->Dependencies = arg_1_8;		
-			}
-		
+				pCreateInfo->Dependencies->CopyTo(arg_1_8, pins);		
+				arg_1->pDependencies = arg_1_8;		
+			}		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pRenderPass		
-		VkRenderPass inst_3		
+		VkRenderPass inst_3;		
 		VkRenderPass* arg_3 = &inst_3;
 
 		var result = vkCreateRenderPass(arg_0, arg_1, arg_2, arg_3);
@@ -3008,7 +3046,7 @@ void ManagedVulkan::Device::DestroyRenderPass(RenderPass^ renderPass, Allocation
 		// INITS 1 - renderPass		
 		VkRenderPass arg_1 = renderPass->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -3038,7 +3076,7 @@ void ManagedVulkan::Device::GetRenderAreaGranularity(RenderPass^ renderPass, out
 		// INITS 1 - renderPass		
 		VkRenderPass arg_1 = renderPass->mHandle;		
 		// INITS 2 - pGranularity		
-		VkExtent2D inst_2		
+		VkExtent2D inst_2;		
 		VkExtent2D* arg_2 = &inst_2;		
 		pGranularity->CopyTo(arg_2 , pins);
 
@@ -3069,15 +3107,15 @@ VkResult ManagedVulkan::Device::CreateCommandPool(CommandPoolCreateInfo^ pCreate
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkCommandPoolCreateInfo inst_1		
+		VkCommandPoolCreateInfo inst_1;		
 		VkCommandPoolCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pCommandPool		
-		VkCommandPool inst_3		
+		VkCommandPool inst_3;		
 		VkCommandPool* arg_3 = &inst_3;
 
 		var result = vkCreateCommandPool(arg_0, arg_1, arg_2, arg_3);
@@ -3109,7 +3147,7 @@ void ManagedVulkan::Device::DestroyCommandPool(CommandPool^ commandPool, Allocat
 		// INITS 1 - commandPool		
 		VkCommandPool arg_1 = commandPool->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -3165,11 +3203,11 @@ VkResult ManagedVulkan::Device::AllocateCommandBuffers(CommandBufferAllocateInfo
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pAllocateInfo		
-		VkCommandBufferAllocateInfo inst_1		
+		VkCommandBufferAllocateInfo inst_1;		
 		VkCommandBufferAllocateInfo* arg_1 = &inst_1;		
 		pAllocateInfo->CopyTo(arg_1 , pins);		
 		// INITS 2 - pCommandBuffers		
-		VkCommandBuffer inst_2		
+		VkCommandBuffer inst_2;		
 		VkCommandBuffer* arg_2 = &inst_2;
 
 		var result = vkAllocateCommandBuffers(arg_0, arg_1, arg_2);
@@ -3199,7 +3237,7 @@ void ManagedVulkan::Device::FreeCommandBuffers(CommandPool^ commandPool, array<C
 		// INITS 1 - commandPool		
 		VkCommandPool arg_1 = commandPool->mHandle;		
 		// INITS 2 - commandBufferCount		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = commandBufferCount;		
 		// INITS 3 - pCommandBuffers		
 		arg_3 = new VkCommandBuffer[commandBufferCount];
 
@@ -3233,20 +3271,20 @@ VkResult ManagedVulkan::Device::CreateSharedSwapchainsKHR(array<SwapchainCreateI
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - swapchainCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = swapchainCount;		
 		// INITS 2 - pCreateInfos		
 		arg_2 = new VkSwapchainCreateInfoKHR[swapchainCount];		
-			// FIELD - arg_2_7 arg_2->ImageExtent		
+			// FIELD - arg_2_7 pCreateInfos->ImageExtent		
 			VkExtent2D arg_2_7 = nullptr;		
 			VkExtent2D  inst_2_7;		
 			if (pCreateInfos != nullptr && pCreateInfos->ImageExtent != nullptr)		
 			{		
 				arg_2_7 = &inst_2_7;		
-				arg_2->ImageExtent = arg_2_7;		
-			}
-		
+				pCreateInfos->ImageExtent->CopyTo(arg_2_7, pins);		
+				arg_2->imageExtent = arg_2_7;		
+			}		
 		// INITS 3 - pAllocator		
-		VkAllocationCallbacks inst_3		
+		VkAllocationCallbacks inst_3;		
 		VkAllocationCallbacks* arg_3 = &inst_3;		
 		pAllocator->CopyTo(arg_3 , pins);		
 		// INITS 4 - pSwapchains		
@@ -3292,24 +3330,24 @@ VkResult ManagedVulkan::Device::CreateSwapchainKHR(SwapchainCreateInfoKHR^ pCrea
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkSwapchainCreateInfoKHR inst_1		
+		VkSwapchainCreateInfoKHR inst_1;		
 		VkSwapchainCreateInfoKHR* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
-			// FIELD - arg_1_7 arg_1->ImageExtent		
+			// FIELD - arg_1_7 pCreateInfo->ImageExtent		
 			VkExtent2D arg_1_7 = nullptr;		
 			VkExtent2D  inst_1_7;		
 			if (pCreateInfo != nullptr && pCreateInfo->ImageExtent != nullptr)		
 			{		
 				arg_1_7 = &inst_1_7;		
-				arg_1->ImageExtent = arg_1_7;		
-			}
-		
+				pCreateInfo->ImageExtent->CopyTo(arg_1_7, pins);		
+				arg_1->imageExtent = arg_1_7;		
+			}		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pSwapchain		
-		VkSwapchainKHR inst_3		
+		VkSwapchainKHR inst_3;		
 		VkSwapchainKHR* arg_3 = &inst_3;
 
 		var result = vkCreateSwapchainKHR(arg_0, arg_1, arg_2, arg_3);
@@ -3341,7 +3379,7 @@ void ManagedVulkan::Device::DestroySwapchainKHR(SwapchainKHR^ swapchain, Allocat
 		// INITS 1 - swapchain		
 		VkSwapchainKHR arg_1 = swapchain->mHandle;		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);
 
@@ -3372,7 +3410,7 @@ VkResult ManagedVulkan::Device::GetSwapchainImagesKHR(SwapchainKHR^ swapchain, o
 		// INITS 1 - swapchain		
 		VkSwapchainKHR arg_1 = swapchain->mHandle;		
 		// INITS 2 - pSwapchainImageCount		
-		uint32_t* arg_2 = 0;		
+		uint32_t* arg_2 = pSwapchainImageCount;		
 		// INITS 3 - pSwapchainImages		
 		arg_3 = new VkImage[pSwapchainImageCount];
 
@@ -3414,13 +3452,13 @@ VkResult ManagedVulkan::Device::AcquireNextImageKHR(SwapchainKHR^ swapchain, UIn
 		// INITS 1 - swapchain		
 		VkSwapchainKHR arg_1 = swapchain->mHandle;		
 		// INITS 2 - timeout		
-		uint64_t arg_2 = 0;		
+		uint64_t arg_2 = timeout;		
 		// INITS 3 - semaphore		
 		VkSemaphore arg_3 = semaphore->mHandle;		
 		// INITS 4 - fence		
 		VkFence arg_4 = fence->mHandle;		
 		// INITS 5 - pImageIndex		
-		uint32_t* arg_5 = 0;
+		uint32_t* arg_5 = pImageIndex;
 
 		var result = vkAcquireNextImageKHR(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
 
@@ -3448,27 +3486,27 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceProperties(out PhysicalDevi
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;		
 		// INITS 1 - pProperties		
-		VkPhysicalDeviceProperties inst_1		
+		VkPhysicalDeviceProperties inst_1;		
 		VkPhysicalDeviceProperties* arg_1 = &inst_1;		
 		pProperties->CopyTo(arg_1 , pins);		
-			// FIELD - arg_1_7 arg_1->Limits		
+			// FIELD - arg_1_7 pProperties->Limits		
 			VkPhysicalDeviceLimits arg_1_7 = nullptr;		
 			VkPhysicalDeviceLimits  inst_1_7;		
 			if (pProperties != nullptr && pProperties->Limits != nullptr)		
 			{		
 				arg_1_7 = &inst_1_7;		
-				arg_1->Limits = arg_1_7;		
-			}
-		
-			// FIELD - arg_1_8 arg_1->SparseProperties		
+				pProperties->Limits->CopyTo(arg_1_7, pins);		
+				arg_1->limits = arg_1_7;		
+			}		
+			// FIELD - arg_1_8 pProperties->SparseProperties		
 			VkPhysicalDeviceSparseProperties arg_1_8 = nullptr;		
 			VkPhysicalDeviceSparseProperties  inst_1_8;		
 			if (pProperties != nullptr && pProperties->SparseProperties != nullptr)		
 			{		
 				arg_1_8 = &inst_1_8;		
-				arg_1->SparseProperties = arg_1_8;		
+				pProperties->SparseProperties->CopyTo(arg_1_8, pins);		
+				arg_1->sparseProperties = arg_1_8;		
 			}
-
 
 		vkGetPhysicalDeviceProperties(arg_0, arg_1);
 								
@@ -3498,18 +3536,18 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceQueueFamilyProperties(out a
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;		
 		// INITS 1 - pQueueFamilyPropertyCount		
-		uint32_t* arg_1 = 0;		
+		uint32_t* arg_1 = pQueueFamilyPropertyCount;		
 		// INITS 2 - pQueueFamilyProperties		
 		arg_2 = new VkQueueFamilyProperties[pQueueFamilyPropertyCount];		
-			// FIELD - arg_2_3 arg_2->MinImageTransferGranularity		
+			// FIELD - arg_2_3 pQueueFamilyProperties->MinImageTransferGranularity		
 			VkExtent3D arg_2_3 = nullptr;		
 			VkExtent3D  inst_2_3;		
 			if (pQueueFamilyProperties != nullptr && pQueueFamilyProperties->MinImageTransferGranularity != nullptr)		
 			{		
 				arg_2_3 = &inst_2_3;		
-				arg_2->MinImageTransferGranularity = arg_2_3;		
+				pQueueFamilyProperties->MinImageTransferGranularity->CopyTo(arg_2_3, pins);		
+				arg_2->minImageTransferGranularity = arg_2_3;		
 			}
-
 
 		vkGetPhysicalDeviceQueueFamilyProperties(arg_0, arg_1, arg_2);
 			
@@ -3547,7 +3585,7 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceMemoryProperties(out Physic
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;		
 		// INITS 1 - pMemoryProperties		
-		VkPhysicalDeviceMemoryProperties inst_1		
+		VkPhysicalDeviceMemoryProperties inst_1;		
 		VkPhysicalDeviceMemoryProperties* arg_1 = &inst_1;		
 		pMemoryProperties->CopyTo(arg_1 , pins);
 
@@ -3578,7 +3616,7 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceFeatures(out PhysicalDevice
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;		
 		// INITS 1 - pFeatures		
-		VkPhysicalDeviceFeatures inst_1		
+		VkPhysicalDeviceFeatures inst_1;		
 		VkPhysicalDeviceFeatures* arg_1 = &inst_1;		
 		pFeatures->CopyTo(arg_1 , pins);
 
@@ -3611,7 +3649,7 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceFormatProperties(VkFormat f
 		// INITS 1 - format		
 		VkFormat arg_1 = format;		
 		// INITS 2 - pFormatProperties		
-		VkFormatProperties inst_2		
+		VkFormatProperties inst_2;		
 		VkFormatProperties* arg_2 = &inst_2;		
 		pFormatProperties->CopyTo(arg_2 , pins);
 
@@ -3652,18 +3690,18 @@ VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceImageFormatProperties(V
 		// INITS 5 - flags		
 		VkImageCreateFlags arg_5 = 0;		
 		// INITS 6 - pImageFormatProperties		
-		VkImageFormatProperties inst_6		
+		VkImageFormatProperties inst_6;		
 		VkImageFormatProperties* arg_6 = &inst_6;		
 		pImageFormatProperties->CopyTo(arg_6 , pins);		
-			// FIELD - arg_6_0 arg_6->MaxExtent		
+			// FIELD - arg_6_0 pImageFormatProperties->MaxExtent		
 			VkExtent3D arg_6_0 = nullptr;		
 			VkExtent3D  inst_6_0;		
 			if (pImageFormatProperties != nullptr && pImageFormatProperties->MaxExtent != nullptr)		
 			{		
 				arg_6_0 = &inst_6_0;		
-				arg_6->MaxExtent = arg_6_0;		
+				pImageFormatProperties->MaxExtent->CopyTo(arg_6_0, pins);		
+				arg_6->maxExtent = arg_6_0;		
 			}
-
 
 		var result = vkGetPhysicalDeviceImageFormatProperties(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6);
 								
@@ -3685,6 +3723,8 @@ VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceImageFormatProperties(V
 VkResult ManagedVulkan::PhysicalDevice::CreateDevice(DeviceCreateInfo^ pCreateInfo, AllocationCallbacks^ pAllocator, out Device^ pDevice)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	const char* const* arg_1_6 = nullptr;
+	const char* const* arg_1_8 = nullptr;
 	try
 	{
 		// MAIN INIT
@@ -3692,33 +3732,61 @@ VkResult ManagedVulkan::PhysicalDevice::CreateDevice(DeviceCreateInfo^ pCreateIn
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;		
 		// INITS 1 - pCreateInfo		
-		VkDeviceCreateInfo inst_1		
+		VkDeviceCreateInfo inst_1;		
 		VkDeviceCreateInfo* arg_1 = &inst_1;		
 		pCreateInfo->CopyTo(arg_1 , pins);		
-			// FIELD - arg_1_4 arg_1->QueueCreateInfos		
+			// FIELD - arg_1_4 pCreateInfo->QueueCreateInfos		
 			VkDeviceQueueCreateInfo* arg_1_4 = nullptr;		
 			VkDeviceQueueCreateInfo  inst_1_4;		
 			if (pCreateInfo != nullptr && pCreateInfo->QueueCreateInfos != nullptr)		
 			{		
 				arg_1_4 = &inst_1_4;		
-				arg_1->QueueCreateInfos = arg_1_4;		
-			}
-		
-			// FIELD - arg_1_9 arg_1->EnabledFeatures		
+				pCreateInfo->QueueCreateInfos->CopyTo(arg_1_4, pins);		
+				arg_1->pQueueCreateInfos = arg_1_4;		
+			}		
+			// FIELD - arg_1_6 pCreateInfo->EnabledLayerNames		
+			if (pCreateInfo != nullptr && pCreateInfo->EnabledLayerNames != nullptr)		
+			{		
+				int enabledLayerCount = (int) pCreateInfo->EnabledLayerNames->Length;		
+				arg_1_6 = new char*[enabledLayerCount];		
+				for (int j = 0; j < enabledLayerCount; ++j)		
+				{		
+					IntPtr inst_1_6 = Marshal::StringToHGlobalAnsi(pCreateInfo->EnabledLayerNames[j]);		
+					pins->Add(inst_1_6);		
+					arg_1_6[j] = static_cast<char*>(inst_1_6.ToPointer());		
+				}		
+				arg_1->ppEnabledLayerNames = arg_1_6;		
+				arg_1->enabledLayerCount = enabledLayerCount;		
+			}		
+			// FIELD - arg_1_8 pCreateInfo->EnabledExtensionNames		
+			if (pCreateInfo != nullptr && pCreateInfo->EnabledExtensionNames != nullptr)		
+			{		
+				int enabledExtensionCount = (int) pCreateInfo->EnabledExtensionNames->Length;		
+				arg_1_8 = new char*[enabledExtensionCount];		
+				for (int j = 0; j < enabledExtensionCount; ++j)		
+				{		
+					IntPtr inst_1_8 = Marshal::StringToHGlobalAnsi(pCreateInfo->EnabledExtensionNames[j]);		
+					pins->Add(inst_1_8);		
+					arg_1_8[j] = static_cast<char*>(inst_1_8.ToPointer());		
+				}		
+				arg_1->ppEnabledExtensionNames = arg_1_8;		
+				arg_1->enabledExtensionCount = enabledExtensionCount;		
+			}		
+			// FIELD - arg_1_9 pCreateInfo->EnabledFeatures		
 			VkPhysicalDeviceFeatures* arg_1_9 = nullptr;		
 			VkPhysicalDeviceFeatures  inst_1_9;		
 			if (pCreateInfo != nullptr && pCreateInfo->EnabledFeatures != nullptr)		
 			{		
 				arg_1_9 = &inst_1_9;		
-				arg_1->EnabledFeatures = arg_1_9;		
-			}
-		
+				pCreateInfo->EnabledFeatures->CopyTo(arg_1_9, pins);		
+				arg_1->pEnabledFeatures = arg_1_9;		
+			}		
 		// INITS 2 - pAllocator		
-		VkAllocationCallbacks inst_2		
+		VkAllocationCallbacks inst_2;		
 		VkAllocationCallbacks* arg_2 = &inst_2;		
 		pAllocator->CopyTo(arg_2 , pins);		
 		// INITS 3 - pDevice		
-		VkDevice inst_3		
+		VkDevice inst_3;		
 		VkDevice* arg_3 = &inst_3;
 
 		var result = vkCreateDevice(arg_0, arg_1, arg_2, arg_3);
@@ -3730,6 +3798,14 @@ VkResult ManagedVulkan::PhysicalDevice::CreateDevice(DeviceCreateInfo^ pCreateIn
 	}
 	finally
 	{
+		if (arg_1_6 != nullptr)
+		{
+			delete[] arg_1_6;
+		}
+		if (arg_1_8 != nullptr)
+		{
+			delete[] arg_1_8;
+		}
 		// FREE ALL PINNED STRINGS
 		foreach(var str in pins)
 		{
@@ -3867,18 +3943,18 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSparseImageFormatProperties
 		// INITS 5 - tiling		
 		VkImageTiling arg_5 = tiling;		
 		// INITS 6 - pPropertyCount		
-		uint32_t* arg_6 = 0;		
+		uint32_t* arg_6 = pPropertyCount;		
 		// INITS 7 - pProperties		
 		arg_7 = new VkSparseImageFormatProperties[pPropertyCount];		
-			// FIELD - arg_7_1 arg_7->ImageGranularity		
+			// FIELD - arg_7_1 pProperties->ImageGranularity		
 			VkExtent3D arg_7_1 = nullptr;		
 			VkExtent3D  inst_7_1;		
 			if (pProperties != nullptr && pProperties->ImageGranularity != nullptr)		
 			{		
 				arg_7_1 = &inst_7_1;		
-				arg_7->ImageGranularity = arg_7_1;		
+				pProperties->ImageGranularity->CopyTo(arg_7_1, pins);		
+				arg_7->imageGranularity = arg_7_1;		
 			}
-
 
 		vkGetPhysicalDeviceSparseImageFormatProperties(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7);
 			
@@ -3917,27 +3993,27 @@ VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPropertiesKHR(ou
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;		
 		// INITS 1 - pPropertyCount		
-		uint32_t* arg_1 = 0;		
+		uint32_t* arg_1 = pPropertyCount;		
 		// INITS 2 - pProperties		
 		arg_2 = new VkDisplayPropertiesKHR[pPropertyCount];		
-			// FIELD - arg_2_2 arg_2->PhysicalDimensions		
+			// FIELD - arg_2_2 pProperties->PhysicalDimensions		
 			VkExtent2D arg_2_2 = nullptr;		
 			VkExtent2D  inst_2_2;		
 			if (pProperties != nullptr && pProperties->PhysicalDimensions != nullptr)		
 			{		
 				arg_2_2 = &inst_2_2;		
-				arg_2->PhysicalDimensions = arg_2_2;		
-			}
-		
-			// FIELD - arg_2_3 arg_2->PhysicalResolution		
+				pProperties->PhysicalDimensions->CopyTo(arg_2_2, pins);		
+				arg_2->physicalDimensions = arg_2_2;		
+			}		
+			// FIELD - arg_2_3 pProperties->PhysicalResolution		
 			VkExtent2D arg_2_3 = nullptr;		
 			VkExtent2D  inst_2_3;		
 			if (pProperties != nullptr && pProperties->PhysicalResolution != nullptr)		
 			{		
 				arg_2_3 = &inst_2_3;		
-				arg_2->PhysicalResolution = arg_2_3;		
+				pProperties->PhysicalResolution->CopyTo(arg_2_3, pins);		
+				arg_2->physicalResolution = arg_2_3;		
 			}
-
 
 		var result = vkGetPhysicalDeviceDisplayPropertiesKHR(arg_0, arg_1, arg_2);
 			
@@ -3976,7 +4052,7 @@ VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPlanePropertiesK
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;		
 		// INITS 1 - pPropertyCount		
-		uint32_t* arg_1 = 0;		
+		uint32_t* arg_1 = pPropertyCount;		
 		// INITS 2 - pProperties		
 		arg_2 = new VkDisplayPlanePropertiesKHR[pPropertyCount];
 
@@ -4017,9 +4093,9 @@ VkResult ManagedVulkan::PhysicalDevice::GetDisplayPlaneSupportedDisplaysKHR(UInt
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;		
 		// INITS 1 - planeIndex		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = planeIndex;		
 		// INITS 2 - pDisplayCount		
-		uint32_t* arg_2 = 0;		
+		uint32_t* arg_2 = pDisplayCount;		
 		// INITS 3 - pDisplays		
 		arg_3 = new VkDisplayKHR[pDisplayCount];
 
@@ -4062,27 +4138,27 @@ VkResult ManagedVulkan::PhysicalDevice::GetDisplayModePropertiesKHR(DisplayKHR^ 
 		// INITS 1 - display		
 		VkDisplayKHR arg_1 = display->mHandle;		
 		// INITS 2 - pPropertyCount		
-		uint32_t* arg_2 = 0;		
+		uint32_t* arg_2 = pPropertyCount;		
 		// INITS 3 - pProperties		
 		arg_3 = new VkDisplayModePropertiesKHR[pPropertyCount];		
-			// FIELD - arg_3_1 arg_3->Parameters		
+			// FIELD - arg_3_1 pProperties->Parameters		
 			VkDisplayModeParametersKHR arg_3_1 = nullptr;		
 			VkDisplayModeParametersKHR  inst_3_1;		
 			if (pProperties != nullptr && pProperties->Parameters != nullptr)		
 			{		
 				arg_3_1 = &inst_3_1;		
-				arg_3->Parameters = arg_3_1;		
-			}
-		
-			// FIELD - arg_3_1_0 arg_3->Parameters->VisibleRegion		
+				pProperties->Parameters->CopyTo(arg_3_1, pins);		
+				arg_3->parameters = arg_3_1;		
+			}		
+			// FIELD - arg_3_1_0 pProperties->Parameters->VisibleRegion		
 			VkExtent2D arg_3_1_0 = nullptr;		
 			VkExtent2D  inst_3_1_0;		
 			if (pProperties != nullptr && pProperties->Parameters != nullptr && pProperties->VisibleRegion != nullptr)		
 			{		
 				arg_3_1_0 = &inst_3_1_0;		
-				arg_3->Parameters->VisibleRegion = arg_3_1_0;		
+				pProperties->Parameters->VisibleRegion->CopyTo(arg_3_1_0, pins);		
+				arg_3->parameters->visibleRegion = arg_3_1_0;		
 			}
-
 
 		var result = vkGetDisplayModePropertiesKHR(arg_0, arg_1, arg_2, arg_3);
 			
@@ -4122,33 +4198,33 @@ VkResult ManagedVulkan::PhysicalDevice::CreateDisplayModeKHR(DisplayKHR^ display
 		// INITS 1 - display		
 		VkDisplayKHR arg_1 = display->mHandle;		
 		// INITS 2 - pCreateInfo		
-		VkDisplayModeCreateInfoKHR inst_2		
+		VkDisplayModeCreateInfoKHR inst_2;		
 		VkDisplayModeCreateInfoKHR* arg_2 = &inst_2;		
 		pCreateInfo->CopyTo(arg_2 , pins);		
-			// FIELD - arg_2_3 arg_2->Parameters		
+			// FIELD - arg_2_3 pCreateInfo->Parameters		
 			VkDisplayModeParametersKHR arg_2_3 = nullptr;		
 			VkDisplayModeParametersKHR  inst_2_3;		
 			if (pCreateInfo != nullptr && pCreateInfo->Parameters != nullptr)		
 			{		
 				arg_2_3 = &inst_2_3;		
-				arg_2->Parameters = arg_2_3;		
-			}
-		
-			// FIELD - arg_2_3_0 arg_2->Parameters->VisibleRegion		
+				pCreateInfo->Parameters->CopyTo(arg_2_3, pins);		
+				arg_2->parameters = arg_2_3;		
+			}		
+			// FIELD - arg_2_3_0 pCreateInfo->Parameters->VisibleRegion		
 			VkExtent2D arg_2_3_0 = nullptr;		
 			VkExtent2D  inst_2_3_0;		
 			if (pCreateInfo != nullptr && pCreateInfo->Parameters != nullptr && pCreateInfo->VisibleRegion != nullptr)		
 			{		
 				arg_2_3_0 = &inst_2_3_0;		
-				arg_2->Parameters->VisibleRegion = arg_2_3_0;		
-			}
-		
+				pCreateInfo->Parameters->VisibleRegion->CopyTo(arg_2_3_0, pins);		
+				arg_2->parameters->visibleRegion = arg_2_3_0;		
+			}		
 		// INITS 3 - pAllocator		
-		VkAllocationCallbacks inst_3		
+		VkAllocationCallbacks inst_3;		
 		VkAllocationCallbacks* arg_3 = &inst_3;		
 		pAllocator->CopyTo(arg_3 , pins);		
 		// INITS 4 - pMode		
-		VkDisplayModeKHR inst_4		
+		VkDisplayModeKHR inst_4;		
 		VkDisplayModeKHR* arg_4 = &inst_4;
 
 		var result = vkCreateDisplayModeKHR(arg_0, arg_1, arg_2, arg_3, arg_4);
@@ -4180,83 +4256,83 @@ VkResult ManagedVulkan::PhysicalDevice::GetDisplayPlaneCapabilitiesKHR(DisplayMo
 		// INITS 1 - mode		
 		VkDisplayModeKHR arg_1 = mode->mHandle;		
 		// INITS 2 - planeIndex		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = planeIndex;		
 		// INITS 3 - pCapabilities		
-		VkDisplayPlaneCapabilitiesKHR inst_3		
+		VkDisplayPlaneCapabilitiesKHR inst_3;		
 		VkDisplayPlaneCapabilitiesKHR* arg_3 = &inst_3;		
 		pCapabilities->CopyTo(arg_3 , pins);		
-			// FIELD - arg_3_1 arg_3->MinSrcPosition		
+			// FIELD - arg_3_1 pCapabilities->MinSrcPosition		
 			VkOffset2D arg_3_1 = nullptr;		
 			VkOffset2D  inst_3_1;		
 			if (pCapabilities != nullptr && pCapabilities->MinSrcPosition != nullptr)		
 			{		
 				arg_3_1 = &inst_3_1;		
-				arg_3->MinSrcPosition = arg_3_1;		
-			}
-		
-			// FIELD - arg_3_2 arg_3->MaxSrcPosition		
+				pCapabilities->MinSrcPosition->CopyTo(arg_3_1, pins);		
+				arg_3->minSrcPosition = arg_3_1;		
+			}		
+			// FIELD - arg_3_2 pCapabilities->MaxSrcPosition		
 			VkOffset2D arg_3_2 = nullptr;		
 			VkOffset2D  inst_3_2;		
 			if (pCapabilities != nullptr && pCapabilities->MaxSrcPosition != nullptr)		
 			{		
 				arg_3_2 = &inst_3_2;		
-				arg_3->MaxSrcPosition = arg_3_2;		
-			}
-		
-			// FIELD - arg_3_3 arg_3->MinSrcExtent		
+				pCapabilities->MaxSrcPosition->CopyTo(arg_3_2, pins);		
+				arg_3->maxSrcPosition = arg_3_2;		
+			}		
+			// FIELD - arg_3_3 pCapabilities->MinSrcExtent		
 			VkExtent2D arg_3_3 = nullptr;		
 			VkExtent2D  inst_3_3;		
 			if (pCapabilities != nullptr && pCapabilities->MinSrcExtent != nullptr)		
 			{		
 				arg_3_3 = &inst_3_3;		
-				arg_3->MinSrcExtent = arg_3_3;		
-			}
-		
-			// FIELD - arg_3_4 arg_3->MaxSrcExtent		
+				pCapabilities->MinSrcExtent->CopyTo(arg_3_3, pins);		
+				arg_3->minSrcExtent = arg_3_3;		
+			}		
+			// FIELD - arg_3_4 pCapabilities->MaxSrcExtent		
 			VkExtent2D arg_3_4 = nullptr;		
 			VkExtent2D  inst_3_4;		
 			if (pCapabilities != nullptr && pCapabilities->MaxSrcExtent != nullptr)		
 			{		
 				arg_3_4 = &inst_3_4;		
-				arg_3->MaxSrcExtent = arg_3_4;		
-			}
-		
-			// FIELD - arg_3_5 arg_3->MinDstPosition		
+				pCapabilities->MaxSrcExtent->CopyTo(arg_3_4, pins);		
+				arg_3->maxSrcExtent = arg_3_4;		
+			}		
+			// FIELD - arg_3_5 pCapabilities->MinDstPosition		
 			VkOffset2D arg_3_5 = nullptr;		
 			VkOffset2D  inst_3_5;		
 			if (pCapabilities != nullptr && pCapabilities->MinDstPosition != nullptr)		
 			{		
 				arg_3_5 = &inst_3_5;		
-				arg_3->MinDstPosition = arg_3_5;		
-			}
-		
-			// FIELD - arg_3_6 arg_3->MaxDstPosition		
+				pCapabilities->MinDstPosition->CopyTo(arg_3_5, pins);		
+				arg_3->minDstPosition = arg_3_5;		
+			}		
+			// FIELD - arg_3_6 pCapabilities->MaxDstPosition		
 			VkOffset2D arg_3_6 = nullptr;		
 			VkOffset2D  inst_3_6;		
 			if (pCapabilities != nullptr && pCapabilities->MaxDstPosition != nullptr)		
 			{		
 				arg_3_6 = &inst_3_6;		
-				arg_3->MaxDstPosition = arg_3_6;		
-			}
-		
-			// FIELD - arg_3_7 arg_3->MinDstExtent		
+				pCapabilities->MaxDstPosition->CopyTo(arg_3_6, pins);		
+				arg_3->maxDstPosition = arg_3_6;		
+			}		
+			// FIELD - arg_3_7 pCapabilities->MinDstExtent		
 			VkExtent2D arg_3_7 = nullptr;		
 			VkExtent2D  inst_3_7;		
 			if (pCapabilities != nullptr && pCapabilities->MinDstExtent != nullptr)		
 			{		
 				arg_3_7 = &inst_3_7;		
-				arg_3->MinDstExtent = arg_3_7;		
-			}
-		
-			// FIELD - arg_3_8 arg_3->MaxDstExtent		
+				pCapabilities->MinDstExtent->CopyTo(arg_3_7, pins);		
+				arg_3->minDstExtent = arg_3_7;		
+			}		
+			// FIELD - arg_3_8 pCapabilities->MaxDstExtent		
 			VkExtent2D arg_3_8 = nullptr;		
 			VkExtent2D  inst_3_8;		
 			if (pCapabilities != nullptr && pCapabilities->MaxDstExtent != nullptr)		
 			{		
 				arg_3_8 = &inst_3_8;		
-				arg_3->MaxDstExtent = arg_3_8;		
+				pCapabilities->MaxDstExtent->CopyTo(arg_3_8, pins);		
+				arg_3->maxDstExtent = arg_3_8;		
 			}
-
 
 		var result = vkGetDisplayPlaneCapabilitiesKHR(arg_0, arg_1, arg_2, arg_3);
 								
@@ -4285,11 +4361,11 @@ VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceSupportKHR(UInt3
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;		
 		// INITS 1 - queueFamilyIndex		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = queueFamilyIndex;		
 		// INITS 2 - surface		
 		VkSurfaceKHR arg_2 = surface->mHandle;		
 		// INITS 3 - pSupported		
-		VkBool32* arg_3 = 0;
+		VkBool32* arg_3 = pSupported;
 
 		var result = vkGetPhysicalDeviceSurfaceSupportKHR(arg_0, arg_1, arg_2, arg_3);
 
@@ -4317,36 +4393,36 @@ VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceCapabilitiesKHR(
 		// INITS 1 - surface		
 		VkSurfaceKHR arg_1 = surface->mHandle;		
 		// INITS 2 - pSurfaceCapabilities		
-		VkSurfaceCapabilitiesKHR inst_2		
+		VkSurfaceCapabilitiesKHR inst_2;		
 		VkSurfaceCapabilitiesKHR* arg_2 = &inst_2;		
 		pSurfaceCapabilities->CopyTo(arg_2 , pins);		
-			// FIELD - arg_2_2 arg_2->CurrentExtent		
+			// FIELD - arg_2_2 pSurfaceCapabilities->CurrentExtent		
 			VkExtent2D arg_2_2 = nullptr;		
 			VkExtent2D  inst_2_2;		
 			if (pSurfaceCapabilities != nullptr && pSurfaceCapabilities->CurrentExtent != nullptr)		
 			{		
 				arg_2_2 = &inst_2_2;		
-				arg_2->CurrentExtent = arg_2_2;		
-			}
-		
-			// FIELD - arg_2_3 arg_2->MinImageExtent		
+				pSurfaceCapabilities->CurrentExtent->CopyTo(arg_2_2, pins);		
+				arg_2->currentExtent = arg_2_2;		
+			}		
+			// FIELD - arg_2_3 pSurfaceCapabilities->MinImageExtent		
 			VkExtent2D arg_2_3 = nullptr;		
 			VkExtent2D  inst_2_3;		
 			if (pSurfaceCapabilities != nullptr && pSurfaceCapabilities->MinImageExtent != nullptr)		
 			{		
 				arg_2_3 = &inst_2_3;		
-				arg_2->MinImageExtent = arg_2_3;		
-			}
-		
-			// FIELD - arg_2_4 arg_2->MaxImageExtent		
+				pSurfaceCapabilities->MinImageExtent->CopyTo(arg_2_3, pins);		
+				arg_2->minImageExtent = arg_2_3;		
+			}		
+			// FIELD - arg_2_4 pSurfaceCapabilities->MaxImageExtent		
 			VkExtent2D arg_2_4 = nullptr;		
 			VkExtent2D  inst_2_4;		
 			if (pSurfaceCapabilities != nullptr && pSurfaceCapabilities->MaxImageExtent != nullptr)		
 			{		
 				arg_2_4 = &inst_2_4;		
-				arg_2->MaxImageExtent = arg_2_4;		
+				pSurfaceCapabilities->MaxImageExtent->CopyTo(arg_2_4, pins);		
+				arg_2->maxImageExtent = arg_2_4;		
 			}
-
 
 		var result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(arg_0, arg_1, arg_2);
 								
@@ -4378,7 +4454,7 @@ VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceFormatsKHR(Surfa
 		// INITS 1 - surface		
 		VkSurfaceKHR arg_1 = surface->mHandle;		
 		// INITS 2 - pSurfaceFormatCount		
-		uint32_t* arg_2 = 0;		
+		uint32_t* arg_2 = pSurfaceFormatCount;		
 		// INITS 3 - pSurfaceFormats		
 		arg_3 = new VkSurfaceFormatKHR[pSurfaceFormatCount];
 
@@ -4421,7 +4497,7 @@ VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfacePresentModesKHR(
 		// INITS 1 - surface		
 		VkSurfaceKHR arg_1 = surface->mHandle;		
 		// INITS 2 - pPresentModeCount		
-		uint32_t* arg_2 = 0;		
+		uint32_t* arg_2 = pPresentModeCount;		
 		// INITS 3 - pPresentModes		
 		arg_3 = new <TYPE>[pPresentModeCount];
 
@@ -4461,7 +4537,7 @@ VkBool32 ManagedVulkan::PhysicalDevice::GetPhysicalDeviceWin32PresentationSuppor
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;		
 		// INITS 1 - queueFamilyIndex		
-		uint32_t arg_1 = 0;
+		uint32_t arg_1 = queueFamilyIndex;
 
 		var result = vkGetPhysicalDeviceWin32PresentationSupportKHR(arg_0, arg_1);
 
@@ -4490,7 +4566,7 @@ VkResult ManagedVulkan::Queue::QueueSubmit(array<SubmitInfo^>^ pSubmits, Fence^ 
 		// INITS 0 - queue		
 		VkQueue arg_0 = this->mHandle;		
 		// INITS 1 - submitCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = submitCount;		
 		// INITS 2 - pSubmits		
 		arg_2 = new VkSubmitInfo[submitCount];		
 		// INITS 3 - fence		
@@ -4549,90 +4625,90 @@ VkResult ManagedVulkan::Queue::QueueBindSparse(array<BindSparseInfo^>^ pBindInfo
 		// INITS 0 - queue		
 		VkQueue arg_0 = this->mHandle;		
 		// INITS 1 - bindInfoCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = bindInfoCount;		
 		// INITS 2 - pBindInfo		
 		arg_2 = new VkBindSparseInfo[bindInfoCount];		
-			// FIELD - arg_2_5 arg_2->BufferBinds		
+			// FIELD - arg_2_5 pBindInfo->BufferBinds		
 			VkSparseBufferMemoryBindInfo* arg_2_5 = nullptr;		
 			VkSparseBufferMemoryBindInfo  inst_2_5;		
 			if (pBindInfo != nullptr && pBindInfo->BufferBinds != nullptr)		
 			{		
 				arg_2_5 = &inst_2_5;		
-				arg_2->BufferBinds = arg_2_5;		
-			}
-		
-			// FIELD - arg_2_5_2 arg_2->BufferBinds->Binds		
+				pBindInfo->BufferBinds->CopyTo(arg_2_5, pins);		
+				arg_2->pBufferBinds = arg_2_5;		
+			}		
+			// FIELD - arg_2_5_2 pBindInfo->BufferBinds->Binds		
 			VkSparseMemoryBind* arg_2_5_2 = nullptr;		
 			VkSparseMemoryBind  inst_2_5_2;		
 			if (pBindInfo != nullptr && pBindInfo->BufferBinds != nullptr && pBindInfo->Binds != nullptr)		
 			{		
 				arg_2_5_2 = &inst_2_5_2;		
-				arg_2->BufferBinds->Binds = arg_2_5_2;		
-			}
-		
-			// FIELD - arg_2_7 arg_2->ImageOpaqueBinds		
+				pBindInfo->BufferBinds->Binds->CopyTo(arg_2_5_2, pins);		
+				arg_2->pBufferBinds->pBinds = arg_2_5_2;		
+			}		
+			// FIELD - arg_2_7 pBindInfo->ImageOpaqueBinds		
 			VkSparseImageOpaqueMemoryBindInfo* arg_2_7 = nullptr;		
 			VkSparseImageOpaqueMemoryBindInfo  inst_2_7;		
 			if (pBindInfo != nullptr && pBindInfo->ImageOpaqueBinds != nullptr)		
 			{		
 				arg_2_7 = &inst_2_7;		
-				arg_2->ImageOpaqueBinds = arg_2_7;		
-			}
-		
-			// FIELD - arg_2_7_2 arg_2->ImageOpaqueBinds->Binds		
+				pBindInfo->ImageOpaqueBinds->CopyTo(arg_2_7, pins);		
+				arg_2->pImageOpaqueBinds = arg_2_7;		
+			}		
+			// FIELD - arg_2_7_2 pBindInfo->ImageOpaqueBinds->Binds		
 			VkSparseMemoryBind* arg_2_7_2 = nullptr;		
 			VkSparseMemoryBind  inst_2_7_2;		
 			if (pBindInfo != nullptr && pBindInfo->ImageOpaqueBinds != nullptr && pBindInfo->Binds != nullptr)		
 			{		
 				arg_2_7_2 = &inst_2_7_2;		
-				arg_2->ImageOpaqueBinds->Binds = arg_2_7_2;		
-			}
-		
-			// FIELD - arg_2_9 arg_2->ImageBinds		
+				pBindInfo->ImageOpaqueBinds->Binds->CopyTo(arg_2_7_2, pins);		
+				arg_2->pImageOpaqueBinds->pBinds = arg_2_7_2;		
+			}		
+			// FIELD - arg_2_9 pBindInfo->ImageBinds		
 			VkSparseImageMemoryBindInfo* arg_2_9 = nullptr;		
 			VkSparseImageMemoryBindInfo  inst_2_9;		
 			if (pBindInfo != nullptr && pBindInfo->ImageBinds != nullptr)		
 			{		
 				arg_2_9 = &inst_2_9;		
-				arg_2->ImageBinds = arg_2_9;		
-			}
-		
-			// FIELD - arg_2_9_2 arg_2->ImageBinds->Binds		
+				pBindInfo->ImageBinds->CopyTo(arg_2_9, pins);		
+				arg_2->pImageBinds = arg_2_9;		
+			}		
+			// FIELD - arg_2_9_2 pBindInfo->ImageBinds->Binds		
 			VkSparseImageMemoryBind* arg_2_9_2 = nullptr;		
 			VkSparseImageMemoryBind  inst_2_9_2;		
 			if (pBindInfo != nullptr && pBindInfo->ImageBinds != nullptr && pBindInfo->Binds != nullptr)		
 			{		
 				arg_2_9_2 = &inst_2_9_2;		
-				arg_2->ImageBinds->Binds = arg_2_9_2;		
-			}
-		
-			// FIELD - arg_2_9_2_0 arg_2->ImageBinds->Binds->Subresource		
+				pBindInfo->ImageBinds->Binds->CopyTo(arg_2_9_2, pins);		
+				arg_2->pImageBinds->pBinds = arg_2_9_2;		
+			}		
+			// FIELD - arg_2_9_2_0 pBindInfo->ImageBinds->Binds->Subresource		
 			VkImageSubresource arg_2_9_2_0 = nullptr;		
 			VkImageSubresource  inst_2_9_2_0;		
 			if (pBindInfo != nullptr && pBindInfo->ImageBinds != nullptr && pBindInfo->Binds != nullptr && pBindInfo->Subresource != nullptr)		
 			{		
 				arg_2_9_2_0 = &inst_2_9_2_0;		
-				arg_2->ImageBinds->Binds->Subresource = arg_2_9_2_0;		
-			}
-		
-			// FIELD - arg_2_9_2_1 arg_2->ImageBinds->Binds->Offset		
+				pBindInfo->ImageBinds->Binds->Subresource->CopyTo(arg_2_9_2_0, pins);		
+				arg_2->pImageBinds->pBinds->subresource = arg_2_9_2_0;		
+			}		
+			// FIELD - arg_2_9_2_1 pBindInfo->ImageBinds->Binds->Offset		
 			VkOffset3D arg_2_9_2_1 = nullptr;		
 			VkOffset3D  inst_2_9_2_1;		
 			if (pBindInfo != nullptr && pBindInfo->ImageBinds != nullptr && pBindInfo->Binds != nullptr && pBindInfo->Offset != nullptr)		
 			{		
 				arg_2_9_2_1 = &inst_2_9_2_1;		
-				arg_2->ImageBinds->Binds->Offset = arg_2_9_2_1;		
-			}
-		
-			// FIELD - arg_2_9_2_2 arg_2->ImageBinds->Binds->Extent		
+				pBindInfo->ImageBinds->Binds->Offset->CopyTo(arg_2_9_2_1, pins);		
+				arg_2->pImageBinds->pBinds->offset = arg_2_9_2_1;		
+			}		
+			// FIELD - arg_2_9_2_2 pBindInfo->ImageBinds->Binds->Extent		
 			VkExtent3D arg_2_9_2_2 = nullptr;		
 			VkExtent3D  inst_2_9_2_2;		
 			if (pBindInfo != nullptr && pBindInfo->ImageBinds != nullptr && pBindInfo->Binds != nullptr && pBindInfo->Extent != nullptr)		
 			{		
 				arg_2_9_2_2 = &inst_2_9_2_2;		
-				arg_2->ImageBinds->Binds->Extent = arg_2_9_2_2;		
-			}
-		
+				pBindInfo->ImageBinds->Binds->Extent->CopyTo(arg_2_9_2_2, pins);		
+				arg_2->pImageBinds->pBinds->extent = arg_2_9_2_2;		
+			}		
 		// INITS 3 - fence		
 		VkFence arg_3 = fence->mHandle;
 
@@ -4664,7 +4740,7 @@ VkResult ManagedVulkan::Queue::QueuePresentKHR(PresentInfoKHR^ pPresentInfo)
 		// INITS 0 - queue		
 		VkQueue arg_0 = this->mHandle;		
 		// INITS 1 - pPresentInfo		
-		VkPresentInfoKHR inst_1		
+		VkPresentInfoKHR inst_1;		
 		VkPresentInfoKHR* arg_1 = &inst_1;		
 		pPresentInfo->CopyTo(arg_1 , pins);
 
@@ -4694,18 +4770,18 @@ VkResult ManagedVulkan::CommandBuffer::BeginCommandBuffer(CommandBufferBeginInfo
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - pBeginInfo		
-		VkCommandBufferBeginInfo inst_1		
+		VkCommandBufferBeginInfo inst_1;		
 		VkCommandBufferBeginInfo* arg_1 = &inst_1;		
 		pBeginInfo->CopyTo(arg_1 , pins);		
-			// FIELD - arg_1_3 arg_1->InheritanceInfo		
+			// FIELD - arg_1_3 pBeginInfo->InheritanceInfo		
 			VkCommandBufferInheritanceInfo* arg_1_3 = nullptr;		
 			VkCommandBufferInheritanceInfo  inst_1_3;		
 			if (pBeginInfo != nullptr && pBeginInfo->InheritanceInfo != nullptr)		
 			{		
 				arg_1_3 = &inst_1_3;		
-				arg_1->InheritanceInfo = arg_1_3;		
+				pBeginInfo->InheritanceInfo->CopyTo(arg_1_3, pins);		
+				arg_1->pInheritanceInfo = arg_1_3;		
 			}
-
 
 		var result = vkBeginCommandBuffer(arg_0, arg_1);
 
@@ -4810,9 +4886,9 @@ void ManagedVulkan::CommandBuffer::CmdSetViewport(UInt32 firstViewport, UInt32 v
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - firstViewport		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = firstViewport;		
 		// INITS 2 - viewportCount		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = viewportCount;		
 		// INITS 3 - pViewports		
 		arg_3 = new VkViewport[viewportCount];
 
@@ -4845,29 +4921,29 @@ void ManagedVulkan::CommandBuffer::CmdSetScissor(UInt32 firstScissor, UInt32 sci
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - firstScissor		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = firstScissor;		
 		// INITS 2 - scissorCount		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = scissorCount;		
 		// INITS 3 - pScissors		
 		arg_3 = new VkRect2D[scissorCount];		
-			// FIELD - arg_3_0 arg_3->Offset		
+			// FIELD - arg_3_0 pScissors->Offset		
 			VkOffset2D arg_3_0 = nullptr;		
 			VkOffset2D  inst_3_0;		
 			if (pScissors != nullptr && pScissors->Offset != nullptr)		
 			{		
 				arg_3_0 = &inst_3_0;		
-				arg_3->Offset = arg_3_0;		
-			}
-		
-			// FIELD - arg_3_1 arg_3->Extent		
+				pScissors->Offset->CopyTo(arg_3_0, pins);		
+				arg_3->offset = arg_3_0;		
+			}		
+			// FIELD - arg_3_1 pScissors->Extent		
 			VkExtent2D arg_3_1 = nullptr;		
 			VkExtent2D  inst_3_1;		
 			if (pScissors != nullptr && pScissors->Extent != nullptr)		
 			{		
 				arg_3_1 = &inst_3_1;		
-				arg_3->Extent = arg_3_1;		
+				pScissors->Extent->CopyTo(arg_3_1, pins);		
+				arg_3->extent = arg_3_1;		
 			}
-
 
 		vkCmdSetScissor(arg_0, arg_1, arg_2, arg_3);
 
@@ -4897,7 +4973,7 @@ void ManagedVulkan::CommandBuffer::CmdSetLineWidth(float lineWidth)
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - lineWidth		
-		float arg_1 = 0;
+		float arg_1 = lineWidth;
 
 		vkCmdSetLineWidth(arg_0, arg_1);
 
@@ -4923,11 +4999,11 @@ void ManagedVulkan::CommandBuffer::CmdSetDepthBias(float depthBiasConstantFactor
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - depthBiasConstantFactor		
-		float arg_1 = 0;		
+		float arg_1 = depthBiasConstantFactor;		
 		// INITS 2 - depthBiasClamp		
-		float arg_2 = 0;		
+		float arg_2 = depthBiasClamp;		
 		// INITS 3 - depthBiasSlopeFactor		
-		float arg_3 = 0;
+		float arg_3 = depthBiasSlopeFactor;
 
 		vkCmdSetDepthBias(arg_0, arg_1, arg_2, arg_3);
 
@@ -4953,7 +5029,7 @@ void ManagedVulkan::CommandBuffer::CmdSetBlendConstants(float blendConstants[4])
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - blendConstants[4]		
-		float arg_1 = 0;
+		float arg_1 = blendConstants[4];
 
 		vkCmdSetBlendConstants(arg_0, arg_1);
 
@@ -4979,9 +5055,9 @@ void ManagedVulkan::CommandBuffer::CmdSetDepthBounds(float minDepthBounds, float
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - minDepthBounds		
-		float arg_1 = 0;		
+		float arg_1 = minDepthBounds;		
 		// INITS 2 - maxDepthBounds		
-		float arg_2 = 0;
+		float arg_2 = maxDepthBounds;
 
 		vkCmdSetDepthBounds(arg_0, arg_1, arg_2);
 
@@ -5009,7 +5085,7 @@ void ManagedVulkan::CommandBuffer::CmdSetStencilCompareMask(VkStencilFaceFlags f
 		// INITS 1 - faceMask		
 		VkStencilFaceFlags arg_1 = 0;		
 		// INITS 2 - compareMask		
-		uint32_t arg_2 = 0;
+		uint32_t arg_2 = compareMask;
 
 		vkCmdSetStencilCompareMask(arg_0, arg_1, arg_2);
 
@@ -5037,7 +5113,7 @@ void ManagedVulkan::CommandBuffer::CmdSetStencilWriteMask(VkStencilFaceFlags fac
 		// INITS 1 - faceMask		
 		VkStencilFaceFlags arg_1 = 0;		
 		// INITS 2 - writeMask		
-		uint32_t arg_2 = 0;
+		uint32_t arg_2 = writeMask;
 
 		vkCmdSetStencilWriteMask(arg_0, arg_1, arg_2);
 
@@ -5065,7 +5141,7 @@ void ManagedVulkan::CommandBuffer::CmdSetStencilReference(VkStencilFaceFlags fac
 		// INITS 1 - faceMask		
 		VkStencilFaceFlags arg_1 = 0;		
 		// INITS 2 - reference		
-		uint32_t arg_2 = 0;
+		uint32_t arg_2 = reference;
 
 		vkCmdSetStencilReference(arg_0, arg_1, arg_2);
 
@@ -5097,13 +5173,13 @@ void ManagedVulkan::CommandBuffer::CmdBindDescriptorSets(VkPipelineBindPoint pip
 		// INITS 2 - layout		
 		VkPipelineLayout arg_2 = layout->mHandle;		
 		// INITS 3 - firstSet		
-		uint32_t arg_3 = 0;		
+		uint32_t arg_3 = firstSet;		
 		// INITS 4 - descriptorSetCount		
-		uint32_t arg_4 = 0;		
+		uint32_t arg_4 = descriptorSetCount;		
 		// INITS 5 - pDescriptorSets		
 		arg_5 = new VkDescriptorSet[descriptorSetCount];		
 		// INITS 6 - dynamicOffsetCount		
-		uint32_t arg_6 = 0;		
+		uint32_t arg_6 = dynamicOffsetCount;		
 		// INITS 7 - pDynamicOffsets		
 		arg_7 = new <TYPE>[dynamicOffsetCount];
 
@@ -5141,7 +5217,7 @@ void ManagedVulkan::CommandBuffer::CmdBindIndexBuffer(Buffer^ buffer, UInt64 off
 		// INITS 1 - buffer		
 		VkBuffer arg_1 = buffer->mHandle;		
 		// INITS 2 - offset		
-		VkDeviceSize arg_2 = 0;		
+		VkDeviceSize arg_2 = offset;		
 		// INITS 3 - indexType		
 		VkIndexType arg_3 = indexType;
 
@@ -5171,9 +5247,9 @@ void ManagedVulkan::CommandBuffer::CmdBindVertexBuffers(UInt32 firstBinding, UIn
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - firstBinding		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = firstBinding;		
 		// INITS 2 - bindingCount		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = bindingCount;		
 		// INITS 3 - pBuffers		
 		arg_3 = new VkBuffer[bindingCount];		
 		// INITS 4 - pOffsets		
@@ -5211,13 +5287,13 @@ void ManagedVulkan::CommandBuffer::CmdDraw(UInt32 vertexCount, UInt32 instanceCo
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - vertexCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = vertexCount;		
 		// INITS 2 - instanceCount		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = instanceCount;		
 		// INITS 3 - firstVertex		
-		uint32_t arg_3 = 0;		
+		uint32_t arg_3 = firstVertex;		
 		// INITS 4 - firstInstance		
-		uint32_t arg_4 = 0;
+		uint32_t arg_4 = firstInstance;
 
 		vkCmdDraw(arg_0, arg_1, arg_2, arg_3, arg_4);
 
@@ -5243,15 +5319,15 @@ void ManagedVulkan::CommandBuffer::CmdDrawIndexed(UInt32 indexCount, UInt32 inst
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - indexCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = indexCount;		
 		// INITS 2 - instanceCount		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = instanceCount;		
 		// INITS 3 - firstIndex		
-		uint32_t arg_3 = 0;		
+		uint32_t arg_3 = firstIndex;		
 		// INITS 4 - vertexOffset		
-		int32_t arg_4 = 0;		
+		int32_t arg_4 = vertexOffset;		
 		// INITS 5 - firstInstance		
-		uint32_t arg_5 = 0;
+		uint32_t arg_5 = firstInstance;
 
 		vkCmdDrawIndexed(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
 
@@ -5279,11 +5355,11 @@ void ManagedVulkan::CommandBuffer::CmdDrawIndirect(Buffer^ buffer, UInt64 offset
 		// INITS 1 - buffer		
 		VkBuffer arg_1 = buffer->mHandle;		
 		// INITS 2 - offset		
-		VkDeviceSize arg_2 = 0;		
+		VkDeviceSize arg_2 = offset;		
 		// INITS 3 - drawCount		
-		uint32_t arg_3 = 0;		
+		uint32_t arg_3 = drawCount;		
 		// INITS 4 - stride		
-		uint32_t arg_4 = 0;
+		uint32_t arg_4 = stride;
 
 		vkCmdDrawIndirect(arg_0, arg_1, arg_2, arg_3, arg_4);
 
@@ -5311,11 +5387,11 @@ void ManagedVulkan::CommandBuffer::CmdDrawIndexedIndirect(Buffer^ buffer, UInt64
 		// INITS 1 - buffer		
 		VkBuffer arg_1 = buffer->mHandle;		
 		// INITS 2 - offset		
-		VkDeviceSize arg_2 = 0;		
+		VkDeviceSize arg_2 = offset;		
 		// INITS 3 - drawCount		
-		uint32_t arg_3 = 0;		
+		uint32_t arg_3 = drawCount;		
 		// INITS 4 - stride		
-		uint32_t arg_4 = 0;
+		uint32_t arg_4 = stride;
 
 		vkCmdDrawIndexedIndirect(arg_0, arg_1, arg_2, arg_3, arg_4);
 
@@ -5341,11 +5417,11 @@ void ManagedVulkan::CommandBuffer::CmdDispatch(UInt32 x, UInt32 y, UInt32 z)
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - x		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = x;		
 		// INITS 2 - y		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = y;		
 		// INITS 3 - z		
-		uint32_t arg_3 = 0;
+		uint32_t arg_3 = z;
 
 		vkCmdDispatch(arg_0, arg_1, arg_2, arg_3);
 
@@ -5373,7 +5449,7 @@ void ManagedVulkan::CommandBuffer::CmdDispatchIndirect(Buffer^ buffer, UInt64 of
 		// INITS 1 - buffer		
 		VkBuffer arg_1 = buffer->mHandle;		
 		// INITS 2 - offset		
-		VkDeviceSize arg_2 = 0;
+		VkDeviceSize arg_2 = offset;
 
 		vkCmdDispatchIndirect(arg_0, arg_1, arg_2);
 
@@ -5404,7 +5480,7 @@ void ManagedVulkan::CommandBuffer::CmdCopyBuffer(Buffer^ srcBuffer, Buffer^ dstB
 		// INITS 2 - dstBuffer		
 		VkBuffer arg_2 = dstBuffer->mHandle;		
 		// INITS 3 - regionCount		
-		uint32_t arg_3 = 0;		
+		uint32_t arg_3 = regionCount;		
 		// INITS 4 - pRegions		
 		arg_4 = new VkBufferCopy[regionCount];
 
@@ -5445,54 +5521,54 @@ void ManagedVulkan::CommandBuffer::CmdCopyImage(Image^ srcImage, VkImageLayout s
 		// INITS 4 - dstImageLayout		
 		VkImageLayout arg_4 = dstImageLayout;		
 		// INITS 5 - regionCount		
-		uint32_t arg_5 = 0;		
+		uint32_t arg_5 = regionCount;		
 		// INITS 6 - pRegions		
 		arg_6 = new VkImageCopy[regionCount];		
-			// FIELD - arg_6_0 arg_6->SrcSubresource		
+			// FIELD - arg_6_0 pRegions->SrcSubresource		
 			VkImageSubresourceLayers arg_6_0 = nullptr;		
 			VkImageSubresourceLayers  inst_6_0;		
 			if (pRegions != nullptr && pRegions->SrcSubresource != nullptr)		
 			{		
 				arg_6_0 = &inst_6_0;		
-				arg_6->SrcSubresource = arg_6_0;		
-			}
-		
-			// FIELD - arg_6_1 arg_6->SrcOffset		
+				pRegions->SrcSubresource->CopyTo(arg_6_0, pins);		
+				arg_6->srcSubresource = arg_6_0;		
+			}		
+			// FIELD - arg_6_1 pRegions->SrcOffset		
 			VkOffset3D arg_6_1 = nullptr;		
 			VkOffset3D  inst_6_1;		
 			if (pRegions != nullptr && pRegions->SrcOffset != nullptr)		
 			{		
 				arg_6_1 = &inst_6_1;		
-				arg_6->SrcOffset = arg_6_1;		
-			}
-		
-			// FIELD - arg_6_2 arg_6->DstSubresource		
+				pRegions->SrcOffset->CopyTo(arg_6_1, pins);		
+				arg_6->srcOffset = arg_6_1;		
+			}		
+			// FIELD - arg_6_2 pRegions->DstSubresource		
 			VkImageSubresourceLayers arg_6_2 = nullptr;		
 			VkImageSubresourceLayers  inst_6_2;		
 			if (pRegions != nullptr && pRegions->DstSubresource != nullptr)		
 			{		
 				arg_6_2 = &inst_6_2;		
-				arg_6->DstSubresource = arg_6_2;		
-			}
-		
-			// FIELD - arg_6_3 arg_6->DstOffset		
+				pRegions->DstSubresource->CopyTo(arg_6_2, pins);		
+				arg_6->dstSubresource = arg_6_2;		
+			}		
+			// FIELD - arg_6_3 pRegions->DstOffset		
 			VkOffset3D arg_6_3 = nullptr;		
 			VkOffset3D  inst_6_3;		
 			if (pRegions != nullptr && pRegions->DstOffset != nullptr)		
 			{		
 				arg_6_3 = &inst_6_3;		
-				arg_6->DstOffset = arg_6_3;		
-			}
-		
-			// FIELD - arg_6_4 arg_6->Extent		
+				pRegions->DstOffset->CopyTo(arg_6_3, pins);		
+				arg_6->dstOffset = arg_6_3;		
+			}		
+			// FIELD - arg_6_4 pRegions->Extent		
 			VkExtent3D arg_6_4 = nullptr;		
 			VkExtent3D  inst_6_4;		
 			if (pRegions != nullptr && pRegions->Extent != nullptr)		
 			{		
 				arg_6_4 = &inst_6_4;		
-				arg_6->Extent = arg_6_4;		
+				pRegions->Extent->CopyTo(arg_6_4, pins);		
+				arg_6->extent = arg_6_4;		
 			}
-
 
 		vkCmdCopyImage(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6);
 
@@ -5531,27 +5607,27 @@ void ManagedVulkan::CommandBuffer::CmdBlitImage(Image^ srcImage, VkImageLayout s
 		// INITS 4 - dstImageLayout		
 		VkImageLayout arg_4 = dstImageLayout;		
 		// INITS 5 - regionCount		
-		uint32_t arg_5 = 0;		
+		uint32_t arg_5 = regionCount;		
 		// INITS 6 - pRegions		
 		arg_6 = new VkImageBlit[regionCount];		
-			// FIELD - arg_6_0 arg_6->SrcSubresource		
+			// FIELD - arg_6_0 pRegions->SrcSubresource		
 			VkImageSubresourceLayers arg_6_0 = nullptr;		
 			VkImageSubresourceLayers  inst_6_0;		
 			if (pRegions != nullptr && pRegions->SrcSubresource != nullptr)		
 			{		
 				arg_6_0 = &inst_6_0;		
-				arg_6->SrcSubresource = arg_6_0;		
-			}
-		
-			// FIELD - arg_6_2 arg_6->DstSubresource		
+				pRegions->SrcSubresource->CopyTo(arg_6_0, pins);		
+				arg_6->srcSubresource = arg_6_0;		
+			}		
+			// FIELD - arg_6_2 pRegions->DstSubresource		
 			VkImageSubresourceLayers arg_6_2 = nullptr;		
 			VkImageSubresourceLayers  inst_6_2;		
 			if (pRegions != nullptr && pRegions->DstSubresource != nullptr)		
 			{		
 				arg_6_2 = &inst_6_2;		
-				arg_6->DstSubresource = arg_6_2;		
-			}
-		
+				pRegions->DstSubresource->CopyTo(arg_6_2, pins);		
+				arg_6->dstSubresource = arg_6_2;		
+			}		
 		// INITS 7 - filter		
 		VkFilter arg_7 = filter;
 
@@ -5590,36 +5666,36 @@ void ManagedVulkan::CommandBuffer::CmdCopyBufferToImage(Buffer^ srcBuffer, Image
 		// INITS 3 - dstImageLayout		
 		VkImageLayout arg_3 = dstImageLayout;		
 		// INITS 4 - regionCount		
-		uint32_t arg_4 = 0;		
+		uint32_t arg_4 = regionCount;		
 		// INITS 5 - pRegions		
 		arg_5 = new VkBufferImageCopy[regionCount];		
-			// FIELD - arg_5_3 arg_5->ImageSubresource		
+			// FIELD - arg_5_3 pRegions->ImageSubresource		
 			VkImageSubresourceLayers arg_5_3 = nullptr;		
 			VkImageSubresourceLayers  inst_5_3;		
 			if (pRegions != nullptr && pRegions->ImageSubresource != nullptr)		
 			{		
 				arg_5_3 = &inst_5_3;		
-				arg_5->ImageSubresource = arg_5_3;		
-			}
-		
-			// FIELD - arg_5_4 arg_5->ImageOffset		
+				pRegions->ImageSubresource->CopyTo(arg_5_3, pins);		
+				arg_5->imageSubresource = arg_5_3;		
+			}		
+			// FIELD - arg_5_4 pRegions->ImageOffset		
 			VkOffset3D arg_5_4 = nullptr;		
 			VkOffset3D  inst_5_4;		
 			if (pRegions != nullptr && pRegions->ImageOffset != nullptr)		
 			{		
 				arg_5_4 = &inst_5_4;		
-				arg_5->ImageOffset = arg_5_4;		
-			}
-		
-			// FIELD - arg_5_5 arg_5->ImageExtent		
+				pRegions->ImageOffset->CopyTo(arg_5_4, pins);		
+				arg_5->imageOffset = arg_5_4;		
+			}		
+			// FIELD - arg_5_5 pRegions->ImageExtent		
 			VkExtent3D arg_5_5 = nullptr;		
 			VkExtent3D  inst_5_5;		
 			if (pRegions != nullptr && pRegions->ImageExtent != nullptr)		
 			{		
 				arg_5_5 = &inst_5_5;		
-				arg_5->ImageExtent = arg_5_5;		
+				pRegions->ImageExtent->CopyTo(arg_5_5, pins);		
+				arg_5->imageExtent = arg_5_5;		
 			}
-
 
 		vkCmdCopyBufferToImage(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
 
@@ -5656,36 +5732,36 @@ void ManagedVulkan::CommandBuffer::CmdCopyImageToBuffer(Image^ srcImage, VkImage
 		// INITS 3 - dstBuffer		
 		VkBuffer arg_3 = dstBuffer->mHandle;		
 		// INITS 4 - regionCount		
-		uint32_t arg_4 = 0;		
+		uint32_t arg_4 = regionCount;		
 		// INITS 5 - pRegions		
 		arg_5 = new VkBufferImageCopy[regionCount];		
-			// FIELD - arg_5_3 arg_5->ImageSubresource		
+			// FIELD - arg_5_3 pRegions->ImageSubresource		
 			VkImageSubresourceLayers arg_5_3 = nullptr;		
 			VkImageSubresourceLayers  inst_5_3;		
 			if (pRegions != nullptr && pRegions->ImageSubresource != nullptr)		
 			{		
 				arg_5_3 = &inst_5_3;		
-				arg_5->ImageSubresource = arg_5_3;		
-			}
-		
-			// FIELD - arg_5_4 arg_5->ImageOffset		
+				pRegions->ImageSubresource->CopyTo(arg_5_3, pins);		
+				arg_5->imageSubresource = arg_5_3;		
+			}		
+			// FIELD - arg_5_4 pRegions->ImageOffset		
 			VkOffset3D arg_5_4 = nullptr;		
 			VkOffset3D  inst_5_4;		
 			if (pRegions != nullptr && pRegions->ImageOffset != nullptr)		
 			{		
 				arg_5_4 = &inst_5_4;		
-				arg_5->ImageOffset = arg_5_4;		
-			}
-		
-			// FIELD - arg_5_5 arg_5->ImageExtent		
+				pRegions->ImageOffset->CopyTo(arg_5_4, pins);		
+				arg_5->imageOffset = arg_5_4;		
+			}		
+			// FIELD - arg_5_5 pRegions->ImageExtent		
 			VkExtent3D arg_5_5 = nullptr;		
 			VkExtent3D  inst_5_5;		
 			if (pRegions != nullptr && pRegions->ImageExtent != nullptr)		
 			{		
 				arg_5_5 = &inst_5_5;		
-				arg_5->ImageExtent = arg_5_5;		
+				pRegions->ImageExtent->CopyTo(arg_5_5, pins);		
+				arg_5->imageExtent = arg_5_5;		
 			}
-
 
 		vkCmdCopyImageToBuffer(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
 
@@ -5717,11 +5793,11 @@ void ManagedVulkan::CommandBuffer::CmdUpdateBuffer(Buffer^ dstBuffer, UInt64 dst
 		// INITS 1 - dstBuffer		
 		VkBuffer arg_1 = dstBuffer->mHandle;		
 		// INITS 2 - dstOffset		
-		VkDeviceSize arg_2 = 0;		
+		VkDeviceSize arg_2 = dstOffset;		
 		// INITS 3 - dataSize		
-		VkDeviceSize arg_3 = 0;		
+		VkDeviceSize arg_3 = dataSize;		
 		// INITS 4 - pData		
-		uint32_t* arg_4 = 0;
+		uint32_t* arg_4 = pData;
 
 		vkCmdUpdateBuffer(arg_0, arg_1, arg_2, arg_3, arg_4);
 
@@ -5749,11 +5825,11 @@ void ManagedVulkan::CommandBuffer::CmdFillBuffer(Buffer^ dstBuffer, UInt64 dstOf
 		// INITS 1 - dstBuffer		
 		VkBuffer arg_1 = dstBuffer->mHandle;		
 		// INITS 2 - dstOffset		
-		VkDeviceSize arg_2 = 0;		
+		VkDeviceSize arg_2 = dstOffset;		
 		// INITS 3 - size		
-		VkDeviceSize arg_3 = 0;		
+		VkDeviceSize arg_3 = size;		
 		// INITS 4 - data		
-		uint32_t arg_4 = 0;
+		uint32_t arg_4 = data;
 
 		vkCmdFillBuffer(arg_0, arg_1, arg_2, arg_3, arg_4);
 
@@ -5784,11 +5860,11 @@ void ManagedVulkan::CommandBuffer::CmdClearColorImage(Image^ image, VkImageLayou
 		// INITS 2 - imageLayout		
 		VkImageLayout arg_2 = imageLayout;		
 		// INITS 3 - pColor		
-		VkClearColorValue inst_3		
+		VkClearColorValue inst_3;		
 		VkClearColorValue* arg_3 = &inst_3;		
 		pColor->CopyTo(arg_3 , pins);		
 		// INITS 4 - rangeCount		
-		uint32_t arg_4 = 0;		
+		uint32_t arg_4 = rangeCount;		
 		// INITS 5 - pRanges		
 		arg_5 = new VkImageSubresourceRange[rangeCount];
 
@@ -5825,11 +5901,11 @@ void ManagedVulkan::CommandBuffer::CmdClearDepthStencilImage(Image^ image, VkIma
 		// INITS 2 - imageLayout		
 		VkImageLayout arg_2 = imageLayout;		
 		// INITS 3 - pDepthStencil		
-		VkClearDepthStencilValue inst_3		
+		VkClearDepthStencilValue inst_3;		
 		VkClearDepthStencilValue* arg_3 = &inst_3;		
 		pDepthStencil->CopyTo(arg_3 , pins);		
 		// INITS 4 - rangeCount		
-		uint32_t arg_4 = 0;		
+		uint32_t arg_4 = rangeCount;		
 		// INITS 5 - pRanges		
 		arg_5 = new VkImageSubresourceRange[rangeCount];
 
@@ -5863,67 +5939,67 @@ void ManagedVulkan::CommandBuffer::CmdClearAttachments(array<ClearAttachment^>^ 
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - attachmentCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = attachmentCount;		
 		// INITS 2 - pAttachments		
 		arg_2 = new VkClearAttachment[attachmentCount];		
-			// FIELD - arg_2_2 arg_2->ClearValue		
+			// FIELD - arg_2_2 pAttachments->ClearValue		
 			VkClearValue arg_2_2 = nullptr;		
 			VkClearValue  inst_2_2;		
 			if (pAttachments != nullptr && pAttachments->ClearValue != nullptr)		
 			{		
 				arg_2_2 = &inst_2_2;		
-				arg_2->ClearValue = arg_2_2;		
-			}
-		
-			// FIELD - arg_2_2_0 arg_2->ClearValue->Color		
+				pAttachments->ClearValue->CopyTo(arg_2_2, pins);		
+				arg_2->clearValue = arg_2_2;		
+			}		
+			// FIELD - arg_2_2_0 pAttachments->ClearValue->Color		
 			VkClearColorValue arg_2_2_0 = nullptr;		
 			VkClearColorValue  inst_2_2_0;		
 			if (pAttachments != nullptr && pAttachments->ClearValue != nullptr && pAttachments->Color != nullptr)		
 			{		
 				arg_2_2_0 = &inst_2_2_0;		
-				arg_2->ClearValue->Color = arg_2_2_0;		
-			}
-		
-			// FIELD - arg_2_2_1 arg_2->ClearValue->DepthStencil		
+				pAttachments->ClearValue->Color->CopyTo(arg_2_2_0, pins);		
+				arg_2->clearValue->color = arg_2_2_0;		
+			}		
+			// FIELD - arg_2_2_1 pAttachments->ClearValue->DepthStencil		
 			VkClearDepthStencilValue arg_2_2_1 = nullptr;		
 			VkClearDepthStencilValue  inst_2_2_1;		
 			if (pAttachments != nullptr && pAttachments->ClearValue != nullptr && pAttachments->DepthStencil != nullptr)		
 			{		
 				arg_2_2_1 = &inst_2_2_1;		
-				arg_2->ClearValue->DepthStencil = arg_2_2_1;		
-			}
-		
+				pAttachments->ClearValue->DepthStencil->CopyTo(arg_2_2_1, pins);		
+				arg_2->clearValue->depthStencil = arg_2_2_1;		
+			}		
 		// INITS 3 - rectCount		
-		uint32_t arg_3 = 0;		
+		uint32_t arg_3 = rectCount;		
 		// INITS 4 - pRects		
 		arg_4 = new VkClearRect[rectCount];		
-			// FIELD - arg_4_0 arg_4->Rect		
+			// FIELD - arg_4_0 pRects->Rect		
 			VkRect2D arg_4_0 = nullptr;		
 			VkRect2D  inst_4_0;		
 			if (pRects != nullptr && pRects->Rect != nullptr)		
 			{		
 				arg_4_0 = &inst_4_0;		
-				arg_4->Rect = arg_4_0;		
-			}
-		
-			// FIELD - arg_4_0_0 arg_4->Rect->Offset		
+				pRects->Rect->CopyTo(arg_4_0, pins);		
+				arg_4->rect = arg_4_0;		
+			}		
+			// FIELD - arg_4_0_0 pRects->Rect->Offset		
 			VkOffset2D arg_4_0_0 = nullptr;		
 			VkOffset2D  inst_4_0_0;		
 			if (pRects != nullptr && pRects->Rect != nullptr && pRects->Offset != nullptr)		
 			{		
 				arg_4_0_0 = &inst_4_0_0;		
-				arg_4->Rect->Offset = arg_4_0_0;		
-			}
-		
-			// FIELD - arg_4_0_1 arg_4->Rect->Extent		
+				pRects->Rect->Offset->CopyTo(arg_4_0_0, pins);		
+				arg_4->rect->offset = arg_4_0_0;		
+			}		
+			// FIELD - arg_4_0_1 pRects->Rect->Extent		
 			VkExtent2D arg_4_0_1 = nullptr;		
 			VkExtent2D  inst_4_0_1;		
 			if (pRects != nullptr && pRects->Rect != nullptr && pRects->Extent != nullptr)		
 			{		
 				arg_4_0_1 = &inst_4_0_1;		
-				arg_4->Rect->Extent = arg_4_0_1;		
+				pRects->Rect->Extent->CopyTo(arg_4_0_1, pins);		
+				arg_4->rect->extent = arg_4_0_1;		
 			}
-
 
 		vkCmdClearAttachments(arg_0, arg_1, arg_2, arg_3, arg_4);
 
@@ -5966,54 +6042,54 @@ void ManagedVulkan::CommandBuffer::CmdResolveImage(Image^ srcImage, VkImageLayou
 		// INITS 4 - dstImageLayout		
 		VkImageLayout arg_4 = dstImageLayout;		
 		// INITS 5 - regionCount		
-		uint32_t arg_5 = 0;		
+		uint32_t arg_5 = regionCount;		
 		// INITS 6 - pRegions		
 		arg_6 = new VkImageResolve[regionCount];		
-			// FIELD - arg_6_0 arg_6->SrcSubresource		
+			// FIELD - arg_6_0 pRegions->SrcSubresource		
 			VkImageSubresourceLayers arg_6_0 = nullptr;		
 			VkImageSubresourceLayers  inst_6_0;		
 			if (pRegions != nullptr && pRegions->SrcSubresource != nullptr)		
 			{		
 				arg_6_0 = &inst_6_0;		
-				arg_6->SrcSubresource = arg_6_0;		
-			}
-		
-			// FIELD - arg_6_1 arg_6->SrcOffset		
+				pRegions->SrcSubresource->CopyTo(arg_6_0, pins);		
+				arg_6->srcSubresource = arg_6_0;		
+			}		
+			// FIELD - arg_6_1 pRegions->SrcOffset		
 			VkOffset3D arg_6_1 = nullptr;		
 			VkOffset3D  inst_6_1;		
 			if (pRegions != nullptr && pRegions->SrcOffset != nullptr)		
 			{		
 				arg_6_1 = &inst_6_1;		
-				arg_6->SrcOffset = arg_6_1;		
-			}
-		
-			// FIELD - arg_6_2 arg_6->DstSubresource		
+				pRegions->SrcOffset->CopyTo(arg_6_1, pins);		
+				arg_6->srcOffset = arg_6_1;		
+			}		
+			// FIELD - arg_6_2 pRegions->DstSubresource		
 			VkImageSubresourceLayers arg_6_2 = nullptr;		
 			VkImageSubresourceLayers  inst_6_2;		
 			if (pRegions != nullptr && pRegions->DstSubresource != nullptr)		
 			{		
 				arg_6_2 = &inst_6_2;		
-				arg_6->DstSubresource = arg_6_2;		
-			}
-		
-			// FIELD - arg_6_3 arg_6->DstOffset		
+				pRegions->DstSubresource->CopyTo(arg_6_2, pins);		
+				arg_6->dstSubresource = arg_6_2;		
+			}		
+			// FIELD - arg_6_3 pRegions->DstOffset		
 			VkOffset3D arg_6_3 = nullptr;		
 			VkOffset3D  inst_6_3;		
 			if (pRegions != nullptr && pRegions->DstOffset != nullptr)		
 			{		
 				arg_6_3 = &inst_6_3;		
-				arg_6->DstOffset = arg_6_3;		
-			}
-		
-			// FIELD - arg_6_4 arg_6->Extent		
+				pRegions->DstOffset->CopyTo(arg_6_3, pins);		
+				arg_6->dstOffset = arg_6_3;		
+			}		
+			// FIELD - arg_6_4 pRegions->Extent		
 			VkExtent3D arg_6_4 = nullptr;		
 			VkExtent3D  inst_6_4;		
 			if (pRegions != nullptr && pRegions->Extent != nullptr)		
 			{		
 				arg_6_4 = &inst_6_4;		
-				arg_6->Extent = arg_6_4;		
+				pRegions->Extent->CopyTo(arg_6_4, pins);		
+				arg_6->extent = arg_6_4;		
 			}
-
 
 		vkCmdResolveImage(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6);
 
@@ -6103,7 +6179,7 @@ void ManagedVulkan::CommandBuffer::CmdWaitEvents(array<Event^>^ pEvents, VkPipel
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - eventCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = eventCount;		
 		// INITS 2 - pEvents		
 		arg_2 = new VkEvent[eventCount];		
 		// INITS 3 - srcStageMask		
@@ -6111,26 +6187,26 @@ void ManagedVulkan::CommandBuffer::CmdWaitEvents(array<Event^>^ pEvents, VkPipel
 		// INITS 4 - dstStageMask		
 		VkPipelineStageFlags arg_4 = 0;		
 		// INITS 5 - memoryBarrierCount		
-		uint32_t arg_5 = 0;		
+		uint32_t arg_5 = memoryBarrierCount;		
 		// INITS 6 - pMemoryBarriers		
 		arg_6 = new VkMemoryBarrier[memoryBarrierCount];		
 		// INITS 7 - bufferMemoryBarrierCount		
-		uint32_t arg_7 = 0;		
+		uint32_t arg_7 = bufferMemoryBarrierCount;		
 		// INITS 8 - pBufferMemoryBarriers		
 		arg_8 = new VkBufferMemoryBarrier[bufferMemoryBarrierCount];		
 		// INITS 9 - imageMemoryBarrierCount		
-		uint32_t arg_9 = 0;		
+		uint32_t arg_9 = imageMemoryBarrierCount;		
 		// INITS 10 - pImageMemoryBarriers		
 		arg_10 = new VkImageMemoryBarrier[imageMemoryBarrierCount];		
-			// FIELD - arg_10_9 arg_10->SubresourceRange		
+			// FIELD - arg_10_9 pImageMemoryBarriers->SubresourceRange		
 			VkImageSubresourceRange arg_10_9 = nullptr;		
 			VkImageSubresourceRange  inst_10_9;		
 			if (pImageMemoryBarriers != nullptr && pImageMemoryBarriers->SubresourceRange != nullptr)		
 			{		
 				arg_10_9 = &inst_10_9;		
-				arg_10->SubresourceRange = arg_10_9;		
+				pImageMemoryBarriers->SubresourceRange->CopyTo(arg_10_9, pins);		
+				arg_10->subresourceRange = arg_10_9;		
 			}
-
 
 		vkCmdWaitEvents(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8, arg_9, arg_10);
 
@@ -6181,26 +6257,26 @@ void ManagedVulkan::CommandBuffer::CmdPipelineBarrier(VkPipelineStageFlags srcSt
 		// INITS 3 - dependencyFlags		
 		VkDependencyFlags arg_3 = 0;		
 		// INITS 4 - memoryBarrierCount		
-		uint32_t arg_4 = 0;		
+		uint32_t arg_4 = memoryBarrierCount;		
 		// INITS 5 - pMemoryBarriers		
 		arg_5 = new VkMemoryBarrier[memoryBarrierCount];		
 		// INITS 6 - bufferMemoryBarrierCount		
-		uint32_t arg_6 = 0;		
+		uint32_t arg_6 = bufferMemoryBarrierCount;		
 		// INITS 7 - pBufferMemoryBarriers		
 		arg_7 = new VkBufferMemoryBarrier[bufferMemoryBarrierCount];		
 		// INITS 8 - imageMemoryBarrierCount		
-		uint32_t arg_8 = 0;		
+		uint32_t arg_8 = imageMemoryBarrierCount;		
 		// INITS 9 - pImageMemoryBarriers		
 		arg_9 = new VkImageMemoryBarrier[imageMemoryBarrierCount];		
-			// FIELD - arg_9_9 arg_9->SubresourceRange		
+			// FIELD - arg_9_9 pImageMemoryBarriers->SubresourceRange		
 			VkImageSubresourceRange arg_9_9 = nullptr;		
 			VkImageSubresourceRange  inst_9_9;		
 			if (pImageMemoryBarriers != nullptr && pImageMemoryBarriers->SubresourceRange != nullptr)		
 			{		
 				arg_9_9 = &inst_9_9;		
-				arg_9->SubresourceRange = arg_9_9;		
+				pImageMemoryBarriers->SubresourceRange->CopyTo(arg_9_9, pins);		
+				arg_9->subresourceRange = arg_9_9;		
 			}
-
 
 		vkCmdPipelineBarrier(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7, arg_8, arg_9);
 
@@ -6240,7 +6316,7 @@ void ManagedVulkan::CommandBuffer::CmdBeginQuery(QueryPool^ queryPool, UInt32 qu
 		// INITS 1 - queryPool		
 		VkQueryPool arg_1 = queryPool->mHandle;		
 		// INITS 2 - query		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = query;		
 		// INITS 3 - flags		
 		VkQueryControlFlags arg_3 = 0;
 
@@ -6270,7 +6346,7 @@ void ManagedVulkan::CommandBuffer::CmdEndQuery(QueryPool^ queryPool, UInt32 quer
 		// INITS 1 - queryPool		
 		VkQueryPool arg_1 = queryPool->mHandle;		
 		// INITS 2 - query		
-		uint32_t arg_2 = 0;
+		uint32_t arg_2 = query;
 
 		vkCmdEndQuery(arg_0, arg_1, arg_2);
 
@@ -6298,9 +6374,9 @@ void ManagedVulkan::CommandBuffer::CmdResetQueryPool(QueryPool^ queryPool, UInt3
 		// INITS 1 - queryPool		
 		VkQueryPool arg_1 = queryPool->mHandle;		
 		// INITS 2 - firstQuery		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = firstQuery;		
 		// INITS 3 - queryCount		
-		uint32_t arg_3 = 0;
+		uint32_t arg_3 = queryCount;
 
 		vkCmdResetQueryPool(arg_0, arg_1, arg_2, arg_3);
 
@@ -6330,7 +6406,7 @@ void ManagedVulkan::CommandBuffer::CmdWriteTimestamp(VkPipelineStageFlagBits pip
 		// INITS 2 - queryPool		
 		VkQueryPool arg_2 = queryPool->mHandle;		
 		// INITS 3 - query		
-		uint32_t arg_3 = 0;
+		uint32_t arg_3 = query;
 
 		vkCmdWriteTimestamp(arg_0, arg_1, arg_2, arg_3);
 
@@ -6358,15 +6434,15 @@ void ManagedVulkan::CommandBuffer::CmdCopyQueryPoolResults(QueryPool^ queryPool,
 		// INITS 1 - queryPool		
 		VkQueryPool arg_1 = queryPool->mHandle;		
 		// INITS 2 - firstQuery		
-		uint32_t arg_2 = 0;		
+		uint32_t arg_2 = firstQuery;		
 		// INITS 3 - queryCount		
-		uint32_t arg_3 = 0;		
+		uint32_t arg_3 = queryCount;		
 		// INITS 4 - dstBuffer		
 		VkBuffer arg_4 = dstBuffer->mHandle;		
 		// INITS 5 - dstOffset		
-		VkDeviceSize arg_5 = 0;		
+		VkDeviceSize arg_5 = dstOffset;		
 		// INITS 6 - stride		
-		VkDeviceSize arg_6 = 0;		
+		VkDeviceSize arg_6 = stride;		
 		// INITS 7 - flags		
 		VkQueryResultFlags arg_7 = 0;
 
@@ -6398,9 +6474,9 @@ void ManagedVulkan::CommandBuffer::CmdPushConstants(PipelineLayout^ layout, VkSh
 		// INITS 2 - stageFlags		
 		VkShaderStageFlags arg_2 = 0;		
 		// INITS 3 - offset		
-		uint32_t arg_3 = 0;		
+		uint32_t arg_3 = offset;		
 		// INITS 4 - size		
-		uint32_t arg_4 = 0;		
+		uint32_t arg_4 = size;		
 		// INITS 5 - pValues		
 		void* arg_5 = 0;
 
@@ -6428,63 +6504,63 @@ void ManagedVulkan::CommandBuffer::CmdBeginRenderPass(RenderPassBeginInfo^ pRend
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - pRenderPassBegin		
-		VkRenderPassBeginInfo inst_1		
+		VkRenderPassBeginInfo inst_1;		
 		VkRenderPassBeginInfo* arg_1 = &inst_1;		
 		pRenderPassBegin->CopyTo(arg_1 , pins);		
-			// FIELD - arg_1_4 arg_1->RenderArea		
+			// FIELD - arg_1_4 pRenderPassBegin->RenderArea		
 			VkRect2D arg_1_4 = nullptr;		
 			VkRect2D  inst_1_4;		
 			if (pRenderPassBegin != nullptr && pRenderPassBegin->RenderArea != nullptr)		
 			{		
 				arg_1_4 = &inst_1_4;		
-				arg_1->RenderArea = arg_1_4;		
-			}
-		
-			// FIELD - arg_1_4_0 arg_1->RenderArea->Offset		
+				pRenderPassBegin->RenderArea->CopyTo(arg_1_4, pins);		
+				arg_1->renderArea = arg_1_4;		
+			}		
+			// FIELD - arg_1_4_0 pRenderPassBegin->RenderArea->Offset		
 			VkOffset2D arg_1_4_0 = nullptr;		
 			VkOffset2D  inst_1_4_0;		
 			if (pRenderPassBegin != nullptr && pRenderPassBegin->RenderArea != nullptr && pRenderPassBegin->Offset != nullptr)		
 			{		
 				arg_1_4_0 = &inst_1_4_0;		
-				arg_1->RenderArea->Offset = arg_1_4_0;		
-			}
-		
-			// FIELD - arg_1_4_1 arg_1->RenderArea->Extent		
+				pRenderPassBegin->RenderArea->Offset->CopyTo(arg_1_4_0, pins);		
+				arg_1->renderArea->offset = arg_1_4_0;		
+			}		
+			// FIELD - arg_1_4_1 pRenderPassBegin->RenderArea->Extent		
 			VkExtent2D arg_1_4_1 = nullptr;		
 			VkExtent2D  inst_1_4_1;		
 			if (pRenderPassBegin != nullptr && pRenderPassBegin->RenderArea != nullptr && pRenderPassBegin->Extent != nullptr)		
 			{		
 				arg_1_4_1 = &inst_1_4_1;		
-				arg_1->RenderArea->Extent = arg_1_4_1;		
-			}
-		
-			// FIELD - arg_1_6 arg_1->ClearValues		
+				pRenderPassBegin->RenderArea->Extent->CopyTo(arg_1_4_1, pins);		
+				arg_1->renderArea->extent = arg_1_4_1;		
+			}		
+			// FIELD - arg_1_6 pRenderPassBegin->ClearValues		
 			VkClearValue* arg_1_6 = nullptr;		
 			VkClearValue  inst_1_6;		
 			if (pRenderPassBegin != nullptr && pRenderPassBegin->ClearValues != nullptr)		
 			{		
 				arg_1_6 = &inst_1_6;		
-				arg_1->ClearValues = arg_1_6;		
-			}
-		
-			// FIELD - arg_1_6_0 arg_1->ClearValues->Color		
+				pRenderPassBegin->ClearValues->CopyTo(arg_1_6, pins);		
+				arg_1->pClearValues = arg_1_6;		
+			}		
+			// FIELD - arg_1_6_0 pRenderPassBegin->ClearValues->Color		
 			VkClearColorValue arg_1_6_0 = nullptr;		
 			VkClearColorValue  inst_1_6_0;		
 			if (pRenderPassBegin != nullptr && pRenderPassBegin->ClearValues != nullptr && pRenderPassBegin->Color != nullptr)		
 			{		
 				arg_1_6_0 = &inst_1_6_0;		
-				arg_1->ClearValues->Color = arg_1_6_0;		
-			}
-		
-			// FIELD - arg_1_6_1 arg_1->ClearValues->DepthStencil		
+				pRenderPassBegin->ClearValues->Color->CopyTo(arg_1_6_0, pins);		
+				arg_1->pClearValues->color = arg_1_6_0;		
+			}		
+			// FIELD - arg_1_6_1 pRenderPassBegin->ClearValues->DepthStencil		
 			VkClearDepthStencilValue arg_1_6_1 = nullptr;		
 			VkClearDepthStencilValue  inst_1_6_1;		
 			if (pRenderPassBegin != nullptr && pRenderPassBegin->ClearValues != nullptr && pRenderPassBegin->DepthStencil != nullptr)		
 			{		
 				arg_1_6_1 = &inst_1_6_1;		
-				arg_1->ClearValues->DepthStencil = arg_1_6_1;		
-			}
-		
+				pRenderPassBegin->ClearValues->DepthStencil->CopyTo(arg_1_6_1, pins);		
+				arg_1->pClearValues->depthStencil = arg_1_6_1;		
+			}		
 		// INITS 2 - contents		
 		VkSubpassContents arg_2 = contents;
 
@@ -6563,7 +6639,7 @@ void ManagedVulkan::CommandBuffer::CmdExecuteCommands(array<CommandBuffer^>^ pCo
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;		
 		// INITS 1 - commandBufferCount		
-		uint32_t arg_1 = 0;		
+		uint32_t arg_1 = commandBufferCount;		
 		// INITS 2 - pCommandBuffers		
 		arg_2 = new VkCommandBuffer[commandBufferCount];
 

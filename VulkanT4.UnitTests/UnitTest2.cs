@@ -69,7 +69,7 @@ namespace VulkanT4.UnitTests
 
             var enumTypeTranslation = new VkTypeTranslation { CppType = "VkStructureType*", EnumInfo = enumType, NeedsNamespace = true, };
             var subLevelTranslation = new VkTypeTranslation { CppType = "VkApplicationInfo*", StructInfo = subLevel, NeedsNamespace = true, };
-            var charArrayTranslation = new VkTypeTranslation { CppType = "char[]", NeedsNamespace = false };
+            var charArrayTranslation = new VkTypeTranslation { CppType = "const char* const*", NeedsNamespace = false };
 
             var topLevel = new VkStruct("VkInstanceCreateInfo");
             var member = new VkStructMember { Key = "sType", Translation = enumTypeTranslation };
@@ -114,7 +114,7 @@ namespace VulkanT4.UnitTests
             IVariableDeclaration declarer = new VariableDeclaration();
             List<VkCommand> commands = declarer.Parse(fn);
 
-            Assert.AreEqual(4, commands.Count);
+            Assert.AreEqual(5, commands.Count);
             var command = commands[0];
             Assert.AreEqual("arg_0", command.ArgumentName);
             Assert.AreSame(topLevelTranslation, command.MemberType);
@@ -124,10 +124,14 @@ namespace VulkanT4.UnitTests
             Assert.AreSame(subLevelTranslation, command.MemberType);
 
             command = commands[2];
+            Assert.AreEqual("arg_0_2", command.ArgumentName);
+            Assert.AreSame(charArrayTranslation, command.MemberType);
+
+            command = commands[3];
             Assert.AreEqual("arg_1", command.ArgumentName);
             Assert.AreSame(callBackTranslation, command.MemberType);
 
-            command = commands[3];
+            command = commands[4];
             Assert.AreEqual("arg_2", command.ArgumentName);
             Assert.AreSame(instTranslation, command.MemberType);
         }

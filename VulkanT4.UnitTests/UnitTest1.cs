@@ -368,6 +368,29 @@ namespace VulkanT4.UnitTests
         }
 
         [TestMethod]
+        public void ParseCharArray()
+        {
+            string xml =
+               @"<registry>
+                    <command>
+                        <proto><type>VkBool32</type> <name>vkGetDeviceQueue</name></proto>
+                    </command>
+                </registry>";
+
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(1, generator.Proxies.Keys.Count);
+            var proxy = generator.Proxies.Values.First();
+            Assert.AreEqual(1, proxy.Methods.Count);
+            var method = proxy.Methods[0];
+            Assert.IsNotNull(method.Translation);
+            Assert.IsNotNull(method.ReturnType);
+            Assert.AreEqual("VkBool32", method.ReturnType);
+            Assert.AreEqual("VkBool32", method.Translation.CppType);
+        }
+
+        [TestMethod]
         public void ParseOddPointer()
         {
             string xml =
@@ -396,6 +419,41 @@ namespace VulkanT4.UnitTests
             var parameter = method.Parameters[0];
             Assert.IsNotNull(parameter.Translation);
             Assert.IsNotNull("VkDisplayModeCreateInfoKHR*", parameter.Translation.CppType);
+        }
+
+        [TestMethod]
+        public void ParseByteArray()
+        {
+            string xml =
+               @"<registry>
+                    <type category=""struct"" name=""VkInfoStruct"" returnedonly=""true"">
+                        <member><type>uint8_t</type>        <name>pipelineCacheUUID</name>[<enum>VK_UUID_SIZE</enum>]</member>
+                        <member><type>char</type>           <name>deviceName</name>[<enum>VK_MAX_PHYSICAL_DEVICE_NAME_SIZE</enum>]</member>
+                    </type>
+                </registry>";
+
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(1, generator.Structs.Keys.Count);
+            var item = generator.Structs.Values.ElementAt(0);
+            Assert.AreEqual("VkInfoStruct", item.Key);
+            Assert.AreEqual("InfoStruct", item.Name);
+            Assert.AreEqual(2, item.Members.Count);
+
+            var member = item.Members[0];
+            Assert.AreEqual("pipelineCacheUUID", member.Key);
+            Assert.AreEqual("PipelineCacheUUID", member.Name);
+            Assert.AreEqual("mPipelineCacheUUID", member.FieldName);
+            Assert.AreEqual("byte[]", member.CppType);
+            Assert.AreEqual("array<byte>^", member.CSharpType);
+
+            member = item.Members[1];
+            Assert.AreEqual("deviceName", member.Key);
+            Assert.AreEqual("DeviceName", member.Name);
+            Assert.AreEqual("mDeviceName", member.FieldName);
+            Assert.AreEqual("char[]", member.CppType);
+            Assert.AreEqual("String^", member.CSharpType);
         }
 
         [TestMethod]
@@ -452,6 +510,7 @@ namespace VulkanT4.UnitTests
                 hasFailed = true;
             }
             Assert.IsFalse(hasFailed);
+            Assert.AreEqual(73, generator.Enums.Count);
         }
     }
 }

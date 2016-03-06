@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace VulkanT4
 {
@@ -17,8 +18,11 @@ namespace VulkanT4
         public string InstanceName { get; set; }
         public VkTypeTranslation MemberType { get; set; }
         public List<string> PriorStatements { get; private set; }
-        public string FieldPath { get; set; }
+        public string SourcePath { get; set; }
         public string NullCheck { get; set; }
+        public string DestinationPath { get; internal set; }
+        public string[] LengthConditions { get; set; }
+        public string Parent { get; set; }
 
         public void Initialise(VkProxy proxy)
         {
@@ -32,6 +36,9 @@ namespace VulkanT4
 
             if (Parameter != null)
             {
+                var validTypes = new StringCollection();
+                validTypes.AddRange(new[] { "bool", "UInt32", "float", "UInt64", "Int32" });
+
                 if (Parameter.Index == 0 && proxy.RequiresInstance)
                 {
                     valueStmt = "this->mHandle";
@@ -45,6 +52,16 @@ namespace VulkanT4
                 {
                     valueStmt = Parameter.Name;
                 }
+                // STRAIGHT COPY 
+                else if (validTypes.Contains(Parameter.Translation.CSharpType))
+                {
+                    valueStmt = Parameter.Name;
+                }
+                else if (Parameter.Translation.CppType == "size_t")
+                {
+                    valueStmt = "(size_t)  " + Parameter.Name;
+                }
+
 
                 PriorStatements.Add("// " + Parameter.Index + " - " + Parameter.Name);
             }
@@ -128,9 +145,12 @@ namespace VulkanT4
         {
             string valueStmt = "0";
 
-            PriorStatements.Add("// FIELD - " + ArgumentName + " " + FieldPath);
+            PriorStatements.Add("// FIELD - " + ArgumentName + " " + SourcePath);
 
-            PriorStatements.Add(MemberType.CppType + " " + ArgumentName + " = nullptr;");
+            if (!IsInitialised)
+            {
+                PriorStatements.Add(MemberType.CppType + " " + ArgumentName + " = nullptr;");
+            }
 
             bool needCallVariable =
                 MemberType != null
@@ -168,10 +188,31 @@ namespace VulkanT4
             if (needCallVariable)
             {
                 PriorStatements.Add('\t' + ArgumentName + " = " + valueStmt + ";");
-                PriorStatements.Add('\t' + FieldPath + " = " + ArgumentName + ";");
+                PriorStatements.Add('\t' + SourcePath + "->CopyTo(" + ArgumentName + ", pins);");
+                PriorStatements.Add('\t' + DestinationPath + " = " + ArgumentName + ";");
             }
+            else if (MemberType.CppType == "const char* const*")
+            {
+                var lengthVariable = "count";
+                if (LengthConditions.Length == 1)
+                {
+                    lengthVariable = LengthConditions[0];
+                }
+                var lengthDest = Parent + "->" + lengthVariable;
 
-            PriorStatements.Add("}\n");
+                PriorStatements.Add("\t" + "int " + lengthVariable + " = (int) " + SourcePath + "->Length;");
+                PriorStatements.Add("\t" + ArgumentName + " = new char*[" + lengthVariable + "];");
+                PriorStatements.Add("\t" + "for (int j = 0; j < " + lengthVariable + "; ++j)");
+                PriorStatements.Add("\t" + "{");
+                PriorStatements.Add("\t\t" + "IntPtr " + InstanceName + " = Marshal::StringToHGlobalAnsi(" + SourcePath + "[j]);");
+                PriorStatements.Add("\t\t" + "pins->Add(" + InstanceName + ");");
+                PriorStatements.Add("\t\t" + ArgumentName + "[j] = static_cast<char*>(" + InstanceName + ".ToPointer());");
+                PriorStatements.Add("\t" + "}");
+                PriorStatements.Add("\t" + DestinationPath + " = " + ArgumentName + ";");
+                PriorStatements.Add("\t" + lengthDest + " = " + lengthVariable + ";");
+            }            
+
+            PriorStatements.Add("}");
         }
     }
 }

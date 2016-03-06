@@ -97,13 +97,12 @@ using namespace System.Collection.Generic;
 			// ARRAY VARIABLES
 			foreach(var command in commands)
 			{ 
-				var param = command.Parameter;
-				if (param != null && param.IsArray)
+				if (command.Parameter != null && command.Parameter.IsArray)
 				{
 					string variableName = command.ArgumentName;
 					string valueStmt = "nullptr";
 
-					foreach(var l in param.LengthConditions)
+					foreach(var l in command.Parameter.LengthConditions)
 					{
 						if (l != "null-terminated" && !lengths.Contains(l))
 						{
@@ -111,7 +110,16 @@ using namespace System.Collection.Generic;
 						}
 					}
 #>
-	<#= param.CppType #> <#= variableName #> = <#= valueStmt #>;
+	<#= command.Parameter.CppType #> <#= variableName #> = <#= valueStmt #>;
+<#
+				}
+				else if (command.MemberType != null && command.MemberType.CppType == "const char* const*")
+				{
+					string variableName = command.ArgumentName;
+
+					command.IsInitialised = true;
+#>
+	<#= command.MemberType.CppType #> <#= variableName #> = nullptr;
 <#
 				}
 			}
@@ -196,6 +204,9 @@ using namespace System.Collection.Generic;
 		// MAIN INIT
 <#
 
+			var validTypes = new StringCollection();
+			validTypes.AddRange(new[] { "bool", "UInt32", "float", "UInt64", "Int32" });
+
 			foreach(var command in commands)	
 			{ 
 				var param = command.Parameter;
@@ -230,6 +241,15 @@ using namespace System.Collection.Generic;
 				{
 					valueStmt = param.Name;
 				}
+                // STRAIGHT COPY 
+                else if (param.Translation != null && validTypes.Contains(param.Translation.CSharpType))
+                {
+                    valueStmt = param.Name;
+                }
+                else if (param.Translation != null && param.Translation.CppType == "size_t")
+                {
+                    valueStmt = "(size_t)  " + param.Name;
+                }
 
 				command.PriorStatements.Add("// INITS " + param.Index + " - " + param.Name);
 				if (param.IsArray)
@@ -237,6 +257,8 @@ using namespace System.Collection.Generic;
 					var elementType = "<TYPE>";
 					if (param.Translation != null)
 					{
+
+
 						if (param.Translation.StructInfo != null)
 						{
 							elementType = param.Translation.StructInfo.Key;
@@ -288,15 +310,15 @@ using namespace System.Collection.Generic;
 						{
 							pinnedType = param.Translation.ProxyInfo.Key;
 						}		
-						command.PriorStatements.Add(pinnedType + " "  + pinnedVariable);
+						command.PriorStatements.Add(pinnedType + " "  + pinnedVariable + ";");
 			
 						valueStmt = "&" + pinnedVariable;			
 					}
 					else if (param.Translation != null && param.Translation.CSharpType == "String^")
 					{
-						command.PriorStatements.Add("IntPtr " + command.InstanceName + " = Marshal::StringToHGlobalAnsi(" + command.ArgumentName + ")");
-						command.PriorStatements.Add("pins->Add(" + command.InstanceName + ")");
-						valueStmt = "static_cast<char*>(" + command.InstanceName + ".ToPointer())";
+						command.PriorStatements.Add("IntPtr " + command.InstanceName + " = Marshal::StringToHGlobalAnsi(" + command.ArgumentName + ");");
+						command.PriorStatements.Add("pins->Add(" + command.InstanceName + ");");
+						valueStmt = "static_cast<char*>(" + command.InstanceName + ".ToPointer());";
 					}
 
 					command.PriorStatements.Add(param.CppType + " " + variableName + " = " + valueStmt + ";");
@@ -412,12 +434,14 @@ using namespace System.Collection.Generic;
 	{
 <#
 // BEGIN -- DELETE ARRAY VARIABLES
-			for(int i =0; i < m.Function.Parameters.Count; ++i)
+			foreach(var command in commands)	
 			{ 
-				var param = m.Function.Parameters[i];
-				string variableName = "arg_" + i;
+				var param = command.Parameter;
+				string variableName = command.ArgumentName;
 
-				if (param.IsArray)
+				if (
+					(param != null && param.IsArray)
+					|| (command.MemberType != null && command.MemberType.CppType == "const char* const*"))
 				{
 #>
 		if (<#= variableName #> != nullptr)
@@ -426,6 +450,7 @@ using namespace System.Collection.Generic;
 		}
 <#
 				}
+
 			}
 // END -- DELETE ARRAY VARIABLES
 #>

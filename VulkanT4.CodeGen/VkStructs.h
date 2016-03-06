@@ -526,7 +526,7 @@ namespace ManagedVulkan
 		UInt32 mDeviceID = 0;
 		VkPhysicalDeviceType mDeviceType = nullptr;
 		String^ mDeviceName = nullptr;
-		pipelineCacheUUID mVK_UUID_SIZE;
+		array<byte>^ mPipelineCacheUUID = nullptr;
 		PhysicalDeviceLimits^ mLimits = nullptr;
 		PhysicalDeviceSparseProperties^ mSparseProperties = nullptr;
 	public:
@@ -596,15 +596,15 @@ namespace ManagedVulkan
 				mDeviceName = value; 
 			}
 		}
-		property pipelineCacheUUID VK_UUID_SIZE
+		property array<byte>^ PipelineCacheUUID
 		{
-			pipelineCacheUUID get()
+			array<byte>^ get()
 			{
-				return mVK_UUID_SIZE;
+				return mPipelineCacheUUID;
 			}
-			void set(pipelineCacheUUID value)
+			void set(array<byte>^ value)
 			{
-				mVK_UUID_SIZE = value; 
+				mPipelineCacheUUID = value; 
 			}
 		}
 		property PhysicalDeviceLimits^ Limits
@@ -637,8 +637,12 @@ namespace ManagedVulkan
 			dst->vendorID =	mVendorID;
 			dst->deviceID =	mDeviceID;
 			dst->deviceType =	mDeviceType;
-			dst->deviceName =	mDeviceName;
-			dst->VK_UUID_SIZE =	mVK_UUID_SIZE;
+
+			IntPtr str_deviceName = Marshal::StringToHGlobalAnsi(src->deviceName);
+			pins->Add(str_deviceName);			
+			dst->deviceName = static_cast <char*> (str_deviceName.ToPointer());
+
+			dst->pipelineCacheUUID =	mPipelineCacheUUID;
 			dst->limits =	mLimits;
 			dst->sparseProperties =	mSparseProperties;
 		}
@@ -651,7 +655,7 @@ namespace ManagedVulkan
 			mDeviceID = src->deviceID;
 			mDeviceType = src->deviceType;
 			mDeviceName = src->deviceName;
-			mVK_UUID_SIZE = src->VK_UUID_SIZE;
+			mPipelineCacheUUID = src->pipelineCacheUUID;
 			mLimits = src->limits;
 			mSparseProperties = src->sparseProperties;
 		}
@@ -688,7 +692,11 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkExtensionProperties* dst, List<IntPtr>^ pins)
 		{
-			dst->extensionName =	mExtensionName;
+
+			IntPtr str_extensionName = Marshal::StringToHGlobalAnsi(src->extensionName);
+			pins->Add(str_extensionName);			
+			dst->extensionName = static_cast <char*> (str_extensionName.ToPointer());
+
 			dst->specVersion =	mSpecVersion;
 		}
 
@@ -754,10 +762,18 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkLayerProperties* dst, List<IntPtr>^ pins)
 		{
-			dst->layerName =	mLayerName;
+
+			IntPtr str_layerName = Marshal::StringToHGlobalAnsi(src->layerName);
+			pins->Add(str_layerName);			
+			dst->layerName = static_cast <char*> (str_layerName.ToPointer());
+
 			dst->specVersion =	mSpecVersion;
 			dst->implementationVersion =	mImplementationVersion;
-			dst->description =	mDescription;
+
+			IntPtr str_description = Marshal::StringToHGlobalAnsi(src->description);
+			pins->Add(str_description);			
+			dst->description = static_cast <char*> (str_description.ToPointer());
+
 		}
 
 		void CopyFrom(VkLayerProperties* src)

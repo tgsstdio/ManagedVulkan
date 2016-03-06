@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VulkanT4
 {
@@ -12,10 +13,13 @@ namespace VulkanT4
             public VkTypeTranslation Translation { get; internal set; }
             public string Prefix { get; internal set; }
             public string NullCheck { get; set; }
-            public string Parent { get; set; }
-            public string FieldPath { get; set; }
+            public string SourceRoot { get; set; }
+            public string SourcePath { get; set; }
+            public string DestinationPath { get; set; }
             public int Children { get; set; }
             public bool NotGenerated { get; internal set; }
+            public string[] LengthConditions { get; internal set; }
+            public string Parent { get; set; }
         }
 
         public List<VkCommand> Parse(VkFunction fn)
@@ -31,12 +35,15 @@ namespace VulkanT4
                 {
                     Parameter = param,
                     Prefix = rootPrefix + "_" + param.Index,
-                    FieldPath = rootPrefix + "_" + param.Index,
+                    SourcePath = param.Name,
+                    DestinationPath  = rootPrefix + "_" + param.Index,
                     NullCheck = param.Name + " != nullptr",
-                    Parent = param.Name,
+                    SourceRoot = param.Name,
                     Index = param.Index,
                     Translation = param.Translation,
                     NotGenerated = true,
+                    LengthConditions = param.LengthConditions.Where((l) => l != "null-terminated").ToArray(),
+                    Parent = rootPrefix + "_" + param.Index,
                 };
                 stack.Push(root);
 
@@ -54,9 +61,12 @@ namespace VulkanT4
                                 MemberType = top.Translation,
                                 NullCheck = top.NullCheck,
                                 InstanceName = top.Prefix.Replace("arg_", "inst_"),
-                                FieldPath = top.FieldPath,
+                                SourcePath = top.SourcePath,
+                                DestinationPath = top.DestinationPath,
+                                LengthConditions = top.LengthConditions.Where((l) => l != "null-terminated").ToArray(),
+                                Parent = top.Parent,
                             });
-                        top.Children = DecomposeParam(stack, top.Prefix, top.Translation, top.FieldPath, top.NullCheck, top.Parent);
+                        top.Children = DecomposeParam(stack, top.Prefix, top.Translation, top.SourceRoot, top.SourcePath, top.NullCheck, top.DestinationPath);
                         top.NotGenerated = false;
                     }
                     else
@@ -74,7 +84,7 @@ namespace VulkanT4
             return commands;
         }
 
-        private static int DecomposeParam(Stack<VkCommandInput> stack, string prefix, VkTypeTranslation parentTranslation, string fieldPath, string nullCheck, string parent)
+        private static int DecomposeParam(Stack<VkCommandInput> stack, string prefix, VkTypeTranslation parentTranslation, string sourceRoot, string sourcePath, string nullCheck, string destinationPath)
         {
             int count = 0;
             // structs 
@@ -92,11 +102,33 @@ namespace VulkanT4
                         {
                             NotGenerated = true,
                             Prefix = fieldPrefix,
-                            Parent = parent,
-                            NullCheck = nullCheck + " && " + parent + "->" + members[i].Name + " != nullptr",
-                            FieldPath = fieldPath + "->" + members[i].Name,
+                            SourceRoot = sourceRoot,
+                            NullCheck = nullCheck + " && " + sourceRoot + "->" + members[i].Name + " != nullptr",
+                            SourcePath = sourcePath + "->" + members[i].Name,
+                            DestinationPath = destinationPath + "->" + members[i].Key,
                             Index = i,
-                            Translation = members[i].Translation
+                            Translation = translate,
+                            LengthConditions = members[i].LengthConditions,
+                            Parent = destinationPath,
+                        };
+                        stack.Push(command);
+                        ++count;
+                    }
+                    else if (translate != null && translate.CppType == "const char* const*")
+                    {
+                        var fieldPrefix = prefix + "_" + i;
+                        var command = new VkCommandInput
+                        {
+                            NotGenerated = true,
+                            Prefix = fieldPrefix,
+                            SourceRoot = sourceRoot,
+                            NullCheck = nullCheck + " && " + sourceRoot + "->" + members[i].Name + " != nullptr",
+                            SourcePath = sourcePath + "->" + members[i].Name,
+                            DestinationPath = destinationPath + "->" + members[i].Key,
+                            Index = i,
+                            Translation = translate,
+                            LengthConditions = members[i].LengthConditions,
+                            Parent = destinationPath,
                         };
                         stack.Push(command);
                         ++count;

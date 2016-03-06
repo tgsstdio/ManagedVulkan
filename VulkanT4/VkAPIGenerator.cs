@@ -439,6 +439,12 @@ namespace VulkanT4
                         m.Key = memberTokens[1];
                         m.EnumValue = enumAttr.Value;
                     }
+                    else if (enumAttr != null && memberTokens[0] == "uint8_t")
+                    {
+                        m.CppType = "uint8_t**";
+                        m.Key = memberTokens[1];
+                        m.EnumValue = enumAttr.Value;
+                    }
                     else
                     {
                         m.CppType = memberTokens[1];
@@ -890,6 +896,9 @@ namespace VulkanT4
             mTranslations.Add(item.CppType, item);
 
             item = new VkTypeTranslation { CppType = "char[]", CSharpType = "String^", Default = " = nullptr;", MethodOnly = "String^", NeedsNamespace = false };
+            mTranslations.Add(item.CppType, item);
+
+            item = new VkTypeTranslation { CppType = "uint8_t**", CSharpType = "array<Byte>^", Default = " = nullptr;", MethodOnly = "array<Byte^>^", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
             item = new VkTypeTranslation { CppType = "const char* const*", CSharpType = "array<String^>^", Default = " = nullptr;", MethodOnly = "array<String^>^", NeedsNamespace = false };

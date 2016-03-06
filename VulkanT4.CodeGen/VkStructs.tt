@@ -82,7 +82,7 @@ namespace <#= ns #>
 <#
 		foreach(var m in s.Members)
 		{
-			if (m.CppType == "char*")
+			if (m.CSharpType == "String^")
 			{
 #>
 
@@ -92,6 +92,7 @@ namespace <#= ns #>
 
 <#
 			}
+
 			else
 			{
 #>
