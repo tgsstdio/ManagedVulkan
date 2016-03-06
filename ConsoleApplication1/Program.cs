@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
-    using vK = ManagedVulkan.Vulkan;
+   // using vK = ManagedVulkan.Vulkan;
 
     class Program
     {
         static void Main(string[] args)
         {
-            var extensions = vK.EnumerateInstanceExtensionProperties();
+            //var extensions = vK.EnumerateInstanceExtensionProperties();
 
-            foreach(var ext in extensions)
-            {
-                Console.WriteLine("Length : " + ext.SpecVersion + " - " + ext.ExtensionName);
-            }
+            //foreach(var ext in extensions)
+            //{
+            //    Console.WriteLine("Length : " + ext.SpecVersion + " - " + ext.ExtensionName);
+            //}
             
             /**
             ManagedVulkan.CreateInstanceInfo info = new ManagedVulkan.CreateInstanceInfo()

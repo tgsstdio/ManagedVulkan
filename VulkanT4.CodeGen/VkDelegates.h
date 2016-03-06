@@ -21,6 +21,6 @@ namespace ManagedVulkan
 
 	public delegate void PFN_vkVoidFunction();
 
-	public delegate void PFN_vkDebugReportCallbackEXT(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, UInt64 object, IntPtr location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage, IntPtr pUserData);
+	public delegate void PFN_vkDebugReportCallbackEXT(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, UInt64 object, IntPtr location, Int32 messageCode, String% pLayerPrefix, String% pMessage, IntPtr pUserData);
 
 }

@@ -9,7 +9,18 @@ namespace VulkanT4
             Items = new List<VkEnumItem>();
         }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get;
+            set;
+        }
+
+        public string EnumType
+        {
+            get;
+            set;
+        }
+
         public bool UseFlags { get; set; }
         public List<VkEnumItem> Items { get; private set; }
         public string Expand { get; set; }

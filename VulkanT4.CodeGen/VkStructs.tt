@@ -60,14 +60,16 @@ namespace <#= ns #>
 		{
 			if (m.IncludeInDeclaration)
 			{
+				var paramType = (m.Translation != null && m.Translation.NeedsNamespace ?  ns + "::" : "") + m.CSharpType;
+
 #>
-		property <#= m.CSharpType #> <#= m.Name #>
+		property <#= paramType #> <#= m.Name #>
 		{
-			<#= m.CSharpType #> get()
+			<#= paramType #> get()
 			{
 				return <#= m.FieldName #>;
 			}
-			void set(<#= m.CSharpType #> value)
+			void set(<#= paramType #> value)
 			{
 				<#= m.FieldName #> = value; 
 			}
@@ -82,14 +84,35 @@ namespace <#= ns #>
 <#
 		foreach(var m in s.Members)
 		{
-			if (m.CSharpType == "String^")
+			if (m.Translation != null && m.Translation.StructInfo != null)
+			{
+#>
+			<#= m.FieldName #>->CopyFrom(&dst-><#= m.Key #>, pins);
+<#
+			}
+
+			else if (m.CSharpType == "String^")
 			{
 #>
 
-			IntPtr str_<#= m.Key #> = Marshal::StringToHGlobalAnsi(src-><#= m.Key #>);
+			IntPtr str_<#= m.Key #> = Marshal::StringToHGlobalAnsi(<#= m.FieldName #>);
 			pins->Add(str_<#= m.Key #>);			
 			dst-><#= m.Key #> = static_cast <char*> (str_<#= m.Key #>.ToPointer());
 
+<#
+			}
+
+			else if (m.CppType == "VkBool32")
+			{
+#>
+			dst-><#= m.Key #> =	<#= m.FieldName #> ? 1 : 0;
+<#
+			}
+
+			else if (m.CppType == "VkBool32")
+			{
+#>
+			dst-><#= m.Key #> =	(VkStructureType) <#= m.FieldName #>;
 <#
 			}
 
@@ -114,6 +137,27 @@ namespace <#= ns #>
 			<#= m.FieldName #> = gcnew String(<#= m.FieldName #>);
 <#
 			}
+			else if (m.Translation != null && m.Translation.StructInfo != null)
+			{
+#>
+			<#= m.FieldName #>->CopyTo(&src-><#= m.Key #>);
+<#
+			}
+
+			else if (m.CppType == "VkStructureType")
+			{
+#>
+			<#= m.FieldName #> = (StructureType) src-><#= m.Key #>;
+<#
+			}
+
+			else if (m.CppType == "VkBool32")
+			{
+#>
+			<#= m.FieldName #> = src-><#= m.Key #> != 0;
+<#
+			}
+
 			else 
 			{
 #>

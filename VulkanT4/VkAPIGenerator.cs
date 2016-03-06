@@ -96,10 +96,33 @@ namespace VulkanT4
             ExtractFunctions(doc);
             ExtractHandles(doc);
             ExtractDelegates(doc);
+            ExtractFlags(doc);
             RetranslateStructMembers();
             RetranslateProxies();
             RetranslateDelegates();
             RetranslateFunctions();
+        }
+
+        private void ExtractFlags(XDocument doc)
+        {
+            // get all commands
+            foreach (var child in doc.Root.Descendants("type"))
+            {
+                var category = child.Attribute("category");
+
+                if (category != null && category.Value == "bitmask")
+                {
+                    var type = child.Element("type");
+                    var name = child.Element("name");
+
+                    if (type != null && type.Value == "VkFlags" && name != null)
+                    {
+                        mTranslations.Add(name.Value,
+                            new VkTypeTranslation
+                            { CppType = name.Value, CSharpType = "UInt32", Default = ";", MethodOnly = name.Value, NeedsNamespace = false });
+                    }
+                }
+            }
         }
 
         private void RetranslateFunctions()
@@ -194,7 +217,7 @@ namespace VulkanT4
                                     CppType = del.Key,
                                     CSharpType = del.Name + "^",
                                     Default = " = nullptr;",
-                                    MethodOnly = del.Name + "^",
+                                    MethodOnly = del.Name + "%",
                                     NeedsNamespace = true,
                                     DelegateInfo = del });
                         }
@@ -219,13 +242,13 @@ namespace VulkanT4
 
                         if (!mTranslations.ContainsKey(h.Key))
                         {
-                            mTranslations.Add(h.Key, new VkTypeTranslation { CppType = h.Key, CSharpType = h.Name + "^", Default = " = nullptr;", MethodOnly = h.Name + "^", NeedsNamespace = true, HandleInfo = h });
+                            mTranslations.Add(h.Key, new VkTypeTranslation { CppType = h.Key, CSharpType = h.Name + "^", Default = " = gcnew " + h.Name + "();", MethodOnly = h.Name, NeedsNamespace = true, HandleInfo = h });
                         }
 
                         var pointerStmt = h.Key + "*";
                         if (!mTranslations.ContainsKey(pointerStmt))
                         {
-                            mTranslations.Add(pointerStmt, new VkTypeTranslation { CppType = pointerStmt, CSharpType = h.Name + "^", Default = " = nullptr;", MethodOnly = h.Name + "^", NeedsNamespace = true, HandleInfo = h });
+                            mTranslations.Add(pointerStmt, new VkTypeTranslation { CppType = pointerStmt, CSharpType = h.Name + "^", Default = " = gcnew " + h.Name + "();", MethodOnly = h.Name + "%", NeedsNamespace = true, HandleInfo = h });
                         }
                     }
                 }
@@ -276,10 +299,10 @@ namespace VulkanT4
 
                         var pointerType = el.Name + "*";
                         // POINTER TYPE
-                        mTranslations.Add(pointerType, new VkTypeTranslation { CppType = pointerType, CSharpType = el.Name, Default = " = nullptr;", MethodOnly = el.Name, EnumInfo = el });
+                        mTranslations.Add(pointerType, new VkTypeTranslation { CppType = pointerType, CSharpType = el.Name, Default = ";", MethodOnly = el.Name + "%", EnumInfo = el, NeedsNamespace = true });
 
                         // PLAIN TYPE
-                        mTranslations.Add(el.Name, new VkTypeTranslation { CppType = el.Name, CSharpType = el.Name, Default = " = nullptr;", MethodOnly = el.Name, EnumInfo = el });
+                        mTranslations.Add(el.Name, new VkTypeTranslation { CppType = el.Name, CSharpType = el.Name, Default = ";", MethodOnly = el.Name, EnumInfo = el, NeedsNamespace = true });
                     }
                     
                 }
@@ -336,7 +359,7 @@ namespace VulkanT4
                                 {
                                     CppType = s.Key + "*",
                                     CSharpType = s.Name + "^",
-                                    Default = " = nullptr;",
+                                    Default = " = gcnew " + s.Name + "();",
                                     MethodOnly = s.Name + "^",
                                     NeedsNamespace = true,
                                     StructInfo = s
@@ -350,7 +373,7 @@ namespace VulkanT4
                                 {
                                     CppType = s.Key,
                                     CSharpType = s.Name + "^",
-                                    Default = " = nullptr;",
+                                    Default = " = gcnew " + s.Name + "();",
                                     MethodOnly = s.Name + "^",
                                     NeedsNamespace = true,
                                     StructInfo = s
@@ -607,27 +630,35 @@ namespace VulkanT4
          
             mEnumerationFns = new Dictionary<string, VkArrayFunctionInfo>();
             var arrayFn = new VkArrayFunctionInfo("vkGetImageSparseMemoryRequirements", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkGetSwapchainImagesKHR", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceQueueFamilyProperties", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceSparseImageFormatProperties", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceDisplayPropertiesKHR", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkGetDisplayModePropertiesKHR", false);
-            mEnumerationFns.Add(arrayFn.Key, arrayFn);
+            arrayFn.SecondCall = true;
+            mEnumerationFns.Add(arrayFn.Key, arrayFn);            
 
             arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceSurfaceFormatsKHR", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceSurfacePresentModesKHR", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkCmdPipelineBarrier", false);
@@ -720,9 +751,11 @@ namespace VulkanT4
             mEnumerationFns.Add(arrayFn.Key, arrayFn);            
 
             arrayFn = new VkArrayFunctionInfo("vkGetPhysicalDeviceDisplayPlanePropertiesKHR", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);            
 
             arrayFn = new VkArrayFunctionInfo("vkGetDisplayPlaneSupportedDisplaysKHR", false);
+            arrayFn.SecondCall = true;
             mEnumerationFns.Add(arrayFn.Key, arrayFn);
 
             arrayFn = new VkArrayFunctionInfo("vkResetFences", false);
@@ -865,43 +898,43 @@ namespace VulkanT4
 
             VkTypeTranslation item = null;
 
-            item = new VkTypeTranslation { CppType = "char*", CSharpType = "String^", Default = " = nullptr;", MethodOnly = "String^", NeedsNamespace = false };
+            item = new VkTypeTranslation { CppType = "char*", CSharpType = "String^", Default = " = nullptr;", MethodOnly = "String%", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
             item = new VkTypeTranslation { CppType = "uint32_t", CSharpType = "UInt32", Default = " = 0;", MethodOnly = "UInt32", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "uint32_t*", CSharpType = "UInt32", Default = " = 0;", MethodOnly = "ref UInt32", NeedsNamespace = false };
+            item = new VkTypeTranslation { CppType = "uint32_t*", CSharpType = "UInt32", Default = " = 0;", MethodOnly = "UInt32%", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
             item = new VkTypeTranslation { CppType = "uint64_t", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "uint64_t*", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64", NeedsNamespace = false };
+            item = new VkTypeTranslation { CppType = "uint64_t*", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64%", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
             item = new VkTypeTranslation { CppType = "size_t", CSharpType = "IntPtr", Default = " = 0;", MethodOnly = "IntPtr", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "size_t*", CSharpType = "IntPtr", Default = " = 0;", MethodOnly = "ref IntPtr", NeedsNamespace = false };
+            item = new VkTypeTranslation { CppType = "size_t*", CSharpType = "IntPtr", Default = " = 0;", MethodOnly = "IntPtr%", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
             item = new VkTypeTranslation { CppType = "float", CSharpType = "float", Default = " = 0f;", MethodOnly = "float", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "float*", CSharpType = "float", Default = " = 0f;", MethodOnly = "ref float", NeedsNamespace = false };
+            item = new VkTypeTranslation { CppType = "float*", CSharpType = "float", Default = " = 0f;", MethodOnly = "float%", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
             item = new VkTypeTranslation { CppType = "int32_t", CSharpType = "Int32", Default = " = 0;", MethodOnly = "Int32", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "char[]", CSharpType = "String^", Default = " = nullptr;", MethodOnly = "String^", NeedsNamespace = false };
+            item = new VkTypeTranslation { CppType = "char[]", CSharpType = "String^", Default = " = nullptr;", MethodOnly = "String%", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "uint8_t**", CSharpType = "array<Byte>^", Default = " = nullptr;", MethodOnly = "array<Byte^>^", NeedsNamespace = false };
+            item = new VkTypeTranslation { CppType = "uint8_t**", CSharpType = "array<Byte>^", Default = " = nullptr;", MethodOnly = "array<Byte^>%", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "const char* const*", CSharpType = "array<String^>^", Default = " = nullptr;", MethodOnly = "array<String^>^", NeedsNamespace = false };
+            item = new VkTypeTranslation { CppType = "const char* const*", CSharpType = "array<String^>^", Default = " = nullptr;", MethodOnly = "array<String^>%", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
             // need to check VKBool32
@@ -920,13 +953,13 @@ namespace VulkanT4
             item = new VkTypeTranslation { CppType = "VkDeviceSize", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "VkDeviceSize*", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "ref UInt64", NeedsNamespace = false };
+            item = new VkTypeTranslation { CppType = "VkDeviceSize*", CSharpType = "UInt64", Default = " = 0;", MethodOnly = "UInt64%", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "void*", CSharpType = "IntPtr", Default = " = IntPtr.Zero;", MethodOnly = "IntPtr", NeedsNamespace = false };
+            item = new VkTypeTranslation { CppType = "void*", CSharpType = "IntPtr", Default = " = IntPtr::Zero;", MethodOnly = "IntPtr", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
 
-            item = new VkTypeTranslation { CppType = "void**", CSharpType = "array<IntPtr>", Default = " = null;", MethodOnly = "ref IntPtr", NeedsNamespace = false };
+            item = new VkTypeTranslation { CppType = "void**", CSharpType = "array<IntPtr>", Default = " = null;", MethodOnly = "IntPtr%", NeedsNamespace = false };
             mTranslations.Add(item.CppType, item);
         }
 
@@ -982,9 +1015,9 @@ namespace VulkanT4
                         {
                             var pointer = new VkTypeTranslation {
                                 CppType = pointerStmt,
-                                CSharpType = proxy.Name + "^",
+                                CSharpType = proxy.Name,
                                 Default = " = nullptr;",
-                                MethodOnly = proxy.Name + "^",
+                                MethodOnly = proxy.Name + "%",
                                 NeedsNamespace = true,
                                 ProxyInfo = proxy };
                             mTranslations.Add(pointerStmt, pointer);
@@ -994,9 +1027,9 @@ namespace VulkanT4
                         {
                             var classRef = new VkTypeTranslation {
                                 CppType = first.CppType,
-                                CSharpType = proxy.Name + "^",
+                                CSharpType = proxy.Name,
                                 Default = " = nullptr;",
-                                MethodOnly = proxy.Name + "^",
+                                MethodOnly = proxy.Name + "%",
                                 NeedsNamespace = true,
                                 ProxyInfo = proxy};
                             mTranslations.Add(classRef.CppType, classRef);

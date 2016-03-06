@@ -106,7 +106,7 @@
       <AdditionalIncludeDirectories>D:\Program Files %28x86%29\Vulkan 1.0.3.1\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>vulkan-1.lib</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.dll;vulkan-1.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\Program Files %28x86%29\Vulkan 1.0.3.1\Bin;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -130,7 +130,7 @@
       <AdditionalIncludeDirectories>D:\Program Files %28x86%29\Vulkan 1.0.3.1\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>vulkan-1.lib</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.dll;vulkan-1.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\Program Files %28x86%29\Vulkan 1.0.3.1\Bin;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -140,14 +140,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommandBuffer.h" />
     <ClInclude Include="ManagedVulkan.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="VkDelegates.h" />
     <ClInclude Include="VkEnums.h" />
+    <ClInclude Include="VkHandles.h" />
+    <ClInclude Include="VkStructs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="ManagedVulkan.cpp" />
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

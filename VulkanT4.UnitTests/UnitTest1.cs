@@ -422,6 +422,52 @@ namespace VulkanT4.UnitTests
         }
 
         [TestMethod]
+        public void ParseVkResult()
+        {
+            string xml =
+               @"<registry>
+                    <enums name=""VkResult"" type=""enum"" expand=""VK_RESULT"" comment=""Error and return codes"">
+                        <!-- Return codes for successful operation execution (positive values) -->
+                        <enum value=""0""     name=""VK_SUCCESS"" comment=""Command completed successfully""/>
+                        <enum value=""1""     name=""VK_NOT_READY"" comment =""A fence or query has not yet completed"" />
+                        <enum value=""2""     name=""VK_TIMEOUT"" comment =""A wait operation has not completed in the specified time"" />
+                        <enum value=""3""     name=""VK_EVENT_SET"" comment =""An event is signaled"" />
+                        <enum value=""4""     name=""VK_EVENT_RESET"" comment =""An event is unsignalled""/>
+                        <enum value=""5""     name =""VK_INCOMPLETE"" comment =""A return array was too small for the resul"" />
+                        <!-- Error codes (negative values) -->
+                        <enum value="" - 1""    name =""VK_ERROR_OUT_OF_HOST_MEMORY"" comment =""A host memory allocation has failed"" />
+                        <enum value="" - 2""    name =""VK_ERROR_OUT_OF_DEVICE_MEMORY"" comment =""A device memory allocation has failed"" />
+                        <enum value=""-3""    name=""VK_ERROR_INITIALIZATION_FAILED"" comment =""The logical device has been lost. See &lt;&lt;devsandqueues-lost-device&gt;&gt;"" />
+                        <enum value=""-4""   name=""VK_ERROR_DEVICE_LOST"" comment =""Initialization of a object has failed"" />
+                        <enum value=""-5""    name=""VK_ERROR_MEMORY_MAP_FAILED"" comment = ""Mapping of a memory object has failed""/>
+                        <enum value=""-6""    name=""VK_ERROR_LAYER_NOT_PRESENT"" comment = ""Layer specified does not exist"" />
+                        <enum value=""-7""    name=""VK_ERROR_EXTENSION_NOT_PRESENT"" comment =""Extension specified does not exist""/>
+                        <enum value=""-8""    name=""VK_ERROR_FEATURE_NOT_PRESENT"" comment =""Requested feature is not available on this device"" />
+                        <enum value=""-9""    name=""VK_ERROR_INCOMPATIBLE_DRIVER"" comment=""Unable to find a Vulkan driver""/>
+                        <enum value=""-10""   name=""VK_ERROR_TOO_MANY_OBJECTS"" comment=""Too many objects of the type have already been created""/>
+                        <enum value=""-11""   name=""VK_ERROR_FORMAT_NOT_SUPPORTED"" comment=""Requested format is not supported on this device""/>
+                        <unused start= "" - 12""/>
+                    </enums>
+                    <command>
+                        <proto><type>VkResult</type> <name>vkPushEntry</name></proto>
+                    </command>
+                </registry>";
+
+            var doc = XDocument.Parse(xml, LoadOptions.PreserveWhitespace);
+            IVkAPIGenerator generator = new VkAPIGenerator();
+            generator.Apply(doc);
+            Assert.AreEqual(1, generator.Proxies.Keys.Count);
+            var proxy = generator.Proxies.Values.First();
+            Assert.AreEqual("Vulkan", proxy.Name);
+            Assert.AreEqual(1, proxy.Methods.Count);
+            var method = proxy.Methods[0];
+            Assert.AreEqual("PushEntry", method.Name);
+            Assert.IsNotNull(method.Translation);
+            Assert.AreEqual("VkResult" , method.Translation.CppType);
+            Assert.IsTrue(method.Translation.NeedsNamespace);
+        }
+
+        [TestMethod]
         public void ParseByteArray()
         {
             string xml =

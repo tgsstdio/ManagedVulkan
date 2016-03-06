@@ -54,12 +54,17 @@
   <ItemGroup>
     <None Include="ManagedVulkan.tt2">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ManagedVulkan1.cpp</LastGenOutput>
+      <LastGenOutput>ManagedVulkan.cpp</LastGenOutput>
     </None>
-    <Content Include="ManagedVulkan1.cpp">
+    <Content Include="ManagedVulkan.cpp">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ManagedVulkan.tt2</DependentUpon>
+    </Content>
+    <Content Include="ManagedVulkan1.h">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ManagedVulkan.tt</DependentUpon>
     </Content>
     <Content Include="VkStructs.h">
       <AutoGen>True</AutoGen>
@@ -118,11 +123,6 @@
     <Content Include="ManagedVulkan.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ManagedVulkan1.h</LastGenOutput>
-    </Content>
-    <Content Include="ManagedVulkan1.h">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ManagedVulkan.tt</DependentUpon>
     </Content>
     <Content Include="vk.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

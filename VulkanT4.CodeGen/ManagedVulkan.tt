@@ -46,7 +46,7 @@ namespace <#= ns #>
 	if (proxy.RequiresInstance)
 	{
 #>
-	private:
+	internal:
 		<#= proxy.Key #> mHandle;
 <#
 	}
@@ -55,7 +55,9 @@ namespace <#= ns #>
 <#	
 		foreach (var m in proxy.Methods)
 		{
-			var returnType = m.Translation != null ? m.Translation.CSharpType : (m.Function.ReturnType ?? "<RETURN_TYPE>");	
+			var returnType = m.Translation != null  
+								? (m.Translation.NeedsNamespace ?  ns + "::" : "") +  m.Translation.CSharpType 
+								: (m.Function.ReturnType ?? "<RETURN_TYPE>");
 #>
 		<#= returnType #> <#= m.Name #>(<#
 			var first = true;
@@ -68,35 +70,35 @@ namespace <#= ns #>
 				string paramType = "<TYPE>";
 
 				if (param.Translation != null)
-				{				
+				{										
 					if (param.UseOutStatement)
 					{
-						paramType = "out ";
+						paramType = "[Out] ";
 						
 						if (param.IsArray)
 						{
-							paramType += "array<" + param.Translation.CSharpType + ">^";
+							paramType += "array<" + ((param.Translation != null && param.Translation.NeedsNamespace) ?  ns + "::" : "") + param.Translation.CSharpType + ">^%";
 						}
 						else
 						{
-							paramType += param.Translation.CSharpType;
+							paramType += ((param.Translation != null && param.Translation.NeedsNamespace) ?  ns + "::" : "") + param.Translation.CSharpType + "%";
 						}
 					}
 					else
 					{
 						if (param.IsArray)
 						{
-							paramType = "array<" + param.Translation.CSharpType + ">^";
+							paramType = "array<" + ((param.Translation != null && param.Translation.NeedsNamespace) ?  ns + "::" : "") + param.Translation.CSharpType + ">^";
 						}
 						else
 						{
-							paramType = param.Translation.MethodOnly;
+							paramType = ((param.Translation != null && param.Translation.NeedsNamespace) ?  ns + "::" : "") + param.Translation.CSharpType;
 						}						
 					}
 				}
 				else 
 				{
-					paramType = param.CSharpType ?? param.CppType ?? "<TYPE>";
+					paramType = ((param.Translation != null && param.Translation.NeedsNamespace) ?  ns + "::" : "") + param.CSharpType ?? param.CppType ?? "<TYPE>";
 				}
 			#><#= separator #><#= paramType #> <#= paramName #><#
 				if (first)

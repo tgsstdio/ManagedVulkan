@@ -86,7 +86,7 @@ namespace VulkanT4
                         elementType = Parameter.Translation.ProxyInfo.Key;
                     }
                 }
-                PriorStatements.Add(ArgumentName + " = new " + elementType + "[" + Parameter.LengthConditions[0] + "]");
+                PriorStatements.Add(ArgumentName + " = new " + elementType + "[" + Parameter.LengthConditions[0] + "];");
             }
             else
             {
@@ -127,9 +127,9 @@ namespace VulkanT4
                 }
                 else if (MemberType.CSharpType == "String^")
                 {
-                    PriorStatements.Add("IntPtr " + InstanceName + " = Marshal::StringToHGlobalAnsi(" + ArgumentName + ")");
-                    PriorStatements.Add("pins->Add(" + InstanceName + ")");
-                    valueStmt = "static_cast<char*>(" + InstanceName + ".ToPointer())";
+                    PriorStatements.Add("IntPtr " + InstanceName + " = Marshal::StringToHGlobalAnsi(" + (Parameter.Name != null ? Parameter.Name : ArgumentName)  + ");");
+                    PriorStatements.Add("pins->Add(" + InstanceName + ");");
+                    valueStmt = "static_cast<char*>(" + InstanceName + ".ToPointer());";
                 }
 
                 PriorStatements.Add(MemberType.CppType + " " + ArgumentName + " = " + valueStmt + ";");
@@ -204,7 +204,7 @@ namespace VulkanT4
                 PriorStatements.Add("\t" + ArgumentName + " = new char*[" + lengthVariable + "];");
                 PriorStatements.Add("\t" + "for (int j = 0; j < " + lengthVariable + "; ++j)");
                 PriorStatements.Add("\t" + "{");
-                PriorStatements.Add("\t\t" + "IntPtr " + InstanceName + " = Marshal::StringToHGlobalAnsi(" + SourcePath + "[j]);");
+                PriorStatements.Add("\t\t" + "IntPtr " + InstanceName + " = Marshal::StringToHGlobalAnsi((String^)" + SourcePath + "[j]);");
                 PriorStatements.Add("\t\t" + "pins->Add(" + InstanceName + ");");
                 PriorStatements.Add("\t\t" + ArgumentName + "[j] = static_cast<char*>(" + InstanceName + ".ToPointer());");
                 PriorStatements.Add("\t" + "}");

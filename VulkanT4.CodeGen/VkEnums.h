@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <vulkan\vulkan.h>
-
 using namespace System;
 
 namespace ManagedVulkan 

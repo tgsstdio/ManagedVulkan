@@ -1938,7 +1938,7 @@ maintained in the master branch of the Khronos Vulkan Github project.
             <member><type>VkDisplayModeKHR</type>                 <name>displayMode</name></member>              <!-- Handle of this display mode. -->
             <member><type>VkDisplayModeParametersKHR</type>       <name>parameters</name></member>               <!-- The parameters this mode uses. -->
         </type>
-        <type category="struct" name="VkDisplayModeCreateInfoKHR">
+        <type category="struct" name="VkDisplayModeCreatefInfoKHR">
             <member><type>VkStructureType</type>                  <name>sType</name></member>                    <!-- Must be VK_STRUCTURE_TYPE_DISPLAY_MODE_CREATE_INFO_KHR -->
             <member>const <type>void</type>*                      <name>pNext</name></member>                    <!-- Pointer to next structure -->
             <member optional="true"><type>VkDisplayModeCreateFlagsKHR</type>      <name>flags</name></member>                    <!-- Reserved -->

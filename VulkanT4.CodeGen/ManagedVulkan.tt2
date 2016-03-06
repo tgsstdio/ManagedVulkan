@@ -26,58 +26,61 @@ var ns = "ManagedVulkan";
 #include <vulkan/vulkan.h>
 #include "ManagedVulkan.h"
 
-using namespace System.Collection.Generic;
+using namespace System::Runtime::InteropServices;
+using namespace System::Collection::Generic;
 
 <#	
 	foreach (var proxy in generator.Proxies.Values)
 	{
 #>
-
 // <#= proxy.Key #>
 <#
 		foreach (var m in proxy.Methods)
 		{
-			var returnType = m.Function.ReturnType ?? "<RETURN_TYPE>";
+			var returnType = m.Translation != null  
+								? (m.Translation.NeedsNamespace ?  ns + "::" : "") +  m.Translation.CSharpType 
+								: (m.Function.ReturnType ?? "<RETURN_TYPE>");
 #>
 <#= returnType #> <#= ns #>::<#= proxy.Name #>::<#= m.Name #>(<#
 			var first = true;
 			var separator = "";
 			foreach(var param in m.Parameters)
 			{ 
+
 				var paramName = param.Name ?? "<NAME>";
 				
 				string paramType = "<TYPE>";
 
 				if (param.Translation != null)
-				{				
+				{										
 					if (param.UseOutStatement)
 					{
-						paramType = "out ";
+						paramType = "[Out] ";
 						
 						if (param.IsArray)
 						{
-							paramType += "array<" + param.Translation.CSharpType + ">^";
+							paramType += "array<" + ((param.Translation != null && param.Translation.NeedsNamespace) ?  ns + "::" : "") + param.Translation.CSharpType + ">^%";
 						}
 						else
 						{
-							paramType += param.Translation.CSharpType;
+							paramType += ((param.Translation != null && param.Translation.NeedsNamespace) ?  ns + "::" : "") + param.Translation.CSharpType + "%";
 						}
 					}
 					else
 					{
 						if (param.IsArray)
 						{
-							paramType = "array<" + param.Translation.CSharpType + ">^";
+							paramType = "array<" + ((param.Translation != null && param.Translation.NeedsNamespace) ?  ns + "::" : "") + param.Translation.CSharpType + ">^";
 						}
 						else
 						{
-							paramType = param.Translation.MethodOnly;
+							paramType = ((param.Translation != null && param.Translation.NeedsNamespace) ?  ns + "::" : "") + param.Translation.CSharpType;
 						}						
 					}
 				}
 				else 
 				{
-					paramType = param.CSharpType ?? param.CppType ?? "<TYPE>";
+					paramType = ((param.Translation != null && param.Translation.NeedsNamespace) ?  ns + "::" : "") + param.CSharpType ?? param.CppType ?? "<TYPE>";
 				}
 			#><#= separator #><#= paramType #> <#= paramName #><#
 				if (first)
@@ -133,7 +136,7 @@ using namespace System.Collection.Generic;
 			{
 #>		
 		// 1ST CALL<#	
-				var firstReturnStmt = (m.Function.ReturnType == "void") ? ""	: "var firstResult = ";	
+				var firstReturnStmt = (m.Function.ReturnType == "void") ? ""	: "int firstResult = ";	
 
 				foreach(var command in commands)
 				{ 		
@@ -190,7 +193,7 @@ using namespace System.Collection.Generic;
 
 		if (firstResult != VK_SUCCESS)
 		{
-			return firstResult;
+			return (VkResult) firstResult;
 		}
 
 <#
@@ -316,18 +319,32 @@ using namespace System.Collection.Generic;
 					}
 					else if (param.Translation != null && param.Translation.CSharpType == "String^")
 					{
-						command.PriorStatements.Add("IntPtr " + command.InstanceName + " = Marshal::StringToHGlobalAnsi(" + command.ArgumentName + ");");
+						command.PriorStatements.Add("IntPtr " + command.InstanceName + " = Marshal::StringToHGlobalAnsi((String^) " + command.ArgumentName + ");");
 						command.PriorStatements.Add("pins->Add(" + command.InstanceName + ");");
 						valueStmt = "static_cast<char*>(" + command.InstanceName + ".ToPointer());";
 					}
-
-					command.PriorStatements.Add(param.CppType + " " + variableName + " = " + valueStmt + ";");
-
-					if (param.Translation != null && param.Translation.StructInfo != null)
+            
+					if (param.Translation != null && needCallVariable)
 					{
-			
-						command.PriorStatements.Add(param.Name + "->CopyTo(" + variableName + " , pins);");		
-					}									
+						command.PriorStatements.Add(param.CppType + " " + variableName + " = nullptr;");					
+						command.PriorStatements.Add("if (" + param.Name + " != nullptr)");
+						command.PriorStatements.Add("{");
+						command.PriorStatements.Add('\t' + command.ArgumentName + " = " + valueStmt + ";");
+						command.PriorStatements.Add('\t' + command.SourcePath + "->CopyTo(" + command.ArgumentName + ", pins);");
+						command.PriorStatements.Add('\t' + command.DestinationPath + " = " + command.InstanceName + ";");
+						command.PriorStatements.Add("}");
+					}
+					else
+					{
+						command.PriorStatements.Add(param.CppType + " " + variableName + " = " + valueStmt + ";");	
+						
+						if (param.Translation != null && param.Translation.StructInfo != null)
+						{			
+							command.PriorStatements.Add(param.Name + "->CopyTo(" + variableName + " , pins);");		
+						}											
+					}
+
+								
 				}
 				command.IsInitialised = true;
 				foreach(var line in command.PriorStatements)
@@ -338,7 +355,7 @@ using namespace System.Collection.Generic;
 #>
 <#
 // BEGIN -- C++ FUNCTION CALL
-			var callReturnStmt = (m.Function.ReturnType == "void") ? ""	: "var result = ";			
+			var callReturnStmt = (m.Function.ReturnType == "void") ? ""	: "int result = ";			
 #>
 
 
@@ -378,7 +395,7 @@ using namespace System.Collection.Generic;
 		for	(int i = 0; i < count; ++i)
 		{	
 			<#= param.Name #>[i] = gcnew <#= param.Translation.CSharpType #>();	
-			<#= param.Name #>[i]->CopyFrom(arg_<#= param.Index #>[i]);
+			<#= param.Name #>[i]->CopyFrom(arg_<#= param.Index #> + i);
 		}	
 <#
 					}
@@ -455,7 +472,7 @@ using namespace System.Collection.Generic;
 // END -- DELETE ARRAY VARIABLES
 #>
 		// FREE ALL PINNED STRINGS
-		foreach(var str in pins)
+		for each(IntPtr str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
