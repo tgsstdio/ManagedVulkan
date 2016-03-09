@@ -140,18 +140,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommandBuffer.h" />
+    <ClInclude Include="VkCommandBuffer.h" />
     <ClInclude Include="ManagedVulkan.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="VkDelegates.h" />
+    <ClInclude Include="VkDevice.h" />
     <ClInclude Include="VkEnums.h" />
     <ClInclude Include="VkHandles.h" />
+    <ClInclude Include="VkInstance.h" />
+    <ClInclude Include="VkPhysicalDevice.h" />
+    <ClInclude Include="VkQueue.h" />
     <ClInclude Include="VkStructs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="VkCommandBuffer.cpp" />
+    <ClCompile Include="VkDevice.cpp" />
+    <ClCompile Include="VkInstance.cpp" />
+    <ClCompile Include="VkPhysicalDevice.cpp" />
+    <ClCompile Include="VkQueue.cpp" />
+    <ClCompile Include="ManagedVulkan.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

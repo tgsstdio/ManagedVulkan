@@ -136,7 +136,7 @@ using namespace System::Collection::Generic;
 			{
 #>		
 		// 1ST CALL<#	
-				var firstReturnStmt = (m.Function.ReturnType == "void") ? ""	: "int firstResult = ";	
+				var firstReturnStmt = (m.Function.ReturnType == "void") ? ""	: "auto firstResult = ";	
 
 				foreach(var command in commands)
 				{ 		
@@ -355,7 +355,7 @@ using namespace System::Collection::Generic;
 #>
 <#
 // BEGIN -- C++ FUNCTION CALL
-			var callReturnStmt = (m.Function.ReturnType == "void") ? ""	: "int result = ";			
+			var callReturnStmt = (m.Function.ReturnType == "void") ? ""	: "auto result = ";			
 #>
 
 

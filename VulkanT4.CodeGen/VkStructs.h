@@ -338,14 +338,14 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkRect2D* dst, List<IntPtr>^ pins)
 		{
-			mOffset->CopyFrom(&dst->offset, pins);
-			mExtent->CopyFrom(&dst->extent, pins);
+			mOffset->CopyTo(&dst->offset, pins);
+			mExtent->CopyTo(&dst->extent, pins);
 		}
 
 		void CopyFrom(VkRect2D* src)
 		{
-			mOffset->CopyTo(&src->offset);
-			mExtent->CopyTo(&src->extent);
+			mOffset->CopyFrom(&src->offset);
+			mExtent->CopyFrom(&src->extent);
 		}
 	};
 
@@ -380,14 +380,14 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkRect3D* dst, List<IntPtr>^ pins)
 		{
-			mOffset->CopyFrom(&dst->offset, pins);
-			mExtent->CopyFrom(&dst->extent, pins);
+			mOffset->CopyTo(&dst->offset, pins);
+			mExtent->CopyTo(&dst->extent, pins);
 		}
 
 		void CopyFrom(VkRect3D* src)
 		{
-			mOffset->CopyTo(&src->offset);
-			mExtent->CopyTo(&src->extent);
+			mOffset->CopyFrom(&src->offset);
+			mExtent->CopyFrom(&src->extent);
 		}
 	};
 
@@ -434,14 +434,14 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkClearRect* dst, List<IntPtr>^ pins)
 		{
-			mRect->CopyFrom(&dst->rect, pins);
+			mRect->CopyTo(&dst->rect, pins);
 			dst->baseArrayLayer =	mBaseArrayLayer;
 			dst->layerCount =	mLayerCount;
 		}
 
 		void CopyFrom(VkClearRect* src)
 		{
-			mRect->CopyTo(&src->rect);
+			mRect->CopyFrom(&src->rect);
 			mBaseArrayLayer = src->baseArrayLayer;
 			mLayerCount = src->layerCount;
 		}
@@ -643,8 +643,8 @@ namespace ManagedVulkan
 			dst->deviceName = static_cast <char*> (str_deviceName.ToPointer());
 
 			dst->pipelineCacheUUID =	mPipelineCacheUUID;
-			mLimits->CopyFrom(&dst->limits, pins);
-			mSparseProperties->CopyFrom(&dst->sparseProperties, pins);
+			mLimits->CopyTo(&dst->limits, pins);
+			mSparseProperties->CopyTo(&dst->sparseProperties, pins);
 		}
 
 		void CopyFrom(VkPhysicalDeviceProperties* src)
@@ -656,8 +656,8 @@ namespace ManagedVulkan
 			mDeviceType = src->deviceType;
 			mDeviceName = src->deviceName;
 			mPipelineCacheUUID = src->pipelineCacheUUID;
-			mLimits->CopyTo(&src->limits);
-			mSparseProperties->CopyTo(&src->sparseProperties);
+			mLimits->CopyFrom(&src->limits);
+			mSparseProperties->CopyFrom(&src->sparseProperties);
 		}
 	};
 
@@ -1196,12 +1196,12 @@ namespace ManagedVulkan
 			dst->pNext =	pNext;
 			dst->flags =	mFlags;
 			dst->queueCreateInfoCount =	mQueueCreateInfoCount;
-			mQueueCreateInfos->CopyFrom(&dst->pQueueCreateInfos, pins);
+			mQueueCreateInfos->CopyTo(&dst->pQueueCreateInfos, pins);
 			dst->enabledLayerCount =	mEnabledLayerCount;
 			dst->ppEnabledLayerNames =	mEnabledLayerNames;
 			dst->enabledExtensionCount =	mEnabledExtensionCount;
 			dst->ppEnabledExtensionNames =	mEnabledExtensionNames;
-			mEnabledFeatures->CopyFrom(&dst->pEnabledFeatures, pins);
+			mEnabledFeatures->CopyTo(&dst->pEnabledFeatures, pins);
 		}
 
 		void CopyFrom(VkDeviceCreateInfo* src)
@@ -1210,12 +1210,12 @@ namespace ManagedVulkan
 			pNext = src->pNext;
 			mFlags = src->flags;
 			mQueueCreateInfoCount = src->queueCreateInfoCount;
-			mQueueCreateInfos->CopyTo(&src->pQueueCreateInfos);
+			mQueueCreateInfos->CopyFrom(&src->pQueueCreateInfos);
 			mEnabledLayerCount = src->enabledLayerCount;
 			mEnabledLayerNames = src->ppEnabledLayerNames;
 			mEnabledExtensionCount = src->enabledExtensionCount;
 			mEnabledExtensionNames = src->ppEnabledExtensionNames;
-			mEnabledFeatures->CopyTo(&src->pEnabledFeatures);
+			mEnabledFeatures->CopyFrom(&src->pEnabledFeatures);
 		}
 	};
 
@@ -1313,7 +1313,7 @@ namespace ManagedVulkan
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
 			dst->flags =	mFlags;
-			mApplicationInfo->CopyFrom(&dst->pApplicationInfo, pins);
+			mApplicationInfo->CopyTo(&dst->pApplicationInfo, pins);
 			dst->enabledLayerCount =	mEnabledLayerCount;
 			dst->ppEnabledLayerNames =	mEnabledLayerNames;
 			dst->enabledExtensionCount =	mEnabledExtensionCount;
@@ -1325,7 +1325,7 @@ namespace ManagedVulkan
 			mSType = (StructureType) src->sType;
 			pNext = src->pNext;
 			mFlags = src->flags;
-			mApplicationInfo->CopyTo(&src->pApplicationInfo);
+			mApplicationInfo->CopyFrom(&src->pApplicationInfo);
 			mEnabledLayerCount = src->enabledLayerCount;
 			mEnabledLayerNames = src->ppEnabledLayerNames;
 			mEnabledExtensionCount = src->enabledExtensionCount;
@@ -1391,7 +1391,7 @@ namespace ManagedVulkan
 			dst->queueFlags =	mQueueFlags;
 			dst->queueCount =	mQueueCount;
 			dst->timestampValidBits =	mTimestampValidBits;
-			mMinImageTransferGranularity->CopyFrom(&dst->minImageTransferGranularity, pins);
+			mMinImageTransferGranularity->CopyTo(&dst->minImageTransferGranularity, pins);
 		}
 
 		void CopyFrom(VkQueueFamilyProperties* src)
@@ -1399,7 +1399,7 @@ namespace ManagedVulkan
 			mQueueFlags = src->queueFlags;
 			mQueueCount = src->queueCount;
 			mTimestampValidBits = src->timestampValidBits;
-			mMinImageTransferGranularity->CopyTo(&src->minImageTransferGranularity);
+			mMinImageTransferGranularity->CopyFrom(&src->minImageTransferGranularity);
 		}
 	};
 
@@ -1631,14 +1631,14 @@ namespace ManagedVulkan
 		void CopyTo(VkSparseImageFormatProperties* dst, List<IntPtr>^ pins)
 		{
 			dst->aspectMask =	mAspectMask;
-			mImageGranularity->CopyFrom(&dst->imageGranularity, pins);
+			mImageGranularity->CopyTo(&dst->imageGranularity, pins);
 			dst->flags =	mFlags;
 		}
 
 		void CopyFrom(VkSparseImageFormatProperties* src)
 		{
 			mAspectMask = src->aspectMask;
-			mImageGranularity->CopyTo(&src->imageGranularity);
+			mImageGranularity->CopyFrom(&src->imageGranularity);
 			mFlags = src->flags;
 		}
 	};
@@ -1710,7 +1710,7 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkSparseImageMemoryRequirements* dst, List<IntPtr>^ pins)
 		{
-			mFormatProperties->CopyFrom(&dst->formatProperties, pins);
+			mFormatProperties->CopyTo(&dst->formatProperties, pins);
 			dst->imageMipTailFirstLod =	mImageMipTailFirstLod;
 			dst->imageMipTailSize =	mImageMipTailSize;
 			dst->imageMipTailOffset =	mImageMipTailOffset;
@@ -1719,7 +1719,7 @@ namespace ManagedVulkan
 
 		void CopyFrom(VkSparseImageMemoryRequirements* src)
 		{
-			mFormatProperties->CopyTo(&src->formatProperties);
+			mFormatProperties->CopyFrom(&src->formatProperties);
 			mImageMipTailFirstLod = src->imageMipTailFirstLod;
 			mImageMipTailSize = src->imageMipTailSize;
 			mImageMipTailOffset = src->imageMipTailOffset;
@@ -2006,7 +2006,7 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkImageFormatProperties* dst, List<IntPtr>^ pins)
 		{
-			mMaxExtent->CopyFrom(&dst->maxExtent, pins);
+			mMaxExtent->CopyTo(&dst->maxExtent, pins);
 			dst->maxMipLevels =	mMaxMipLevels;
 			dst->maxArrayLayers =	mMaxArrayLayers;
 			dst->sampleCounts =	mSampleCounts;
@@ -2015,7 +2015,7 @@ namespace ManagedVulkan
 
 		void CopyFrom(VkImageFormatProperties* src)
 		{
-			mMaxExtent->CopyTo(&src->maxExtent);
+			mMaxExtent->CopyFrom(&src->maxExtent);
 			mMaxMipLevels = src->maxMipLevels;
 			mMaxArrayLayers = src->maxArrayLayers;
 			mSampleCounts = src->sampleCounts;
@@ -2257,8 +2257,8 @@ namespace ManagedVulkan
 			dst->dstArrayElement =	mDstArrayElement;
 			dst->descriptorCount =	mDescriptorCount;
 			dst->descriptorType =	mDescriptorType;
-			mImageInfo->CopyFrom(&dst->pImageInfo, pins);
-			mBufferInfo->CopyFrom(&dst->pBufferInfo, pins);
+			mImageInfo->CopyTo(&dst->pImageInfo, pins);
+			mBufferInfo->CopyTo(&dst->pBufferInfo, pins);
 			dst->pTexelBufferView =	mTexelBufferView;
 		}
 
@@ -2271,8 +2271,8 @@ namespace ManagedVulkan
 			mDstArrayElement = src->dstArrayElement;
 			mDescriptorCount = src->descriptorCount;
 			mDescriptorType = src->descriptorType;
-			mImageInfo->CopyTo(&src->pImageInfo);
-			mBufferInfo->CopyTo(&src->pBufferInfo);
+			mImageInfo->CopyFrom(&src->pImageInfo);
+			mBufferInfo->CopyFrom(&src->pBufferInfo);
 			mTexelBufferView = src->pTexelBufferView;
 		}
 	};
@@ -3139,7 +3139,7 @@ namespace ManagedVulkan
 			dst->srcQueueFamilyIndex =	mSrcQueueFamilyIndex;
 			dst->dstQueueFamilyIndex =	mDstQueueFamilyIndex;
 			dst->image =	mImage;
-			mSubresourceRange->CopyFrom(&dst->subresourceRange, pins);
+			mSubresourceRange->CopyTo(&dst->subresourceRange, pins);
 		}
 
 		void CopyFrom(VkImageMemoryBarrier* src)
@@ -3153,7 +3153,7 @@ namespace ManagedVulkan
 			mSrcQueueFamilyIndex = src->srcQueueFamilyIndex;
 			mDstQueueFamilyIndex = src->dstQueueFamilyIndex;
 			mImage = src->image;
-			mSubresourceRange->CopyTo(&src->subresourceRange);
+			mSubresourceRange->CopyFrom(&src->subresourceRange);
 		}
 	};
 
@@ -3337,7 +3337,7 @@ namespace ManagedVulkan
 			dst->flags =	mFlags;
 			dst->imageType =	mImageType;
 			dst->format =	mFormat;
-			mExtent->CopyFrom(&dst->extent, pins);
+			mExtent->CopyTo(&dst->extent, pins);
 			dst->mipLevels =	mMipLevels;
 			dst->arrayLayers =	mArrayLayers;
 			dst->samples =	mSamples;
@@ -3356,7 +3356,7 @@ namespace ManagedVulkan
 			mFlags = src->flags;
 			mImageType = src->imageType;
 			mFormat = src->format;
-			mExtent->CopyTo(&src->extent);
+			mExtent->CopyFrom(&src->extent);
 			mMipLevels = src->mipLevels;
 			mArrayLayers = src->arrayLayers;
 			mSamples = src->samples;
@@ -3550,8 +3550,8 @@ namespace ManagedVulkan
 			dst->image =	mImage;
 			dst->viewType =	mViewType;
 			dst->format =	mFormat;
-			mComponents->CopyFrom(&dst->components, pins);
-			mSubresourceRange->CopyFrom(&dst->subresourceRange, pins);
+			mComponents->CopyTo(&dst->components, pins);
+			mSubresourceRange->CopyTo(&dst->subresourceRange, pins);
 		}
 
 		void CopyFrom(VkImageViewCreateInfo* src)
@@ -3562,8 +3562,8 @@ namespace ManagedVulkan
 			mImage = src->image;
 			mViewType = src->viewType;
 			mFormat = src->format;
-			mComponents->CopyTo(&src->components);
-			mSubresourceRange->CopyTo(&src->subresourceRange);
+			mComponents->CopyFrom(&src->components);
+			mSubresourceRange->CopyFrom(&src->subresourceRange);
 		}
 	};
 
@@ -3786,9 +3786,9 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkSparseImageMemoryBind* dst, List<IntPtr>^ pins)
 		{
-			mSubresource->CopyFrom(&dst->subresource, pins);
-			mOffset->CopyFrom(&dst->offset, pins);
-			mExtent->CopyFrom(&dst->extent, pins);
+			mSubresource->CopyTo(&dst->subresource, pins);
+			mOffset->CopyTo(&dst->offset, pins);
+			mExtent->CopyTo(&dst->extent, pins);
 			dst->memory =	mMemory;
 			dst->memoryOffset =	mMemoryOffset;
 			dst-><NAME> =	m<NAME>;
@@ -3796,9 +3796,9 @@ namespace ManagedVulkan
 
 		void CopyFrom(VkSparseImageMemoryBind* src)
 		{
-			mSubresource->CopyTo(&src->subresource);
-			mOffset->CopyTo(&src->offset);
-			mExtent->CopyTo(&src->extent);
+			mSubresource->CopyFrom(&src->subresource);
+			mOffset->CopyFrom(&src->offset);
+			mExtent->CopyFrom(&src->extent);
 			mMemory = src->memory;
 			mMemoryOffset = src->memoryOffset;
 			m<NAME> = src-><NAME>;
@@ -3850,14 +3850,14 @@ namespace ManagedVulkan
 		{
 			dst->buffer =	mBuffer;
 			dst->bindCount =	mBindCount;
-			mBinds->CopyFrom(&dst->pBinds, pins);
+			mBinds->CopyTo(&dst->pBinds, pins);
 		}
 
 		void CopyFrom(VkSparseBufferMemoryBindInfo* src)
 		{
 			mBuffer = src->buffer;
 			mBindCount = src->bindCount;
-			mBinds->CopyTo(&src->pBinds);
+			mBinds->CopyFrom(&src->pBinds);
 		}
 	};
 
@@ -3906,14 +3906,14 @@ namespace ManagedVulkan
 		{
 			dst->image =	mImage;
 			dst->bindCount =	mBindCount;
-			mBinds->CopyFrom(&dst->pBinds, pins);
+			mBinds->CopyTo(&dst->pBinds, pins);
 		}
 
 		void CopyFrom(VkSparseImageOpaqueMemoryBindInfo* src)
 		{
 			mImage = src->image;
 			mBindCount = src->bindCount;
-			mBinds->CopyTo(&src->pBinds);
+			mBinds->CopyFrom(&src->pBinds);
 		}
 	};
 
@@ -3962,14 +3962,14 @@ namespace ManagedVulkan
 		{
 			dst->image =	mImage;
 			dst->bindCount =	mBindCount;
-			mBinds->CopyFrom(&dst->pBinds, pins);
+			mBinds->CopyTo(&dst->pBinds, pins);
 		}
 
 		void CopyFrom(VkSparseImageMemoryBindInfo* src)
 		{
 			mImage = src->image;
 			mBindCount = src->bindCount;
-			mBinds->CopyTo(&src->pBinds);
+			mBinds->CopyFrom(&src->pBinds);
 		}
 	};
 
@@ -4117,11 +4117,11 @@ namespace ManagedVulkan
 			dst->waitSemaphoreCount =	mWaitSemaphoreCount;
 			dst->pWaitSemaphores =	mWaitSemaphores;
 			dst->bufferBindCount =	mBufferBindCount;
-			mBufferBinds->CopyFrom(&dst->pBufferBinds, pins);
+			mBufferBinds->CopyTo(&dst->pBufferBinds, pins);
 			dst->imageOpaqueBindCount =	mImageOpaqueBindCount;
-			mImageOpaqueBinds->CopyFrom(&dst->pImageOpaqueBinds, pins);
+			mImageOpaqueBinds->CopyTo(&dst->pImageOpaqueBinds, pins);
 			dst->imageBindCount =	mImageBindCount;
-			mImageBinds->CopyFrom(&dst->pImageBinds, pins);
+			mImageBinds->CopyTo(&dst->pImageBinds, pins);
 			dst->signalSemaphoreCount =	mSignalSemaphoreCount;
 			dst->pSignalSemaphores =	mSignalSemaphores;
 		}
@@ -4133,11 +4133,11 @@ namespace ManagedVulkan
 			mWaitSemaphoreCount = src->waitSemaphoreCount;
 			mWaitSemaphores = src->pWaitSemaphores;
 			mBufferBindCount = src->bufferBindCount;
-			mBufferBinds->CopyTo(&src->pBufferBinds);
+			mBufferBinds->CopyFrom(&src->pBufferBinds);
 			mImageOpaqueBindCount = src->imageOpaqueBindCount;
-			mImageOpaqueBinds->CopyTo(&src->pImageOpaqueBinds);
+			mImageOpaqueBinds->CopyFrom(&src->pImageOpaqueBinds);
 			mImageBindCount = src->imageBindCount;
-			mImageBinds->CopyTo(&src->pImageBinds);
+			mImageBinds->CopyFrom(&src->pImageBinds);
 			mSignalSemaphoreCount = src->signalSemaphoreCount;
 			mSignalSemaphores = src->pSignalSemaphores;
 		}
@@ -4210,20 +4210,20 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkImageCopy* dst, List<IntPtr>^ pins)
 		{
-			mSrcSubresource->CopyFrom(&dst->srcSubresource, pins);
-			mSrcOffset->CopyFrom(&dst->srcOffset, pins);
-			mDstSubresource->CopyFrom(&dst->dstSubresource, pins);
-			mDstOffset->CopyFrom(&dst->dstOffset, pins);
-			mExtent->CopyFrom(&dst->extent, pins);
+			mSrcSubresource->CopyTo(&dst->srcSubresource, pins);
+			mSrcOffset->CopyTo(&dst->srcOffset, pins);
+			mDstSubresource->CopyTo(&dst->dstSubresource, pins);
+			mDstOffset->CopyTo(&dst->dstOffset, pins);
+			mExtent->CopyTo(&dst->extent, pins);
 		}
 
 		void CopyFrom(VkImageCopy* src)
 		{
-			mSrcSubresource->CopyTo(&src->srcSubresource);
-			mSrcOffset->CopyTo(&src->srcOffset);
-			mDstSubresource->CopyTo(&src->dstSubresource);
-			mDstOffset->CopyTo(&src->dstOffset);
-			mExtent->CopyTo(&src->extent);
+			mSrcSubresource->CopyFrom(&src->srcSubresource);
+			mSrcOffset->CopyFrom(&src->srcOffset);
+			mDstSubresource->CopyFrom(&src->dstSubresource);
+			mDstOffset->CopyFrom(&src->dstOffset);
+			mExtent->CopyFrom(&src->extent);
 		}
 	};
 
@@ -4282,17 +4282,17 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkImageBlit* dst, List<IntPtr>^ pins)
 		{
-			mSrcSubresource->CopyFrom(&dst->srcSubresource, pins);
+			mSrcSubresource->CopyTo(&dst->srcSubresource, pins);
 			dst->2 =	m2;
-			mDstSubresource->CopyFrom(&dst->dstSubresource, pins);
+			mDstSubresource->CopyTo(&dst->dstSubresource, pins);
 			dst->2 =	m2;
 		}
 
 		void CopyFrom(VkImageBlit* src)
 		{
-			mSrcSubresource->CopyTo(&src->srcSubresource);
+			mSrcSubresource->CopyFrom(&src->srcSubresource);
 			m2 = src->2;
-			mDstSubresource->CopyTo(&src->dstSubresource);
+			mDstSubresource->CopyFrom(&src->dstSubresource);
 			m2 = src->2;
 		}
 	};
@@ -4379,9 +4379,9 @@ namespace ManagedVulkan
 			dst->bufferOffset =	mBufferOffset;
 			dst->bufferRowLength =	mBufferRowLength;
 			dst->bufferImageHeight =	mBufferImageHeight;
-			mImageSubresource->CopyFrom(&dst->imageSubresource, pins);
-			mImageOffset->CopyFrom(&dst->imageOffset, pins);
-			mImageExtent->CopyFrom(&dst->imageExtent, pins);
+			mImageSubresource->CopyTo(&dst->imageSubresource, pins);
+			mImageOffset->CopyTo(&dst->imageOffset, pins);
+			mImageExtent->CopyTo(&dst->imageExtent, pins);
 		}
 
 		void CopyFrom(VkBufferImageCopy* src)
@@ -4389,9 +4389,9 @@ namespace ManagedVulkan
 			mBufferOffset = src->bufferOffset;
 			mBufferRowLength = src->bufferRowLength;
 			mBufferImageHeight = src->bufferImageHeight;
-			mImageSubresource->CopyTo(&src->imageSubresource);
-			mImageOffset->CopyTo(&src->imageOffset);
-			mImageExtent->CopyTo(&src->imageExtent);
+			mImageSubresource->CopyFrom(&src->imageSubresource);
+			mImageOffset->CopyFrom(&src->imageOffset);
+			mImageExtent->CopyFrom(&src->imageExtent);
 		}
 	};
 
@@ -4462,20 +4462,20 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkImageResolve* dst, List<IntPtr>^ pins)
 		{
-			mSrcSubresource->CopyFrom(&dst->srcSubresource, pins);
-			mSrcOffset->CopyFrom(&dst->srcOffset, pins);
-			mDstSubresource->CopyFrom(&dst->dstSubresource, pins);
-			mDstOffset->CopyFrom(&dst->dstOffset, pins);
-			mExtent->CopyFrom(&dst->extent, pins);
+			mSrcSubresource->CopyTo(&dst->srcSubresource, pins);
+			mSrcOffset->CopyTo(&dst->srcOffset, pins);
+			mDstSubresource->CopyTo(&dst->dstSubresource, pins);
+			mDstOffset->CopyTo(&dst->dstOffset, pins);
+			mExtent->CopyTo(&dst->extent, pins);
 		}
 
 		void CopyFrom(VkImageResolve* src)
 		{
-			mSrcSubresource->CopyTo(&src->srcSubresource);
-			mSrcOffset->CopyTo(&src->srcOffset);
-			mDstSubresource->CopyTo(&src->dstSubresource);
-			mDstOffset->CopyTo(&src->dstOffset);
-			mExtent->CopyTo(&src->extent);
+			mSrcSubresource->CopyFrom(&src->srcSubresource);
+			mSrcOffset->CopyFrom(&src->srcOffset);
+			mDstSubresource->CopyFrom(&src->dstSubresource);
+			mDstOffset->CopyFrom(&src->dstOffset);
+			mExtent->CopyFrom(&src->extent);
 		}
 	};
 
@@ -4694,7 +4694,7 @@ namespace ManagedVulkan
 			dst->pNext =	pNext;
 			dst->flags =	mFlags;
 			dst->bindingCount =	mBindingCount;
-			mBindings->CopyFrom(&dst->pBindings, pins);
+			mBindings->CopyTo(&dst->pBindings, pins);
 		}
 
 		void CopyFrom(VkDescriptorSetLayoutCreateInfo* src)
@@ -4703,7 +4703,7 @@ namespace ManagedVulkan
 			pNext = src->pNext;
 			mFlags = src->flags;
 			mBindingCount = src->bindingCount;
-			mBindings->CopyTo(&src->pBindings);
+			mBindings->CopyFrom(&src->pBindings);
 		}
 	};
 
@@ -4821,7 +4821,7 @@ namespace ManagedVulkan
 			dst->flags =	mFlags;
 			dst->maxSets =	mMaxSets;
 			dst->poolSizeCount =	mPoolSizeCount;
-			mPoolSizes->CopyFrom(&dst->pPoolSizes, pins);
+			mPoolSizes->CopyTo(&dst->pPoolSizes, pins);
 		}
 
 		void CopyFrom(VkDescriptorPoolCreateInfo* src)
@@ -4831,7 +4831,7 @@ namespace ManagedVulkan
 			mFlags = src->flags;
 			mMaxSets = src->maxSets;
 			mPoolSizeCount = src->poolSizeCount;
-			mPoolSizes->CopyTo(&src->pPoolSizes);
+			mPoolSizes->CopyFrom(&src->pPoolSizes);
 		}
 	};
 
@@ -5019,7 +5019,7 @@ namespace ManagedVulkan
 		void CopyTo(VkSpecializationInfo* dst, List<IntPtr>^ pins)
 		{
 			dst->mapEntryCount =	mMapEntryCount;
-			mMapEntries->CopyFrom(&dst->pMapEntries, pins);
+			mMapEntries->CopyTo(&dst->pMapEntries, pins);
 			dst->dataSize =	mDataSize;
 			dst->pData =	mData;
 		}
@@ -5027,7 +5027,7 @@ namespace ManagedVulkan
 		void CopyFrom(VkSpecializationInfo* src)
 		{
 			mMapEntryCount = src->mapEntryCount;
-			mMapEntries->CopyTo(&src->pMapEntries);
+			mMapEntries->CopyFrom(&src->pMapEntries);
 			mDataSize = src->dataSize;
 			mData = src->pData;
 		}
@@ -5122,7 +5122,7 @@ namespace ManagedVulkan
 			pins->Add(str_pName);			
 			dst->pName = static_cast <char*> (str_pName.ToPointer());
 
-			mSpecializationInfo->CopyFrom(&dst->pSpecializationInfo, pins);
+			mSpecializationInfo->CopyTo(&dst->pSpecializationInfo, pins);
 		}
 
 		void CopyFrom(VkPipelineShaderStageCreateInfo* src)
@@ -5133,7 +5133,7 @@ namespace ManagedVulkan
 			mStage = src->stage;
 			mModule = src->module;
 			mName = gcnew String(mName);
-			mSpecializationInfo->CopyTo(&src->pSpecializationInfo);
+			mSpecializationInfo->CopyFrom(&src->pSpecializationInfo);
 		}
 	};
 
@@ -5219,7 +5219,7 @@ namespace ManagedVulkan
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
 			dst->flags =	mFlags;
-			mStage->CopyFrom(&dst->stage, pins);
+			mStage->CopyTo(&dst->stage, pins);
 			dst->layout =	mLayout;
 			dst->basePipelineHandle =	mBasePipelineHandle;
 			dst->basePipelineIndex =	mBasePipelineIndex;
@@ -5230,7 +5230,7 @@ namespace ManagedVulkan
 			mSType = (StructureType) src->sType;
 			pNext = src->pNext;
 			mFlags = src->flags;
-			mStage->CopyTo(&src->stage);
+			mStage->CopyFrom(&src->stage);
 			mLayout = src->layout;
 			mBasePipelineHandle = src->basePipelineHandle;
 			mBasePipelineIndex = src->basePipelineIndex;
@@ -5446,9 +5446,9 @@ namespace ManagedVulkan
 			dst->pNext =	pNext;
 			dst->flags =	mFlags;
 			dst->vertexBindingDescriptionCount =	mVertexBindingDescriptionCount;
-			mVertexBindingDescriptions->CopyFrom(&dst->pVertexBindingDescriptions, pins);
+			mVertexBindingDescriptions->CopyTo(&dst->pVertexBindingDescriptions, pins);
 			dst->vertexAttributeDescriptionCount =	mVertexAttributeDescriptionCount;
-			mVertexAttributeDescriptions->CopyFrom(&dst->pVertexAttributeDescriptions, pins);
+			mVertexAttributeDescriptions->CopyTo(&dst->pVertexAttributeDescriptions, pins);
 		}
 
 		void CopyFrom(VkPipelineVertexInputStateCreateInfo* src)
@@ -5457,9 +5457,9 @@ namespace ManagedVulkan
 			pNext = src->pNext;
 			mFlags = src->flags;
 			mVertexBindingDescriptionCount = src->vertexBindingDescriptionCount;
-			mVertexBindingDescriptions->CopyTo(&src->pVertexBindingDescriptions);
+			mVertexBindingDescriptions->CopyFrom(&src->pVertexBindingDescriptions);
 			mVertexAttributeDescriptionCount = src->vertexAttributeDescriptionCount;
-			mVertexAttributeDescriptions->CopyTo(&src->pVertexAttributeDescriptions);
+			mVertexAttributeDescriptions->CopyFrom(&src->pVertexAttributeDescriptions);
 		}
 	};
 
@@ -5676,9 +5676,9 @@ namespace ManagedVulkan
 			dst->pNext =	pNext;
 			dst->flags =	mFlags;
 			dst->viewportCount =	mViewportCount;
-			mViewports->CopyFrom(&dst->pViewports, pins);
+			mViewports->CopyTo(&dst->pViewports, pins);
 			dst->scissorCount =	mScissorCount;
-			mScissors->CopyFrom(&dst->pScissors, pins);
+			mScissors->CopyTo(&dst->pScissors, pins);
 		}
 
 		void CopyFrom(VkPipelineViewportStateCreateInfo* src)
@@ -5687,9 +5687,9 @@ namespace ManagedVulkan
 			pNext = src->pNext;
 			mFlags = src->flags;
 			mViewportCount = src->viewportCount;
-			mViewports->CopyTo(&src->pViewports);
+			mViewports->CopyFrom(&src->pViewports);
 			mScissorCount = src->scissorCount;
-			mScissors->CopyTo(&src->pScissors);
+			mScissors->CopyFrom(&src->pScissors);
 		}
 	};
 
@@ -6228,7 +6228,7 @@ namespace ManagedVulkan
 			dst->logicOpEnable =	mLogicOpEnable ? 1 : 0;
 			dst->logicOp =	mLogicOp;
 			dst->attachmentCount =	mAttachmentCount;
-			mAttachments->CopyFrom(&dst->pAttachments, pins);
+			mAttachments->CopyTo(&dst->pAttachments, pins);
 			dst->4 =	m4;
 		}
 
@@ -6240,7 +6240,7 @@ namespace ManagedVulkan
 			mLogicOpEnable = src->logicOpEnable != 0;
 			mLogicOp = src->logicOp;
 			mAttachmentCount = src->attachmentCount;
-			mAttachments->CopyTo(&src->pAttachments);
+			mAttachments->CopyFrom(&src->pAttachments);
 			m4 = src->4;
 		}
 	};
@@ -6576,8 +6576,8 @@ namespace ManagedVulkan
 			dst->depthCompareOp =	mDepthCompareOp;
 			dst->depthBoundsTestEnable =	mDepthBoundsTestEnable ? 1 : 0;
 			dst->stencilTestEnable =	mStencilTestEnable ? 1 : 0;
-			mFront->CopyFrom(&dst->front, pins);
-			mBack->CopyFrom(&dst->back, pins);
+			mFront->CopyTo(&dst->front, pins);
+			mBack->CopyTo(&dst->back, pins);
 			dst->minDepthBounds =	mMinDepthBounds;
 			dst->maxDepthBounds =	mMaxDepthBounds;
 		}
@@ -6592,8 +6592,8 @@ namespace ManagedVulkan
 			mDepthCompareOp = src->depthCompareOp;
 			mDepthBoundsTestEnable = src->depthBoundsTestEnable != 0;
 			mStencilTestEnable = src->stencilTestEnable != 0;
-			mFront->CopyTo(&src->front);
-			mBack->CopyTo(&src->back);
+			mFront->CopyFrom(&src->front);
+			mBack->CopyFrom(&src->back);
 			mMinDepthBounds = src->minDepthBounds;
 			mMaxDepthBounds = src->maxDepthBounds;
 		}
@@ -6826,16 +6826,16 @@ namespace ManagedVulkan
 			dst->pNext =	pNext;
 			dst->flags =	mFlags;
 			dst->stageCount =	mStageCount;
-			mStages->CopyFrom(&dst->pStages, pins);
-			mVertexInputState->CopyFrom(&dst->pVertexInputState, pins);
-			mInputAssemblyState->CopyFrom(&dst->pInputAssemblyState, pins);
-			mTessellationState->CopyFrom(&dst->pTessellationState, pins);
-			mViewportState->CopyFrom(&dst->pViewportState, pins);
-			mRasterizationState->CopyFrom(&dst->pRasterizationState, pins);
-			mMultisampleState->CopyFrom(&dst->pMultisampleState, pins);
-			mDepthStencilState->CopyFrom(&dst->pDepthStencilState, pins);
-			mColorBlendState->CopyFrom(&dst->pColorBlendState, pins);
-			mDynamicState->CopyFrom(&dst->pDynamicState, pins);
+			mStages->CopyTo(&dst->pStages, pins);
+			mVertexInputState->CopyTo(&dst->pVertexInputState, pins);
+			mInputAssemblyState->CopyTo(&dst->pInputAssemblyState, pins);
+			mTessellationState->CopyTo(&dst->pTessellationState, pins);
+			mViewportState->CopyTo(&dst->pViewportState, pins);
+			mRasterizationState->CopyTo(&dst->pRasterizationState, pins);
+			mMultisampleState->CopyTo(&dst->pMultisampleState, pins);
+			mDepthStencilState->CopyTo(&dst->pDepthStencilState, pins);
+			mColorBlendState->CopyTo(&dst->pColorBlendState, pins);
+			mDynamicState->CopyTo(&dst->pDynamicState, pins);
 			dst->layout =	mLayout;
 			dst->renderPass =	mRenderPass;
 			dst->subpass =	mSubpass;
@@ -6849,16 +6849,16 @@ namespace ManagedVulkan
 			pNext = src->pNext;
 			mFlags = src->flags;
 			mStageCount = src->stageCount;
-			mStages->CopyTo(&src->pStages);
-			mVertexInputState->CopyTo(&src->pVertexInputState);
-			mInputAssemblyState->CopyTo(&src->pInputAssemblyState);
-			mTessellationState->CopyTo(&src->pTessellationState);
-			mViewportState->CopyTo(&src->pViewportState);
-			mRasterizationState->CopyTo(&src->pRasterizationState);
-			mMultisampleState->CopyTo(&src->pMultisampleState);
-			mDepthStencilState->CopyTo(&src->pDepthStencilState);
-			mColorBlendState->CopyTo(&src->pColorBlendState);
-			mDynamicState->CopyTo(&src->pDynamicState);
+			mStages->CopyFrom(&src->pStages);
+			mVertexInputState->CopyFrom(&src->pVertexInputState);
+			mInputAssemblyState->CopyFrom(&src->pInputAssemblyState);
+			mTessellationState->CopyFrom(&src->pTessellationState);
+			mViewportState->CopyFrom(&src->pViewportState);
+			mRasterizationState->CopyFrom(&src->pRasterizationState);
+			mMultisampleState->CopyFrom(&src->pMultisampleState);
+			mDepthStencilState->CopyFrom(&src->pDepthStencilState);
+			mColorBlendState->CopyFrom(&src->pColorBlendState);
+			mDynamicState->CopyFrom(&src->pDynamicState);
 			mLayout = src->layout;
 			mRenderPass = src->renderPass;
 			mSubpass = src->subpass;
@@ -7080,7 +7080,7 @@ namespace ManagedVulkan
 			dst->setLayoutCount =	mSetLayoutCount;
 			dst->pSetLayouts =	mSetLayouts;
 			dst->pushConstantRangeCount =	mPushConstantRangeCount;
-			mPushConstantRanges->CopyFrom(&dst->pPushConstantRanges, pins);
+			mPushConstantRanges->CopyTo(&dst->pPushConstantRanges, pins);
 		}
 
 		void CopyFrom(VkPipelineLayoutCreateInfo* src)
@@ -7091,7 +7091,7 @@ namespace ManagedVulkan
 			mSetLayoutCount = src->setLayoutCount;
 			mSetLayouts = src->pSetLayouts;
 			mPushConstantRangeCount = src->pushConstantRangeCount;
-			mPushConstantRanges->CopyTo(&src->pPushConstantRanges);
+			mPushConstantRanges->CopyFrom(&src->pPushConstantRanges);
 		}
 	};
 
@@ -7639,7 +7639,7 @@ namespace ManagedVulkan
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
 			dst->flags =	mFlags;
-			mInheritanceInfo->CopyFrom(&dst->pInheritanceInfo, pins);
+			mInheritanceInfo->CopyTo(&dst->pInheritanceInfo, pins);
 		}
 
 		void CopyFrom(VkCommandBufferBeginInfo* src)
@@ -7647,7 +7647,7 @@ namespace ManagedVulkan
 			mSType = (StructureType) src->sType;
 			pNext = src->pNext;
 			mFlags = src->flags;
-			mInheritanceInfo->CopyTo(&src->pInheritanceInfo);
+			mInheritanceInfo->CopyFrom(&src->pInheritanceInfo);
 		}
 	};
 
@@ -7734,9 +7734,9 @@ namespace ManagedVulkan
 			dst->pNext =	pNext;
 			dst->renderPass =	mRenderPass;
 			dst->framebuffer =	mFramebuffer;
-			mRenderArea->CopyFrom(&dst->renderArea, pins);
+			mRenderArea->CopyTo(&dst->renderArea, pins);
 			dst->clearValueCount =	mClearValueCount;
-			mClearValues->CopyFrom(&dst->pClearValues, pins);
+			mClearValues->CopyTo(&dst->pClearValues, pins);
 		}
 
 		void CopyFrom(VkRenderPassBeginInfo* src)
@@ -7745,9 +7745,9 @@ namespace ManagedVulkan
 			pNext = src->pNext;
 			mRenderPass = src->renderPass;
 			mFramebuffer = src->framebuffer;
-			mRenderArea->CopyTo(&src->renderArea);
+			mRenderArea->CopyFrom(&src->renderArea);
 			mClearValueCount = src->clearValueCount;
-			mClearValues->CopyTo(&src->pClearValues);
+			mClearValues->CopyFrom(&src->pClearValues);
 		}
 	};
 
@@ -7838,14 +7838,14 @@ namespace ManagedVulkan
 		{
 			dst->aspectMask =	mAspectMask;
 			dst->colorAttachment =	mColorAttachment;
-			mClearValue->CopyFrom(&dst->clearValue, pins);
+			mClearValue->CopyTo(&dst->clearValue, pins);
 		}
 
 		void CopyFrom(VkClearAttachment* src)
 		{
 			mAspectMask = src->aspectMask;
 			mColorAttachment = src->colorAttachment;
-			mClearValue->CopyTo(&src->clearValue);
+			mClearValue->CopyFrom(&src->clearValue);
 		}
 	};
 
@@ -8161,11 +8161,11 @@ namespace ManagedVulkan
 			dst->flags =	mFlags;
 			dst->pipelineBindPoint =	mPipelineBindPoint;
 			dst->inputAttachmentCount =	mInputAttachmentCount;
-			mInputAttachments->CopyFrom(&dst->pInputAttachments, pins);
+			mInputAttachments->CopyTo(&dst->pInputAttachments, pins);
 			dst->colorAttachmentCount =	mColorAttachmentCount;
-			mColorAttachments->CopyFrom(&dst->pColorAttachments, pins);
-			mResolveAttachments->CopyFrom(&dst->pResolveAttachments, pins);
-			mDepthStencilAttachment->CopyFrom(&dst->pDepthStencilAttachment, pins);
+			mColorAttachments->CopyTo(&dst->pColorAttachments, pins);
+			mResolveAttachments->CopyTo(&dst->pResolveAttachments, pins);
+			mDepthStencilAttachment->CopyTo(&dst->pDepthStencilAttachment, pins);
 			dst->preserveAttachmentCount =	mPreserveAttachmentCount;
 			dst->pPreserveAttachments =	mPreserveAttachments;
 		}
@@ -8175,11 +8175,11 @@ namespace ManagedVulkan
 			mFlags = src->flags;
 			mPipelineBindPoint = src->pipelineBindPoint;
 			mInputAttachmentCount = src->inputAttachmentCount;
-			mInputAttachments->CopyTo(&src->pInputAttachments);
+			mInputAttachments->CopyFrom(&src->pInputAttachments);
 			mColorAttachmentCount = src->colorAttachmentCount;
-			mColorAttachments->CopyTo(&src->pColorAttachments);
-			mResolveAttachments->CopyTo(&src->pResolveAttachments);
-			mDepthStencilAttachment->CopyTo(&src->pDepthStencilAttachment);
+			mColorAttachments->CopyFrom(&src->pColorAttachments);
+			mResolveAttachments->CopyFrom(&src->pResolveAttachments);
+			mDepthStencilAttachment->CopyFrom(&src->pDepthStencilAttachment);
 			mPreserveAttachmentCount = src->preserveAttachmentCount;
 			mPreserveAttachments = src->pPreserveAttachments;
 		}
@@ -8404,11 +8404,11 @@ namespace ManagedVulkan
 			dst->pNext =	pNext;
 			dst->flags =	mFlags;
 			dst->attachmentCount =	mAttachmentCount;
-			mAttachments->CopyFrom(&dst->pAttachments, pins);
+			mAttachments->CopyTo(&dst->pAttachments, pins);
 			dst->subpassCount =	mSubpassCount;
-			mSubpasses->CopyFrom(&dst->pSubpasses, pins);
+			mSubpasses->CopyTo(&dst->pSubpasses, pins);
 			dst->dependencyCount =	mDependencyCount;
-			mDependencies->CopyFrom(&dst->pDependencies, pins);
+			mDependencies->CopyTo(&dst->pDependencies, pins);
 		}
 
 		void CopyFrom(VkRenderPassCreateInfo* src)
@@ -8417,11 +8417,11 @@ namespace ManagedVulkan
 			pNext = src->pNext;
 			mFlags = src->flags;
 			mAttachmentCount = src->attachmentCount;
-			mAttachments->CopyTo(&src->pAttachments);
+			mAttachments->CopyFrom(&src->pAttachments);
 			mSubpassCount = src->subpassCount;
-			mSubpasses->CopyTo(&src->pSubpasses);
+			mSubpasses->CopyFrom(&src->pSubpasses);
 			mDependencyCount = src->dependencyCount;
-			mDependencies->CopyTo(&src->pDependencies);
+			mDependencies->CopyFrom(&src->pDependencies);
 		}
 	};
 
@@ -11572,8 +11572,8 @@ namespace ManagedVulkan
 			pins->Add(str_displayName);			
 			dst->displayName = static_cast <char*> (str_displayName.ToPointer());
 
-			mPhysicalDimensions->CopyFrom(&dst->physicalDimensions, pins);
-			mPhysicalResolution->CopyFrom(&dst->physicalResolution, pins);
+			mPhysicalDimensions->CopyTo(&dst->physicalDimensions, pins);
+			mPhysicalResolution->CopyTo(&dst->physicalResolution, pins);
 			dst->supportedTransforms =	mSupportedTransforms;
 			dst->planeReorderPossible =	mPlaneReorderPossible ? 1 : 0;
 			dst->persistentContent =	mPersistentContent ? 1 : 0;
@@ -11583,8 +11583,8 @@ namespace ManagedVulkan
 		{
 			mDisplay = src->display;
 			mDisplayName = gcnew String(mDisplayName);
-			mPhysicalDimensions->CopyTo(&src->physicalDimensions);
-			mPhysicalResolution->CopyTo(&src->physicalResolution);
+			mPhysicalDimensions->CopyFrom(&src->physicalDimensions);
+			mPhysicalResolution->CopyFrom(&src->physicalResolution);
 			mSupportedTransforms = src->supportedTransforms;
 			mPlaneReorderPossible = src->planeReorderPossible != 0;
 			mPersistentContent = src->persistentContent != 0;
@@ -11664,13 +11664,13 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkDisplayModeParametersKHR* dst, List<IntPtr>^ pins)
 		{
-			mVisibleRegion->CopyFrom(&dst->visibleRegion, pins);
+			mVisibleRegion->CopyTo(&dst->visibleRegion, pins);
 			dst->refreshRate =	mRefreshRate;
 		}
 
 		void CopyFrom(VkDisplayModeParametersKHR* src)
 		{
-			mVisibleRegion->CopyTo(&src->visibleRegion);
+			mVisibleRegion->CopyFrom(&src->visibleRegion);
 			mRefreshRate = src->refreshRate;
 		}
 	};
@@ -11707,13 +11707,13 @@ namespace ManagedVulkan
 		void CopyTo(VkDisplayModePropertiesKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->displayMode =	mDisplayMode;
-			mParameters->CopyFrom(&dst->parameters, pins);
+			mParameters->CopyTo(&dst->parameters, pins);
 		}
 
 		void CopyFrom(VkDisplayModePropertiesKHR* src)
 		{
 			mDisplayMode = src->displayMode;
-			mParameters->CopyTo(&src->parameters);
+			mParameters->CopyFrom(&src->parameters);
 		}
 	};
 
@@ -11763,7 +11763,7 @@ namespace ManagedVulkan
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
 			dst->flags =	mFlags;
-			mParameters->CopyFrom(&dst->parameters, pins);
+			mParameters->CopyTo(&dst->parameters, pins);
 		}
 
 		void CopyFrom(VkDisplayModeCreatefInfoKHR* src)
@@ -11771,7 +11771,7 @@ namespace ManagedVulkan
 			mSType = (StructureType) src->sType;
 			pNext = src->pNext;
 			mFlags = src->flags;
-			mParameters->CopyTo(&src->parameters);
+			mParameters->CopyFrom(&src->parameters);
 		}
 	};
 
@@ -11891,27 +11891,27 @@ namespace ManagedVulkan
 		void CopyTo(VkDisplayPlaneCapabilitiesKHR* dst, List<IntPtr>^ pins)
 		{
 			dst->supportedAlpha =	mSupportedAlpha;
-			mMinSrcPosition->CopyFrom(&dst->minSrcPosition, pins);
-			mMaxSrcPosition->CopyFrom(&dst->maxSrcPosition, pins);
-			mMinSrcExtent->CopyFrom(&dst->minSrcExtent, pins);
-			mMaxSrcExtent->CopyFrom(&dst->maxSrcExtent, pins);
-			mMinDstPosition->CopyFrom(&dst->minDstPosition, pins);
-			mMaxDstPosition->CopyFrom(&dst->maxDstPosition, pins);
-			mMinDstExtent->CopyFrom(&dst->minDstExtent, pins);
-			mMaxDstExtent->CopyFrom(&dst->maxDstExtent, pins);
+			mMinSrcPosition->CopyTo(&dst->minSrcPosition, pins);
+			mMaxSrcPosition->CopyTo(&dst->maxSrcPosition, pins);
+			mMinSrcExtent->CopyTo(&dst->minSrcExtent, pins);
+			mMaxSrcExtent->CopyTo(&dst->maxSrcExtent, pins);
+			mMinDstPosition->CopyTo(&dst->minDstPosition, pins);
+			mMaxDstPosition->CopyTo(&dst->maxDstPosition, pins);
+			mMinDstExtent->CopyTo(&dst->minDstExtent, pins);
+			mMaxDstExtent->CopyTo(&dst->maxDstExtent, pins);
 		}
 
 		void CopyFrom(VkDisplayPlaneCapabilitiesKHR* src)
 		{
 			mSupportedAlpha = src->supportedAlpha;
-			mMinSrcPosition->CopyTo(&src->minSrcPosition);
-			mMaxSrcPosition->CopyTo(&src->maxSrcPosition);
-			mMinSrcExtent->CopyTo(&src->minSrcExtent);
-			mMaxSrcExtent->CopyTo(&src->maxSrcExtent);
-			mMinDstPosition->CopyTo(&src->minDstPosition);
-			mMaxDstPosition->CopyTo(&src->maxDstPosition);
-			mMinDstExtent->CopyTo(&src->minDstExtent);
-			mMaxDstExtent->CopyTo(&src->maxDstExtent);
+			mMinSrcPosition->CopyFrom(&src->minSrcPosition);
+			mMaxSrcPosition->CopyFrom(&src->maxSrcPosition);
+			mMinSrcExtent->CopyFrom(&src->minSrcExtent);
+			mMaxSrcExtent->CopyFrom(&src->maxSrcExtent);
+			mMinDstPosition->CopyFrom(&src->minDstPosition);
+			mMaxDstPosition->CopyFrom(&src->maxDstPosition);
+			mMinDstExtent->CopyFrom(&src->minDstExtent);
+			mMaxDstExtent->CopyFrom(&src->maxDstExtent);
 		}
 	};
 
@@ -12039,7 +12039,7 @@ namespace ManagedVulkan
 			dst->transform =	mTransform;
 			dst->globalAlpha =	mGlobalAlpha;
 			dst->alphaMode =	mAlphaMode;
-			mImageExtent->CopyFrom(&dst->imageExtent, pins);
+			mImageExtent->CopyTo(&dst->imageExtent, pins);
 		}
 
 		void CopyFrom(VkDisplaySurfaceCreateInfoKHR* src)
@@ -12053,7 +12053,7 @@ namespace ManagedVulkan
 			mTransform = src->transform;
 			mGlobalAlpha = src->globalAlpha;
 			mAlphaMode = src->alphaMode;
-			mImageExtent->CopyTo(&src->imageExtent);
+			mImageExtent->CopyFrom(&src->imageExtent);
 		}
 	};
 
@@ -12114,8 +12114,8 @@ namespace ManagedVulkan
 		{
 			dst->sType =	mSType;
 			dst->pNext =	pNext;
-			mSrcRect->CopyFrom(&dst->srcRect, pins);
-			mDstRect->CopyFrom(&dst->dstRect, pins);
+			mSrcRect->CopyTo(&dst->srcRect, pins);
+			mDstRect->CopyTo(&dst->dstRect, pins);
 			dst->persistent =	mPersistent ? 1 : 0;
 		}
 
@@ -12123,8 +12123,8 @@ namespace ManagedVulkan
 		{
 			mSType = (StructureType) src->sType;
 			pNext = src->pNext;
-			mSrcRect->CopyTo(&src->srcRect);
-			mDstRect->CopyTo(&src->dstRect);
+			mSrcRect->CopyFrom(&src->srcRect);
+			mDstRect->CopyFrom(&src->dstRect);
 			mPersistent = src->persistent != 0;
 		}
 	};
@@ -12258,9 +12258,9 @@ namespace ManagedVulkan
 		{
 			dst->minImageCount =	mMinImageCount;
 			dst->maxImageCount =	mMaxImageCount;
-			mCurrentExtent->CopyFrom(&dst->currentExtent, pins);
-			mMinImageExtent->CopyFrom(&dst->minImageExtent, pins);
-			mMaxImageExtent->CopyFrom(&dst->maxImageExtent, pins);
+			mCurrentExtent->CopyTo(&dst->currentExtent, pins);
+			mMinImageExtent->CopyTo(&dst->minImageExtent, pins);
+			mMaxImageExtent->CopyTo(&dst->maxImageExtent, pins);
 			dst->maxImageArrayLayers =	mMaxImageArrayLayers;
 			dst->supportedTransforms =	mSupportedTransforms;
 			dst->currentTransform =	mCurrentTransform;
@@ -12272,9 +12272,9 @@ namespace ManagedVulkan
 		{
 			mMinImageCount = src->minImageCount;
 			mMaxImageCount = src->maxImageCount;
-			mCurrentExtent->CopyTo(&src->currentExtent);
-			mMinImageExtent->CopyTo(&src->minImageExtent);
-			mMaxImageExtent->CopyTo(&src->maxImageExtent);
+			mCurrentExtent->CopyFrom(&src->currentExtent);
+			mMinImageExtent->CopyFrom(&src->minImageExtent);
+			mMaxImageExtent->CopyFrom(&src->maxImageExtent);
 			mMaxImageArrayLayers = src->maxImageArrayLayers;
 			mSupportedTransforms = src->supportedTransforms;
 			mCurrentTransform = src->currentTransform;
@@ -12615,7 +12615,7 @@ namespace ManagedVulkan
 			dst->minImageCount =	mMinImageCount;
 			dst->imageFormat =	mImageFormat;
 			dst->imageColorSpace =	mImageColorSpace;
-			mImageExtent->CopyFrom(&dst->imageExtent, pins);
+			mImageExtent->CopyTo(&dst->imageExtent, pins);
 			dst->imageArrayLayers =	mImageArrayLayers;
 			dst->imageUsage =	mImageUsage;
 			dst->imageSharingMode =	mImageSharingMode;
@@ -12637,7 +12637,7 @@ namespace ManagedVulkan
 			mMinImageCount = src->minImageCount;
 			mImageFormat = src->imageFormat;
 			mImageColorSpace = src->imageColorSpace;
-			mImageExtent->CopyTo(&src->imageExtent);
+			mImageExtent->CopyFrom(&src->imageExtent);
 			mImageArrayLayers = src->imageArrayLayers;
 			mImageUsage = src->imageUsage;
 			mImageSharingMode = src->imageSharingMode;

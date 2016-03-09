@@ -80,7 +80,7 @@ ManagedVulkan::VkResult ManagedVulkan::Vulkan::CreateInstance(ManagedVulkan::Ins
 			arg_2 = inst_2;		
 		}
 
-		int result = vkCreateInstance(arg_0, arg_1, arg_2);
+		auto result = vkCreateInstance(arg_0, arg_1, arg_2);
 								
 		pInstance = gcnew Instance();
 		pInstance->mHandle = inst_2;
@@ -117,7 +117,7 @@ ManagedVulkan::VkResult ManagedVulkan::Vulkan::EnumerateInstanceLayerProperties(
 		UInt32 pPropertyCount = 0;		
 		UInt32* arg_0 = &pPropertyCount;
 
-		int firstResult = vkEnumerateInstanceLayerProperties(arg_0, nullptr);
+		auto firstResult = vkEnumerateInstanceLayerProperties(arg_0, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -129,7 +129,7 @@ ManagedVulkan::VkResult ManagedVulkan::Vulkan::EnumerateInstanceLayerProperties(
 		// INITS 1 - pProperties		
 		arg_1 = new VkLayerProperties[pPropertyCount];
 
-		int result = vkEnumerateInstanceLayerProperties(arg_0, arg_1);
+		auto result = vkEnumerateInstanceLayerProperties(arg_0, arg_1);
 			
 		int count = (int) pPropertyCount;	
 		pProperties = gcnew array<LayerProperties^>^(count);
@@ -171,7 +171,7 @@ ManagedVulkan::VkResult ManagedVulkan::Vulkan::EnumerateInstanceExtensionPropert
 		UInt32 pPropertyCount = 0;		
 		UInt32* arg_1 = &pPropertyCount;
 
-		int firstResult = vkEnumerateInstanceExtensionProperties(arg_0, arg_1, nullptr);
+		auto firstResult = vkEnumerateInstanceExtensionProperties(arg_0, arg_1, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -183,7 +183,7 @@ ManagedVulkan::VkResult ManagedVulkan::Vulkan::EnumerateInstanceExtensionPropert
 		// INITS 2 - pProperties		
 		arg_2 = new VkExtensionProperties[pPropertyCount];
 
-		int result = vkEnumerateInstanceExtensionProperties(arg_0, arg_1, arg_2);
+		auto result = vkEnumerateInstanceExtensionProperties(arg_0, arg_1, arg_2);
 			
 		int count = (int) pPropertyCount;	
 		pProperties = gcnew array<ExtensionProperties^>^(count);
@@ -257,7 +257,7 @@ ManagedVulkan::VkResult ManagedVulkan::Instance::EnumeratePhysicalDevices([Out] 
 		UInt32 pPhysicalDeviceCount = 0;		
 		UInt32* arg_1 = &pPhysicalDeviceCount;
 
-		int firstResult = vkEnumeratePhysicalDevices(arg_0, arg_1, nullptr);
+		auto firstResult = vkEnumeratePhysicalDevices(arg_0, arg_1, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -269,7 +269,7 @@ ManagedVulkan::VkResult ManagedVulkan::Instance::EnumeratePhysicalDevices([Out] 
 		// INITS 2 - pPhysicalDevices		
 		arg_2 = new VkPhysicalDevice[pPhysicalDeviceCount];
 
-		int result = vkEnumeratePhysicalDevices(arg_0, arg_1, arg_2);
+		auto result = vkEnumeratePhysicalDevices(arg_0, arg_1, arg_2);
 			
 		int count = (int) pPhysicalDeviceCount;	
 		pPhysicalDevices = gcnew array<PhysicalDevice>^(count);
@@ -309,7 +309,7 @@ ManagedVulkan::PFN_vkVoidFunction^ ManagedVulkan::Instance::GetInstanceProcAddr(
 		pins->Add(inst_1);		
 		char* arg_1 = static_cast<char*>(inst_1.ToPointer());;
 
-		int result = vkGetInstanceProcAddr(arg_0, arg_1);
+		auto result = vkGetInstanceProcAddr(arg_0, arg_1);
 
 		return (PFN_vkVoidFunction) result;
 	}
@@ -369,7 +369,7 @@ ManagedVulkan::VkResult ManagedVulkan::Instance::CreateDisplayPlaneSurfaceKHR(Ma
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateDisplayPlaneSurfaceKHR(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateDisplayPlaneSurfaceKHR(arg_0, arg_1, arg_2, arg_3);
 								
 		pSurface = gcnew SurfaceKHR^();
 		pSurface->mHandle = inst_3;
@@ -458,7 +458,7 @@ ManagedVulkan::VkResult ManagedVulkan::Instance::CreateWin32SurfaceKHR(ManagedVu
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateWin32SurfaceKHR(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateWin32SurfaceKHR(arg_0, arg_1, arg_2, arg_3);
 								
 		pSurface = gcnew SurfaceKHR^();
 		pSurface->mHandle = inst_3;
@@ -512,7 +512,7 @@ ManagedVulkan::VkResult ManagedVulkan::Instance::CreateDebugReportCallbackEXT(Ma
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateDebugReportCallbackEXT(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateDebugReportCallbackEXT(arg_0, arg_1, arg_2, arg_3);
 								
 		pCallback = gcnew DebugReportCallbackEXT^();
 		pCallback->mHandle = inst_3;
@@ -621,7 +621,7 @@ ManagedVulkan::PFN_vkVoidFunction^ ManagedVulkan::Device::GetDeviceProcAddr(Stri
 		pins->Add(inst_1);		
 		char* arg_1 = static_cast<char*>(inst_1.ToPointer());;
 
-		int result = vkGetDeviceProcAddr(arg_0, arg_1);
+		auto result = vkGetDeviceProcAddr(arg_0, arg_1);
 
 		return (PFN_vkVoidFunction) result;
 	}
@@ -718,7 +718,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::DeviceWaitIdle()
 		// INITS 0 - device		
 		VkDevice arg_0 = this->mHandle;
 
-		int result = vkDeviceWaitIdle(arg_0);
+		auto result = vkDeviceWaitIdle(arg_0);
 
 		return (VkResult) result;
 	}
@@ -762,7 +762,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::AllocateMemory(ManagedVulkan::Mem
 		// INITS 3 - pMemory		
 		VkDeviceMemory* arg_3 = pMemory->mHandle;
 
-		int result = vkAllocateMemory(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkAllocateMemory(arg_0, arg_1, arg_2, arg_3);
 
 		return (VkResult) result;
 	}
@@ -831,7 +831,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::MapMemory(ManagedVulkan::DeviceMe
 		// INITS 5 - ppData		
 		void** arg_5 = 0;
 
-		int result = vkMapMemory(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
+		auto result = vkMapMemory(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
 
 		return (VkResult) result;
 	}
@@ -886,7 +886,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::FlushMappedMemoryRanges(array<Man
 		// INITS 2 - pMemoryRanges		
 		arg_2 = new VkMappedMemoryRange[memoryRangeCount];
 
-		int result = vkFlushMappedMemoryRanges(arg_0, arg_1, arg_2);
+		auto result = vkFlushMappedMemoryRanges(arg_0, arg_1, arg_2);
 
 		return (VkResult) result;
 	}
@@ -919,7 +919,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::InvalidateMappedMemoryRanges(arra
 		// INITS 2 - pMemoryRanges		
 		arg_2 = new VkMappedMemoryRange[memoryRangeCount];
 
-		int result = vkInvalidateMappedMemoryRanges(arg_0, arg_1, arg_2);
+		auto result = vkInvalidateMappedMemoryRanges(arg_0, arg_1, arg_2);
 
 		return (VkResult) result;
 	}
@@ -1019,7 +1019,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::BindBufferMemory(ManagedVulkan::B
 		// INITS 3 - memoryOffset		
 		VkDeviceSize arg_3 = memoryOffset;
 
-		int result = vkBindBufferMemory(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkBindBufferMemory(arg_0, arg_1, arg_2, arg_3);
 
 		return (VkResult) result;
 	}
@@ -1087,7 +1087,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::BindImageMemory(ManagedVulkan::Im
 		// INITS 3 - memoryOffset		
 		VkDeviceSize arg_3 = memoryOffset;
 
-		int result = vkBindImageMemory(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkBindImageMemory(arg_0, arg_1, arg_2, arg_3);
 
 		return (VkResult) result;
 	}
@@ -1204,7 +1204,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateFence(ManagedVulkan::FenceC
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateFence(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateFence(arg_0, arg_1, arg_2, arg_3);
 								
 		pFence = gcnew Fence^();
 		pFence->mHandle = inst_3;
@@ -1271,7 +1271,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::ResetFences(array<ManagedVulkan::
 		// INITS 2 - pFences		
 		arg_2 = new VkFence[fenceCount];
 
-		int result = vkResetFences(arg_0, arg_1, arg_2);
+		auto result = vkResetFences(arg_0, arg_1, arg_2);
 
 		return (VkResult) result;
 	}
@@ -1301,7 +1301,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::GetFenceStatus(ManagedVulkan::Fen
 		// INITS 1 - fence		
 		VkFence arg_1 = fence->mHandle;
 
-		int result = vkGetFenceStatus(arg_0, arg_1);
+		auto result = vkGetFenceStatus(arg_0, arg_1);
 
 		return (VkResult) result;
 	}
@@ -1334,7 +1334,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::WaitForFences(array<ManagedVulkan
 		// INITS 4 - timeout		
 		uint64_t arg_4 = timeout;
 
-		int result = vkWaitForFences(arg_0, arg_1, arg_2, arg_3, arg_4);
+		auto result = vkWaitForFences(arg_0, arg_1, arg_2, arg_3, arg_4);
 
 		return (VkResult) result;
 	}
@@ -1389,7 +1389,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateSemaphore(ManagedVulkan::Se
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateSemaphore(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateSemaphore(arg_0, arg_1, arg_2, arg_3);
 								
 		pSemaphore = gcnew Semaphore^();
 		pSemaphore->mHandle = inst_3;
@@ -1478,7 +1478,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateEvent(ManagedVulkan::EventC
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateEvent(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateEvent(arg_0, arg_1, arg_2, arg_3);
 								
 		pEvent = gcnew Event^();
 		pEvent->mHandle = inst_3;
@@ -1542,7 +1542,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::GetEventStatus(ManagedVulkan::Eve
 		// INITS 1 - event		
 		VkEvent arg_1 = event->mHandle;
 
-		int result = vkGetEventStatus(arg_0, arg_1);
+		auto result = vkGetEventStatus(arg_0, arg_1);
 
 		return (VkResult) result;
 	}
@@ -1568,7 +1568,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::SetEvent(ManagedVulkan::Event^ ev
 		// INITS 1 - event		
 		VkEvent arg_1 = event->mHandle;
 
-		int result = vkSetEvent(arg_0, arg_1);
+		auto result = vkSetEvent(arg_0, arg_1);
 
 		return (VkResult) result;
 	}
@@ -1594,7 +1594,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::ResetEvent(ManagedVulkan::Event^ 
 		// INITS 1 - event		
 		VkEvent arg_1 = event->mHandle;
 
-		int result = vkResetEvent(arg_0, arg_1);
+		auto result = vkResetEvent(arg_0, arg_1);
 
 		return (VkResult) result;
 	}
@@ -1645,7 +1645,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateQueryPool(ManagedVulkan::Qu
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateQueryPool(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateQueryPool(arg_0, arg_1, arg_2, arg_3);
 								
 		pQueryPool = gcnew QueryPool^();
 		pQueryPool->mHandle = inst_3;
@@ -1721,7 +1721,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::GetQueryPoolResults(ManagedVulkan
 		// INITS 7 - flags		
 		VkQueryResultFlags arg_7 = flags;
 
-		int result = vkGetQueryPoolResults(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7);
+		auto result = vkGetQueryPoolResults(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7);
 
 		return (VkResult) result;
 	}
@@ -1772,7 +1772,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateBuffer(ManagedVulkan::Buffe
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateBuffer(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateBuffer(arg_0, arg_1, arg_2, arg_3);
 								
 		pBuffer = gcnew Buffer^();
 		pBuffer->mHandle = inst_3;
@@ -1861,7 +1861,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateBufferView(ManagedVulkan::B
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateBufferView(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateBufferView(arg_0, arg_1, arg_2, arg_3);
 								
 		pView = gcnew BufferView^();
 		pView->mHandle = inst_3;
@@ -1959,7 +1959,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateImage(ManagedVulkan::ImageC
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateImage(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateImage(arg_0, arg_1, arg_2, arg_3);
 								
 		pImage = gcnew Image^();
 		pImage->mHandle = inst_3;
@@ -2113,7 +2113,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateImageView(ManagedVulkan::Im
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateImageView(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateImageView(arg_0, arg_1, arg_2, arg_3);
 								
 		pView = gcnew ImageView^();
 		pView->mHandle = inst_3;
@@ -2202,7 +2202,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateShaderModule(ManagedVulkan:
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateShaderModule(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateShaderModule(arg_0, arg_1, arg_2, arg_3);
 								
 		pShaderModule = gcnew ShaderModule^();
 		pShaderModule->mHandle = inst_3;
@@ -2291,7 +2291,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreatePipelineCache(ManagedVulkan
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreatePipelineCache(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreatePipelineCache(arg_0, arg_1, arg_2, arg_3);
 								
 		pPipelineCache = gcnew PipelineCache^();
 		pPipelineCache->mHandle = inst_3;
@@ -2359,7 +2359,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::GetPipelineCacheData(ManagedVulka
 		// INITS 3 - pData		
 		void* arg_3 = 0;
 
-		int result = vkGetPipelineCacheData(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkGetPipelineCacheData(arg_0, arg_1, arg_2, arg_3);
 
 		return (VkResult) result;
 	}
@@ -2390,7 +2390,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::MergePipelineCaches(ManagedVulkan
 		// INITS 3 - pSrcCaches		
 		arg_3 = new VkPipelineCache[srcCacheCount];
 
-		int result = vkMergePipelineCaches(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkMergePipelineCaches(arg_0, arg_1, arg_2, arg_3);
 
 		return (VkResult) result;
 	}
@@ -2626,7 +2626,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateGraphicsPipelines(ManagedVu
 		// INITS 5 - pPipelines		
 		arg_5 = new VkPipeline[createInfoCount];
 
-		int result = vkCreateGraphicsPipelines(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
+		auto result = vkCreateGraphicsPipelines(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
 			
 		int count = (int) createInfoCount;	
 		pPipelines = gcnew array<Pipeline^>^(count);
@@ -2712,7 +2712,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateComputePipelines(ManagedVul
 		// INITS 5 - pPipelines		
 		arg_5 = new VkPipeline[createInfoCount];
 
-		int result = vkCreateComputePipelines(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
+		auto result = vkCreateComputePipelines(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
 			
 		int count = (int) createInfoCount;	
 		pPipelines = gcnew array<Pipeline^>^(count);
@@ -2823,7 +2823,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreatePipelineLayout(ManagedVulka
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreatePipelineLayout(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreatePipelineLayout(arg_0, arg_1, arg_2, arg_3);
 								
 		pPipelineLayout = gcnew PipelineLayout^();
 		pPipelineLayout->mHandle = inst_3;
@@ -2912,7 +2912,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateSampler(ManagedVulkan::Samp
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateSampler(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateSampler(arg_0, arg_1, arg_2, arg_3);
 								
 		pSampler = gcnew Sampler^();
 		pSampler->mHandle = inst_3;
@@ -3010,7 +3010,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateDescriptorSetLayout(Managed
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateDescriptorSetLayout(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateDescriptorSetLayout(arg_0, arg_1, arg_2, arg_3);
 								
 		pSetLayout = gcnew DescriptorSetLayout^();
 		pSetLayout->mHandle = inst_3;
@@ -3108,7 +3108,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateDescriptorPool(ManagedVulka
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateDescriptorPool(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateDescriptorPool(arg_0, arg_1, arg_2, arg_3);
 								
 		pDescriptorPool = gcnew DescriptorPool^();
 		pDescriptorPool->mHandle = inst_3;
@@ -3174,7 +3174,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::ResetDescriptorPool(ManagedVulkan
 		// INITS 2 - flags		
 		VkDescriptorPoolResetFlags arg_2 = flags;
 
-		int result = vkResetDescriptorPool(arg_0, arg_1, arg_2);
+		auto result = vkResetDescriptorPool(arg_0, arg_1, arg_2);
 
 		return (VkResult) result;
 	}
@@ -3209,7 +3209,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::AllocateDescriptorSets(ManagedVul
 		// INITS 2 - pDescriptorSets		
 		VkDescriptorSet* arg_2 = pDescriptorSets->mHandle;
 
-		int result = vkAllocateDescriptorSets(arg_0, arg_1, arg_2);
+		auto result = vkAllocateDescriptorSets(arg_0, arg_1, arg_2);
 
 		return (VkResult) result;
 	}
@@ -3239,7 +3239,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::FreeDescriptorSets(ManagedVulkan:
 		// INITS 3 - pDescriptorSets		
 		VkDescriptorSet* arg_3 = pDescriptorSets->mHandle;
 
-		int result = vkFreeDescriptorSets(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkFreeDescriptorSets(arg_0, arg_1, arg_2, arg_3);
 
 		return (VkResult) result;
 	}
@@ -3354,7 +3354,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateFramebuffer(ManagedVulkan::
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateFramebuffer(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateFramebuffer(arg_0, arg_1, arg_2, arg_3);
 								
 		pFramebuffer = gcnew Framebuffer^();
 		pFramebuffer->mHandle = inst_3;
@@ -3506,7 +3506,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateRenderPass(ManagedVulkan::R
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateRenderPass(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateRenderPass(arg_0, arg_1, arg_2, arg_3);
 								
 		pRenderPass = gcnew RenderPass^();
 		pRenderPass->mHandle = inst_3;
@@ -3633,7 +3633,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateCommandPool(ManagedVulkan::
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateCommandPool(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateCommandPool(arg_0, arg_1, arg_2, arg_3);
 								
 		pCommandPool = gcnew CommandPool^();
 		pCommandPool->mHandle = inst_3;
@@ -3699,7 +3699,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::ResetCommandPool(ManagedVulkan::C
 		// INITS 2 - flags		
 		VkCommandPoolResetFlags arg_2 = flags;
 
-		int result = vkResetCommandPool(arg_0, arg_1, arg_2);
+		auto result = vkResetCommandPool(arg_0, arg_1, arg_2);
 
 		return (VkResult) result;
 	}
@@ -3741,7 +3741,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::AllocateCommandBuffers(ManagedVul
 			arg_2 = inst_2;		
 		}
 
-		int result = vkAllocateCommandBuffers(arg_0, arg_1, arg_2);
+		auto result = vkAllocateCommandBuffers(arg_0, arg_1, arg_2);
 
 		return (VkResult) result;
 	}
@@ -3826,7 +3826,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateSharedSwapchainsKHR(array<M
 		// INITS 4 - pSwapchains		
 		arg_4 = new VkSwapchainKHR[swapchainCount];
 
-		int result = vkCreateSharedSwapchainsKHR(arg_0, arg_1, arg_2, arg_3, arg_4);
+		auto result = vkCreateSharedSwapchainsKHR(arg_0, arg_1, arg_2, arg_3, arg_4);
 			
 		int count = (int) swapchainCount;	
 		pSwapchains = gcnew array<SwapchainKHR^>^(count);
@@ -3902,7 +3902,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateSwapchainKHR(ManagedVulkan:
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateSwapchainKHR(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateSwapchainKHR(arg_0, arg_1, arg_2, arg_3);
 								
 		pSwapchain = gcnew SwapchainKHR^();
 		pSwapchain->mHandle = inst_3;
@@ -3970,7 +3970,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::GetSwapchainImagesKHR(ManagedVulk
 		UInt32 pSwapchainImageCount = 0;		
 		UInt32* arg_2 = &pSwapchainImageCount;
 
-		int firstResult = vkGetSwapchainImagesKHR(arg_0, arg_1, arg_2, nullptr);
+		auto firstResult = vkGetSwapchainImagesKHR(arg_0, arg_1, arg_2, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -3982,7 +3982,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::GetSwapchainImagesKHR(ManagedVulk
 		// INITS 3 - pSwapchainImages		
 		arg_3 = new VkImage[pSwapchainImageCount];
 
-		int result = vkGetSwapchainImagesKHR(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkGetSwapchainImagesKHR(arg_0, arg_1, arg_2, arg_3);
 			
 		int count = (int) pSwapchainImageCount;	
 		pSwapchainImages = gcnew array<Image^>^(count);
@@ -4028,7 +4028,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::AcquireNextImageKHR(ManagedVulkan
 		// INITS 5 - pImageIndex		
 		uint32_t* arg_5 = pImageIndex;
 
-		int result = vkAcquireNextImageKHR(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
+		auto result = vkAcquireNextImageKHR(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
 
 		return (VkResult) result;
 	}
@@ -4300,7 +4300,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceImageFor
 				arg_6->maxExtent = arg_6_0;		
 			}
 
-		int result = vkGetPhysicalDeviceImageFormatProperties(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6);
+		auto result = vkGetPhysicalDeviceImageFormatProperties(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6);
 								
 		pImageFormatProperties = gcnew ImageFormatProperties^();
 			pImageFormatProperties->CopyFrom(arg_6);						
@@ -4402,7 +4402,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::CreateDevice(ManagedVulka
 			arg_3 = inst_3;		
 		}
 
-		int result = vkCreateDevice(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateDevice(arg_0, arg_1, arg_2, arg_3);
 								
 		pDevice = gcnew Device();
 		pDevice->mHandle = inst_3;
@@ -4441,7 +4441,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::EnumerateDeviceLayerPrope
 		UInt32 pPropertyCount = 0;		
 		UInt32* arg_1 = &pPropertyCount;
 
-		int firstResult = vkEnumerateDeviceLayerProperties(arg_0, arg_1, nullptr);
+		auto firstResult = vkEnumerateDeviceLayerProperties(arg_0, arg_1, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -4453,7 +4453,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::EnumerateDeviceLayerPrope
 		// INITS 2 - pProperties		
 		arg_2 = new VkLayerProperties[pPropertyCount];
 
-		int result = vkEnumerateDeviceLayerProperties(arg_0, arg_1, arg_2);
+		auto result = vkEnumerateDeviceLayerProperties(arg_0, arg_1, arg_2);
 			
 		int count = (int) pPropertyCount;	
 		pProperties = gcnew array<LayerProperties^>^(count);
@@ -4497,7 +4497,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::EnumerateDeviceExtensionP
 		UInt32 pPropertyCount = 0;		
 		UInt32* arg_2 = &pPropertyCount;
 
-		int firstResult = vkEnumerateDeviceExtensionProperties(arg_0, arg_1, arg_2, nullptr);
+		auto firstResult = vkEnumerateDeviceExtensionProperties(arg_0, arg_1, arg_2, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -4509,7 +4509,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::EnumerateDeviceExtensionP
 		// INITS 3 - pProperties		
 		arg_3 = new VkExtensionProperties[pPropertyCount];
 
-		int result = vkEnumerateDeviceExtensionProperties(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkEnumerateDeviceExtensionProperties(arg_0, arg_1, arg_2, arg_3);
 			
 		int count = (int) pPropertyCount;	
 		pProperties = gcnew array<ExtensionProperties^>^(count);
@@ -4614,7 +4614,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayP
 		UInt32 pPropertyCount = 0;		
 		UInt32* arg_1 = &pPropertyCount;
 
-		int firstResult = vkGetPhysicalDeviceDisplayPropertiesKHR(arg_0, arg_1, nullptr, nullptr, nullptr);
+		auto firstResult = vkGetPhysicalDeviceDisplayPropertiesKHR(arg_0, arg_1, nullptr, nullptr, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -4644,7 +4644,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayP
 				arg_2->physicalResolution = arg_2_3;		
 			}
 
-		int result = vkGetPhysicalDeviceDisplayPropertiesKHR(arg_0, arg_1, arg_2);
+		auto result = vkGetPhysicalDeviceDisplayPropertiesKHR(arg_0, arg_1, arg_2);
 			
 		int count = (int) pPropertyCount;	
 		pProperties = gcnew array<DisplayPropertiesKHR^>^(count);
@@ -4684,7 +4684,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayP
 		UInt32 pPropertyCount = 0;		
 		UInt32* arg_1 = &pPropertyCount;
 
-		int firstResult = vkGetPhysicalDeviceDisplayPlanePropertiesKHR(arg_0, arg_1, nullptr);
+		auto firstResult = vkGetPhysicalDeviceDisplayPlanePropertiesKHR(arg_0, arg_1, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -4696,7 +4696,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayP
 		// INITS 2 - pProperties		
 		arg_2 = new VkDisplayPlanePropertiesKHR[pPropertyCount];
 
-		int result = vkGetPhysicalDeviceDisplayPlanePropertiesKHR(arg_0, arg_1, arg_2);
+		auto result = vkGetPhysicalDeviceDisplayPlanePropertiesKHR(arg_0, arg_1, arg_2);
 			
 		int count = (int) pPropertyCount;	
 		pProperties = gcnew array<DisplayPlanePropertiesKHR^>^(count);
@@ -4738,7 +4738,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetDisplayPlaneSupportedD
 		UInt32 pDisplayCount = 0;		
 		UInt32* arg_2 = &pDisplayCount;
 
-		int firstResult = vkGetDisplayPlaneSupportedDisplaysKHR(arg_0, arg_1, arg_2, nullptr);
+		auto firstResult = vkGetDisplayPlaneSupportedDisplaysKHR(arg_0, arg_1, arg_2, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -4750,7 +4750,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetDisplayPlaneSupportedD
 		// INITS 3 - pDisplays		
 		arg_3 = new VkDisplayKHR[pDisplayCount];
 
-		int result = vkGetDisplayPlaneSupportedDisplaysKHR(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkGetDisplayPlaneSupportedDisplaysKHR(arg_0, arg_1, arg_2, arg_3);
 			
 		int count = (int) pDisplayCount;	
 		pDisplays = gcnew array<DisplayKHR^>^(count);
@@ -4792,7 +4792,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetDisplayModePropertiesK
 		UInt32 pPropertyCount = 0;		
 		UInt32* arg_2 = &pPropertyCount;
 
-		int firstResult = vkGetDisplayModePropertiesKHR(arg_0, arg_1, arg_2, nullptr, nullptr, nullptr);
+		auto firstResult = vkGetDisplayModePropertiesKHR(arg_0, arg_1, arg_2, nullptr, nullptr, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -4822,7 +4822,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetDisplayModePropertiesK
 				arg_3->parameters->visibleRegion = arg_3_1_0;		
 			}
 
-		int result = vkGetDisplayModePropertiesKHR(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkGetDisplayModePropertiesKHR(arg_0, arg_1, arg_2, arg_3);
 			
 		int count = (int) pPropertyCount;	
 		pProperties = gcnew array<DisplayModePropertiesKHR^>^(count);
@@ -4880,7 +4880,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::CreateDisplayModeKHR(Mana
 			arg_4 = inst_4;		
 		}
 
-		int result = vkCreateDisplayModeKHR(arg_0, arg_1, arg_2, arg_3, arg_4);
+		auto result = vkCreateDisplayModeKHR(arg_0, arg_1, arg_2, arg_3, arg_4);
 								
 		pMode = gcnew DisplayModeKHR^();
 		pMode->mHandle = inst_4;
@@ -4992,7 +4992,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetDisplayPlaneCapabiliti
 				arg_3->maxDstExtent = arg_3_8;		
 			}
 
-		int result = vkGetDisplayPlaneCapabilitiesKHR(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkGetDisplayPlaneCapabilitiesKHR(arg_0, arg_1, arg_2, arg_3);
 								
 		pCapabilities = gcnew DisplayPlaneCapabilitiesKHR^();
 			pCapabilities->CopyFrom(arg_3);						
@@ -5025,7 +5025,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceS
 		// INITS 3 - pSupported		
 		VkBool32* arg_3 = pSupported;
 
-		int result = vkGetPhysicalDeviceSurfaceSupportKHR(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkGetPhysicalDeviceSurfaceSupportKHR(arg_0, arg_1, arg_2, arg_3);
 
 		return (VkResult) result;
 	}
@@ -5087,7 +5087,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceC
 				arg_2->maxImageExtent = arg_2_4;		
 			}
 
-		int result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(arg_0, arg_1, arg_2);
+		auto result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(arg_0, arg_1, arg_2);
 								
 		pSurfaceCapabilities = gcnew SurfaceCapabilitiesKHR^();
 			pSurfaceCapabilities->CopyFrom(arg_2);						
@@ -5120,7 +5120,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceF
 		UInt32 pSurfaceFormatCount = 0;		
 		UInt32* arg_2 = &pSurfaceFormatCount;
 
-		int firstResult = vkGetPhysicalDeviceSurfaceFormatsKHR(arg_0, arg_1, arg_2, nullptr);
+		auto firstResult = vkGetPhysicalDeviceSurfaceFormatsKHR(arg_0, arg_1, arg_2, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -5132,7 +5132,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceF
 		// INITS 3 - pSurfaceFormats		
 		arg_3 = new VkSurfaceFormatKHR[pSurfaceFormatCount];
 
-		int result = vkGetPhysicalDeviceSurfaceFormatsKHR(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkGetPhysicalDeviceSurfaceFormatsKHR(arg_0, arg_1, arg_2, arg_3);
 			
 		int count = (int) pSurfaceFormatCount;	
 		pSurfaceFormats = gcnew array<SurfaceFormatKHR^>^(count);
@@ -5174,7 +5174,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceP
 		UInt32 pPresentModeCount = 0;		
 		UInt32* arg_2 = &pPresentModeCount;
 
-		int firstResult = vkGetPhysicalDeviceSurfacePresentModesKHR(arg_0, arg_1, arg_2, nullptr);
+		auto firstResult = vkGetPhysicalDeviceSurfacePresentModesKHR(arg_0, arg_1, arg_2, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -5186,7 +5186,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceP
 		// INITS 3 - pPresentModes		
 		arg_3 = new <TYPE>[pPresentModeCount];
 
-		int result = vkGetPhysicalDeviceSurfacePresentModesKHR(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkGetPhysicalDeviceSurfacePresentModesKHR(arg_0, arg_1, arg_2, arg_3);
 			
 		int count = (int) pPresentModeCount;	
 		pPresentModes = gcnew array<VkPresentModeKHR>^(count);
@@ -5224,7 +5224,7 @@ bool ManagedVulkan::PhysicalDevice::GetPhysicalDeviceWin32PresentationSupportKHR
 		// INITS 1 - queueFamilyIndex		
 		uint32_t arg_1 = queueFamilyIndex;
 
-		int result = vkGetPhysicalDeviceWin32PresentationSupportKHR(arg_0, arg_1);
+		auto result = vkGetPhysicalDeviceWin32PresentationSupportKHR(arg_0, arg_1);
 
 		return result != 0;
 	}
@@ -5256,7 +5256,7 @@ ManagedVulkan::VkResult ManagedVulkan::Queue::QueueSubmit(array<ManagedVulkan::S
 		// INITS 3 - fence		
 		VkFence arg_3 = fence->mHandle;
 
-		int result = vkQueueSubmit(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkQueueSubmit(arg_0, arg_1, arg_2, arg_3);
 
 		return (VkResult) result;
 	}
@@ -5284,7 +5284,7 @@ ManagedVulkan::VkResult ManagedVulkan::Queue::QueueWaitIdle()
 		// INITS 0 - queue		
 		VkQueue arg_0 = this->mHandle;
 
-		int result = vkQueueWaitIdle(arg_0);
+		auto result = vkQueueWaitIdle(arg_0);
 
 		return (VkResult) result;
 	}
@@ -5396,7 +5396,7 @@ ManagedVulkan::VkResult ManagedVulkan::Queue::QueueBindSparse(array<ManagedVulka
 		// INITS 3 - fence		
 		VkFence arg_3 = fence->mHandle;
 
-		int result = vkQueueBindSparse(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkQueueBindSparse(arg_0, arg_1, arg_2, arg_3);
 
 		return (VkResult) result;
 	}
@@ -5433,7 +5433,7 @@ ManagedVulkan::VkResult ManagedVulkan::Queue::QueuePresentKHR(ManagedVulkan::Pre
 			arg_1 = inst_1;		
 		}
 
-		int result = vkQueuePresentKHR(arg_0, arg_1);
+		auto result = vkQueuePresentKHR(arg_0, arg_1);
 
 		return (VkResult) result;
 	}
@@ -5476,7 +5476,7 @@ ManagedVulkan::VkResult ManagedVulkan::CommandBuffer::BeginCommandBuffer(Managed
 				arg_1->pInheritanceInfo = arg_1_3;		
 			}
 
-		int result = vkBeginCommandBuffer(arg_0, arg_1);
+		auto result = vkBeginCommandBuffer(arg_0, arg_1);
 
 		return (VkResult) result;
 	}
@@ -5500,7 +5500,7 @@ ManagedVulkan::VkResult ManagedVulkan::CommandBuffer::EndCommandBuffer()
 		// INITS 0 - commandBuffer		
 		VkCommandBuffer arg_0 = this->mHandle;
 
-		int result = vkEndCommandBuffer(arg_0);
+		auto result = vkEndCommandBuffer(arg_0);
 
 		return (VkResult) result;
 	}
@@ -5526,7 +5526,7 @@ ManagedVulkan::VkResult ManagedVulkan::CommandBuffer::ResetCommandBuffer(UInt32 
 		// INITS 1 - flags		
 		VkCommandBufferResetFlags arg_1 = flags;
 
-		int result = vkResetCommandBuffer(arg_0, arg_1);
+		auto result = vkResetCommandBuffer(arg_0, arg_1);
 
 		return (VkResult) result;
 	}

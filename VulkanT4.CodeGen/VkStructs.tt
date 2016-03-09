@@ -87,7 +87,7 @@ namespace <#= ns #>
 			if (m.Translation != null && m.Translation.StructInfo != null)
 			{
 #>
-			<#= m.FieldName #>->CopyFrom(&dst-><#= m.Key #>, pins);
+			<#= m.FieldName #>->CopyTo(&dst-><#= m.Key #>, pins);
 <#
 			}
 
@@ -140,7 +140,7 @@ namespace <#= ns #>
 			else if (m.Translation != null && m.Translation.StructInfo != null)
 			{
 #>
-			<#= m.FieldName #>->CopyTo(&src-><#= m.Key #>);
+			<#= m.FieldName #>->CopyFrom(&src-><#= m.Key #>);
 <#
 			}
 

@@ -4,7 +4,7 @@
 #include "VkHandles.h"
 #include "VkEnums.h"
 #include "VkDelegates.h"
-#include "CommandBuffer.h"
+#include "VkCommandBuffer.h"
 
 using namespace System;
 using namespace System::Runtime::InteropServices;
@@ -4956,6 +4956,642 @@ namespace ManagedVulkan
 
 			//mSignalSemaphoreCount = src->signalSemaphoreCount;
 			//mSignalSemaphores = src->pSignalSemaphores;
+		}
+	};
+
+	public ref class SparseMemoryBind
+	{
+	private:
+		UInt64 mResourceOffset = 0;
+		UInt64 mSize = 0;
+		ManagedVulkan::DeviceMemory^ mMemory = gcnew ManagedVulkan::DeviceMemory();
+		UInt64 mMemoryOffset = 0;
+		UInt32 mFlags;
+	public:
+		property UInt64 ResourceOffset
+		{
+			UInt64 get()
+			{
+				return mResourceOffset;
+			}
+			void set(UInt64 value)
+			{
+				mResourceOffset = value;
+			}
+		}
+		property UInt64 Size
+		{
+			UInt64 get()
+			{
+				return mSize;
+			}
+			void set(UInt64 value)
+			{
+				mSize = value;
+			}
+		}
+		property ManagedVulkan::DeviceMemory^ Memory
+		{
+			ManagedVulkan::DeviceMemory^ get()
+			{
+				return mMemory;
+			}
+			void set(ManagedVulkan::DeviceMemory^ value)
+			{
+				mMemory = value;
+			}
+		}
+		property UInt64 MemoryOffset
+		{
+			UInt64 get()
+			{
+				return mMemoryOffset;
+			}
+			void set(UInt64 value)
+			{
+				mMemoryOffset = value;
+			}
+		}
+		property UInt32 Flags
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSparseMemoryBind* dst, List<IntPtr>^ pins)
+		{
+			dst->resourceOffset = mResourceOffset;
+			dst->size = mSize;
+			dst->memory = mMemory->mHandle;
+			dst->memoryOffset = mMemoryOffset;
+			dst->flags = mFlags;
+		}
+
+		void CopyFrom(VkSparseMemoryBind* src)
+		{
+			mResourceOffset = src->resourceOffset;
+			mSize = src->size;
+			mMemory->mHandle = src->memory;
+			mMemoryOffset = src->memoryOffset;
+			mFlags = src->flags;
+		}
+	};
+
+
+	public ref class SparseBufferMemoryBindInfo
+	{
+	private:
+		ManagedVulkan::Buffer^ mBuffer = gcnew ManagedVulkan::Buffer();
+		array<ManagedVulkan::SparseMemoryBind^>^ mBinds = nullptr;
+	public:
+		property ManagedVulkan::Buffer^ Buffer
+		{
+			ManagedVulkan::Buffer^ get()
+			{
+				return mBuffer;
+			}
+			void set(ManagedVulkan::Buffer^ value)
+			{
+				mBuffer = value;
+			}
+		}
+
+		property array<ManagedVulkan::SparseMemoryBind^>^ Binds
+		{
+			array<ManagedVulkan::SparseMemoryBind^>^ get()
+			{
+				return mBinds;
+			}
+			void set(array<ManagedVulkan::SparseMemoryBind^>^ value)
+			{
+				mBinds = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSparseBufferMemoryBindInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->buffer = mBuffer->mHandle;
+			//dst->bindCount = mBindCount;
+			//mBinds->CopyFrom(dst->pBinds, pins);
+		}
+
+		void CopyFrom(VkSparseBufferMemoryBindInfo* src)
+		{
+			mBuffer->mHandle = src->buffer;
+			//mBindCount = src->bindCount;
+			//mBinds->CopyTo(&src->pBinds);
+		}
+	};
+
+	public ref class SparseImageOpaqueMemoryBindInfo
+	{
+	private:
+		ManagedVulkan::Image^ mImage = gcnew ManagedVulkan::Image();
+		array<ManagedVulkan::SparseMemoryBind^>^ mBinds = nullptr;
+	public:
+		property ManagedVulkan::Image^ Image
+		{
+			ManagedVulkan::Image^ get()
+			{
+				return mImage;
+			}
+			void set(ManagedVulkan::Image^ value)
+			{
+				mImage = value;
+			}
+		}
+		property array<ManagedVulkan::SparseMemoryBind^>^ Binds
+		{
+			array<ManagedVulkan::SparseMemoryBind^>^ get()
+			{
+				return mBinds;
+			}
+			void set(array<ManagedVulkan::SparseMemoryBind^>^ value)
+			{
+				mBinds = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSparseImageOpaqueMemoryBindInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->image = mImage->mHandle;
+			//dst->bindCount = mBindCount;
+			//mBinds->CopyFrom(&dst->pBinds, pins);
+		}
+
+		void CopyFrom(VkSparseImageOpaqueMemoryBindInfo* src)
+		{
+			mImage->mHandle = src->image;
+			//mBindCount = src->bindCount;
+			//mBinds->CopyTo(&src->pBinds);
+		}
+	};
+
+	public ref class ImageSubresource
+	{
+	private:
+		UInt32 mAspectMask;
+		UInt32 mMipLevel = 0;
+		UInt32 mArrayLayer = 0;
+	public:
+		property UInt32 AspectMask
+		{
+			UInt32 get()
+			{
+				return mAspectMask;
+			}
+			void set(UInt32 value)
+			{
+				mAspectMask = value;
+			}
+		}
+		property UInt32 MipLevel
+		{
+			UInt32 get()
+			{
+				return mMipLevel;
+			}
+			void set(UInt32 value)
+			{
+				mMipLevel = value;
+			}
+		}
+		property UInt32 ArrayLayer
+		{
+			UInt32 get()
+			{
+				return mArrayLayer;
+			}
+			void set(UInt32 value)
+			{
+				mArrayLayer = value;
+			}
+		}
+	internal:
+		void CopyTo(VkImageSubresource* dst, List<IntPtr>^ pins)
+		{
+			dst->aspectMask = mAspectMask;
+			dst->mipLevel = mMipLevel;
+			dst->arrayLayer = mArrayLayer;
+		}
+
+		void CopyFrom(VkImageSubresource* src)
+		{
+			mAspectMask = src->aspectMask;
+			mMipLevel = src->mipLevel;
+			mArrayLayer = src->arrayLayer;
+		}
+	};
+
+	public ref class Offset3D
+	{
+	private:
+		Int32 mX = 0;
+		Int32 mY = 0;
+		Int32 mZ = 0;
+	public:
+		property Int32 X
+		{
+			Int32 get()
+			{
+				return mX;
+			}
+			void set(Int32 value)
+			{
+				mX = value;
+			}
+		}
+		property Int32 Y
+		{
+			Int32 get()
+			{
+				return mY;
+			}
+			void set(Int32 value)
+			{
+				mY = value;
+			}
+		}
+		property Int32 Z
+		{
+			Int32 get()
+			{
+				return mZ;
+			}
+			void set(Int32 value)
+			{
+				mZ = value;
+			}
+		}
+	internal:
+		void CopyTo(VkOffset3D* dst, List<IntPtr>^ pins)
+		{
+			dst->x = mX;
+			dst->y = mY;
+			dst->z = mZ;
+		}
+
+		void CopyFrom(VkOffset3D* src)
+		{
+			mX = src->x;
+			mY = src->y;
+			mZ = src->z;
+		}
+	};
+
+
+	public ref class SparseImageMemoryBind
+	{
+	private:
+		ManagedVulkan::ImageSubresource^ mSubresource = gcnew ManagedVulkan::ImageSubresource();
+		ManagedVulkan::Offset3D^ mOffset = gcnew ManagedVulkan::Offset3D();
+		ManagedVulkan::Extent3D^ mExtent = gcnew ManagedVulkan::Extent3D();
+		ManagedVulkan::DeviceMemory^ mMemory = gcnew ManagedVulkan::DeviceMemory();
+		UInt64 mMemoryOffset = 0;
+		UInt32 mFlags;
+	public:
+		property ManagedVulkan::ImageSubresource^ Subresource
+		{
+			ManagedVulkan::ImageSubresource^ get()
+			{
+				return mSubresource;
+			}
+			void set(ManagedVulkan::ImageSubresource^ value)
+			{
+				mSubresource = value;
+			}
+		}
+		property ManagedVulkan::Offset3D^ Offset
+		{
+			ManagedVulkan::Offset3D^ get()
+			{
+				return mOffset;
+			}
+			void set(ManagedVulkan::Offset3D^ value)
+			{
+				mOffset = value;
+			}
+		}
+		property ManagedVulkan::Extent3D^ Extent
+		{
+			ManagedVulkan::Extent3D^ get()
+			{
+				return mExtent;
+			}
+			void set(ManagedVulkan::Extent3D^ value)
+			{
+				mExtent = value;
+			}
+		}
+		property ManagedVulkan::DeviceMemory^ Memory
+		{
+			ManagedVulkan::DeviceMemory^ get()
+			{
+				return mMemory;
+			}
+			void set(ManagedVulkan::DeviceMemory^ value)
+			{
+				mMemory = value;
+			}
+		}
+		property UInt64 MemoryOffset
+		{
+			UInt64 get()
+			{
+				return mMemoryOffset;
+			}
+			void set(UInt64 value)
+			{
+				mMemoryOffset = value;
+			}
+		}
+		property UInt32 Flags
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSparseImageMemoryBind* dst, List<IntPtr>^ pins)
+		{
+			mSubresource->CopyTo(&dst->subresource, pins);
+			mOffset->CopyTo(&dst->offset, pins);
+			mExtent->CopyTo(&dst->extent, pins);
+			dst->memory = mMemory->mHandle;
+			dst->memoryOffset = mMemoryOffset;
+			dst->flags = mFlags;
+		}
+
+		void CopyFrom(VkSparseImageMemoryBind* src)
+		{
+			mSubresource->CopyFrom(&src->subresource);
+			mOffset->CopyFrom(&src->offset);
+			mExtent->CopyFrom(&src->extent);
+			mMemory->mHandle = src->memory;
+			mMemoryOffset = src->memoryOffset;
+			mFlags = src->flags;
+		}
+	};
+
+
+	public ref class SparseImageMemoryBindInfo
+	{
+	private:
+		ManagedVulkan::Image^ mImage = gcnew ManagedVulkan::Image();
+		array<ManagedVulkan::SparseImageMemoryBind^>^ mBinds = nullptr;
+	public:
+		property ManagedVulkan::Image^ Image
+		{
+			ManagedVulkan::Image^ get()
+			{
+				return mImage;
+			}
+			void set(ManagedVulkan::Image^ value)
+			{
+				mImage = value;
+			}
+		}
+		property array<ManagedVulkan::SparseImageMemoryBind^>^ Binds
+		{
+			array<ManagedVulkan::SparseImageMemoryBind^>^ get()
+			{
+				return mBinds;
+			}
+			void set(array<ManagedVulkan::SparseImageMemoryBind^>^ value)
+			{
+				mBinds = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSparseImageMemoryBindInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->image = mImage->mHandle;
+			//dst->bindCount = mBindCount;
+			//mBinds->CopyFrom(&dst->pBinds, pins);
+		}
+
+		void CopyFrom(VkSparseImageMemoryBindInfo* src)
+		{
+			mImage->mHandle = src->image;
+			//mBindCount = src->bindCount;
+			//mBinds->CopyTo(&src->pBinds);
+		}
+	};
+
+
+
+	public ref class BindSparseInfo
+	{
+	private:
+		StructureType mSType;
+		array<ManagedVulkan::Semaphore^>^ mWaitSemaphores = nullptr;
+		array<ManagedVulkan::SparseBufferMemoryBindInfo^>^ mBufferBinds = nullptr;
+		array<ManagedVulkan::SparseImageOpaqueMemoryBindInfo^>^ mImageOpaqueBinds = nullptr;
+		array<ManagedVulkan::SparseImageMemoryBindInfo^>^ mImageBinds = nullptr;
+		array<ManagedVulkan::Semaphore^>^ mSignalSemaphores = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property array<ManagedVulkan::Semaphore^>^ WaitSemaphores
+		{
+			array<ManagedVulkan::Semaphore^>^ get()
+			{
+				return mWaitSemaphores;
+			}
+			void set(array<ManagedVulkan::Semaphore^>^ value)
+			{
+				mWaitSemaphores = value;
+			}
+		}
+		property array<ManagedVulkan::SparseBufferMemoryBindInfo^>^ BufferBinds
+		{
+			array<ManagedVulkan::SparseBufferMemoryBindInfo^>^ get()
+			{
+				return mBufferBinds;
+			}
+			void set(array<ManagedVulkan::SparseBufferMemoryBindInfo^>^ value)
+			{
+				mBufferBinds = value;
+			}
+		}
+		property array<ManagedVulkan::SparseImageOpaqueMemoryBindInfo^>^ ImageOpaqueBinds
+		{
+			array<ManagedVulkan::SparseImageOpaqueMemoryBindInfo^>^ get()
+			{
+				return mImageOpaqueBinds;
+			}
+			void set(array<ManagedVulkan::SparseImageOpaqueMemoryBindInfo^>^ value)
+			{
+				mImageOpaqueBinds = value;
+			}
+		}
+
+		property array<ManagedVulkan::SparseImageMemoryBindInfo^>^ ImageBinds
+		{
+			array<ManagedVulkan::SparseImageMemoryBindInfo^>^ get()
+			{
+				return mImageBinds;
+			}
+			void set(array<ManagedVulkan::SparseImageMemoryBindInfo^>^ value)
+			{
+				mImageBinds = value;
+			}
+		}
+		property array<ManagedVulkan::Semaphore^>^ SignalSemaphores
+		{
+			array<ManagedVulkan::Semaphore^>^ get()
+			{
+				return mSignalSemaphores;
+			}
+			void set(array<ManagedVulkan::Semaphore^>^ value)
+			{
+				mSignalSemaphores = value;
+			}
+		}
+	internal:
+		void CopyTo(VkBindSparseInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			//dst->waitSemaphoreCount = mWaitSemaphoreCount;
+			//dst->pWaitSemaphores = mWaitSemaphores;
+			//dst->bufferBindCount = mBufferBindCount;
+			//mBufferBinds->CopyFrom(&dst->pBufferBinds, pins);
+			//dst->imageOpaqueBindCount = mImageOpaqueBindCount;
+			//mImageOpaqueBinds->CopyFrom(&dst->pImageOpaqueBinds, pins);
+			//dst->imageBindCount = mImageBindCount;
+			//mImageBinds->CopyFrom(&dst->pImageBinds, pins);
+			//dst->signalSemaphoreCount = mSignalSemaphoreCount;
+			//dst->pSignalSemaphores = mSignalSemaphores;
+		}
+
+		void CopyFrom(VkBindSparseInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+
+			//mWaitSemaphoreCount = src->waitSemaphoreCount;
+			//mWaitSemaphores = src->pWaitSemaphores;
+			//mBufferBindCount = src->bufferBindCount;
+			//mBufferBinds->CopyTo(&src->pBufferBinds);
+			//mImageOpaqueBindCount = src->imageOpaqueBindCount;
+			//mImageOpaqueBinds->CopyTo(&src->pImageOpaqueBinds);
+			//mImageBindCount = src->imageBindCount;
+			//mImageBinds->CopyTo(&src->pImageBinds);
+			//mSignalSemaphoreCount = src->signalSemaphoreCount;
+			//mSignalSemaphores = src->pSignalSemaphores;
+		}
+	};
+
+	public ref class PresentInfoKHR
+	{
+	private:
+		StructureType mSType;
+		array<ManagedVulkan::Semaphore^>^ mWaitSemaphores = nullptr;
+		UInt32 mSwapchainCount = 0;
+		array<ManagedVulkan::SwapchainKHR^>^ mSwapchains = nullptr;
+		array<UInt32>^ mImageIndices = nullptr;
+		// REMOVED AND MOVED TO METHOD SIGNATURE - QueuePresentKHR
+		//array<Result>^ mResults = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property array<ManagedVulkan::Semaphore^>^ WaitSemaphores
+		{
+			array<ManagedVulkan::Semaphore^>^ get()
+			{
+				return mWaitSemaphores;
+			}
+			void set(array<ManagedVulkan::Semaphore^>^ value)
+			{
+				mWaitSemaphores = value;
+			}
+		}
+		property UInt32 SwapchainCount
+		{
+			UInt32 get()
+			{
+				return mSwapchainCount;
+			}
+			void set(UInt32 value)
+			{
+				mSwapchainCount = value;
+			}
+		}
+		// TODO : Unify Swapchains and image indices into one class
+		property array<ManagedVulkan::SwapchainKHR^>^ Swapchains
+		{
+			array<ManagedVulkan::SwapchainKHR^>^ get()
+			{
+				return mSwapchains;
+			}
+			void set(array<ManagedVulkan::SwapchainKHR^>^ value)
+			{
+				mSwapchains = value;
+			}
+		}
+		property array<UInt32>^ ImageIndices
+		{
+			array<UInt32>^ get()
+			{
+				return mImageIndices;
+			}
+			void set(array<UInt32>^ value)
+			{
+				mImageIndices = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPresentInfoKHR* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			//dst->waitSemaphoreCount = mWaitSemaphoreCount;
+			//dst->pWaitSemaphores = mWaitSemaphores;
+			//dst->swapchainCount = mSwapchainCount;
+			//dst->pSwapchains = mSwapchains;
+			//dst->pImageIndices = mImageIndices;
+			//dst->pResults = mResults;
+		}
+
+		void CopyFrom(VkPresentInfoKHR* src)
+		{
+			mSType = (StructureType)src->sType;
+	
+			//mWaitSemaphoreCount = src->waitSemaphoreCount;
+			//mWaitSemaphores = src->pWaitSemaphores;
+			//mSwapchainCount = src->swapchainCount;
+			//mSwapchains = src->pSwapchains;
+			//mImageIndices = src->pImageIndices;
+			//mResults = src->pResults;
 		}
 	};
 
