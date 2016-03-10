@@ -1,6 +1,8 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
+#include <vulkan\vulkan.h>
+#include <vulkan\vk_sdk_platform.h>
+
 #include "VkStructs.h"
 
 using namespace System::Runtime::InteropServices;

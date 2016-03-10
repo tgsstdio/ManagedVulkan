@@ -272,7 +272,7 @@ ManagedVulkan::Result ManagedVulkan::Queue::QueueBindSparse(array<ManagedVulkan:
 						VkSparseImageMemoryBindInfo* binds = new VkSparseImageMemoryBindInfo[imageBinds];
 						for (UInt32 j = 0; j < imageBinds; ++j)
 						{
-							ManagedVulkan::SparseImageMemoryBindInfo^ sourceImageBind = (ManagedVulkan::SparseImageMemoryBindInfo^) src->ImageOpaqueBinds[j];
+							ManagedVulkan::SparseImageMemoryBindInfo^ sourceImageBind = (ManagedVulkan::SparseImageMemoryBindInfo^) src->ImageBinds[j];
 							VkSparseImageMemoryBindInfo* destImageBind = binds + j;
 
 							// NOT SURE WHAT SHOULD HAPPEN HERE
@@ -502,7 +502,7 @@ ManagedVulkan::Result ManagedVulkan::Queue::QueuePresentKHR(ManagedVulkan::Prese
 				{
 					imageIndices = new UInt32[swapchainCount];
 					swapChains = new VkSwapchainKHR[swapchainCount];
-					queryResults = new Result[swapchainCount];
+					queryResults = new VkResult[swapchainCount];
 					for (UInt32 j = 0; j < swapchainCount; ++j)
 					{
 						imageIndices[j] = (UInt32) pPresentInfo->ImageIndices[j];

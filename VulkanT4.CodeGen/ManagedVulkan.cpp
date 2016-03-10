@@ -98,7 +98,7 @@ ManagedVulkan::VkResult ManagedVulkan::Vulkan::CreateInstance(ManagedVulkan::Ins
 			delete[] arg_0_7;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -148,7 +148,7 @@ ManagedVulkan::VkResult ManagedVulkan::Vulkan::EnumerateInstanceLayerProperties(
 			delete[] arg_1;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -202,7 +202,7 @@ ManagedVulkan::VkResult ManagedVulkan::Vulkan::EnumerateInstanceExtensionPropert
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -236,7 +236,7 @@ void ManagedVulkan::Instance::DestroyInstance(ManagedVulkan::AllocationCallbacks
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -288,7 +288,7 @@ ManagedVulkan::VkResult ManagedVulkan::Instance::EnumeratePhysicalDevices([Out] 
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -316,7 +316,7 @@ ManagedVulkan::PFN_vkVoidFunction^ ManagedVulkan::Instance::GetInstanceProcAddr(
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -379,7 +379,7 @@ ManagedVulkan::VkResult ManagedVulkan::Instance::CreateDisplayPlaneSurfaceKHR(Ma
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -414,7 +414,7 @@ void ManagedVulkan::Instance::DestroySurfaceKHR(ManagedVulkan::SurfaceKHR^ surfa
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -468,7 +468,7 @@ ManagedVulkan::VkResult ManagedVulkan::Instance::CreateWin32SurfaceKHR(ManagedVu
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -522,7 +522,7 @@ ManagedVulkan::VkResult ManagedVulkan::Instance::CreateDebugReportCallbackEXT(Ma
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -557,7 +557,7 @@ void ManagedVulkan::Instance::DestroyDebugReportCallbackEXT(ManagedVulkan::Debug
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -599,7 +599,7 @@ void ManagedVulkan::Instance::DebugReportMessageEXT(UInt32 flags, ManagedVulkan:
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -628,7 +628,7 @@ ManagedVulkan::PFN_vkVoidFunction^ ManagedVulkan::Device::GetDeviceProcAddr(Stri
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -661,7 +661,7 @@ void ManagedVulkan::Device::DestroyDevice(ManagedVulkan::AllocationCallbacks^ pA
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -701,7 +701,7 @@ void ManagedVulkan::Device::GetDeviceQueue(UInt32 queueFamilyIndex, UInt32 queue
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -725,7 +725,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::DeviceWaitIdle()
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -769,7 +769,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::AllocateMemory(ManagedVulkan::Mem
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -804,7 +804,7 @@ void ManagedVulkan::Device::FreeMemory(ManagedVulkan::DeviceMemory^ memory, Mana
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -838,7 +838,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::MapMemory(ManagedVulkan::DeviceMe
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -864,7 +864,7 @@ void ManagedVulkan::Device::UnmapMemory(ManagedVulkan::DeviceMemory^ memory)
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -897,7 +897,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::FlushMappedMemoryRanges(array<Man
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -930,7 +930,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::InvalidateMappedMemoryRanges(arra
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -958,7 +958,7 @@ void ManagedVulkan::Device::GetDeviceMemoryCommitment(ManagedVulkan::DeviceMemor
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -996,7 +996,7 @@ void ManagedVulkan::Device::GetBufferMemoryRequirements(ManagedVulkan::Buffer^ b
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1026,7 +1026,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::BindBufferMemory(ManagedVulkan::B
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1064,7 +1064,7 @@ void ManagedVulkan::Device::GetImageMemoryRequirements(ManagedVulkan::Image^ ima
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1094,7 +1094,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::BindImageMemory(ManagedVulkan::Im
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1160,7 +1160,7 @@ void ManagedVulkan::Device::GetImageSparseMemoryRequirements(ManagedVulkan::Imag
 			delete[] arg_3;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1214,7 +1214,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateFence(ManagedVulkan::FenceC
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1249,7 +1249,7 @@ void ManagedVulkan::Device::DestroyFence(ManagedVulkan::Fence^ fence, ManagedVul
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1282,7 +1282,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::ResetFences(array<ManagedVulkan::
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1308,7 +1308,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::GetFenceStatus(ManagedVulkan::Fen
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1345,7 +1345,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::WaitForFences(array<ManagedVulkan
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1399,7 +1399,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateSemaphore(ManagedVulkan::Se
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1434,7 +1434,7 @@ void ManagedVulkan::Device::DestroySemaphore(ManagedVulkan::Semaphore^ semaphore
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1488,7 +1488,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateEvent(ManagedVulkan::EventC
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1523,7 +1523,7 @@ void ManagedVulkan::Device::DestroyEvent(ManagedVulkan::Event^ event, ManagedVul
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1549,7 +1549,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::GetEventStatus(ManagedVulkan::Eve
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1575,7 +1575,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::SetEvent(ManagedVulkan::Event^ ev
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1601,7 +1601,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::ResetEvent(ManagedVulkan::Event^ 
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1655,7 +1655,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateQueryPool(ManagedVulkan::Qu
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1690,7 +1690,7 @@ void ManagedVulkan::Device::DestroyQueryPool(ManagedVulkan::QueryPool^ queryPool
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1728,7 +1728,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::GetQueryPoolResults(ManagedVulkan
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1782,7 +1782,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateBuffer(ManagedVulkan::Buffe
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1817,7 +1817,7 @@ void ManagedVulkan::Device::DestroyBuffer(ManagedVulkan::Buffer^ buffer, Managed
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1871,7 +1871,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateBufferView(ManagedVulkan::B
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1906,7 +1906,7 @@ void ManagedVulkan::Device::DestroyBufferView(ManagedVulkan::BufferView^ bufferV
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -1969,7 +1969,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateImage(ManagedVulkan::ImageC
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2004,7 +2004,7 @@ void ManagedVulkan::Device::DestroyImage(ManagedVulkan::Image^ image, ManagedVul
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2051,7 +2051,7 @@ void ManagedVulkan::Device::GetImageSubresourceLayout(ManagedVulkan::Image^ imag
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2123,7 +2123,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateImageView(ManagedVulkan::Im
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2158,7 +2158,7 @@ void ManagedVulkan::Device::DestroyImageView(ManagedVulkan::ImageView^ imageView
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2212,7 +2212,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateShaderModule(ManagedVulkan:
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2247,7 +2247,7 @@ void ManagedVulkan::Device::DestroyShaderModule(ManagedVulkan::ShaderModule^ sha
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2301,7 +2301,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreatePipelineCache(ManagedVulkan
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2336,7 +2336,7 @@ void ManagedVulkan::Device::DestroyPipelineCache(ManagedVulkan::PipelineCache^ p
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2366,7 +2366,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::GetPipelineCacheData(ManagedVulka
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2401,7 +2401,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::MergePipelineCaches(ManagedVulkan
 			delete[] arg_3;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2649,7 +2649,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateGraphicsPipelines(ManagedVu
 			delete[] arg_5;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2735,7 +2735,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateComputePipelines(ManagedVul
 			delete[] arg_5;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2770,7 +2770,7 @@ void ManagedVulkan::Device::DestroyPipeline(ManagedVulkan::Pipeline^ pipeline, M
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2833,7 +2833,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreatePipelineLayout(ManagedVulka
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2868,7 +2868,7 @@ void ManagedVulkan::Device::DestroyPipelineLayout(ManagedVulkan::PipelineLayout^
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2922,7 +2922,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateSampler(ManagedVulkan::Samp
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -2957,7 +2957,7 @@ void ManagedVulkan::Device::DestroySampler(ManagedVulkan::Sampler^ sampler, Mana
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3020,7 +3020,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateDescriptorSetLayout(Managed
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3055,7 +3055,7 @@ void ManagedVulkan::Device::DestroyDescriptorSetLayout(ManagedVulkan::Descriptor
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3118,7 +3118,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateDescriptorPool(ManagedVulka
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3153,7 +3153,7 @@ void ManagedVulkan::Device::DestroyDescriptorPool(ManagedVulkan::DescriptorPool^
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3181,7 +3181,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::ResetDescriptorPool(ManagedVulkan
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3216,7 +3216,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::AllocateDescriptorSets(ManagedVul
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3246,7 +3246,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::FreeDescriptorSets(ManagedVulkan:
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3310,7 +3310,7 @@ void ManagedVulkan::Device::UpdateDescriptorSets(UInt32 descriptorWriteCount, Ma
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3364,7 +3364,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateFramebuffer(ManagedVulkan::
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3399,7 +3399,7 @@ void ManagedVulkan::Device::DestroyFramebuffer(ManagedVulkan::Framebuffer^ frame
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3516,7 +3516,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateRenderPass(ManagedVulkan::R
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3551,7 +3551,7 @@ void ManagedVulkan::Device::DestroyRenderPass(ManagedVulkan::RenderPass^ renderP
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3589,7 +3589,7 @@ void ManagedVulkan::Device::GetRenderAreaGranularity(ManagedVulkan::RenderPass^ 
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3643,7 +3643,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateCommandPool(ManagedVulkan::
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3678,7 +3678,7 @@ void ManagedVulkan::Device::DestroyCommandPool(ManagedVulkan::CommandPool^ comma
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3706,7 +3706,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::ResetCommandPool(ManagedVulkan::C
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3748,7 +3748,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::AllocateCommandBuffers(ManagedVul
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3783,7 +3783,7 @@ void ManagedVulkan::Device::FreeCommandBuffers(ManagedVulkan::CommandPool^ comma
 			delete[] arg_3;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3849,7 +3849,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateSharedSwapchainsKHR(array<M
 			delete[] arg_4;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3912,7 +3912,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::CreateSwapchainKHR(ManagedVulkan:
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -3947,7 +3947,7 @@ void ManagedVulkan::Device::DestroySwapchainKHR(ManagedVulkan::SwapchainKHR^ swa
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4001,7 +4001,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::GetSwapchainImagesKHR(ManagedVulk
 			delete[] arg_3;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4035,7 +4035,7 @@ ManagedVulkan::VkResult ManagedVulkan::Device::AcquireNextImageKHR(ManagedVulkan
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4090,7 +4090,7 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceProperties([Out] ManagedVul
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4145,7 +4145,7 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceQueueFamilyProperties([Out]
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4181,7 +4181,7 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceMemoryProperties([Out] Mana
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4217,7 +4217,7 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceFeatures([Out] ManagedVulka
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4255,7 +4255,7 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceFormatProperties(ManagedVul
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4310,7 +4310,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceImageFor
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4420,7 +4420,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::CreateDevice(ManagedVulka
 			delete[] arg_1_8;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4472,7 +4472,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::EnumerateDeviceLayerPrope
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4528,7 +4528,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::EnumerateDeviceExtensionP
 			delete[] arg_3;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4593,7 +4593,7 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSparseImageFormatProperties
 			delete[] arg_7;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4663,7 +4663,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayP
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4715,7 +4715,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayP
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4769,7 +4769,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetDisplayPlaneSupportedD
 			delete[] arg_3;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4841,7 +4841,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetDisplayModePropertiesK
 			delete[] arg_3;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -4890,7 +4890,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::CreateDisplayModeKHR(Mana
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5002,7 +5002,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetDisplayPlaneCapabiliti
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5032,7 +5032,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceS
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5097,7 +5097,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceC
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5151,7 +5151,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceF
 			delete[] arg_3;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5205,7 +5205,7 @@ ManagedVulkan::VkResult ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceP
 			delete[] arg_3;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5231,7 +5231,7 @@ bool ManagedVulkan::PhysicalDevice::GetPhysicalDeviceWin32PresentationSupportKHR
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5267,7 +5267,7 @@ ManagedVulkan::VkResult ManagedVulkan::Queue::QueueSubmit(array<ManagedVulkan::S
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5291,7 +5291,7 @@ ManagedVulkan::VkResult ManagedVulkan::Queue::QueueWaitIdle()
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5407,7 +5407,7 @@ ManagedVulkan::VkResult ManagedVulkan::Queue::QueueBindSparse(array<ManagedVulka
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5440,7 +5440,7 @@ ManagedVulkan::VkResult ManagedVulkan::Queue::QueuePresentKHR(ManagedVulkan::Pre
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5483,7 +5483,7 @@ ManagedVulkan::VkResult ManagedVulkan::CommandBuffer::BeginCommandBuffer(Managed
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5507,7 +5507,7 @@ ManagedVulkan::VkResult ManagedVulkan::CommandBuffer::EndCommandBuffer()
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5533,7 +5533,7 @@ ManagedVulkan::VkResult ManagedVulkan::CommandBuffer::ResetCommandBuffer(UInt32 
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5561,7 +5561,7 @@ void ManagedVulkan::CommandBuffer::CmdBindPipeline(ManagedVulkan::VkPipelineBind
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5596,7 +5596,7 @@ void ManagedVulkan::CommandBuffer::CmdSetViewport(UInt32 firstViewport, UInt32 v
 			delete[] arg_3;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5649,7 +5649,7 @@ void ManagedVulkan::CommandBuffer::CmdSetScissor(UInt32 firstScissor, UInt32 sci
 			delete[] arg_3;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5675,7 +5675,7 @@ void ManagedVulkan::CommandBuffer::CmdSetLineWidth(float lineWidth)
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5705,7 +5705,7 @@ void ManagedVulkan::CommandBuffer::CmdSetDepthBias(float depthBiasConstantFactor
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5731,7 +5731,7 @@ void ManagedVulkan::CommandBuffer::CmdSetBlendConstants(float blendConstants[4])
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5759,7 +5759,7 @@ void ManagedVulkan::CommandBuffer::CmdSetDepthBounds(float minDepthBounds, float
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5787,7 +5787,7 @@ void ManagedVulkan::CommandBuffer::CmdSetStencilCompareMask(UInt32 faceMask, UIn
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5815,7 +5815,7 @@ void ManagedVulkan::CommandBuffer::CmdSetStencilWriteMask(UInt32 faceMask, UInt3
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5843,7 +5843,7 @@ void ManagedVulkan::CommandBuffer::CmdSetStencilReference(UInt32 faceMask, UInt3
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5891,7 +5891,7 @@ void ManagedVulkan::CommandBuffer::CmdBindDescriptorSets(ManagedVulkan::VkPipeli
 			delete[] arg_7;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5921,7 +5921,7 @@ void ManagedVulkan::CommandBuffer::CmdBindIndexBuffer(ManagedVulkan::Buffer^ buf
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5963,7 +5963,7 @@ void ManagedVulkan::CommandBuffer::CmdBindVertexBuffers(UInt32 firstBinding, UIn
 			delete[] arg_4;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -5995,7 +5995,7 @@ void ManagedVulkan::CommandBuffer::CmdDraw(UInt32 vertexCount, UInt32 instanceCo
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6029,7 +6029,7 @@ void ManagedVulkan::CommandBuffer::CmdDrawIndexed(UInt32 indexCount, UInt32 inst
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6061,7 +6061,7 @@ void ManagedVulkan::CommandBuffer::CmdDrawIndirect(ManagedVulkan::Buffer^ buffer
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6093,7 +6093,7 @@ void ManagedVulkan::CommandBuffer::CmdDrawIndexedIndirect(ManagedVulkan::Buffer^
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6123,7 +6123,7 @@ void ManagedVulkan::CommandBuffer::CmdDispatch(UInt32 x, UInt32 y, UInt32 z)
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6151,7 +6151,7 @@ void ManagedVulkan::CommandBuffer::CmdDispatchIndirect(ManagedVulkan::Buffer^ bu
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6188,7 +6188,7 @@ void ManagedVulkan::CommandBuffer::CmdCopyBuffer(ManagedVulkan::Buffer^ srcBuffe
 			delete[] arg_4;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6274,7 +6274,7 @@ void ManagedVulkan::CommandBuffer::CmdCopyImage(ManagedVulkan::Image^ srcImage, 
 			delete[] arg_6;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6335,7 +6335,7 @@ void ManagedVulkan::CommandBuffer::CmdBlitImage(ManagedVulkan::Image^ srcImage, 
 			delete[] arg_6;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6401,7 +6401,7 @@ void ManagedVulkan::CommandBuffer::CmdCopyBufferToImage(ManagedVulkan::Buffer^ s
 			delete[] arg_5;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6467,7 +6467,7 @@ void ManagedVulkan::CommandBuffer::CmdCopyImageToBuffer(ManagedVulkan::Image^ sr
 			delete[] arg_5;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6499,7 +6499,7 @@ void ManagedVulkan::CommandBuffer::CmdUpdateBuffer(ManagedVulkan::Buffer^ dstBuf
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6531,7 +6531,7 @@ void ManagedVulkan::CommandBuffer::CmdFillBuffer(ManagedVulkan::Buffer^ dstBuffe
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6577,7 +6577,7 @@ void ManagedVulkan::CommandBuffer::CmdClearColorImage(ManagedVulkan::Image^ imag
 			delete[] arg_5;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6623,7 +6623,7 @@ void ManagedVulkan::CommandBuffer::CmdClearDepthStencilImage(ManagedVulkan::Imag
 			delete[] arg_5;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6719,7 +6719,7 @@ void ManagedVulkan::CommandBuffer::CmdClearAttachments(array<ManagedVulkan::Clea
 			delete[] arg_4;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6805,7 +6805,7 @@ void ManagedVulkan::CommandBuffer::CmdResolveImage(ManagedVulkan::Image^ srcImag
 			delete[] arg_6;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6833,7 +6833,7 @@ void ManagedVulkan::CommandBuffer::CmdSetEvent(ManagedVulkan::Event^ event, UInt
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6861,7 +6861,7 @@ void ManagedVulkan::CommandBuffer::CmdResetEvent(ManagedVulkan::Event^ event, UI
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -6934,7 +6934,7 @@ void ManagedVulkan::CommandBuffer::CmdWaitEvents(array<ManagedVulkan::Event^>^ p
 			delete[] arg_10;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -7000,7 +7000,7 @@ void ManagedVulkan::CommandBuffer::CmdPipelineBarrier(UInt32 srcStageMask, UInt3
 			delete[] arg_9;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -7030,7 +7030,7 @@ void ManagedVulkan::CommandBuffer::CmdBeginQuery(ManagedVulkan::QueryPool^ query
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -7058,7 +7058,7 @@ void ManagedVulkan::CommandBuffer::CmdEndQuery(ManagedVulkan::QueryPool^ queryPo
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -7088,7 +7088,7 @@ void ManagedVulkan::CommandBuffer::CmdResetQueryPool(ManagedVulkan::QueryPool^ q
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -7118,7 +7118,7 @@ void ManagedVulkan::CommandBuffer::CmdWriteTimestamp(ManagedVulkan::VkPipelineSt
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -7156,7 +7156,7 @@ void ManagedVulkan::CommandBuffer::CmdCopyQueryPoolResults(ManagedVulkan::QueryP
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -7190,7 +7190,7 @@ void ManagedVulkan::CommandBuffer::CmdPushConstants(ManagedVulkan::PipelineLayou
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -7279,7 +7279,7 @@ void ManagedVulkan::CommandBuffer::CmdBeginRenderPass(ManagedVulkan::RenderPassB
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -7305,7 +7305,7 @@ void ManagedVulkan::CommandBuffer::CmdNextSubpass(ManagedVulkan::VkSubpassConten
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -7329,7 +7329,7 @@ void ManagedVulkan::CommandBuffer::CmdEndRenderPass()
 	finally
 	{
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}
@@ -7362,7 +7362,7 @@ void ManagedVulkan::CommandBuffer::CmdExecuteCommands(array<ManagedVulkan::Comma
 			delete[] arg_2;
 		}
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}

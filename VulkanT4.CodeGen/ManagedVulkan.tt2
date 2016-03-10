@@ -472,7 +472,7 @@ using namespace System::Collection::Generic;
 // END -- DELETE ARRAY VARIABLES
 #>
 		// FREE ALL PINNED STRINGS
-		for each(IntPtr str in pins)
+		for each(auto str in pins)
 		{
 			Marshal::FreeHGlobal(str);
 		}

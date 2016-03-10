@@ -218,7 +218,6 @@ ManagedVulkan::Result ManagedVulkan::Instance::CreateWin32SurfaceKHR(ManagedVulk
 		{
 			arg_1 = &inst_1;
 			pCreateInfo->CopyTo(arg_1, pins);
-			arg_1 = inst_1;
 		}
 		// INITS 2 - pAllocator		
 		VkAllocationCallbacks inst_2;
@@ -227,21 +226,14 @@ ManagedVulkan::Result ManagedVulkan::Instance::CreateWin32SurfaceKHR(ManagedVulk
 		{
 			arg_2 = &inst_2;
 			pAllocator->CopyTo(arg_2, pins);
-			arg_2 = inst_2;
 		}
 		// INITS 3 - pSurface		
 		VkSurfaceKHR inst_3;
-		VkSurfaceKHR* arg_3 = nullptr;
-		if (pSurface != nullptr)
-		{
-			arg_3 = &inst_3;
-			pSurface->CopyTo(arg_3, pins);
-			arg_3 = inst_3;
-		}
+		VkSurfaceKHR* arg_3 = &inst_3;
 
-		int result = vkCreateWin32SurfaceKHR(arg_0, arg_1, arg_2, arg_3);
+		auto result = vkCreateWin32SurfaceKHR(arg_0, arg_1, arg_2, arg_3);
 
-		pSurface = gcnew SurfaceKHR ^ ();
+		pSurface = gcnew SurfaceKHR();
 		pSurface->mHandle = inst_3;
 
 		return (Result)result;

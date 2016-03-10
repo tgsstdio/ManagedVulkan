@@ -5,6 +5,8 @@
 #pragma once
 
 #include <vulkan\vulkan.h>
+#include <vulkan\vk_sdk_platform.h>
+
 #include "VkHandles.h"
 #include "VkEnums.h"
 #include "VkDelegates.h"
@@ -25,10 +27,12 @@ namespace ManagedVulkan
 		void DestroyInstance(ManagedVulkan::AllocationCallbacks^ pAllocator);
 		ManagedVulkan::Result EnumeratePhysicalDevices([Out] array<ManagedVulkan::PhysicalDevice^>^% pPhysicalDevices);
 		ManagedVulkan::PFN_vkVoidFunction^ GetInstanceProcAddr(String^ pName);
+
 #ifdef VK_CREATE_DISPLAY_PLANE_SURFACE
 		ManagedVulkan::Result CreateDisplayPlaneSurfaceKHR(ManagedVulkan::DisplaySurfaceCreateInfoKHR^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::SurfaceKHR^% pSurface);
 #endif
 		void DestroySurfaceKHR(ManagedVulkan::SurfaceKHR^ surface, ManagedVulkan::AllocationCallbacks^ pAllocator);
+
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 		ManagedVulkan::Result CreateWin32SurfaceKHR(ManagedVulkan::Win32SurfaceCreateInfoKHR^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::SurfaceKHR^% pSurface);
 #endif

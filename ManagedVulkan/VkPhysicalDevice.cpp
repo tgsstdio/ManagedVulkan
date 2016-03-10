@@ -467,6 +467,7 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSparseImageFormatProperties
 	}
 }
 
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPropertiesKHR([Out] array<ManagedVulkan::DisplayPropertiesKHR^>^% pProperties)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
@@ -516,7 +517,9 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPro
 		}
 	}
 }
+#endif
 
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPlanePropertiesKHR([Out] array<ManagedVulkan::DisplayPlanePropertiesKHR^>^% pProperties)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
@@ -566,7 +569,9 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPla
 		}
 	}
 }
+#endif
 
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayPlaneSupportedDisplaysKHR(UInt32 planeIndex, [Out] array<ManagedVulkan::DisplayKHR^>^% pDisplays)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
@@ -619,7 +624,9 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayPlaneSupportedDis
 		}
 	}
 }
+#endif
 
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayModePropertiesKHR(ManagedVulkan::DisplayKHR^ display, [Out] array<ManagedVulkan::DisplayModePropertiesKHR^>^% pProperties)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
@@ -671,7 +678,9 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayModePropertiesKHR
 		}
 	}
 }
+#endif
 
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::CreateDisplayModeKHR(ManagedVulkan::DisplayKHR^ display, DisplayModeCreateInfoKHR^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::DisplayModeKHR^% pMode)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
@@ -720,8 +729,9 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::CreateDisplayModeKHR(Manage
 		}
 	}
 }
+#endif
 
-ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceSupportKHR(UInt32 queueFamilyIndex, ManagedVulkan::SurfaceKHR^ surface, bool% pSupported)
+ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceSupportKHR(UInt32 queueFamilyIndex, ManagedVulkan::SurfaceKHR^ surface,[Out] bool% pSupported)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
@@ -922,6 +932,7 @@ bool ManagedVulkan::PhysicalDevice::GetPhysicalDeviceWin32PresentationSupportKHR
 
 #endif
 
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayPlaneCapabilitiesKHR(ManagedVulkan::DisplayModeKHR^ mode, UInt32 planeIndex, [Out] ManagedVulkan::DisplayPlaneCapabilitiesKHR^% pCapabilities)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
@@ -955,3 +966,4 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayPlaneCapabilities
 		}
 	}
 }
+#endif

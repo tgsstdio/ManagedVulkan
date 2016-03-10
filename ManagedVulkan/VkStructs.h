@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vulkan\vulkan.h>
+#include <vulkan\vk_sdk_platform.h>
+
 #include "VkHandles.h"
 #include "VkEnums.h"
 #include "VkDelegates.h"
@@ -746,20 +748,20 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkWin32SurfaceCreateInfoKHR* dst, List<IntPtr>^ pins)
 		{
-			dst->sType = mSType;
+			dst->sType = (VkStructureType) mSType;
 			dst->pNext = nullptr;
 			dst->flags = mFlags;
-			dst->hinstance = mHinstance;
-			dst->hwnd = mHwnd;
+			dst->hinstance = (HINSTANCE) mHinstance.ToPointer();
+			dst->hwnd = (HWND) mHwnd.ToPointer();
 		}
 
-		void CopyFrom(VkWin32SurfaceCreateInfoKHR* src)
-		{
-			mSType = src->sType;
-			mFlags = src->flags;
-			mHinstance = src->hinstance;
-			mHwnd = src->hwnd;
-		}
+		//void CopyFrom(VkWin32SurfaceCreateInfoKHR* src)
+		//{
+		//	mSType = (StructureType) src->sType;
+		//	mFlags = src->flags;
+		//	mHinstance = src->hinstance;
+		//	mHwnd = src->hwnd;
+		//}
 	};
 
 #endif
@@ -5592,6 +5594,134 @@ namespace ManagedVulkan
 			//mSwapchains = src->pSwapchains;
 			//mImageIndices = src->pImageIndices;
 			//mResults = src->pResults;
+		}
+	};
+
+	public ref class MemoryAllocateInfo
+	{
+	private:
+		StructureType mSType;
+		UInt64 mAllocationSize = 0;
+		UInt32 mMemoryTypeIndex = 0;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt64 AllocationSize
+		{
+			UInt64 get()
+			{
+				return mAllocationSize;
+			}
+			void set(UInt64 value)
+			{
+				mAllocationSize = value;
+			}
+		}
+		property UInt32 MemoryTypeIndex
+		{
+			UInt32 get()
+			{
+				return mMemoryTypeIndex;
+			}
+			void set(UInt32 value)
+			{
+				mMemoryTypeIndex = value;
+			}
+		}
+	internal:
+		void CopyTo(VkMemoryAllocateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->allocationSize = mAllocationSize;
+			dst->memoryTypeIndex = mMemoryTypeIndex;
+		}
+
+		void CopyFrom(VkMemoryAllocateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mAllocationSize = src->allocationSize;
+			mMemoryTypeIndex = src->memoryTypeIndex;
+		}
+	};
+
+	public ref class MappedMemoryRange
+	{
+	private:
+		StructureType mSType;
+		DeviceMemory^ mMemory = gcnew DeviceMemory();
+		UInt64 mOffset = 0;
+		UInt64 mSize = 0;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property ManagedVulkan::DeviceMemory^ Memory
+		{
+			ManagedVulkan::DeviceMemory^ get()
+			{
+				return mMemory;
+			}
+			void set(ManagedVulkan::DeviceMemory^ value)
+			{
+				mMemory = value;
+			}
+		}
+		property UInt64 Offset
+		{
+			UInt64 get()
+			{
+				return mOffset;
+			}
+			void set(UInt64 value)
+			{
+				mOffset = value;
+			}
+		}
+		property UInt64 Size
+		{
+			UInt64 get()
+			{
+				return mSize;
+			}
+			void set(UInt64 value)
+			{
+				mSize = value;
+			}
+		}
+	internal:
+		void CopyTo(VkMappedMemoryRange* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->memory = mMemory->mHandle;
+			dst->offset = mOffset;
+			dst->size = mSize;
+		}
+
+		void CopyFrom(VkMappedMemoryRange* src)
+		{
+			mSType = (StructureType)src->sType;
+			mMemory->mHandle = src->memory;
+			mOffset = src->offset;
+			mSize = src->size;
 		}
 	};
 

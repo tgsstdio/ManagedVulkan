@@ -3,6 +3,8 @@
 #pragma once
 
 #include <vulkan\vulkan.h>
+#include <vulkan\vk_sdk_platform.h>
+
 #include "VkHandles.h"
 #include "VkEnums.h"
 #include "VkDelegates.h"
@@ -31,13 +33,32 @@ namespace ManagedVulkan
 		ManagedVulkan::Result EnumerateDeviceLayerProperties([Out] array<ManagedVulkan::LayerProperties^>^% pProperties);
 		ManagedVulkan::Result EnumerateDeviceExtensionProperties(String^ pLayerName, [Out] array<ManagedVulkan::ExtensionProperties^>^% pProperties);
 		void GetPhysicalDeviceSparseImageFormatProperties(ManagedVulkan::Format format, ManagedVulkan::ImageType type, ManagedVulkan::SampleCountFlagBits samples, UInt32 usage, ManagedVulkan::ImageTiling tiling, [Out] array<ManagedVulkan::SparseImageFormatProperties^>^% pProperties);
+
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
 		ManagedVulkan::Result GetPhysicalDeviceDisplayPropertiesKHR([Out] array<ManagedVulkan::DisplayPropertiesKHR^>^% pProperties);
+#endif
+
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
 		ManagedVulkan::Result GetPhysicalDeviceDisplayPlanePropertiesKHR([Out] array<ManagedVulkan::DisplayPlanePropertiesKHR^>^% pProperties);
+#endif
+
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
 		ManagedVulkan::Result GetDisplayPlaneSupportedDisplaysKHR(UInt32 planeIndex, [Out] array<ManagedVulkan::DisplayKHR^>^% pDisplays);
+#endif
+
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
 		ManagedVulkan::Result GetDisplayModePropertiesKHR(ManagedVulkan::DisplayKHR^ display, [Out] array<ManagedVulkan::DisplayModePropertiesKHR^>^% pProperties);
+#endif
+
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
 		ManagedVulkan::Result CreateDisplayModeKHR(ManagedVulkan::DisplayKHR^ display, DisplayModeCreateInfoKHR^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::DisplayModeKHR^% pMode);
+#endif 
+
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
 		ManagedVulkan::Result GetDisplayPlaneCapabilitiesKHR(ManagedVulkan::DisplayModeKHR^ mode, UInt32 planeIndex, [Out] ManagedVulkan::DisplayPlaneCapabilitiesKHR^% pCapabilities);
-		ManagedVulkan::Result GetPhysicalDeviceSurfaceSupportKHR(UInt32 queueFamilyIndex, ManagedVulkan::SurfaceKHR^ surface, bool% pSupported);
+#endif
+
+		ManagedVulkan::Result GetPhysicalDeviceSurfaceSupportKHR(UInt32 queueFamilyIndex, ManagedVulkan::SurfaceKHR^ surface,[Out] bool% pSupported);
 		ManagedVulkan::Result GetPhysicalDeviceSurfaceCapabilitiesKHR(ManagedVulkan::SurfaceKHR^ surface, [Out] ManagedVulkan::SurfaceCapabilitiesKHR^% pSurfaceCapabilities);
 		ManagedVulkan::Result GetPhysicalDeviceSurfaceFormatsKHR(ManagedVulkan::SurfaceKHR^ surface, [Out] array<ManagedVulkan::SurfaceFormatKHR^>^% pSurfaceFormats);
 		ManagedVulkan::Result GetPhysicalDeviceSurfacePresentModesKHR(ManagedVulkan::SurfaceKHR^ surface, [Out] array<ManagedVulkan::PresentModeKHR>^% pPresentModes);
