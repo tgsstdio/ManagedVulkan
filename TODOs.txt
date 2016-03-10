@@ -2,3 +2,4 @@ Implementation side of code
 Namespace all classes & structs created
 QUESTION - Remove interfaces as handles themselves can't be abstracted away
 Unions not done - requires specific handling.
+REMOVE ALL StructureType Properties from CreateInfo classes

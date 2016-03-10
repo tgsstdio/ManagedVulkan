@@ -4,12 +4,43 @@ using namespace System;
 
 namespace ManagedVulkan
 {
-	public enum class ColorSpaceKHR : Int32
+	[FlagsAttribute] public enum class BufferCreateFlagBits : UInt32
+	{
+		VK_BUFFER_CREATE_SPARSE_BINDING_BIT = 1 << 0, // Buffer should support sparse backing
+		VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT = 1 << 1, // Buffer should support sparse backing with partial residency
+		VK_BUFFER_CREATE_SPARSE_ALIASED_BIT = 1 << 2, // Buffer should support constent data access to physical memory blocks mapped into multiple locations of sparse buffers
+	};
+
+	[FlagsAttribute] public enum class BufferUsageFlagBits : UInt32
+	{
+		VK_BUFFER_USAGE_TRANSFER_SRC_BIT = 1 << 0, // Can be used as a source of transfer operations
+		VK_BUFFER_USAGE_TRANSFER_DST_BIT = 1 << 1, // Can be used as a destination of transfer operations
+		VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT = 1 << 2, // Can be used as TBO
+		VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT = 1 << 3, // Can be used as IBO
+		VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT = 1 << 4, // Can be used as UBO
+		VK_BUFFER_USAGE_STORAGE_BUFFER_BIT = 1 << 5, // Can be used as SSBO
+		VK_BUFFER_USAGE_INDEX_BUFFER_BIT = 1 << 6, // Can be used as source of fixed-function index fetch (index buffer)
+		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT = 1 << 7, // Can be used as source of fixed-function vertex fetch (VBO)
+		VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT = 1 << 8, // Can be the source of indirect parameters (e.g. indirect buffer, parameter buffer)
+	};
+
+	public enum class ColorSpaceKHR : UInt32
 	{
 		VK_COLORSPACE_SRGB_NONLINEAR_KHR = 0,
 	};
 
-	[FlagsAttribute] public enum class DisplayPlaneAlphaFlagBitsKHR : Int32
+	public enum class ComponentSwizzle : UInt32
+	{
+		VK_COMPONENT_SWIZZLE_IDENTITY = 0,
+		VK_COMPONENT_SWIZZLE_ZERO = 1,
+		VK_COMPONENT_SWIZZLE_ONE = 2,
+		VK_COMPONENT_SWIZZLE_R = 3,
+		VK_COMPONENT_SWIZZLE_G = 4,
+		VK_COMPONENT_SWIZZLE_B = 5,
+		VK_COMPONENT_SWIZZLE_A = 6,
+	};
+
+	[FlagsAttribute] public enum class DisplayPlaneAlphaFlagBitsKHR : UInt32
 	{
 		VK_DISPLAY_PLANE_ALPHA_OPAQUE_BIT_KHR = 1 << 0,
 		VK_DISPLAY_PLANE_ALPHA_GLOBAL_BIT_KHR = 1 << 1,
@@ -17,7 +48,16 @@ namespace ManagedVulkan
 		VK_DISPLAY_PLANE_ALPHA_PER_PIXEL_PREMULTIPLIED_BIT_KHR = 1 << 3,
 	};
 
-	public enum class DebugReportObjectTypeEXT : Int32
+	[FlagsAttribute] public enum class DebugReportFlagBitsEXT : UInt32
+	{
+		VK_DEBUG_REPORT_INFORMATION_BIT_EXT = 1 << 0,
+		VK_DEBUG_REPORT_WARNING_BIT_EXT = 1 << 1,
+		VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT = 1 << 2,
+		VK_DEBUG_REPORT_ERROR_BIT_EXT = 1 << 3,
+		VK_DEBUG_REPORT_DEBUG_BIT_EXT = 1 << 4,
+	};
+
+	public enum class DebugReportObjectTypeEXT : UInt32
 	{
 		VK_DEBUG_REPORT_OBJECT_TYPE_UNKNOWN_EXT = 0,
 		VK_DEBUG_REPORT_OBJECT_TYPE_INSTANCE_EXT = 1,
@@ -50,7 +90,12 @@ namespace ManagedVulkan
 		VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_EXT = 28,
 	};
 
-	public enum class Format : Int32
+	[FlagsAttribute] public enum class FenceCreateFlagBits : UInt32
+	{
+		VK_FENCE_CREATE_SIGNALED_BIT = 1 << 0,
+	};
+
+	public enum class Format : UInt32
 	{
 		VK_FORMAT_UNDEFINED = 0,
 		VK_FORMAT_R4G4_UNORM_PACK8 = 1,
@@ -239,20 +284,45 @@ namespace ManagedVulkan
 		VK_FORMAT_ASTC_12x12_SRGB_BLOCK = 184,
 	};
 
-	public enum class ImageTiling : Int32
+	public enum class ImageLayout : UInt32
+	{
+		VK_IMAGE_LAYOUT_UNDEFINED = 0, // Implicit layout an image is when its contents are undefined due to various reasons (e.g. right after creation)
+		VK_IMAGE_LAYOUT_GENERAL = 1, // General layout when image can be used for any kind of access
+		VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL = 2, // Optimal layout when image is only used for color attachment read/write
+		VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL = 3, // Optimal layout when image is only used for depth/stencil attachment read/write
+		VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL = 4, // Optimal layout when image is used for read only depth/stencil attachment and shader access
+		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL = 5, // Optimal layout when image is used for read only shader access
+		VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL = 6, // Optimal layout when image is used only as source of transfer operations
+		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL = 7, // Optimal layout when image is used only as destination of transfer operations
+		VK_IMAGE_LAYOUT_PREINITIALIZED = 8, // Initial layout used when the data is populated by the CPU
+	};
+
+
+	public enum class ImageTiling : UInt32
 	{
 		VK_IMAGE_TILING_OPTIMAL = 0,
 		VK_IMAGE_TILING_LINEAR = 1,
 	};
 
-	public enum class ImageType : Int32
+	public enum class ImageType : UInt32
 	{
 		VK_IMAGE_TYPE_1D = 0,
 		VK_IMAGE_TYPE_2D = 1,
 		VK_IMAGE_TYPE_3D = 2,
 	};
 
-	public enum class PhysicalDeviceType : Int32
+	public enum class ImageViewType : UInt32
+	{
+		VK_IMAGE_VIEW_TYPE_1D = 0,
+		VK_IMAGE_VIEW_TYPE_2D = 1,
+		VK_IMAGE_VIEW_TYPE_3D = 2,
+		VK_IMAGE_VIEW_TYPE_CUBE = 3,
+		VK_IMAGE_VIEW_TYPE_1D_ARRAY = 4,
+		VK_IMAGE_VIEW_TYPE_2D_ARRAY = 5,
+		VK_IMAGE_VIEW_TYPE_CUBE_ARRAY = 6,
+	};
+
+	public enum class PhysicalDeviceType : UInt32
 	{
 		VK_PHYSICAL_DEVICE_TYPE_OTHER = 0,
 		VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU = 1,
@@ -261,12 +331,19 @@ namespace ManagedVulkan
 		VK_PHYSICAL_DEVICE_TYPE_CPU = 4,
 	};
 
-	public enum class PresentModeKHR : Int32
+	public enum class PresentModeKHR : UInt32
 	{
 		VK_PRESENT_MODE_IMMEDIATE_KHR = 0,
 		VK_PRESENT_MODE_MAILBOX_KHR = 1,
 		VK_PRESENT_MODE_FIFO_KHR = 2,
 		VK_PRESENT_MODE_FIFO_RELAXED_KHR = 3,
+	};
+
+	public enum class QueryType : UInt32
+	{
+		VK_QUERY_TYPE_OCCLUSION = 0,
+		VK_QUERY_TYPE_PIPELINE_STATISTICS = 1, // Optional
+		VK_QUERY_TYPE_TIMESTAMP = 2,
 	};
 
 	public enum class Result : Int32
@@ -290,7 +367,7 @@ namespace ManagedVulkan
 		VK_ERROR_FORMAT_NOT_SUPPORTED = -11, // Requested format is not supported on this device
 	};
 
-	[FlagsAttribute] public enum class SampleCountFlagBits : Int32
+	[FlagsAttribute] public enum class SampleCountFlagBits : UInt32
 	{
 		VK_SAMPLE_COUNT_1_BIT = 1 << 0, // Sample count 1 supported
 		VK_SAMPLE_COUNT_2_BIT = 1 << 1, // Sample count 2 supported
@@ -301,7 +378,18 @@ namespace ManagedVulkan
 		VK_SAMPLE_COUNT_64_BIT = 1 << 6, // Sample count 64 supported
 	};
 
-	public enum class StructureType : Int32
+	public enum class SharingMode : UInt32
+	{
+		VK_SHARING_MODE_EXCLUSIVE = 0,
+		VK_SHARING_MODE_CONCURRENT = 1,
+	};
+
+	[FlagsAttribute] public enum class SparseMemoryBindFlagBits : UInt32
+	{
+		VK_SPARSE_MEMORY_BIND_METADATA_BIT = 1 << 0, // Operation binds resource metadata to memory
+	};
+
+	public enum class StructureType : UInt32
 	{
 		VK_STRUCTURE_TYPE_APPLICATION_INFO = 0,
 		VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO = 1,
@@ -354,7 +442,7 @@ namespace ManagedVulkan
 		VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO = 48,
 	};
 
-	[FlagsAttribute] public enum class SurfaceTransformFlagBitsKHR : Int32
+	[FlagsAttribute] public enum class SurfaceTransformFlagBitsKHR : UInt32
 	{
 		VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR = 1 << 0,
 		VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR = 1 << 1,

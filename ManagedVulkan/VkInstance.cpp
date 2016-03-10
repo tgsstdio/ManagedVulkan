@@ -332,7 +332,7 @@ void ManagedVulkan::Instance::DestroyDebugReportCallbackEXT(ManagedVulkan::Debug
 	}
 }
 
-void ManagedVulkan::Instance::DebugReportMessageEXT(UInt32 flags, ManagedVulkan::DebugReportObjectTypeEXT objectType, UInt64 object, size_t location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage)
+void ManagedVulkan::Instance::DebugReportMessageEXT(ManagedVulkan::DebugReportFlagsEXT flags, ManagedVulkan::DebugReportObjectTypeEXT objectType, UInt64 object, size_t location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
@@ -342,7 +342,7 @@ void ManagedVulkan::Instance::DebugReportMessageEXT(UInt32 flags, ManagedVulkan:
 		// INITS 0 - instance		
 		VkInstance arg_0 = this->mHandle;
 		// INITS 1 - flags		
-		VkDebugReportFlagsEXT arg_1 = flags;
+		VkDebugReportFlagsEXT arg_1 =(VkDebugReportFlagsEXT) flags;
 		// INITS 2 - objectType		
 		VkDebugReportObjectTypeEXT arg_2 = (VkDebugReportObjectTypeEXT)objectType;
 		// INITS 3 - object		

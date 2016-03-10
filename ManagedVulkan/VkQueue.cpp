@@ -525,13 +525,13 @@ ManagedVulkan::Result ManagedVulkan::Queue::QueuePresentKHR(ManagedVulkan::Prese
 
 		auto outcome = vkQueuePresentKHR(arg_0, arg_1);
 
-		results = gcnew array<Result>(swapchainCount);
+		results = gcnew array<ManagedVulkan::Result>(swapchainCount);
 		for (UInt32 i = 0; i < swapchainCount; ++i)
 		{
-			results[i] = (Result) queryResults[i];
+			results[i] = (ManagedVulkan::Result) queryResults[i];
 		}
 
-		return (Result)outcome;
+		return (ManagedVulkan::Result)outcome;
 	}
 	finally
 	{

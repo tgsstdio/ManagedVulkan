@@ -317,10 +317,10 @@ namespace ManagedVulkan
 		DisplayModeKHR^ mDisplayMode = nullptr;
 		UInt32 mPlaneIndex = 0;
 		UInt32 mPlaneStackIndex = 0;
-		SurfaceTransformFlagBitsKHR mTransform;
+		ManagedVulkan::SurfaceTransformFlagBitsKHR mTransform;
 		float mGlobalAlpha = 0;
-		DisplayPlaneAlphaFlagBitsKHR mAlphaMode;
-		Extent2D^ mImageExtent = nullptr;
+		ManagedVulkan::DisplayPlaneAlphaFlagBitsKHR mAlphaMode;
+		Extent2D^ mImageExtent = gcnew Extent2D();
 	public:
 		property ManagedVulkan::StructureType SType
 		{
@@ -710,7 +710,8 @@ namespace ManagedVulkan
 				mSType = value;
 			}
 		}
-		property UInt32 Flags
+
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
 		{
 			UInt32 get()
 			{
@@ -770,7 +771,7 @@ namespace ManagedVulkan
 	{
 	private:
 		StructureType mSType;
-		UInt32 mFlags;
+		ManagedVulkan::DebugReportFlagBitsEXT mFlags;
 		PFN_vkDebugReportCallbackEXT^ mPfnCallback = nullptr;
 		IntPtr mUserData = IntPtr::Zero;
 	public:
@@ -785,13 +786,13 @@ namespace ManagedVulkan
 				mSType = value;
 			}
 		}
-		property UInt32 Flags
+		property ManagedVulkan::DebugReportFlagBitsEXT Flags
 		{
-			UInt32 get()
+			ManagedVulkan::DebugReportFlagBitsEXT get()
 			{
 				return mFlags;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::DebugReportFlagBitsEXT value)
 			{
 				mFlags = value;
 			}
@@ -823,7 +824,7 @@ namespace ManagedVulkan
 		{
 			dst->sType = (VkStructureType) mSType;
 			dst->pNext = nullptr;
-			dst->flags = mFlags;
+			dst->flags = (VkDebugReportFlagBitsEXT) mFlags;
 			// TODO : callback functions
 			// dst->pfnCallback = mPfnCallback;
 
@@ -2863,7 +2864,7 @@ namespace ManagedVulkan
 				mSize = value;
 			}
 		}
-		property UInt32 Flags
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
 		{
 			UInt32 get()
 			{
@@ -3909,7 +3910,7 @@ namespace ManagedVulkan
 				mSType = value;
 			}
 		}
-		property UInt32 Flags
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
 		{
 			UInt32 get()
 			{
@@ -3986,7 +3987,7 @@ namespace ManagedVulkan
 				mSType = value;
 			}
 		}
-		property UInt32 Flags
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
 		{
 			UInt32 get()
 			{
@@ -4108,7 +4109,7 @@ namespace ManagedVulkan
 	private:
 		UInt32 mAspectMask;
 		Extent3D^ mImageGranularity = gcnew Extent3D();
-		UInt32 mFlags;
+		ManagedVulkan::SparseMemoryBindFlagBits mFlags;
 	public:
 		property UInt32 AspectMask
 		{
@@ -4132,13 +4133,13 @@ namespace ManagedVulkan
 				mImageGranularity = value;
 			}
 		}
-		property UInt32 Flags
+		property ManagedVulkan::SparseMemoryBindFlagBits Flags
 		{
-			UInt32 get()
+			ManagedVulkan::SparseMemoryBindFlagBits get()
 			{
 				return mFlags;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SparseMemoryBindFlagBits value)
 			{
 				mFlags = value;
 			}
@@ -4148,14 +4149,14 @@ namespace ManagedVulkan
 		{
 			dst->aspectMask = mAspectMask;
 			mImageGranularity->CopyTo(&dst->imageGranularity, pins);
-			dst->flags = mFlags;
+			dst->flags = (VkSparseMemoryBindFlagBits) mFlags;
 		}
 
 		void CopyFrom(VkSparseImageFormatProperties* src)
 		{
 			mAspectMask = src->aspectMask;
 			mImageGranularity->CopyFrom(&src->imageGranularity);
-			mFlags = src->flags;
+			mFlags = (ManagedVulkan::SparseMemoryBindFlagBits) src->flags;
 		}
 	};
 
@@ -4422,7 +4423,7 @@ namespace ManagedVulkan
 			}			
 		}
 	
-		property UInt32 Flags
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
 		{
 			UInt32 get()
 			{
@@ -4656,7 +4657,7 @@ namespace ManagedVulkan
 		Extent2D^	mMaxImageExtent = gcnew Extent2D();
 		UInt32	mMaxImageArrayLayers;
 		UInt32	mSupportedTransforms;
-		SurfaceTransformFlagBitsKHR	mCurrentTransform;
+		ManagedVulkan::SurfaceTransformFlagBitsKHR	mCurrentTransform;
 		UInt32	mSupportedCompositeAlpha;
 		UInt32	mSupportedUsageFlags;
 	public:
@@ -4744,13 +4745,13 @@ namespace ManagedVulkan
 			}
 		}
 
-		property SurfaceTransformFlagBitsKHR CurrentTransform
+		property ManagedVulkan::SurfaceTransformFlagBitsKHR CurrentTransform
 		{
-			SurfaceTransformFlagBitsKHR get()
+			ManagedVulkan::SurfaceTransformFlagBitsKHR get()
 			{
 				return mCurrentTransform;
 			}
-			void set(SurfaceTransformFlagBitsKHR value)
+			void set(ManagedVulkan::SurfaceTransformFlagBitsKHR value)
 			{
 				mCurrentTransform = value;
 			}
@@ -4803,7 +4804,7 @@ namespace ManagedVulkan
 			mMaxImageExtent->CopyFrom(&src->maxImageExtent);
 			mMaxImageArrayLayers = src->maxImageArrayLayers;
 			mSupportedTransforms = src->supportedTransforms;
-			mCurrentTransform = (SurfaceTransformFlagBitsKHR) src->currentTransform;
+			mCurrentTransform = (ManagedVulkan::SurfaceTransformFlagBitsKHR) src->currentTransform;
 			mSupportedCompositeAlpha = src->supportedCompositeAlpha;
 			mSupportedUsageFlags = src->supportedUsageFlags;
 		}
@@ -4968,7 +4969,7 @@ namespace ManagedVulkan
 		UInt64 mSize = 0;
 		ManagedVulkan::DeviceMemory^ mMemory = gcnew ManagedVulkan::DeviceMemory();
 		UInt64 mMemoryOffset = 0;
-		UInt32 mFlags;
+		ManagedVulkan::SparseMemoryBindFlagBits mFlags;
 	public:
 		property UInt64 ResourceOffset
 		{
@@ -5014,13 +5015,13 @@ namespace ManagedVulkan
 				mMemoryOffset = value;
 			}
 		}
-		property UInt32 Flags
+		property ManagedVulkan::SparseMemoryBindFlagBits Flags
 		{
-			UInt32 get()
+			ManagedVulkan::SparseMemoryBindFlagBits get()
 			{
 				return mFlags;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SparseMemoryBindFlagBits value)
 			{
 				mFlags = value;
 			}
@@ -5032,7 +5033,7 @@ namespace ManagedVulkan
 			dst->size = mSize;
 			dst->memory = mMemory->mHandle;
 			dst->memoryOffset = mMemoryOffset;
-			dst->flags = mFlags;
+			dst->flags = (VkSparseMemoryBindFlagBits) mFlags;
 		}
 
 		void CopyFrom(VkSparseMemoryBind* src)
@@ -5041,7 +5042,7 @@ namespace ManagedVulkan
 			mSize = src->size;
 			mMemory->mHandle = src->memory;
 			mMemoryOffset = src->memoryOffset;
-			mFlags = src->flags;
+			mFlags = (ManagedVulkan::SparseMemoryBindFlagBits) src->flags;
 		}
 	};
 
@@ -5256,7 +5257,7 @@ namespace ManagedVulkan
 		ManagedVulkan::Extent3D^ mExtent = gcnew ManagedVulkan::Extent3D();
 		ManagedVulkan::DeviceMemory^ mMemory = gcnew ManagedVulkan::DeviceMemory();
 		UInt64 mMemoryOffset = 0;
-		UInt32 mFlags;
+		ManagedVulkan::SparseMemoryBindFlagBits mFlags;
 	public:
 		property ManagedVulkan::ImageSubresource^ Subresource
 		{
@@ -5313,13 +5314,13 @@ namespace ManagedVulkan
 				mMemoryOffset = value;
 			}
 		}
-		property UInt32 Flags
+		property ManagedVulkan::SparseMemoryBindFlagBits Flags
 		{
-			UInt32 get()
+			ManagedVulkan::SparseMemoryBindFlagBits get()
 			{
 				return mFlags;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SparseMemoryBindFlagBits value)
 			{
 				mFlags = value;
 			}
@@ -5332,7 +5333,7 @@ namespace ManagedVulkan
 			mExtent->CopyTo(&dst->extent, pins);
 			dst->memory = mMemory->mHandle;
 			dst->memoryOffset = mMemoryOffset;
-			dst->flags = mFlags;
+			dst->flags = (VkSparseMemoryBindFlagBits) mFlags;
 		}
 
 		void CopyFrom(VkSparseImageMemoryBind* src)
@@ -5342,7 +5343,7 @@ namespace ManagedVulkan
 			mExtent->CopyFrom(&src->extent);
 			mMemory->mHandle = src->memory;
 			mMemoryOffset = src->memoryOffset;
-			mFlags = src->flags;
+			mFlags = (ManagedVulkan::SparseMemoryBindFlagBits) src->flags;
 		}
 	};
 
@@ -5722,6 +5723,1113 @@ namespace ManagedVulkan
 			mMemory->mHandle = src->memory;
 			mOffset = src->offset;
 			mSize = src->size;
+		}
+	};
+
+	public ref class MemoryRequirements
+	{
+	private:
+		UInt64 mSize = 0;
+		UInt64 mAlignment = 0;
+		UInt32 mMemoryTypeBits = 0;
+	public:
+		property UInt64 Size
+		{
+			UInt64 get()
+			{
+				return mSize;
+			}
+			void set(UInt64 value)
+			{
+				mSize = value;
+			}
+		}
+		property UInt64 Alignment
+		{
+			UInt64 get()
+			{
+				return mAlignment;
+			}
+			void set(UInt64 value)
+			{
+				mAlignment = value;
+			}
+		}
+		property UInt32 MemoryTypeBits
+		{
+			UInt32 get()
+			{
+				return mMemoryTypeBits;
+			}
+			void set(UInt32 value)
+			{
+				mMemoryTypeBits = value;
+			}
+		}
+	internal:
+		void CopyTo(VkMemoryRequirements* dst, List<IntPtr>^ pins)
+		{
+			dst->size = mSize;
+			dst->alignment = mAlignment;
+			dst->memoryTypeBits = mMemoryTypeBits;
+		}
+
+		void CopyFrom(VkMemoryRequirements* src)
+		{
+			mSize = src->size;
+			mAlignment = src->alignment;
+			mMemoryTypeBits = src->memoryTypeBits;
+		}
+	};
+
+	public ref class SparseImageMemoryRequirements
+	{
+	private:
+		SparseImageFormatProperties^ mFormatProperties = gcnew SparseImageFormatProperties();
+		UInt32 mImageMipTailFirstLod = 0;
+		UInt64 mImageMipTailSize = 0;
+		UInt64 mImageMipTailOffset = 0;
+		UInt64 mImageMipTailStride = 0;
+	public:
+		property ManagedVulkan::SparseImageFormatProperties^ FormatProperties
+		{
+			ManagedVulkan::SparseImageFormatProperties^ get()
+			{
+				return mFormatProperties;
+			}
+			void set(ManagedVulkan::SparseImageFormatProperties^ value)
+			{
+				mFormatProperties = value;
+			}
+		}
+		property UInt32 ImageMipTailFirstLod
+		{
+			UInt32 get()
+			{
+				return mImageMipTailFirstLod;
+			}
+			void set(UInt32 value)
+			{
+				mImageMipTailFirstLod = value;
+			}
+		}
+		property UInt64 ImageMipTailSize
+		{
+			UInt64 get()
+			{
+				return mImageMipTailSize;
+			}
+			void set(UInt64 value)
+			{
+				mImageMipTailSize = value;
+			}
+		}
+		property UInt64 ImageMipTailOffset
+		{
+			UInt64 get()
+			{
+				return mImageMipTailOffset;
+			}
+			void set(UInt64 value)
+			{
+				mImageMipTailOffset = value;
+			}
+		}
+		property UInt64 ImageMipTailStride
+		{
+			UInt64 get()
+			{
+				return mImageMipTailStride;
+			}
+			void set(UInt64 value)
+			{
+				mImageMipTailStride = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSparseImageMemoryRequirements* dst, List<IntPtr>^ pins)
+		{
+			mFormatProperties->CopyTo(&dst->formatProperties, pins);
+			dst->imageMipTailFirstLod = mImageMipTailFirstLod;
+			dst->imageMipTailSize = mImageMipTailSize;
+			dst->imageMipTailOffset = mImageMipTailOffset;
+			dst->imageMipTailStride = mImageMipTailStride;
+		}
+
+		void CopyFrom(VkSparseImageMemoryRequirements* src)
+		{
+			mFormatProperties->CopyFrom(&src->formatProperties);
+			mImageMipTailFirstLod = src->imageMipTailFirstLod;
+			mImageMipTailSize = src->imageMipTailSize;
+			mImageMipTailOffset = src->imageMipTailOffset;
+			mImageMipTailStride = src->imageMipTailStride;
+		}
+	};
+
+	public ref class FenceCreateInfo
+	{
+	private:
+		StructureType mSType;
+		ManagedVulkan::FenceCreateFlagBits mFlags;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property ManagedVulkan::FenceCreateFlagBits Flags
+		{
+			ManagedVulkan::FenceCreateFlagBits get()
+			{
+				return mFlags;
+			}
+			void set(ManagedVulkan::FenceCreateFlagBits value)
+			{
+				mFlags = value;
+			}
+		}
+	internal:
+		void CopyTo(VkFenceCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = (VkFenceCreateFlagBits) mFlags;
+		}
+
+		void CopyFrom(VkFenceCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = (ManagedVulkan::FenceCreateFlagBits) src->flags;
+		}
+	};
+
+	public ref class SemaphoreCreateInfo
+	{
+	private:
+		StructureType mSType;
+		UInt32 mFlags;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSemaphoreCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+		}
+
+		void CopyFrom(VkSemaphoreCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+		}
+	};
+
+	public ref class EventCreateInfo
+	{
+	private:
+		StructureType mSType;
+		UInt32 mFlags;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+	internal:
+		void CopyTo(VkEventCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+		}
+
+		void CopyFrom(VkEventCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+		}
+	};
+
+	public ref class QueryPoolCreateInfo
+	{
+	private:
+		StructureType mSType;
+		UInt32 mFlags;
+		QueryType mQueryType;
+		UInt32 mQueryCount = 0;
+		UInt32 mPipelineStatistics;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::QueryType QueryType
+		{
+			ManagedVulkan::QueryType get()
+			{
+				return mQueryType;
+			}
+			void set(ManagedVulkan::QueryType value)
+			{
+				mQueryType = value;
+			}
+		}
+		property UInt32 QueryCount
+		{
+			UInt32 get()
+			{
+				return mQueryCount;
+			}
+			void set(UInt32 value)
+			{
+				mQueryCount = value;
+			}
+		}
+		property UInt32 PipelineStatistics
+		{
+			UInt32 get()
+			{
+				return mPipelineStatistics;
+			}
+			void set(UInt32 value)
+			{
+				mPipelineStatistics = value;
+			}
+		}
+	internal:
+		void CopyTo(VkQueryPoolCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->queryType = (VkQueryType) mQueryType;
+			dst->queryCount = mQueryCount;
+			dst->pipelineStatistics = mPipelineStatistics;
+		}
+
+		void CopyFrom(VkQueryPoolCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			mQueryType = (ManagedVulkan::QueryType) src->queryType;
+			mQueryCount = src->queryCount;
+			mPipelineStatistics = src->pipelineStatistics;
+		}
+	};
+
+	public ref class BufferCreateInfo
+	{
+	private:
+		StructureType mSType;
+		ManagedVulkan::BufferCreateFlagBits mFlags;
+		UInt64 mSize = 0;
+		ManagedVulkan::BufferUsageFlagBits mUsage;
+		SharingMode mSharingMode;
+		array<UInt32>^ mQueueFamilyIndices = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property ManagedVulkan::BufferCreateFlagBits Flags
+		{
+			ManagedVulkan::BufferCreateFlagBits get()
+			{
+				return mFlags;
+			}
+			void set(ManagedVulkan::BufferCreateFlagBits value)
+			{
+				mFlags = value;
+			}
+		}
+		property UInt64 Size
+		{
+			UInt64 get()
+			{
+				return mSize;
+			}
+			void set(UInt64 value)
+			{
+				mSize = value;
+			}
+		}
+		property ManagedVulkan::BufferUsageFlagBits Usage
+		{
+			ManagedVulkan::BufferUsageFlagBits get()
+			{
+				return mUsage;
+			}
+			void set(ManagedVulkan::BufferUsageFlagBits value)
+			{
+				mUsage = value;
+			}
+		}
+		property ManagedVulkan::SharingMode SharingMode
+		{
+			ManagedVulkan::SharingMode get()
+			{
+				return mSharingMode;
+			}
+			void set(ManagedVulkan::SharingMode value)
+			{
+				mSharingMode = value;
+			}
+		}
+
+		property array<UInt32>^ QueueFamilyIndices
+		{
+			array<UInt32>^ get()
+			{
+				return mQueueFamilyIndices;
+			}
+			void set(array<UInt32>^ value)
+			{
+				mQueueFamilyIndices = value;
+			}
+		}
+	internal:
+		void CopyTo(VkBufferCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = (VkBufferCreateFlagBits) mFlags;
+			dst->size = mSize;
+			dst->usage = (VkBufferUsageFlagBits) mUsage;
+			dst->sharingMode = (VkSharingMode) mSharingMode;
+			//dst->queueFamilyIndexCount = mQueueFamilyIndexCount;
+			//dst->pQueueFamilyIndices = mQueueFamilyIndices;
+		}
+
+		void CopyFrom(VkBufferCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = (ManagedVulkan::BufferCreateFlagBits) src->flags;
+			mSize = src->size;
+			mUsage = (ManagedVulkan::BufferUsageFlagBits) src->usage;
+			mSharingMode = (ManagedVulkan::SharingMode) src->sharingMode;
+			//mQueueFamilyIndexCount = src->queueFamilyIndexCount;
+			//mQueueFamilyIndices = src->pQueueFamilyIndices;
+		}
+	};
+
+	public ref class BufferViewCreateInfo
+	{
+	private:
+		StructureType mSType;
+		UInt32 mFlags;
+		ManagedVulkan::Buffer^ mBuffer = gcnew ManagedVulkan::Buffer();
+		ManagedVulkan::Format mFormat;
+		UInt64 mOffset = 0;
+		UInt64 mRange = 0;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::Buffer^ Buffer
+		{
+			ManagedVulkan::Buffer^ get()
+			{
+				return mBuffer;
+			}
+			void set(ManagedVulkan::Buffer^ value)
+			{
+				mBuffer = value;
+			}
+		}
+		property ManagedVulkan::Format Format
+		{
+			ManagedVulkan::Format get()
+			{
+				return mFormat;
+			}
+			void set(ManagedVulkan::Format value)
+			{
+				mFormat = value;
+			}
+		}
+		property UInt64 Offset
+		{
+			UInt64 get()
+			{
+				return mOffset;
+			}
+			void set(UInt64 value)
+			{
+				mOffset = value;
+			}
+		}
+		property UInt64 Range
+		{
+			UInt64 get()
+			{
+				return mRange;
+			}
+			void set(UInt64 value)
+			{
+				mRange = value;
+			}
+		}
+	internal:
+		void CopyTo(VkBufferViewCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->buffer = mBuffer->mHandle;
+			dst->format = (VkFormat) mFormat;
+			dst->offset = mOffset;
+			dst->range = mRange;
+		}
+
+		void CopyFrom(VkBufferViewCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			mBuffer->mHandle = src->buffer;
+			mFormat = (ManagedVulkan::Format) src->format;
+			mOffset = src->offset;
+			mRange = src->range;
+		}
+	};
+
+	public ref class ImageCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		ManagedVulkan::ImageType mImageType;
+		ManagedVulkan::Format mFormat;
+		Extent3D^ mExtent = gcnew Extent3D();
+		UInt32 mMipLevels = 0;
+		UInt32 mArrayLayers = 0;
+		ManagedVulkan::SampleCountFlagBits mSamples;
+		ManagedVulkan::ImageTiling mTiling;
+		UInt32 mUsage;
+		ManagedVulkan::SharingMode mSharingMode;
+		array<UInt32>^ mQueueFamilyIndices = nullptr;
+		ManagedVulkan::ImageLayout mInitialLayout;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::ImageType ImageType
+		{
+			ManagedVulkan::ImageType get()
+			{
+				return mImageType;
+			}
+			void set(ManagedVulkan::ImageType value)
+			{
+				mImageType = value;
+			}
+		}
+		property ManagedVulkan::Format Format
+		{
+			ManagedVulkan::Format get()
+			{
+				return mFormat;
+			}
+			void set(ManagedVulkan::Format value)
+			{
+				mFormat = value;
+			}
+		}
+		property ManagedVulkan::Extent3D^ Extent
+		{
+			ManagedVulkan::Extent3D^ get()
+			{
+				return mExtent;
+			}
+			void set(ManagedVulkan::Extent3D^ value)
+			{
+				mExtent = value;
+			}
+		}
+		property UInt32 MipLevels
+		{
+			UInt32 get()
+			{
+				return mMipLevels;
+			}
+			void set(UInt32 value)
+			{
+				mMipLevels = value;
+			}
+		}
+		property UInt32 ArrayLayers
+		{
+			UInt32 get()
+			{
+				return mArrayLayers;
+			}
+			void set(UInt32 value)
+			{
+				mArrayLayers = value;
+			}
+		}
+		property ManagedVulkan::SampleCountFlagBits Samples
+		{
+			ManagedVulkan::SampleCountFlagBits get()
+			{
+				return mSamples;
+			}
+			void set(ManagedVulkan::SampleCountFlagBits value)
+			{
+				mSamples = value;
+			}
+		}
+		property ManagedVulkan::ImageTiling Tiling
+		{
+			ManagedVulkan::ImageTiling get()
+			{
+				return mTiling;
+			}
+			void set(ManagedVulkan::ImageTiling value)
+			{
+				mTiling = value;
+			}
+		}
+		property UInt32 Usage
+		{
+			UInt32 get()
+			{
+				return mUsage;
+			}
+			void set(UInt32 value)
+			{
+				mUsage = value;
+			}
+		}
+		property ManagedVulkan::SharingMode SharingMode
+		{
+			ManagedVulkan::SharingMode get()
+			{
+				return mSharingMode;
+			}
+			void set(ManagedVulkan::SharingMode value)
+			{
+				mSharingMode = value;
+			}
+		}
+
+		property array<UInt32>^ QueueFamilyIndices
+		{
+			array<UInt32>^ get()
+			{
+				return mQueueFamilyIndices;
+			}
+			void set(array<UInt32>^ value)
+			{
+				mQueueFamilyIndices = value;
+			}
+		}
+		property ManagedVulkan::ImageLayout InitialLayout
+		{
+			ManagedVulkan::ImageLayout get()
+			{
+				return mInitialLayout;
+			}
+			void set(ManagedVulkan::ImageLayout value)
+			{
+				mInitialLayout = value;
+			}
+		}
+	internal:
+		void CopyTo(VkImageCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->imageType = (VkImageType) mImageType;
+			dst->format = (VkFormat) mFormat;
+			mExtent->CopyTo(&dst->extent, pins);
+			dst->mipLevels = mMipLevels;
+			dst->arrayLayers = mArrayLayers;
+			dst->samples = (VkSampleCountFlagBits) mSamples;
+			dst->tiling = (VkImageTiling) mTiling;
+			dst->usage = mUsage;
+			dst->sharingMode = (VkSharingMode) mSharingMode;
+			//dst->queueFamilyIndexCount = mQueueFamilyIndexCount;
+			//dst->pQueueFamilyIndices = mQueueFamilyIndices;
+			dst->initialLayout = (VkImageLayout) mInitialLayout;
+		}
+
+		void CopyFrom(VkImageCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+
+			mFlags = src->flags;
+			mImageType = (ManagedVulkan::ImageType) src->imageType;
+			mFormat = (ManagedVulkan::Format) src->format;
+			mExtent->CopyFrom(&src->extent);
+			mMipLevels = src->mipLevels;
+			mArrayLayers = src->arrayLayers;
+			mSamples = (ManagedVulkan::SampleCountFlagBits) src->samples;
+			mTiling = (ManagedVulkan::ImageTiling)src->tiling;
+			mUsage = src->usage;
+			mSharingMode = (ManagedVulkan::SharingMode) src->sharingMode;
+			//mQueueFamilyIndexCount = src->queueFamilyIndexCount;
+			//mQueueFamilyIndices = src->pQueueFamilyIndices;
+			mInitialLayout = (ManagedVulkan::ImageLayout)src->initialLayout;
+		}
+	};
+
+	public ref class SubresourceLayout
+	{
+	private:
+		UInt64 mOffset = 0;
+		UInt64 mSize = 0;
+		UInt64 mRowPitch = 0;
+		UInt64 mArrayPitch = 0;
+		UInt64 mDepthPitch = 0;
+	public:
+		property UInt64 Offset
+		{
+			UInt64 get()
+			{
+				return mOffset;
+			}
+			void set(UInt64 value)
+			{
+				mOffset = value;
+			}
+		}
+		property UInt64 Size
+		{
+			UInt64 get()
+			{
+				return mSize;
+			}
+			void set(UInt64 value)
+			{
+				mSize = value;
+			}
+		}
+		property UInt64 RowPitch
+		{
+			UInt64 get()
+			{
+				return mRowPitch;
+			}
+			void set(UInt64 value)
+			{
+				mRowPitch = value;
+			}
+		}
+		property UInt64 ArrayPitch
+		{
+			UInt64 get()
+			{
+				return mArrayPitch;
+			}
+			void set(UInt64 value)
+			{
+				mArrayPitch = value;
+			}
+		}
+		property UInt64 DepthPitch
+		{
+			UInt64 get()
+			{
+				return mDepthPitch;
+			}
+			void set(UInt64 value)
+			{
+				mDepthPitch = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSubresourceLayout* dst, List<IntPtr>^ pins)
+		{
+			dst->offset = mOffset;
+			dst->size = mSize;
+			dst->rowPitch = mRowPitch;
+			dst->arrayPitch = mArrayPitch;
+			dst->depthPitch = mDepthPitch;
+		}
+
+		void CopyFrom(VkSubresourceLayout* src)
+		{
+			mOffset = src->offset;
+			mSize = src->size;
+			mRowPitch = src->rowPitch;
+			mArrayPitch = src->arrayPitch;
+			mDepthPitch = src->depthPitch;
+		}
+	};
+
+	public ref class ComponentMapping
+	{
+	private:
+		ManagedVulkan::ComponentSwizzle mR;
+		ManagedVulkan::ComponentSwizzle mG;
+		ManagedVulkan::ComponentSwizzle mB;
+		ManagedVulkan::ComponentSwizzle mA;
+	public:
+		property ManagedVulkan::ComponentSwizzle R
+		{
+			ManagedVulkan::ComponentSwizzle get()
+			{
+				return mR;
+			}
+			void set(ManagedVulkan::ComponentSwizzle value)
+			{
+				mR = value;
+			}
+		}
+		property ManagedVulkan::ComponentSwizzle G
+		{
+			ManagedVulkan::ComponentSwizzle get()
+			{
+				return mG;
+			}
+			void set(ManagedVulkan::ComponentSwizzle value)
+			{
+				mG = value;
+			}
+		}
+		property ManagedVulkan::ComponentSwizzle B
+		{
+			ManagedVulkan::ComponentSwizzle get()
+			{
+				return mB;
+			}
+			void set(ManagedVulkan::ComponentSwizzle value)
+			{
+				mB = value;
+			}
+		}
+		property ManagedVulkan::ComponentSwizzle A
+		{
+			ManagedVulkan::ComponentSwizzle get()
+			{
+				return mA;
+			}
+			void set(ManagedVulkan::ComponentSwizzle value)
+			{
+				mA = value;
+			}
+		}
+	internal:
+		void CopyTo(VkComponentMapping* dst, List<IntPtr>^ pins)
+		{
+			dst->r = (VkComponentSwizzle) mR;
+			dst->g = (VkComponentSwizzle) mG;
+			dst->b = (VkComponentSwizzle) mB;
+			dst->a = (VkComponentSwizzle) mA;
+		}
+
+		void CopyFrom(VkComponentMapping* src)
+		{
+			mR = (ManagedVulkan::ComponentSwizzle) src->r;
+			mG = (ManagedVulkan::ComponentSwizzle) src->g;
+			mB = (ManagedVulkan::ComponentSwizzle) src->b;
+			mA = (ManagedVulkan::ComponentSwizzle) src->a;
+		}
+	};
+
+	public ref class ImageSubresourceRange
+	{
+	private:
+		UInt32 mAspectMask;
+		UInt32 mBaseMipLevel = 0;
+		UInt32 mLevelCount = 0;
+		UInt32 mBaseArrayLayer = 0;
+		UInt32 mLayerCount = 0;
+	public:
+		property UInt32 AspectMask
+		{
+			UInt32 get()
+			{
+				return mAspectMask;
+			}
+			void set(UInt32 value)
+			{
+				mAspectMask = value;
+			}
+		}
+		property UInt32 BaseMipLevel
+		{
+			UInt32 get()
+			{
+				return mBaseMipLevel;
+			}
+			void set(UInt32 value)
+			{
+				mBaseMipLevel = value;
+			}
+		}
+		property UInt32 LevelCount
+		{
+			UInt32 get()
+			{
+				return mLevelCount;
+			}
+			void set(UInt32 value)
+			{
+				mLevelCount = value;
+			}
+		}
+		property UInt32 BaseArrayLayer
+		{
+			UInt32 get()
+			{
+				return mBaseArrayLayer;
+			}
+			void set(UInt32 value)
+			{
+				mBaseArrayLayer = value;
+			}
+		}
+		property UInt32 LayerCount
+		{
+			UInt32 get()
+			{
+				return mLayerCount;
+			}
+			void set(UInt32 value)
+			{
+				mLayerCount = value;
+			}
+		}
+	internal:
+		void CopyTo(VkImageSubresourceRange* dst, List<IntPtr>^ pins)
+		{
+			dst->aspectMask = mAspectMask;
+			dst->baseMipLevel = mBaseMipLevel;
+			dst->levelCount = mLevelCount;
+			dst->baseArrayLayer = mBaseArrayLayer;
+			dst->layerCount = mLayerCount;
+		}
+
+		void CopyFrom(VkImageSubresourceRange* src)
+		{
+			mAspectMask = src->aspectMask;
+			mBaseMipLevel = src->baseMipLevel;
+			mLevelCount = src->levelCount;
+			mBaseArrayLayer = src->baseArrayLayer;
+			mLayerCount = src->layerCount;
+		}
+	};
+
+	public ref class ImageViewCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		ManagedVulkan::Image^ mImage = gcnew ManagedVulkan::Image();
+		ManagedVulkan::ImageViewType mViewType;
+		ManagedVulkan::Format mFormat;
+		ManagedVulkan::ComponentMapping^ mComponents = gcnew ManagedVulkan::ComponentMapping();
+		ManagedVulkan::ImageSubresourceRange^ mSubresourceRange = gcnew ManagedVulkan::ImageSubresourceRange();
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::Image^ Image
+		{
+			ManagedVulkan::Image^ get()
+			{
+				return mImage;
+			}
+			void set(ManagedVulkan::Image^ value)
+			{
+				mImage = value;
+			}
+		}
+		property ManagedVulkan::ImageViewType ViewType
+		{
+			ManagedVulkan::ImageViewType get()
+			{
+				return mViewType;
+			}
+			void set(ManagedVulkan::ImageViewType value)
+			{
+				mViewType = value;
+			}
+		}
+		property ManagedVulkan::Format Format
+		{
+			ManagedVulkan::Format get()
+			{
+				return mFormat;
+			}
+			void set(ManagedVulkan::Format value)
+			{
+				mFormat = value;
+			}
+		}
+		property ManagedVulkan::ComponentMapping^ Components
+		{
+			ManagedVulkan::ComponentMapping^ get()
+			{
+				return mComponents;
+			}
+			void set(ManagedVulkan::ComponentMapping^ value)
+			{
+				mComponents = value;
+			}
+		}
+		property ManagedVulkan::ImageSubresourceRange^ SubresourceRange
+		{
+			ManagedVulkan::ImageSubresourceRange^ get()
+			{
+				return mSubresourceRange;
+			}
+			void set(ManagedVulkan::ImageSubresourceRange^ value)
+			{
+				mSubresourceRange = value;
+			}
+		}
+	internal:
+		void CopyTo(VkImageViewCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->image = mImage->mHandle;
+			dst->viewType = (VkImageViewType) mViewType;
+			dst->format = (VkFormat) mFormat;
+			mComponents->CopyTo(&dst->components, pins);
+			mSubresourceRange->CopyTo(&dst->subresourceRange, pins);
+		}
+
+		void CopyFrom(VkImageViewCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			mImage->mHandle = src->image;
+			mViewType = (ManagedVulkan::ImageViewType) src->viewType;
+			mFormat = (ManagedVulkan::Format) src->format;
+			mComponents->CopyFrom(&src->components);
+			mSubresourceRange->CopyFrom(&src->subresourceRange);
 		}
 	};
 
