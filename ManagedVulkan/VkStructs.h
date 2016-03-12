@@ -17,7 +17,7 @@ namespace ManagedVulkan
 	public ref class ApplicationInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		String^ mApplicationName = nullptr;
 		UInt32 mApplicationVersion = 0;
 		String^ mEngineName = nullptr;
@@ -312,7 +312,7 @@ namespace ManagedVulkan
 	public ref class DisplaySurfaceCreateInfoKHR
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		DisplaySurfaceCreateFlagsKHR mFlags;
 		DisplayModeKHR^ mDisplayMode = nullptr;
 		UInt32 mPlaneIndex = 0;
@@ -533,7 +533,7 @@ namespace ManagedVulkan
 	public ref class InstanceCreateInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		VkInstanceCreateFlags mFlags;
 		ApplicationInfo^ mApplicationInfo = nullptr;
 		UInt32 mEnabledLayerCount = 0;
@@ -694,7 +694,7 @@ namespace ManagedVulkan
 	public ref class Win32SurfaceCreateInfoKHR
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		UInt32 mFlags;
 		IntPtr mHinstance;
 		IntPtr mHwnd;
@@ -770,7 +770,7 @@ namespace ManagedVulkan
 	public ref class DebugReportCallbackCreateInfoEXT
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		ManagedVulkan::DebugReportFlagBitsEXT mFlags;
 		PFN_vkDebugReportCallbackEXT^ mPfnCallback = nullptr;
 		IntPtr mUserData = IntPtr::Zero;
@@ -937,6 +937,79 @@ namespace ManagedVulkan
 			void set(float value)
 			{
 				mZ = value;
+			}
+		}
+	};
+
+	public ref struct Vec4f
+	{
+	private:
+		float mX;
+		float mY;
+		float mZ;
+		float mW;
+	internal:
+		void CopyTo(float* dst)
+		{
+			dst[0] = mX;
+			dst[1] = mY;
+			dst[2] = mZ;
+			dst[3] = mW;
+		}
+
+		void CopyFrom(float* src)
+		{
+			mX = src[0];
+			mY = src[1];
+			mZ = src[2];
+			mW = src[3];
+		}
+	public:
+		property float X
+		{
+			float get()
+			{
+				return mX;
+			}
+			void set(float value)
+			{
+				mX = value;
+			}
+		}
+
+		property float Y
+		{
+			float get()
+			{
+				return mY;
+			}
+			void set(float value)
+			{
+				mY = value;
+			}
+		}
+
+		property float Z
+		{
+			float get()
+			{
+				return mZ;
+			}
+			void set(float value)
+			{
+				mZ = value;
+			}
+		}
+
+		property float W
+		{
+			float get()
+			{
+				return mW;
+			}
+			void set(float value)
+			{
+				mW = value;
 			}
 		}
 	};
@@ -3893,7 +3966,7 @@ namespace ManagedVulkan
 	public ref class DeviceQueueCreateInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		UInt32 mFlags;
 		UInt32 mQueueFamilyIndex = 0;
 		UInt32 mQueueCount = 0;
@@ -3966,7 +4039,7 @@ namespace ManagedVulkan
 	public ref class DeviceCreateInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		UInt32 mFlags;
 		UInt32 mQueueCreateInfoCount = 0;
 		DeviceQueueCreateInfo^ mQueueCreateInfos = nullptr;
@@ -4407,7 +4480,7 @@ namespace ManagedVulkan
 	public ref class DisplayModeCreateInfoKHR
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		UInt32	mFlags;
 		DisplayModeParametersKHR^  mParameters = gcnew DisplayModeParametersKHR();
 	public:
@@ -4855,7 +4928,7 @@ namespace ManagedVulkan
 	public ref class SubmitInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		UInt32 mWaitSemaphoreCount = 0;
 		array<ManagedVulkan::Semaphore^>^ mWaitSemaphores = nullptr;
 		array<UInt32>^ mWaitDstStageMask;
@@ -5397,7 +5470,7 @@ namespace ManagedVulkan
 	public ref class BindSparseInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		array<ManagedVulkan::Semaphore^>^ mWaitSemaphores = nullptr;
 		array<ManagedVulkan::SparseBufferMemoryBindInfo^>^ mBufferBinds = nullptr;
 		array<ManagedVulkan::SparseImageOpaqueMemoryBindInfo^>^ mImageOpaqueBinds = nullptr;
@@ -5508,7 +5581,7 @@ namespace ManagedVulkan
 	public ref class PresentInfoKHR
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		array<ManagedVulkan::Semaphore^>^ mWaitSemaphores = nullptr;
 		UInt32 mSwapchainCount = 0;
 		array<ManagedVulkan::SwapchainKHR^>^ mSwapchains = nullptr;
@@ -5601,7 +5674,7 @@ namespace ManagedVulkan
 	public ref class MemoryAllocateInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		UInt64 mAllocationSize = 0;
 		UInt32 mMemoryTypeIndex = 0;
 	public:
@@ -5658,7 +5731,7 @@ namespace ManagedVulkan
 	public ref class MappedMemoryRange
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		DeviceMemory^ mMemory = gcnew DeviceMemory();
 		UInt64 mOffset = 0;
 		UInt64 mSize = 0;
@@ -5869,7 +5942,7 @@ namespace ManagedVulkan
 	public ref class FenceCreateInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		ManagedVulkan::FenceCreateFlagBits mFlags;
 	public:
 		property ManagedVulkan::StructureType SType
@@ -5912,7 +5985,7 @@ namespace ManagedVulkan
 	public ref class SemaphoreCreateInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		UInt32 mFlags;
 	public:
 		property ManagedVulkan::StructureType SType
@@ -5955,7 +6028,7 @@ namespace ManagedVulkan
 	public ref class EventCreateInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		UInt32 mFlags;
 	public:
 		property ManagedVulkan::StructureType SType
@@ -5998,7 +6071,7 @@ namespace ManagedVulkan
 	public ref class QueryPoolCreateInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		UInt32 mFlags;
 		QueryType mQueryType;
 		UInt32 mQueryCount = 0;
@@ -6083,7 +6156,7 @@ namespace ManagedVulkan
 	public ref class BufferCreateInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		ManagedVulkan::BufferCreateFlagBits mFlags;
 		UInt64 mSize = 0;
 		ManagedVulkan::BufferUsageFlagBits mUsage;
@@ -6185,7 +6258,7 @@ namespace ManagedVulkan
 	public ref class BufferViewCreateInfo
 	{
 	private:
-		StructureType mSType;
+		ManagedVulkan::StructureType mSType;
 		UInt32 mFlags;
 		ManagedVulkan::Buffer^ mBuffer = gcnew ManagedVulkan::Buffer();
 		ManagedVulkan::Format mFormat;
@@ -6830,6 +6903,2049 @@ namespace ManagedVulkan
 			mFormat = (ManagedVulkan::Format) src->format;
 			mComponents->CopyFrom(&src->components);
 			mSubresourceRange->CopyFrom(&src->subresourceRange);
+		}
+	};
+
+	public ref class ShaderModuleCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		array<UInt32>^ mCode = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags // IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property array<UInt32>^ Code
+		{
+			array<UInt32>^ get()
+			{
+				return mCode;
+			}
+			void set(array<UInt32>^ value)
+			{
+				mCode = value;
+			}
+		}
+	internal:
+		void CopyTo(VkShaderModuleCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			//dst->codeSize = mCodeSize;
+			//dst->pCode = mCode;
+		}
+
+		void CopyFrom(VkShaderModuleCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			//mCodeSize = src->codeSize;
+			//mCode = src->pCode;
+		}
+	};
+
+
+	public ref class PipelineCacheCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags = 0;
+		size_t mInitialDataSize = 0;
+		IntPtr^ mInitialData;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property size_t InitialDataSize
+		{
+			size_t get()
+			{
+				return mInitialDataSize;
+			}
+			void set(size_t value)
+			{
+				mInitialDataSize = value;
+			}
+		}
+		property IntPtr^ InitialData
+		{
+			IntPtr^ get()
+			{
+				return mInitialData;
+			}
+			void set(IntPtr^ value)
+			{
+				mInitialData = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineCacheCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->initialDataSize = mInitialDataSize;
+			dst->pInitialData = (void*) mInitialData->ToPointer();
+		}
+
+		void CopyFrom(VkPipelineCacheCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			mInitialDataSize = src->initialDataSize;
+			mInitialData = gcnew IntPtr((void*) src->pInitialData);
+		}
+	};
+
+	public ref class SpecializationMapEntry
+	{
+	private:
+		UInt32 mConstantID = 0;
+		UInt32 mOffset = 0;
+		size_t mSize = 0;
+	public:
+		property UInt32 ConstantID
+		{
+			UInt32 get()
+			{
+				return mConstantID;
+			}
+			void set(UInt32 value)
+			{
+				mConstantID = value;
+			}
+		}
+		property UInt32 Offset
+		{
+			UInt32 get()
+			{
+				return mOffset;
+			}
+			void set(UInt32 value)
+			{
+				mOffset = value;
+			}
+		}
+		property size_t Size
+		{
+			size_t get()
+			{
+				return mSize;
+			}
+			void set(size_t value)
+			{
+				mSize = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSpecializationMapEntry* dst, List<IntPtr>^ pins)
+		{
+			dst->constantID = mConstantID;
+			dst->offset = mOffset;
+			dst->size = mSize;
+		}
+
+		void CopyFrom(VkSpecializationMapEntry* src)
+		{
+			mConstantID = src->constantID;
+			mOffset = src->offset;
+			mSize = src->size;
+		}
+	};
+
+
+	public ref class SpecializationInfo
+	{
+	private:
+		array<SpecializationMapEntry^>^ mMapEntries = nullptr;
+		size_t mDataSize = 0;
+		IntPtr^ mData = IntPtr::Zero;
+	public:
+		property array<SpecializationMapEntry^>^ MapEntries
+		{
+			array<SpecializationMapEntry^>^ get()
+			{
+				return mMapEntries;
+			}
+			void set(array<SpecializationMapEntry^>^ value)
+			{
+				mMapEntries = value;
+			}
+		}
+		property size_t DataSize
+		{
+			size_t get()
+			{
+				return mDataSize;
+			}
+			void set(size_t value)
+			{
+				mDataSize = value;
+			}
+		}
+		property IntPtr^ Data
+		{
+			IntPtr^ get()
+			{
+				return mData;
+			}
+			void set(IntPtr^ value)
+			{
+				mData = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSpecializationInfo* dst, List<IntPtr>^ pins)
+		{
+			//dst->mapEntryCount = mMapEntryCount;
+			//mMapEntries->CopyTo(&dst->pMapEntries, pins);
+			dst->dataSize = mDataSize;
+			dst->pData = mData->ToPointer();
+		}
+
+		void CopyFrom(const VkSpecializationInfo* src)
+		{
+			//mMapEntryCount = src->mapEntryCount;
+			//mMapEntries->CopyFrom(&src->pMapEntries);
+			mDataSize = src->dataSize;
+			mData = gcnew IntPtr((void*) src->pData);
+		}
+	};
+
+	public ref class PipelineShaderStageCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		ManagedVulkan::ShaderStageFlagBits mStage;
+		ShaderModule^ mModule = gcnew ShaderModule();
+		String^ mName = nullptr;
+		ManagedVulkan::SpecializationInfo^ mSpecializationInfo = gcnew ManagedVulkan::SpecializationInfo();
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::ShaderStageFlagBits Stage
+		{
+			ManagedVulkan::ShaderStageFlagBits get()
+			{
+				return mStage;
+			}
+			void set(ManagedVulkan::ShaderStageFlagBits value)
+			{
+				mStage = value;
+			}
+		}
+		property ManagedVulkan::ShaderModule^ Module
+		{
+			ManagedVulkan::ShaderModule^ get()
+			{
+				return mModule;
+			}
+			void set(ManagedVulkan::ShaderModule^ value)
+			{
+				mModule = value;
+			}
+		}
+		property String^ Name
+		{
+			String^ get()
+			{
+				return mName;
+			}
+			void set(String^ value)
+			{
+				mName = value;
+			}
+		}
+		property ManagedVulkan::SpecializationInfo^ SpecializationInfo
+		{
+			ManagedVulkan::SpecializationInfo^ get()
+			{
+				return mSpecializationInfo;
+			}
+			void set(ManagedVulkan::SpecializationInfo^ value)
+			{
+				mSpecializationInfo = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineShaderStageCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->stage = (VkShaderStageFlagBits) mStage;
+			dst->module = mModule->mHandle;
+
+			IntPtr str_pName = Marshal::StringToHGlobalAnsi(mName);
+			pins->Add(str_pName);
+			dst->pName = static_cast <char*> (str_pName.ToPointer());
+
+			//mSpecializationInfo->CopyTo(dst->pSpecializationInfo, pins);
+		}
+
+		void CopyFrom(VkPipelineShaderStageCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			mStage = (ShaderStageFlagBits) src->stage;
+			mModule->mHandle = src->module;
+			mName = gcnew String(mName);
+			
+			//mSpecializationInfo->CopyFrom(src->pSpecializationInfo);
+		}
+	};
+
+
+	public ref class VertexInputBindingDescription
+	{
+	private:
+		UInt32 mBinding = 0;
+		UInt32 mStride = 0;
+		ManagedVulkan::VertexInputRate mInputRate;
+	public:
+		property UInt32 Binding
+		{
+			UInt32 get()
+			{
+				return mBinding;
+			}
+			void set(UInt32 value)
+			{
+				mBinding = value;
+			}
+		}
+		property UInt32 Stride
+		{
+			UInt32 get()
+			{
+				return mStride;
+			}
+			void set(UInt32 value)
+			{
+				mStride = value;
+			}
+		}
+		property ManagedVulkan::VertexInputRate InputRate
+		{
+			ManagedVulkan::VertexInputRate get()
+			{
+				return mInputRate;
+			}
+			void set(ManagedVulkan::VertexInputRate value)
+			{
+				mInputRate = value;
+			}
+		}
+	internal:
+		void CopyTo(VkVertexInputBindingDescription* dst, List<IntPtr>^ pins)
+		{
+			dst->binding = mBinding;
+			dst->stride = mStride;
+			dst->inputRate = (VkVertexInputRate) mInputRate;
+		}
+
+		void CopyFrom(VkVertexInputBindingDescription* src)
+		{
+			mBinding = src->binding;
+			mStride = src->stride;
+			mInputRate = (ManagedVulkan::VertexInputRate) src->inputRate;
+		}
+	};
+
+
+	public ref class VertexInputAttributeDescription
+	{
+	private:
+		UInt32 mLocation = 0;
+		UInt32 mBinding = 0;
+		ManagedVulkan::Format mFormat;
+		UInt32 mOffset = 0;
+	public:
+		property UInt32 Location
+		{
+			UInt32 get()
+			{
+				return mLocation;
+			}
+			void set(UInt32 value)
+			{
+				mLocation = value;
+			}
+		}
+		property UInt32 Binding
+		{
+			UInt32 get()
+			{
+				return mBinding;
+			}
+			void set(UInt32 value)
+			{
+				mBinding = value;
+			}
+		}
+		property ManagedVulkan::Format Format
+		{
+			ManagedVulkan::Format get()
+			{
+				return mFormat;
+			}
+			void set(ManagedVulkan::Format value)
+			{
+				mFormat = value;
+			}
+		}
+		property UInt32 Offset
+		{
+			UInt32 get()
+			{
+				return mOffset;
+			}
+			void set(UInt32 value)
+			{
+				mOffset = value;
+			}
+		}
+	internal:
+		void CopyTo(VkVertexInputAttributeDescription* dst, List<IntPtr>^ pins)
+		{
+			dst->location = mLocation;
+			dst->binding = mBinding;
+			dst->format = (VkFormat) mFormat;
+			dst->offset = mOffset;
+		}
+
+		void CopyFrom(VkVertexInputAttributeDescription* src)
+		{
+			mLocation = src->location;
+			mBinding = src->binding;
+			mFormat = (ManagedVulkan::Format) src->format;
+			mOffset = src->offset;
+		}
+	};
+
+
+	public ref class PipelineVertexInputStateCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		array<ManagedVulkan::VertexInputBindingDescription^>^ mVertexBindingDescriptions = nullptr;
+		array<ManagedVulkan::VertexInputAttributeDescription^>^ mVertexAttributeDescriptions = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property array<ManagedVulkan::VertexInputBindingDescription^>^ VertexBindingDescriptions
+		{
+			array<ManagedVulkan::VertexInputBindingDescription^>^ get()
+			{
+				return mVertexBindingDescriptions;
+			}
+			void set(array<ManagedVulkan::VertexInputBindingDescription^>^ value)
+			{
+				mVertexBindingDescriptions = value;
+			}
+		}
+		property array<ManagedVulkan::VertexInputAttributeDescription^>^ VertexAttributeDescriptions
+		{
+			array<ManagedVulkan::VertexInputAttributeDescription^>^ get()
+			{
+				return mVertexAttributeDescriptions;
+			}
+			void set(array<ManagedVulkan::VertexInputAttributeDescription^>^ value)
+			{
+				mVertexAttributeDescriptions = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineVertexInputStateCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			//dst->vertexBindingDescriptionCount = mVertexBindingDescriptionCount;
+			//mVertexBindingDescriptions->CopyTo(&dst->pVertexBindingDescriptions, pins);
+			//dst->vertexAttributeDescriptionCount = mVertexAttributeDescriptionCount;
+			//mVertexAttributeDescriptions->CopyTo(&dst->pVertexAttributeDescriptions, pins);
+		}
+
+		void CopyFrom(VkPipelineVertexInputStateCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			//mVertexBindingDescriptionCount = src->vertexBindingDescriptionCount;
+			//mVertexBindingDescriptions->CopyFrom(&src->pVertexBindingDescriptions);
+			//mVertexAttributeDescriptionCount = src->vertexAttributeDescriptionCount;
+			//mVertexAttributeDescriptions->CopyFrom(&src->pVertexAttributeDescriptions);
+		}
+	};
+
+	public ref class PipelineInputAssemblyStateCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		ManagedVulkan::PrimitiveTopology mTopology;
+		bool mPrimitiveRestartEnable = false;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::PrimitiveTopology Topology
+		{
+			ManagedVulkan::PrimitiveTopology get()
+			{
+				return mTopology;
+			}
+			void set(ManagedVulkan::PrimitiveTopology value)
+			{
+				mTopology = value;
+			}
+		}
+		property bool PrimitiveRestartEnable
+		{
+			bool get()
+			{
+				return mPrimitiveRestartEnable;
+			}
+			void set(bool value)
+			{
+				mPrimitiveRestartEnable = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineInputAssemblyStateCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->topology = (VkPrimitiveTopology) mTopology;
+			dst->primitiveRestartEnable = mPrimitiveRestartEnable ? 1 : 0;
+		}
+
+		void CopyFrom(VkPipelineInputAssemblyStateCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			//pNext = src->pNext;
+			mFlags = src->flags;
+			mTopology = (ManagedVulkan::PrimitiveTopology) src->topology;
+			mPrimitiveRestartEnable = src->primitiveRestartEnable != 0;
+		}
+	};
+
+
+	public ref class PipelineTessellationStateCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		UInt32 mPatchControlPoints = 0;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property UInt32 PatchControlPoints
+		{
+			UInt32 get()
+			{
+				return mPatchControlPoints;
+			}
+			void set(UInt32 value)
+			{
+				mPatchControlPoints = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineTessellationStateCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->patchControlPoints = mPatchControlPoints;
+		}
+
+		void CopyFrom(VkPipelineTessellationStateCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			mPatchControlPoints = src->patchControlPoints;
+		}
+	};
+
+	public ref class Viewport
+	{
+	private:
+		float mX = 0;
+		float mY = 0;
+		float mWidth = 0;
+		float mHeight = 0;
+		float mMinDepth = 0;
+		float mMaxDepth = 0;
+	public:
+		property float X
+		{
+			float get()
+			{
+				return mX;
+			}
+			void set(float value)
+			{
+				mX = value;
+			}
+		}
+		property float Y
+		{
+			float get()
+			{
+				return mY;
+			}
+			void set(float value)
+			{
+				mY = value;
+			}
+		}
+		property float Width
+		{
+			float get()
+			{
+				return mWidth;
+			}
+			void set(float value)
+			{
+				mWidth = value;
+			}
+		}
+		property float Height
+		{
+			float get()
+			{
+				return mHeight;
+			}
+			void set(float value)
+			{
+				mHeight = value;
+			}
+		}
+		property float MinDepth
+		{
+			float get()
+			{
+				return mMinDepth;
+			}
+			void set(float value)
+			{
+				mMinDepth = value;
+			}
+		}
+		property float MaxDepth
+		{
+			float get()
+			{
+				return mMaxDepth;
+			}
+			void set(float value)
+			{
+				mMaxDepth = value;
+			}
+		}
+	internal:
+		void CopyTo(VkViewport* dst, List<IntPtr>^ pins)
+		{
+			dst->x = mX;
+			dst->y = mY;
+			dst->width = mWidth;
+			dst->height = mHeight;
+			dst->minDepth = mMinDepth;
+			dst->maxDepth = mMaxDepth;
+		}
+
+		void CopyFrom(VkViewport* src)
+		{
+			mX = src->x;
+			mY = src->y;
+			mWidth = src->width;
+			mHeight = src->height;
+			mMinDepth = src->minDepth;
+			mMaxDepth = src->maxDepth;
+		}
+	};
+
+	public ref class Rect2D
+	{
+	private:
+		Offset2D^ mOffset = gcnew Offset2D();
+		Extent2D^ mExtent = gcnew Extent2D();
+	public:
+		property ManagedVulkan::Offset2D^ Offset
+		{
+			ManagedVulkan::Offset2D^ get()
+			{
+				return mOffset;
+			}
+			void set(ManagedVulkan::Offset2D^ value)
+			{
+				mOffset = value;
+			}
+		}
+		property ManagedVulkan::Extent2D^ Extent
+		{
+			ManagedVulkan::Extent2D^ get()
+			{
+				return mExtent;
+			}
+			void set(ManagedVulkan::Extent2D^ value)
+			{
+				mExtent = value;
+			}
+		}
+	internal:
+		void CopyTo(VkRect2D* dst, List<IntPtr>^ pins)
+		{
+			mOffset->CopyTo(&dst->offset, pins);
+			mExtent->CopyTo(&dst->extent, pins);
+		}
+
+		void CopyFrom(VkRect2D* src)
+		{
+			mOffset->CopyFrom(&src->offset);
+			mExtent->CopyFrom(&src->extent);
+		}
+	};
+
+
+	public ref class PipelineViewportStateCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		array<ManagedVulkan::Viewport^>^ mViewports = nullptr;
+		array<ManagedVulkan::Rect2D^>^ mScissors = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property array<ManagedVulkan::Viewport^>^ Viewports
+		{
+			array<ManagedVulkan::Viewport^>^ get()
+			{
+				return mViewports;
+			}
+			void set(array<ManagedVulkan::Viewport^>^ value)
+			{
+				mViewports = value;
+			}
+		}
+		property array<ManagedVulkan::Rect2D^>^ Scissors
+		{
+			array<ManagedVulkan::Rect2D^>^ get()
+			{
+				return mScissors;
+			}
+			void set(array<ManagedVulkan::Rect2D^>^ value)
+			{
+				mScissors = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineViewportStateCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			//dst->viewportCount = mViewportCount;
+			//mViewports->CopyTo(&dst->pViewports, pins);
+			//dst->scissorCount = mScissorCount;
+			//mScissors->CopyTo(&dst->pScissors, pins);
+		}
+
+		void CopyFrom(VkPipelineViewportStateCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			//mViewportCount = src->viewportCount;
+			//mViewports->CopyFrom(&src->pViewports);
+			//mScissorCount = src->scissorCount;
+			//mScissors->CopyFrom(&src->pScissors);
+		}
+	};
+
+	public ref class PipelineRasterizationStateCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		bool mDepthClampEnable = false;
+		bool mRasterizerDiscardEnable = false;
+		ManagedVulkan::PolygonMode mPolygonMode;
+		ManagedVulkan::CullModeFlagBits mCullMode;
+		ManagedVulkan::FrontFace mFrontFace;
+		bool mDepthBiasEnable = false;
+		float mDepthBiasConstantFactor = 0;
+		float mDepthBiasClamp = 0;
+		float mDepthBiasSlopeFactor = 0;
+		float mLineWidth = 0;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property bool DepthClampEnable
+		{
+			bool get()
+			{
+				return mDepthClampEnable;
+			}
+			void set(bool value)
+			{
+				mDepthClampEnable = value;
+			}
+		}
+		property bool RasterizerDiscardEnable
+		{
+			bool get()
+			{
+				return mRasterizerDiscardEnable;
+			}
+			void set(bool value)
+			{
+				mRasterizerDiscardEnable = value;
+			}
+		}
+		property ManagedVulkan::PolygonMode PolygonMode
+		{
+			ManagedVulkan::PolygonMode get()
+			{
+				return mPolygonMode;
+			}
+			void set(ManagedVulkan::PolygonMode value)
+			{
+				mPolygonMode = value;
+			}
+		}
+		property ManagedVulkan::CullModeFlagBits CullMode
+		{
+			ManagedVulkan::CullModeFlagBits get()
+			{
+				return mCullMode;
+			}
+			void set(ManagedVulkan::CullModeFlagBits value)
+			{
+				mCullMode = value;
+			}
+		}
+		property ManagedVulkan::FrontFace FrontFace
+		{
+			ManagedVulkan::FrontFace get()
+			{
+				return mFrontFace;
+			}
+			void set(ManagedVulkan::FrontFace value)
+			{
+				mFrontFace = value;
+			}
+		}
+		property bool DepthBiasEnable
+		{
+			bool get()
+			{
+				return mDepthBiasEnable;
+			}
+			void set(bool value)
+			{
+				mDepthBiasEnable = value;
+			}
+		}
+		property float DepthBiasConstantFactor
+		{
+			float get()
+			{
+				return mDepthBiasConstantFactor;
+			}
+			void set(float value)
+			{
+				mDepthBiasConstantFactor = value;
+			}
+		}
+		property float DepthBiasClamp
+		{
+			float get()
+			{
+				return mDepthBiasClamp;
+			}
+			void set(float value)
+			{
+				mDepthBiasClamp = value;
+			}
+		}
+		property float DepthBiasSlopeFactor
+		{
+			float get()
+			{
+				return mDepthBiasSlopeFactor;
+			}
+			void set(float value)
+			{
+				mDepthBiasSlopeFactor = value;
+			}
+		}
+		property float LineWidth
+		{
+			float get()
+			{
+				return mLineWidth;
+			}
+			void set(float value)
+			{
+				mLineWidth = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineRasterizationStateCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->depthClampEnable = mDepthClampEnable ? 1 : 0;
+			dst->rasterizerDiscardEnable = mRasterizerDiscardEnable ? 1 : 0;
+			dst->polygonMode = (VkPolygonMode) mPolygonMode;
+			dst->cullMode = (VkCullModeFlagBits) mCullMode;
+			dst->frontFace = (VkFrontFace) mFrontFace;
+			dst->depthBiasEnable = mDepthBiasEnable ? 1 : 0;
+			dst->depthBiasConstantFactor = mDepthBiasConstantFactor;
+			dst->depthBiasClamp = mDepthBiasClamp;
+			dst->depthBiasSlopeFactor = mDepthBiasSlopeFactor;
+			dst->lineWidth = mLineWidth;
+		}
+
+		void CopyFrom(VkPipelineRasterizationStateCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			mDepthClampEnable = src->depthClampEnable != 0;
+			mRasterizerDiscardEnable = src->rasterizerDiscardEnable != 0;
+			mPolygonMode = (ManagedVulkan::PolygonMode) src->polygonMode;
+			mCullMode = (ManagedVulkan::CullModeFlagBits) src->cullMode;
+			mFrontFace = (ManagedVulkan::FrontFace) src->frontFace;
+			mDepthBiasEnable = src->depthBiasEnable != 0;
+			mDepthBiasConstantFactor = src->depthBiasConstantFactor;
+			mDepthBiasClamp = src->depthBiasClamp;
+			mDepthBiasSlopeFactor = src->depthBiasSlopeFactor;
+			mLineWidth = src->lineWidth;
+		}
+	};
+
+
+	public ref class PipelineMultisampleStateCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		ManagedVulkan::SampleCountFlagBits mRasterizationSamples;
+		bool mSampleShadingEnable = false;
+		float mMinSampleShading = 0;
+		array<UInt32>^ mSampleMask = nullptr;
+		bool mAlphaToCoverageEnable = false;
+		bool mAlphaToOneEnable = false;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::SampleCountFlagBits RasterizationSamples
+		{
+			ManagedVulkan::SampleCountFlagBits get()
+			{
+				return mRasterizationSamples;
+			}
+			void set(ManagedVulkan::SampleCountFlagBits value)
+			{
+				mRasterizationSamples = value;
+			}
+		}
+		property bool SampleShadingEnable
+		{
+			bool get()
+			{
+				return mSampleShadingEnable;
+			}
+			void set(bool value)
+			{
+				mSampleShadingEnable = value;
+			}
+		}
+		property float MinSampleShading
+		{
+			float get()
+			{
+				return mMinSampleShading;
+			}
+			void set(float value)
+			{
+				mMinSampleShading = value;
+			}
+		}
+		property array<UInt32>^ SampleMask
+		{
+			array<UInt32>^ get()
+			{
+				return mSampleMask;
+			}
+			void set(array<UInt32>^ value)
+			{
+				mSampleMask = value;
+			}
+		}
+		property bool AlphaToCoverageEnable
+		{
+			bool get()
+			{
+				return mAlphaToCoverageEnable;
+			}
+			void set(bool value)
+			{
+				mAlphaToCoverageEnable = value;
+			}
+		}
+		property bool AlphaToOneEnable
+		{
+			bool get()
+			{
+				return mAlphaToOneEnable;
+			}
+			void set(bool value)
+			{
+				mAlphaToOneEnable = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineMultisampleStateCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->rasterizationSamples = (VkSampleCountFlagBits) mRasterizationSamples;
+			dst->sampleShadingEnable = mSampleShadingEnable ? 1 : 0;
+			dst->minSampleShading = mMinSampleShading;
+			//dst->pSampleMask = mSampleMask;
+			dst->alphaToCoverageEnable = mAlphaToCoverageEnable ? 1 : 0;
+			dst->alphaToOneEnable = mAlphaToOneEnable ? 1 : 0;
+		}
+
+		void CopyFrom(VkPipelineMultisampleStateCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			//pNext = src->pNext;
+			mFlags = src->flags;
+			mRasterizationSamples = (ManagedVulkan::SampleCountFlagBits) src->rasterizationSamples;
+			mSampleShadingEnable = src->sampleShadingEnable != 0;
+			mMinSampleShading = src->minSampleShading;
+			//mSampleMask = src->pSampleMask;
+			mAlphaToCoverageEnable = src->alphaToCoverageEnable != 0;
+			mAlphaToOneEnable = src->alphaToOneEnable != 0;
+		}
+	};
+
+
+	public ref class StencilOpState
+	{
+	private:
+		ManagedVulkan::StencilOp mFailOp;
+		ManagedVulkan::StencilOp mPassOp;
+		ManagedVulkan::StencilOp mDepthFailOp;
+		ManagedVulkan::CompareOp mCompareOp;
+		UInt32 mCompareMask = 0;
+		UInt32 mWriteMask = 0;
+		UInt32 mReference = 0;
+	public:
+		property ManagedVulkan::StencilOp FailOp
+		{
+			ManagedVulkan::StencilOp get()
+			{
+				return mFailOp;
+			}
+			void set(ManagedVulkan::StencilOp value)
+			{
+				mFailOp = value;
+			}
+		}
+		property ManagedVulkan::StencilOp PassOp
+		{
+			ManagedVulkan::StencilOp get()
+			{
+				return mPassOp;
+			}
+			void set(ManagedVulkan::StencilOp value)
+			{
+				mPassOp = value;
+			}
+		}
+		property ManagedVulkan::StencilOp DepthFailOp
+		{
+			ManagedVulkan::StencilOp get()
+			{
+				return mDepthFailOp;
+			}
+			void set(ManagedVulkan::StencilOp value)
+			{
+				mDepthFailOp = value;
+			}
+		}
+		property ManagedVulkan::CompareOp CompareOp
+		{
+			ManagedVulkan::CompareOp get()
+			{
+				return mCompareOp;
+			}
+			void set(ManagedVulkan::CompareOp value)
+			{
+				mCompareOp = value;
+			}
+		}
+		property UInt32 CompareMask
+		{
+			UInt32 get()
+			{
+				return mCompareMask;
+			}
+			void set(UInt32 value)
+			{
+				mCompareMask = value;
+			}
+		}
+		property UInt32 WriteMask
+		{
+			UInt32 get()
+			{
+				return mWriteMask;
+			}
+			void set(UInt32 value)
+			{
+				mWriteMask = value;
+			}
+		}
+		property UInt32 Reference
+		{
+			UInt32 get()
+			{
+				return mReference;
+			}
+			void set(UInt32 value)
+			{
+				mReference = value;
+			}
+		}
+	internal:
+		void CopyTo(VkStencilOpState* dst, List<IntPtr>^ pins)
+		{
+			dst->failOp = (VkStencilOp) mFailOp;
+			dst->passOp = (VkStencilOp) mPassOp;
+			dst->depthFailOp = (VkStencilOp) mDepthFailOp;
+			dst->compareOp = (VkCompareOp) mCompareOp;
+			dst->compareMask = mCompareMask;
+			dst->writeMask = mWriteMask;
+			dst->reference = mReference;
+		}
+
+		void CopyFrom(VkStencilOpState* src)
+		{
+			mFailOp = (ManagedVulkan::StencilOp) src->failOp;
+			mPassOp = (ManagedVulkan::StencilOp) src->passOp;
+			mDepthFailOp = (ManagedVulkan::StencilOp) src->depthFailOp;
+			mCompareOp = (ManagedVulkan::CompareOp) src->compareOp;
+			mCompareMask = src->compareMask;
+			mWriteMask = src->writeMask;
+			mReference = src->reference;
+		}
+	};
+
+
+	public ref class PipelineDepthStencilStateCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		bool mDepthTestEnable = false;
+		bool mDepthWriteEnable = false;
+		ManagedVulkan::CompareOp mDepthCompareOp;
+		bool mDepthBoundsTestEnable = false;
+		bool mStencilTestEnable = false;
+		ManagedVulkan::StencilOpState^ mFront = gcnew ManagedVulkan::StencilOpState();
+		ManagedVulkan::StencilOpState^ mBack = gcnew ManagedVulkan::StencilOpState();
+		float mMinDepthBounds = 0;
+		float mMaxDepthBounds = 0;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property bool DepthTestEnable
+		{
+			bool get()
+			{
+				return mDepthTestEnable;
+			}
+			void set(bool value)
+			{
+				mDepthTestEnable = value;
+			}
+		}
+		property bool DepthWriteEnable
+		{
+			bool get()
+			{
+				return mDepthWriteEnable;
+			}
+			void set(bool value)
+			{
+				mDepthWriteEnable = value;
+			}
+		}
+		property ManagedVulkan::CompareOp DepthCompareOp
+		{
+			ManagedVulkan::CompareOp get()
+			{
+				return mDepthCompareOp;
+			}
+			void set(ManagedVulkan::CompareOp value)
+			{
+				mDepthCompareOp = value;
+			}
+		}
+		property bool DepthBoundsTestEnable
+		{
+			bool get()
+			{
+				return mDepthBoundsTestEnable;
+			}
+			void set(bool value)
+			{
+				mDepthBoundsTestEnable = value;
+			}
+		}
+		property bool StencilTestEnable
+		{
+			bool get()
+			{
+				return mStencilTestEnable;
+			}
+			void set(bool value)
+			{
+				mStencilTestEnable = value;
+			}
+		}
+		property ManagedVulkan::StencilOpState^ Front
+		{
+			ManagedVulkan::StencilOpState^ get()
+			{
+				return mFront;
+			}
+			void set(ManagedVulkan::StencilOpState^ value)
+			{
+				mFront = value;
+			}
+		}
+		property ManagedVulkan::StencilOpState^ Back
+		{
+			ManagedVulkan::StencilOpState^ get()
+			{
+				return mBack;
+			}
+			void set(ManagedVulkan::StencilOpState^ value)
+			{
+				mBack = value;
+			}
+		}
+		property float MinDepthBounds
+		{
+			float get()
+			{
+				return mMinDepthBounds;
+			}
+			void set(float value)
+			{
+				mMinDepthBounds = value;
+			}
+		}
+		property float MaxDepthBounds
+		{
+			float get()
+			{
+				return mMaxDepthBounds;
+			}
+			void set(float value)
+			{
+				mMaxDepthBounds = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineDepthStencilStateCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->depthTestEnable = mDepthTestEnable ? 1 : 0;
+			dst->depthWriteEnable = mDepthWriteEnable ? 1 : 0;
+			dst->depthCompareOp = (VkCompareOp) mDepthCompareOp;
+			dst->depthBoundsTestEnable = mDepthBoundsTestEnable ? 1 : 0;
+			dst->stencilTestEnable = mStencilTestEnable ? 1 : 0;
+			mFront->CopyTo(&dst->front, pins);
+			mBack->CopyTo(&dst->back, pins);
+			dst->minDepthBounds = mMinDepthBounds;
+			dst->maxDepthBounds = mMaxDepthBounds;
+		}
+
+		void CopyFrom(VkPipelineDepthStencilStateCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			mDepthTestEnable = src->depthTestEnable != 0;
+			mDepthWriteEnable = src->depthWriteEnable != 0;
+			mDepthCompareOp = (ManagedVulkan::CompareOp) src->depthCompareOp;
+			mDepthBoundsTestEnable = src->depthBoundsTestEnable != 0;
+			mStencilTestEnable = src->stencilTestEnable != 0;
+			mFront->CopyFrom(&src->front);
+			mBack->CopyFrom(&src->back);
+			mMinDepthBounds = src->minDepthBounds;
+			mMaxDepthBounds = src->maxDepthBounds;
+		}
+	};
+
+	public ref class PipelineColorBlendAttachmentState
+	{
+	private:
+		bool mBlendEnable = false;
+		ManagedVulkan::BlendFactor mSrcColorBlendFactor;
+		ManagedVulkan::BlendFactor mDstColorBlendFactor;
+		ManagedVulkan::BlendOp mColorBlendOp;
+		ManagedVulkan::BlendFactor mSrcAlphaBlendFactor;
+		ManagedVulkan::BlendFactor mDstAlphaBlendFactor;
+		ManagedVulkan::BlendOp mAlphaBlendOp;
+		UInt32 mColorWriteMask;
+	public:
+		property bool BlendEnable
+		{
+			bool get()
+			{
+				return mBlendEnable;
+			}
+			void set(bool value)
+			{
+				mBlendEnable = value;
+			}
+		}
+		property ManagedVulkan::BlendFactor SrcColorBlendFactor
+		{
+			ManagedVulkan::BlendFactor get()
+			{
+				return mSrcColorBlendFactor;
+			}
+			void set(ManagedVulkan::BlendFactor value)
+			{
+				mSrcColorBlendFactor = value;
+			}
+		}
+		property ManagedVulkan::BlendFactor DstColorBlendFactor
+		{
+			ManagedVulkan::BlendFactor get()
+			{
+				return mDstColorBlendFactor;
+			}
+			void set(ManagedVulkan::BlendFactor value)
+			{
+				mDstColorBlendFactor = value;
+			}
+		}
+		property ManagedVulkan::BlendOp ColorBlendOp
+		{
+			ManagedVulkan::BlendOp get()
+			{
+				return mColorBlendOp;
+			}
+			void set(ManagedVulkan::BlendOp value)
+			{
+				mColorBlendOp = value;
+			}
+		}
+		property ManagedVulkan::BlendFactor SrcAlphaBlendFactor
+		{
+			ManagedVulkan::BlendFactor get()
+			{
+				return mSrcAlphaBlendFactor;
+			}
+			void set(ManagedVulkan::BlendFactor value)
+			{
+				mSrcAlphaBlendFactor = value;
+			}
+		}
+		property ManagedVulkan::BlendFactor DstAlphaBlendFactor
+		{
+			ManagedVulkan::BlendFactor get()
+			{
+				return mDstAlphaBlendFactor;
+			}
+			void set(ManagedVulkan::BlendFactor value)
+			{
+				mDstAlphaBlendFactor = value;
+			}
+		}
+		property ManagedVulkan::BlendOp AlphaBlendOp
+		{
+			ManagedVulkan::BlendOp get()
+			{
+				return mAlphaBlendOp;
+			}
+			void set(ManagedVulkan::BlendOp value)
+			{
+				mAlphaBlendOp = value;
+			}
+		}
+		property UInt32 ColorWriteMask
+		{
+			UInt32 get()
+			{
+				return mColorWriteMask;
+			}
+			void set(UInt32 value)
+			{
+				mColorWriteMask = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineColorBlendAttachmentState* dst, List<IntPtr>^ pins)
+		{
+			dst->blendEnable = mBlendEnable ? 1 : 0;
+			dst->srcColorBlendFactor = (VkBlendFactor) mSrcColorBlendFactor;
+			dst->dstColorBlendFactor = (VkBlendFactor) mDstColorBlendFactor;
+			dst->colorBlendOp = (VkBlendOp) mColorBlendOp;
+			dst->srcAlphaBlendFactor = (VkBlendFactor) mSrcAlphaBlendFactor;
+			dst->dstAlphaBlendFactor = (VkBlendFactor) mDstAlphaBlendFactor;
+			dst->alphaBlendOp = (VkBlendOp) mAlphaBlendOp;
+			dst->colorWriteMask = mColorWriteMask;
+		}
+
+		void CopyFrom(VkPipelineColorBlendAttachmentState* src)
+		{
+			mBlendEnable = src->blendEnable != 0;
+			mSrcColorBlendFactor = (ManagedVulkan::BlendFactor) src->srcColorBlendFactor;
+			mDstColorBlendFactor = (ManagedVulkan::BlendFactor) src->dstColorBlendFactor;
+			mColorBlendOp = (ManagedVulkan::BlendOp) src->colorBlendOp;
+			mSrcAlphaBlendFactor = (ManagedVulkan::BlendFactor) src->srcAlphaBlendFactor;
+			mDstAlphaBlendFactor = (ManagedVulkan::BlendFactor) src->dstAlphaBlendFactor;
+			mAlphaBlendOp = (ManagedVulkan::BlendOp) src->alphaBlendOp;
+			mColorWriteMask = src->colorWriteMask;
+		}
+	};
+
+
+	public ref class PipelineColorBlendStateCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		bool mLogicOpEnable = false;
+		ManagedVulkan::LogicOp mLogicOp;
+		array<PipelineColorBlendAttachmentState^>^ mAttachments = nullptr;
+		Vec4f^ mBlendConstants = gcnew Vec4f();
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property bool LogicOpEnable
+		{
+			bool get()
+			{
+				return mLogicOpEnable;
+			}
+			void set(bool value)
+			{
+				mLogicOpEnable = value;
+			}
+		}
+		property ManagedVulkan::LogicOp LogicOp
+		{
+			ManagedVulkan::LogicOp get()
+			{
+				return mLogicOp;
+			}
+			void set(ManagedVulkan::LogicOp value)
+			{
+				mLogicOp = value;
+			}
+		}
+
+		property array<PipelineColorBlendAttachmentState^>^ Attachments
+		{
+			array<PipelineColorBlendAttachmentState^>^ get()
+			{
+				return mAttachments;
+			}
+			void set(array<PipelineColorBlendAttachmentState^>^ value)
+			{
+				mAttachments = value;
+			}
+		}
+		property Vec4f^ BlendConstants
+		{
+			Vec4f^ get()
+			{
+				return mBlendConstants;
+			}
+			void set(Vec4f^ value)
+			{
+				mBlendConstants = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineColorBlendStateCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->logicOpEnable = mLogicOpEnable ? 1 : 0;
+			dst->logicOp = (VkLogicOp) mLogicOp;
+/*			dst->attachmentCount = mAttachmentCount;
+			mAttachments->CopyTo(&dst->pAttachments, pins);	*/		
+			mBlendConstants->CopyTo(dst->blendConstants);
+		}
+
+		void CopyFrom(VkPipelineColorBlendStateCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			mLogicOpEnable = src->logicOpEnable != 0;
+			mLogicOp = (ManagedVulkan::LogicOp) src->logicOp;
+			//mAttachmentCount = src->attachmentCount;
+			//mAttachments->CopyFrom(&src->pAttachments);
+			mBlendConstants->CopyFrom(src->blendConstants);
+		}
+	};
+
+
+	public ref class PipelineDynamicStateCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		array<ManagedVulkan::DynamicState>^ mDynamicStates = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property array<ManagedVulkan::DynamicState>^ DynamicStates
+		{
+			array<ManagedVulkan::DynamicState>^ get()
+			{
+				return mDynamicStates;
+			}
+			void set(array<ManagedVulkan::DynamicState>^ value)
+			{
+				mDynamicStates = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineDynamicStateCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			//dst->dynamicStateCount = mDynamicStateCount;
+			//dst->pDynamicStates = mDynamicStates;
+		}
+
+		void CopyFrom(VkPipelineDynamicStateCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			//mDynamicStateCount = src->dynamicStateCount;
+			//mDynamicStates = src->pDynamicStates;
+		}
+	};
+
+	public ref class GraphicsPipelineCreateInfo
+	{
+	private:
+		StructureType mSType;
+		ManagedVulkan::PipelineCreateFlagBits mFlags;
+		UInt32 mStageCount = 0;
+		array<ManagedVulkan::PipelineShaderStageCreateInfo^>^ mStages = nullptr;
+		ManagedVulkan::PipelineVertexInputStateCreateInfo^ mVertexInputState = nullptr;
+		ManagedVulkan::PipelineInputAssemblyStateCreateInfo^ mInputAssemblyState = nullptr;
+		ManagedVulkan::PipelineTessellationStateCreateInfo^ mTessellationState = nullptr;
+		ManagedVulkan::PipelineViewportStateCreateInfo^ mViewportState = nullptr;
+		ManagedVulkan::PipelineRasterizationStateCreateInfo^ mRasterizationState = nullptr;
+		ManagedVulkan::PipelineMultisampleStateCreateInfo^ mMultisampleState = nullptr;
+		ManagedVulkan::PipelineDepthStencilStateCreateInfo^ mDepthStencilState = nullptr;
+		ManagedVulkan::PipelineColorBlendStateCreateInfo^ mColorBlendState = nullptr;
+		ManagedVulkan::PipelineDynamicStateCreateInfo^ mDynamicState = nullptr;
+		ManagedVulkan::PipelineLayout^ mLayout = gcnew ManagedVulkan::PipelineLayout();
+		ManagedVulkan::RenderPass^ mRenderPass = gcnew ManagedVulkan::RenderPass();
+		UInt32 mSubpass = 0;
+		Pipeline^ mBasePipelineHandle = nullptr;
+		Int32 mBasePipelineIndex = 0;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property PipelineCreateFlagBits Flags
+		{
+			PipelineCreateFlagBits get()
+			{
+				return mFlags;
+			}
+			void set(PipelineCreateFlagBits value)
+			{
+				mFlags = value;
+			}
+		}
+		property array<ManagedVulkan::PipelineShaderStageCreateInfo^>^ Stages
+		{
+			array<ManagedVulkan::PipelineShaderStageCreateInfo^>^ get()
+			{
+				return mStages;
+			}
+			void set(array<ManagedVulkan::PipelineShaderStageCreateInfo^>^ value)
+			{
+				mStages = value;
+			}
+		}
+		property ManagedVulkan::PipelineVertexInputStateCreateInfo^ VertexInputState
+		{
+			ManagedVulkan::PipelineVertexInputStateCreateInfo^ get()
+			{
+				return mVertexInputState;
+			}
+			void set(ManagedVulkan::PipelineVertexInputStateCreateInfo^ value)
+			{
+				mVertexInputState = value;
+			}
+		}
+		property ManagedVulkan::PipelineInputAssemblyStateCreateInfo^ InputAssemblyState
+		{
+			ManagedVulkan::PipelineInputAssemblyStateCreateInfo^ get()
+			{
+				return mInputAssemblyState;
+			}
+			void set(ManagedVulkan::PipelineInputAssemblyStateCreateInfo^ value)
+			{
+				mInputAssemblyState = value;
+			}
+		}
+		property ManagedVulkan::PipelineTessellationStateCreateInfo^ TessellationState
+		{
+			ManagedVulkan::PipelineTessellationStateCreateInfo^ get()
+			{
+				return mTessellationState;
+			}
+			void set(ManagedVulkan::PipelineTessellationStateCreateInfo^ value)
+			{
+				mTessellationState = value;
+			}
+		}
+		property ManagedVulkan::PipelineViewportStateCreateInfo^ ViewportState
+		{
+			ManagedVulkan::PipelineViewportStateCreateInfo^ get()
+			{
+				return mViewportState;
+			}
+			void set(ManagedVulkan::PipelineViewportStateCreateInfo^ value)
+			{
+				mViewportState = value;
+			}
+		}
+		property ManagedVulkan::PipelineRasterizationStateCreateInfo^ RasterizationState
+		{
+			ManagedVulkan::PipelineRasterizationStateCreateInfo^ get()
+			{
+				return mRasterizationState;
+			}
+			void set(ManagedVulkan::PipelineRasterizationStateCreateInfo^ value)
+			{
+				mRasterizationState = value;
+			}
+		}
+		property ManagedVulkan::PipelineMultisampleStateCreateInfo^ MultisampleState
+		{
+			ManagedVulkan::PipelineMultisampleStateCreateInfo^ get()
+			{
+				return mMultisampleState;
+			}
+			void set(ManagedVulkan::PipelineMultisampleStateCreateInfo^ value)
+			{
+				mMultisampleState = value;
+			}
+		}
+		property ManagedVulkan::PipelineDepthStencilStateCreateInfo^ DepthStencilState
+		{
+			ManagedVulkan::PipelineDepthStencilStateCreateInfo^ get()
+			{
+				return mDepthStencilState;
+			}
+			void set(ManagedVulkan::PipelineDepthStencilStateCreateInfo^ value)
+			{
+				mDepthStencilState = value;
+			}
+		}
+		property ManagedVulkan::PipelineColorBlendStateCreateInfo^ ColorBlendState
+		{
+			ManagedVulkan::PipelineColorBlendStateCreateInfo^ get()
+			{
+				return mColorBlendState;
+			}
+			void set(ManagedVulkan::PipelineColorBlendStateCreateInfo^ value)
+			{
+				mColorBlendState = value;
+			}
+		}
+		property ManagedVulkan::PipelineDynamicStateCreateInfo^ DynamicState
+		{
+			ManagedVulkan::PipelineDynamicStateCreateInfo^ get()
+			{
+				return mDynamicState;
+			}
+			void set(ManagedVulkan::PipelineDynamicStateCreateInfo^ value)
+			{
+				mDynamicState = value;
+			}
+		}
+		property ManagedVulkan::PipelineLayout^ Layout
+		{
+			ManagedVulkan::PipelineLayout^ get()
+			{
+				return mLayout;
+			}
+			void set(ManagedVulkan::PipelineLayout^ value)
+			{
+				mLayout = value;
+			}
+		}
+		property ManagedVulkan::RenderPass^ RenderPass
+		{
+			ManagedVulkan::RenderPass^ get()
+			{
+				return mRenderPass;
+			}
+			void set(ManagedVulkan::RenderPass^ value)
+			{
+				mRenderPass = value;
+			}
+		}
+		property UInt32 Subpass
+		{
+			UInt32 get()
+			{
+				return mSubpass;
+			}
+			void set(UInt32 value)
+			{
+				mSubpass = value;
+			}
+		}
+		property ManagedVulkan::Pipeline^ BasePipelineHandle
+		{
+			ManagedVulkan::Pipeline^ get()
+			{
+				return mBasePipelineHandle;
+			}
+			void set(ManagedVulkan::Pipeline^ value)
+			{
+				mBasePipelineHandle = value;
+			}
+		}
+		property Int32 BasePipelineIndex
+		{
+			Int32 get()
+			{
+				return mBasePipelineIndex;
+			}
+			void set(Int32 value)
+			{
+				mBasePipelineIndex = value;
+			}
+		}
+	internal:
+		void CopyTo(VkGraphicsPipelineCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType =(VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = (VkPipelineCreateFlagBits) mFlags;
+			//dst->stageCount = mStageCount;
+			//mStages->CopyTo(&dst->pStages, pins);
+			//mVertexInputState->CopyTo(dst->pVertexInputState, pins);
+			//mInputAssemblyState->CopyTo(dst->pInputAssemblyState, pins);			
+			//mTessellationState->CopyTo(dst->pTessellationState, pins);			
+			//mViewportState->CopyTo(&dst->pViewportState, pins);
+			//mRasterizationState->CopyTo(&dst->pRasterizationState, pins);
+			//mMultisampleState->CopyTo(&dst->pMultisampleState, pins);
+			//mDepthStencilState->CopyTo(&dst->pDepthStencilState, pins);
+			//mColorBlendState->CopyTo(&dst->pColorBlendState, pins);
+			//mDynamicState->CopyTo(&dst->pDynamicState, pins);
+
+			dst->layout = mLayout->mHandle;
+			dst->renderPass = mRenderPass->mHandle;
+			dst->subpass = mSubpass;
+			dst->basePipelineHandle = mBasePipelineHandle->mHandle;
+			dst->basePipelineIndex = mBasePipelineIndex;
+		}
+
+		void CopyFrom(VkGraphicsPipelineCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+
+			mFlags = (PipelineCreateFlagBits) src->flags;
+			//mStageCount = src->stageCount;
+			//mStages->CopyFrom(&src->pStages);
+			//mVertexInputState->CopyFrom(&src->pVertexInputState);
+			//mInputAssemblyState->CopyFrom(&src->pInputAssemblyState);
+			//mTessellationState->CopyFrom(&src->pTessellationState);
+			//mViewportState->CopyFrom(&src->pViewportState);
+			//mRasterizationState->CopyFrom(&src->pRasterizationState);
+			//mMultisampleState->CopyFrom(&src->pMultisampleState);
+			//mDepthStencilState->CopyFrom(&src->pDepthStencilState);
+			//mColorBlendState->CopyFrom(&src->pColorBlendState);
+			//mDynamicState->CopyFrom(&src->pDynamicState);
+
+			mLayout->mHandle = src->layout;
+			mRenderPass->mHandle = src->renderPass;
+			mSubpass = src->subpass;
+			mBasePipelineHandle->mHandle = src->basePipelineHandle;
+			mBasePipelineIndex = src->basePipelineIndex;
 		}
 	};
 

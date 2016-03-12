@@ -1496,3 +1496,774 @@ ManagedVulkan::Result ManagedVulkan::Device::CreateImageView(ManagedVulkan::Imag
 		}
 	}
 }
+
+void ManagedVulkan::Device::DestroyImageView(ManagedVulkan::ImageView^ imageView, ManagedVulkan::AllocationCallbacks^ pAllocator)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - imageView		
+		VkImageView arg_1 = imageView->mHandle;
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		vkDestroyImageView(arg_0, arg_1, arg_2);
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::CreateShaderModule(ManagedVulkan::ShaderModuleCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::ShaderModule^% pShaderModule)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	UInt32* arg_1_0 = nullptr;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pCreateInfo		
+		VkShaderModuleCreateInfo inst_1;
+		VkShaderModuleCreateInfo* arg_1 = nullptr;
+		if (pCreateInfo != nullptr)
+		{
+			arg_1 = &inst_1;
+			pCreateInfo->CopyTo(arg_1, pins);
+
+			//TODO : copy SPIRV UInt32 array
+			// TODO : array check / multiple of 4
+			
+			if (pCreateInfo->Code != nullptr)
+			{
+				UInt32 count = pCreateInfo->Code->Length;
+				arg_1->codeSize = count;
+				if (count > 0)
+				{
+					arg_1_0 = new UInt32[count];
+
+					// TODO : UInt32 bulk copy
+					for (UInt32 i = 0; i < count; ++i)
+					{
+						arg_1_0[i] = (UInt32) pCreateInfo->Code[i];
+					}
+					arg_1->pCode = arg_1_0;
+				}
+				else
+				{
+					arg_1->pCode = nullptr;
+				}
+			}
+		}
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+		// INITS 3 - pShaderModule		
+		VkShaderModule inst_3;
+		VkShaderModule* arg_3 = &inst_3;
+
+		auto result = vkCreateShaderModule(arg_0, arg_1, arg_2, arg_3);
+
+		pShaderModule = gcnew ShaderModule();
+		pShaderModule->mHandle = inst_3;
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_1_0 != nullptr)
+		{
+			delete[] arg_1_0;
+		}
+
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::DestroyShaderModule(ManagedVulkan::ShaderModule^ shaderModule, ManagedVulkan::AllocationCallbacks^ pAllocator)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - shaderModule		
+		VkShaderModule arg_1 = shaderModule->mHandle;
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		vkDestroyShaderModule(arg_0, arg_1, arg_2);
+
+
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::CreatePipelineCache(ManagedVulkan::PipelineCacheCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::PipelineCache^% pPipelineCache)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pCreateInfo		
+		VkPipelineCacheCreateInfo inst_1;
+		VkPipelineCacheCreateInfo* arg_1 = nullptr;
+		if (pCreateInfo != nullptr)
+		{
+			arg_1 = &inst_1;
+			pCreateInfo->CopyTo(arg_1, pins);
+		}
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		// INITS 3 - pPipelineCache		
+		VkPipelineCache inst_3;
+		VkPipelineCache* arg_3 = &inst_3;
+
+		auto result = vkCreatePipelineCache(arg_0, arg_1, arg_2, arg_3);
+
+		pPipelineCache = gcnew PipelineCache();
+		pPipelineCache->mHandle = inst_3;
+
+		return (Result)result;
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::DestroyPipelineCache(ManagedVulkan::PipelineCache^ pipelineCache, ManagedVulkan::AllocationCallbacks^ pAllocator)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pipelineCache		
+		VkPipelineCache arg_1 = pipelineCache->mHandle;
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		vkDestroyPipelineCache(arg_0, arg_1, arg_2);
+
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::GetPipelineCacheData(ManagedVulkan::PipelineCache^ pipelineCache,[In,Out] size_t^% pDataSize, IntPtr^ pData)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pipelineCache		
+		VkPipelineCache arg_1 = pipelineCache->mHandle;
+		// INITS 2 - pDataSize		
+		size_t inst_2 = *pDataSize;
+		size_t* arg_2 = &inst_2;
+		// INITS 3 - pData		
+		void* arg_3 = pData->ToPointer();
+
+		auto result = vkGetPipelineCacheData(arg_0, arg_1, arg_2, arg_3);
+		pDataSize = inst_2;
+
+		return (Result)result;
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::MergePipelineCaches(ManagedVulkan::PipelineCache^ dstCache, array<ManagedVulkan::PipelineCache^>^ pSrcCaches)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkPipelineCache* arg_3 = nullptr;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - dstCache		
+		VkPipelineCache arg_1 = dstCache->mHandle;
+		// INITS 2 - srcCacheCount		
+		uint32_t arg_2 = 0;
+		// INITS 3 - pSrcCaches
+		if (pSrcCaches != nullptr)
+		{
+			arg_2 = pSrcCaches->Length;
+			if (arg_2 > 0)
+			{
+				arg_3 = new VkPipelineCache[arg_2];
+				for (UInt32 i = 0; i < arg_2; ++i)
+				{
+					arg_3[i] = pSrcCaches[i]->mHandle;
+				}
+			}
+		}
+
+		auto result = vkMergePipelineCaches(arg_0, arg_1, arg_2, arg_3);
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_3 != nullptr)
+		{
+			delete[] arg_3;
+		}
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::CreateGraphicsPipelines(ManagedVulkan::PipelineCache^ pipelineCache, array<ManagedVulkan::GraphicsPipelineCreateInfo^>^ pCreateInfos, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] array<ManagedVulkan::Pipeline^>^% pPipelines)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	// INITS 2 - createInfoCount
+	uint32_t arg_2 = 0;
+	VkGraphicsPipelineCreateInfo* arg_3 = nullptr;
+	VkPipeline* arg_5 = nullptr;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pipelineCache		
+		VkPipelineCache arg_1 = pipelineCache->mHandle;		
+
+		// INITS 3 - pCreateInfos
+		if (pCreateInfos != nullptr)
+		{
+			arg_2 = pCreateInfos->Length;
+			if (arg_2 > 0)
+			{
+				arg_3 = new VkGraphicsPipelineCreateInfo[arg_2];
+				
+				for (UInt32 i = 0; i < arg_2; ++i) // FOREACH CREATEINFO
+				{
+					auto src = (ManagedVulkan::GraphicsPipelineCreateInfo^) pCreateInfos[i];
+					VkGraphicsPipelineCreateInfo* dest = arg_3 + i;
+
+					if (src == nullptr)
+					{
+						throw gcnew NullReferenceException("pCreateInfos[" + i + "] is null");
+					}
+
+					{
+						// FIELD - arg_3_4 pCreateInfos->Stages		
+						VkPipelineShaderStageCreateInfo* arg_3_4 = nullptr;
+						UInt32 stageCount = 0;
+
+						if (src->Stages != nullptr)
+						{
+							stageCount = src->Stages->Length;
+
+							if (stageCount > 0)
+							{
+								arg_3_4 = new VkPipelineShaderStageCreateInfo[stageCount];
+								for (UInt32 j = 0; j < stageCount; ++j)
+								{
+									auto stageSrc = (ManagedVulkan::PipelineShaderStageCreateInfo^) src->Stages[j];
+									VkPipelineShaderStageCreateInfo* stageDst = arg_3_4 + j;
+									stageSrc->CopyTo(stageDst, pins);
+
+									// FIELD - arg_3_4_6 pCreateInfos->Stages->SpecializationInfo		
+									VkSpecializationInfo* arg_3_4_6 = nullptr;
+									if (stageSrc->SpecializationInfo != nullptr)
+									{
+										arg_3_4_6 = new VkSpecializationInfo();
+										stageSrc->SpecializationInfo->CopyTo(arg_3_4_6, pins);
+										// FIELD - arg_3_4_6_1 pCreateInfos->Stages->SpecializationInfo->MapEntries
+										VkSpecializationMapEntry* arg_3_4_6_1 = nullptr;
+										UInt32 entryCount = 0;
+										if (stageSrc->SpecializationInfo->MapEntries != nullptr)
+										{
+											UInt32 entryCount = stageSrc->SpecializationInfo->MapEntries->Length;
+
+											if (entryCount > 0)
+											{
+												arg_3_4_6_1 = new VkSpecializationMapEntry[entryCount];
+												for (UInt32 k = 0; k < entryCount; ++k)
+												{
+													auto srcEntry = (ManagedVulkan::SpecializationMapEntry^) stageSrc->SpecializationInfo->MapEntries[k];
+													VkSpecializationMapEntry* dstEntry = arg_3_4_6_1 + k;
+													srcEntry->CopyTo(dstEntry, pins);
+												}
+											}
+										}
+										arg_3_4_6->mapEntryCount = entryCount;
+										arg_3_4_6->pMapEntries = arg_3_4_6_1;
+
+										// TODO : data
+									}
+									stageDst->pSpecializationInfo = arg_3_4_6;
+								}
+							}
+						}
+						dest->stageCount = stageCount;
+						dest->pStages = arg_3_4;						
+					}
+
+					// FIELD - arg_3_5 pCreateInfos->VertexInputState
+					{
+						VkPipelineVertexInputStateCreateInfo* arg_3_5 = nullptr;
+						if (src->VertexInputState != nullptr)
+						{
+							arg_3_5 = new VkPipelineVertexInputStateCreateInfo();
+							auto srcVertexInput = (ManagedVulkan::PipelineVertexInputStateCreateInfo^) src->VertexInputState;
+							srcVertexInput->CopyTo(arg_3_5, pins);
+
+							// FIELD - arg_3_5_4 pCreateInfos->VertexInputState->VertexBindingDescriptions	
+							{
+								VkVertexInputBindingDescription* arg_3_5_4 = nullptr;
+								UInt32 bindingDescriptions = 0;
+								if (srcVertexInput->VertexBindingDescriptions != nullptr)
+								{
+									bindingDescriptions = srcVertexInput->VertexBindingDescriptions->Length;
+									if (bindingDescriptions > 0)
+									{
+										arg_3_5_4 = new VkVertexInputBindingDescription[bindingDescriptions];
+										for (UInt32 j = 0; j < bindingDescriptions; ++j)
+										{
+											auto srcBinding = (ManagedVulkan::VertexInputBindingDescription^) srcVertexInput->VertexBindingDescriptions[j];
+											VkVertexInputBindingDescription* dstBinding = arg_3_5_4 + j;
+											srcBinding->CopyTo(dstBinding, pins);
+										}
+									}
+								}
+								arg_3_5->vertexBindingDescriptionCount = bindingDescriptions;
+								arg_3_5->pVertexBindingDescriptions = arg_3_5_4;
+							}
+
+							// FIELD - arg_3_5_6 pCreateInfos->VertexInputState->VertexAttributeDescriptions		
+							{
+								VkVertexInputAttributeDescription* arg_3_5_6 = nullptr;
+								UInt32 attributeDescriptions = 0;
+								if (srcVertexInput->VertexAttributeDescriptions != nullptr)
+								{
+									attributeDescriptions = srcVertexInput->VertexAttributeDescriptions->Length;
+									if (attributeDescriptions > 0)
+									{
+										arg_3_5_6 = new VkVertexInputAttributeDescription[attributeDescriptions];
+										for (UInt32 j = 0; j < attributeDescriptions; ++j)
+										{
+											auto srcAttribute = (ManagedVulkan::VertexInputAttributeDescription^) srcVertexInput->VertexAttributeDescriptions[j];
+											VkVertexInputAttributeDescription* dstAttribute = arg_3_5_6 + j;
+											srcAttribute->CopyTo(dstAttribute, pins);
+										}
+									}
+								}
+								arg_3_5->vertexAttributeDescriptionCount = attributeDescriptions;
+								arg_3_5->pVertexAttributeDescriptions = arg_3_5_6;
+
+							}
+						}
+						dest->pVertexInputState = arg_3_5;
+					}
+
+					// FIELD - arg_3_6 pCreateInfos->InputAssemblyState	
+					{
+						VkPipelineInputAssemblyStateCreateInfo* arg_3_6 = nullptr;
+						if (src->InputAssemblyState != nullptr)
+						{
+							arg_3_6 = new VkPipelineInputAssemblyStateCreateInfo();
+							src->InputAssemblyState->CopyTo(arg_3_6, pins);
+						}
+						dest->pInputAssemblyState = arg_3_6;
+					}
+
+					// FIELD - arg_3_7 pCreateInfos->TessellationState		
+					{
+						VkPipelineTessellationStateCreateInfo* arg_3_7 = nullptr;
+						if (src->TessellationState != nullptr)
+						{
+							arg_3_7 = new VkPipelineTessellationStateCreateInfo();
+							src->TessellationState->CopyTo(arg_3_7, pins);
+						}
+						dest->pTessellationState = arg_3_7;
+					}
+
+					// FIELD - arg_3_8 pCreateInfos->ViewportState
+					{
+						VkPipelineViewportStateCreateInfo* arg_3_8 = nullptr;
+						if (src->ViewportState != nullptr)
+						{
+							arg_3_8 = new VkPipelineViewportStateCreateInfo();
+							src->ViewportState->CopyTo(arg_3_8, pins);
+							{
+								{
+									// FIELD - arg_3_8_4 pCreateInfos->ViewportState->Viewports		
+									VkViewport* arg_3_8_4 = nullptr;
+									UInt32 noOfViewPorts = 0;
+
+									if (src->ViewportState->Viewports != nullptr)
+									{
+										noOfViewPorts = src->ViewportState->Viewports->Length;
+										if (noOfViewPorts > 0)
+										{
+											arg_3_8_4 = new VkViewport[noOfViewPorts];
+											for (UInt32 j = 0; j < noOfViewPorts; ++j)
+											{
+												auto srcVP = (ManagedVulkan::Viewport^) src->ViewportState->Viewports[j];
+												srcVP->CopyTo(arg_3_8_4 + j, pins);
+											}
+										}
+									}
+									arg_3_8->pViewports = arg_3_8_4;
+									arg_3_8->viewportCount = noOfViewPorts;
+								}
+
+								{
+									// FIELD - arg_3_8_6 pCreateInfos->ViewportState->Scissors	
+									VkRect2D* arg_3_8_6 = nullptr;
+									UInt32 noOfScissors = 0;
+
+									if (src->ViewportState->Scissors != nullptr)
+									{
+										noOfScissors = src->ViewportState->Scissors->Length;
+
+										arg_3_8_6 = new VkRect2D[noOfScissors];
+										for (UInt32 j = 0; j < noOfScissors; ++j)
+										{
+											auto scissor = (ManagedVulkan::Rect2D^) src->ViewportState->Scissors[j];
+											scissor->CopyTo(arg_3_8_6 + j, pins);
+										}
+									}
+									arg_3_8->pScissors = arg_3_8_6;
+									arg_3_8->scissorCount = noOfScissors;
+								}
+							}
+						}
+						dest->pViewportState = arg_3_8;
+					}
+
+					// FIELD - arg_3_9 pCreateInfos->RasterizationState	
+					{
+						VkPipelineRasterizationStateCreateInfo* arg_3_9 = nullptr;
+						if (src->RasterizationState != nullptr)
+						{
+							arg_3_9 = new VkPipelineRasterizationStateCreateInfo();
+							src->RasterizationState->CopyTo(arg_3_9, pins);
+						}
+						dest->pRasterizationState = arg_3_9;
+					}
+
+					// FIELD - arg_3_10 pCreateInfos->MultisampleState	
+					{
+						VkPipelineMultisampleStateCreateInfo* arg_3_10 = nullptr;
+						if (src->MultisampleState != nullptr)
+						{
+							arg_3_10 = new VkPipelineMultisampleStateCreateInfo();
+							src->MultisampleState->CopyTo(arg_3_10, pins);
+						}
+						dest->pMultisampleState = arg_3_10;
+					}	
+
+					// FIELD - arg_3_11 pCreateInfos->DepthStencilState		
+					{
+						VkPipelineDepthStencilStateCreateInfo* arg_3_11 = nullptr;
+						if (src->DepthStencilState != nullptr)
+						{
+							arg_3_11 = new VkPipelineDepthStencilStateCreateInfo();
+							src->DepthStencilState->CopyTo(arg_3_11, pins);
+						}
+						dest->pDepthStencilState = arg_3_11;
+					}
+
+
+					// FIELD - arg_3_12 pCreateInfos->ColorBlendState		
+					{
+						VkPipelineColorBlendStateCreateInfo* arg_3_12 = nullptr;
+						if (src->ColorBlendState != nullptr)
+						{
+							arg_3_12 = new VkPipelineColorBlendStateCreateInfo();
+							src->ColorBlendState->CopyTo(arg_3_12, pins);
+
+							// FIELD - arg_3_12_6 pCreateInfos->ColorBlendState->Attachments	
+							{
+								VkPipelineColorBlendAttachmentState* arg_3_12_6 = nullptr;
+								UInt32 noOfAttachments = 0;
+
+								if (src->ColorBlendState->Attachments != nullptr)
+								{
+									noOfAttachments = src->ColorBlendState->Attachments->Length;
+									if (noOfAttachments > 0)
+									{
+										arg_3_12_6 = new VkPipelineColorBlendAttachmentState[noOfAttachments];
+										for (UInt32 j = 0; j < noOfAttachments; ++j)
+										{
+											auto attachment = (ManagedVulkan::PipelineColorBlendAttachmentState^) src->ColorBlendState->Attachments[j];
+											attachment->CopyTo(arg_3_12_6 + j, pins);
+										}
+									}
+								}
+
+								arg_3_12->attachmentCount = noOfAttachments;
+								arg_3_12->pAttachments = arg_3_12_6;
+							}
+						}
+						dest->pColorBlendState = arg_3_12;
+					}
+
+					{
+						// FIELD - arg_3_13 pCreateInfos->DynamicState		
+						VkPipelineDynamicStateCreateInfo* arg_3_13 = nullptr;
+						if (src->DynamicState != nullptr)
+						{
+							arg_3_13 = new VkPipelineDynamicStateCreateInfo();
+							src->DynamicState->CopyTo(arg_3_13, pins);
+							
+							// FIELD - arg_3_13 pCreateInfos->DynamicState->DynamicStates	
+							{
+								VkDynamicState* arg_3_13_1 = nullptr;
+								UInt32 noOfStates = 0;
+								if (src->DynamicState->DynamicStates != nullptr)
+								{
+									noOfStates = src->DynamicState->DynamicStates->Length;
+									if (noOfStates > 0)
+									{
+										arg_3_13_1 = new VkDynamicState[noOfStates];
+										for (UInt32 j = 0; j < noOfStates; ++j)
+										{
+											arg_3_13_1[j] = (VkDynamicState)src->DynamicState->DynamicStates[j];
+										}
+									}
+								}
+								arg_3_13->dynamicStateCount = noOfStates;
+								arg_3_13->pDynamicStates = arg_3_13_1;
+							}
+							//array<ManagedVulkan::DynamicState>^ mDynamicStates = nullptr;
+						}
+						dest->pDynamicState = arg_3_13;
+					}
+
+				} // END FOREACH CREATEINFO
+			} 
+		}
+
+		// INITS 4 - pAllocator		
+		VkAllocationCallbacks inst_4;
+		VkAllocationCallbacks* arg_4 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_4 = &inst_4;
+			pAllocator->CopyTo(arg_4, pins);
+		}
+
+		// INITS 5 - pPipelines		
+		arg_5 = new VkPipeline[arg_2];
+
+		auto result = vkCreateGraphicsPipelines(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
+
+		pPipelines = gcnew array<Pipeline^>(arg_2);
+		for (UInt32 i = 0; i < arg_2; ++i)
+		{
+			pPipelines[i] = gcnew Pipeline();
+			pPipelines[i]->mHandle = arg_5[i];
+		}
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_3 != nullptr)
+		{
+			for (UInt32 i = 0; i < arg_2; ++i)
+			{
+				auto parent = (VkGraphicsPipelineCreateInfo*)arg_3 + i;
+
+				if (parent->pStages != nullptr)
+				{
+					{
+						UInt32 noOfStages = parent->stageCount;
+						for (UInt32 j = 0; j < noOfStages; ++j)
+						{
+							auto parentStage = parent->pStages + j;
+							if (parentStage->pSpecializationInfo != nullptr)
+							{
+								if (parentStage->pSpecializationInfo->pMapEntries != nullptr)
+								{
+									delete[] parentStage->pSpecializationInfo->pMapEntries;
+								}
+								delete parentStage->pSpecializationInfo;
+							}
+						}
+					}
+					delete[] parent->pStages;
+				}
+
+				if (parent->pVertexInputState != nullptr)
+				{
+					if (parent->pVertexInputState->pVertexBindingDescriptions != nullptr)
+					{
+						delete[] parent->pVertexInputState->pVertexBindingDescriptions;
+					}
+
+					if (parent->pVertexInputState->pVertexAttributeDescriptions != nullptr)
+					{
+						delete[] parent->pVertexInputState->pVertexAttributeDescriptions;
+					}
+
+					delete parent->pVertexInputState;
+				}
+
+				if (parent->pInputAssemblyState != nullptr)
+				{
+					delete parent->pInputAssemblyState;
+				}
+
+				if (parent->pTessellationState != nullptr)
+				{
+					delete parent->pTessellationState;
+				}
+
+				if (parent->pViewportState != nullptr)
+				{
+					if (parent->pViewportState->pViewports != nullptr)
+					{
+						delete[] parent->pViewportState->pViewports;
+					}
+
+					if (parent->pViewportState->pScissors != nullptr)
+					{
+						delete[] parent->pViewportState->pScissors;
+					}
+					delete parent->pViewportState;
+				}
+
+				if (parent->pRasterizationState != nullptr)
+				{
+					delete parent->pRasterizationState;
+				}
+
+				if (parent->pRasterizationState != nullptr)
+				{
+					delete parent->pRasterizationState;
+				}
+
+				if (parent->pMultisampleState != nullptr)
+				{
+					delete parent->pMultisampleState;
+				}
+
+				if (parent->pDepthStencilState != nullptr)
+				{
+					delete parent->pDepthStencilState;
+				}
+
+				if (parent->pColorBlendState != nullptr)
+				{
+					if (parent->pColorBlendState->pAttachments != nullptr)
+					{
+						delete[] parent->pColorBlendState->pAttachments;
+					}
+
+					delete parent->pColorBlendState;
+				}
+
+				if (parent->pDynamicState != nullptr)
+				{
+					if (parent->pDynamicState->pDynamicStates != nullptr)
+					{
+						delete[] parent->pDynamicState->pDynamicStates;
+					}
+
+					delete parent->pDynamicState;
+				}
+			}
+
+			delete[] arg_3;
+		}
+		if (arg_5 != nullptr)
+		{
+			delete[] arg_5;
+		}
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}

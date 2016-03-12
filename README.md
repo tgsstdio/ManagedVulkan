@@ -6,7 +6,13 @@
 
 My own managed C++ / CLI interface for Vulkan (on my Windows machines compiled with Visual Studio 2015 Community Edition) generated from VulkanSharp's VK_XML_URL = https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/1.0/src/spec/vk.xml
 
+# Version 1.0.0
+
+Now using Semantic Versioning v2.0.0 (http://semver.org/)
+Code based on Vulkan T4 codegen; Heavily hand modified.
+
 # Version 0.0.1
+
 
 ### Project: ManagedVulkan
 
@@ -30,6 +36,7 @@ T4 text templating to generate C++ / CLI interfaces using managed types
  - Helper Structs (really classes) for managed types - **DONE**
  - Header file for Windows only windowing functions - **DONE**
  - Group class (proxies) for similar instances - **DONE**
+ - External synchronization ?? *TODO*
  
 
 ### Todos
