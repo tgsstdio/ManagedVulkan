@@ -34,7 +34,7 @@ namespace <#= ns #>
 	{
 		var flags = el.UseFlags ? "[FlagsAttribute] ": "";
 #>
-	<#= flags #>public enum class <#= el.Name #> : Int32
+	<#= flags #>public enum class <#= el.Name #> : UInt32
 	{
 <#		
 		foreach(var i in el.Items)

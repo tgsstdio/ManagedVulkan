@@ -8949,4 +8949,1830 @@ namespace ManagedVulkan
 		}
 	};
 
+
+	public ref class ComputePipelineCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		ManagedVulkan::PipelineCreateFlagBits mFlags;
+		ManagedVulkan::PipelineShaderStageCreateInfo^ mStage = gcnew ManagedVulkan::PipelineShaderStageCreateInfo();
+		ManagedVulkan::PipelineLayout^ mLayout = gcnew ManagedVulkan::PipelineLayout();
+		ManagedVulkan::Pipeline^ mBasePipelineHandle = nullptr;
+		Int32 mBasePipelineIndex = 0;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property ManagedVulkan::PipelineCreateFlagBits Flags
+		{
+			ManagedVulkan::PipelineCreateFlagBits get()
+			{
+				return mFlags;
+			}
+			void set(ManagedVulkan::PipelineCreateFlagBits value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::PipelineShaderStageCreateInfo^ Stage
+		{
+			ManagedVulkan::PipelineShaderStageCreateInfo^ get()
+			{
+				return mStage;
+			}
+			void set(ManagedVulkan::PipelineShaderStageCreateInfo^ value)
+			{
+				mStage = value;
+			}
+		}
+		property ManagedVulkan::PipelineLayout^ Layout
+		{
+			ManagedVulkan::PipelineLayout^ get()
+			{
+				return mLayout;
+			}
+			void set(ManagedVulkan::PipelineLayout^ value)
+			{
+				mLayout = value;
+			}
+		}
+		property ManagedVulkan::Pipeline^ BasePipelineHandle
+		{
+			ManagedVulkan::Pipeline^ get()
+			{
+				return mBasePipelineHandle;
+			}
+			void set(ManagedVulkan::Pipeline^ value)
+			{
+				mBasePipelineHandle = value;
+			}
+		}
+		property Int32 BasePipelineIndex
+		{
+			Int32 get()
+			{
+				return mBasePipelineIndex;
+			}
+			void set(Int32 value)
+			{
+				mBasePipelineIndex = value;
+			}
+		}
+	internal:
+		void CopyTo(VkComputePipelineCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = (VkPipelineCreateFlagBits) mFlags;
+			mStage->CopyTo(&dst->stage, pins);
+			dst->layout = mLayout->mHandle;
+		//	dst->basePipelineHandle = mBasePipelineHandle;
+			dst->basePipelineIndex = mBasePipelineIndex;
+		}
+
+		void CopyFrom(VkComputePipelineCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = (PipelineCreateFlagBits) src->flags;
+			mStage->CopyFrom(&src->stage);
+			mLayout->mHandle = src->layout;
+		//	mBasePipelineHandle = src->basePipelineHandle;
+			mBasePipelineIndex = src->basePipelineIndex;
+		}
+	};
+
+	public ref class PushConstantRange
+	{
+	private:
+		ManagedVulkan::ShaderStageFlagBits mStageFlags;
+		UInt32 mOffset = 0;
+		UInt32 mSize = 0;
+	public:
+		property ManagedVulkan::ShaderStageFlagBits StageFlags
+		{
+			ManagedVulkan::ShaderStageFlagBits get()
+			{
+				return mStageFlags;
+			}
+			void set(ManagedVulkan::ShaderStageFlagBits value)
+			{
+				mStageFlags = value;
+			}
+		}
+		property UInt32 Offset
+		{
+			UInt32 get()
+			{
+				return mOffset;
+			}
+			void set(UInt32 value)
+			{
+				mOffset = value;
+			}
+		}
+		property UInt32 Size
+		{
+			UInt32 get()
+			{
+				return mSize;
+			}
+			void set(UInt32 value)
+			{
+				mSize = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPushConstantRange* dst, List<IntPtr>^ pins)
+		{
+			dst->stageFlags = (VkShaderStageFlagBits) mStageFlags;
+			dst->offset = mOffset;
+			dst->size = mSize;
+		}
+
+		void CopyFrom(VkPushConstantRange* src)
+		{
+			mStageFlags = (ManagedVulkan::ShaderStageFlagBits) src->stageFlags;
+			mOffset = src->offset;
+			mSize = src->size;
+		}
+	};
+
+
+	public ref class PipelineLayoutCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		UInt32 mSetLayoutCount = 0;
+		array<ManagedVulkan::DescriptorSetLayout^>^ mSetLayouts = nullptr;
+		array<ManagedVulkan::PushConstantRange^>^ mPushConstantRanges = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property array<ManagedVulkan::DescriptorSetLayout^>^ SetLayouts
+		{
+			array<ManagedVulkan::DescriptorSetLayout^>^ get()
+			{
+				return mSetLayouts;
+			}
+			void set(array<ManagedVulkan::DescriptorSetLayout^>^ value)
+			{
+				mSetLayouts = value;
+			}
+		}
+		property array<ManagedVulkan::PushConstantRange^>^ PushConstantRanges
+		{
+			array<ManagedVulkan::PushConstantRange^>^ get()
+			{
+				return mPushConstantRanges;
+			}
+			void set(array<ManagedVulkan::PushConstantRange^>^ value)
+			{
+				mPushConstantRanges = value;
+			}
+		}
+	internal:
+		void CopyTo(VkPipelineLayoutCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			//dst->setLayoutCount = mSetLayoutCount;
+			//dst->pSetLayouts = mSetLayouts;
+			//dst->pushConstantRangeCount = mPushConstantRangeCount;
+			//mPushConstantRanges->CopyTo(&dst->pPushConstantRanges, pins);
+		}
+
+		void CopyFrom(VkPipelineLayoutCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			//mSetLayoutCount = src->setLayoutCount;
+			//mSetLayouts = src->pSetLayouts;
+			//mPushConstantRangeCount = src->pushConstantRangeCount;
+			//mPushConstantRanges->CopyFrom(&src->pPushConstantRanges);
+		}
+	};
+
+	public ref class SamplerCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		ManagedVulkan::Filter mMagFilter;
+		ManagedVulkan::Filter mMinFilter;
+		ManagedVulkan::SamplerMipmapMode mMipmapMode;
+		ManagedVulkan::SamplerAddressMode mAddressModeU;
+		ManagedVulkan::SamplerAddressMode mAddressModeV;
+		ManagedVulkan::SamplerAddressMode mAddressModeW;
+		float mMipLodBias = 0;
+		bool mAnisotropyEnable = false;
+		float mMaxAnisotropy = 0;
+		bool mCompareEnable = false;
+		ManagedVulkan::CompareOp mCompareOp;
+		float mMinLod = 0;
+		float mMaxLod = 0;
+		ManagedVulkan::BorderColor mBorderColor;
+		bool mUnnormalizedCoordinates = false;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::Filter MagFilter
+		{
+			ManagedVulkan::Filter get()
+			{
+				return mMagFilter;
+			}
+			void set(ManagedVulkan::Filter value)
+			{
+				mMagFilter = value;
+			}
+		}
+		property ManagedVulkan::Filter MinFilter
+		{
+			ManagedVulkan::Filter get()
+			{
+				return mMinFilter;
+			}
+			void set(ManagedVulkan::Filter value)
+			{
+				mMinFilter = value;
+			}
+		}
+		property ManagedVulkan::SamplerMipmapMode MipmapMode
+		{
+			ManagedVulkan::SamplerMipmapMode get()
+			{
+				return mMipmapMode;
+			}
+			void set(ManagedVulkan::SamplerMipmapMode value)
+			{
+				mMipmapMode = value;
+			}
+		}
+		property ManagedVulkan::SamplerAddressMode AddressModeU
+		{
+			ManagedVulkan::SamplerAddressMode get()
+			{
+				return mAddressModeU;
+			}
+			void set(ManagedVulkan::SamplerAddressMode value)
+			{
+				mAddressModeU = value;
+			}
+		}
+		property ManagedVulkan::SamplerAddressMode AddressModeV
+		{
+			ManagedVulkan::SamplerAddressMode get()
+			{
+				return mAddressModeV;
+			}
+			void set(ManagedVulkan::SamplerAddressMode value)
+			{
+				mAddressModeV = value;
+			}
+		}
+		property ManagedVulkan::SamplerAddressMode AddressModeW
+		{
+			ManagedVulkan::SamplerAddressMode get()
+			{
+				return mAddressModeW;
+			}
+			void set(ManagedVulkan::SamplerAddressMode value)
+			{
+				mAddressModeW = value;
+			}
+		}
+		property float MipLodBias
+		{
+			float get()
+			{
+				return mMipLodBias;
+			}
+			void set(float value)
+			{
+				mMipLodBias = value;
+			}
+		}
+		property bool AnisotropyEnable
+		{
+			bool get()
+			{
+				return mAnisotropyEnable;
+			}
+			void set(bool value)
+			{
+				mAnisotropyEnable = value;
+			}
+		}
+		property float MaxAnisotropy
+		{
+			float get()
+			{
+				return mMaxAnisotropy;
+			}
+			void set(float value)
+			{
+				mMaxAnisotropy = value;
+			}
+		}
+		property bool CompareEnable
+		{
+			bool get()
+			{
+				return mCompareEnable;
+			}
+			void set(bool value)
+			{
+				mCompareEnable = value;
+			}
+		}
+		property ManagedVulkan::CompareOp CompareOp
+		{
+			ManagedVulkan::CompareOp get()
+			{
+				return mCompareOp;
+			}
+			void set(ManagedVulkan::CompareOp value)
+			{
+				mCompareOp = value;
+			}
+		}
+		property float MinLod
+		{
+			float get()
+			{
+				return mMinLod;
+			}
+			void set(float value)
+			{
+				mMinLod = value;
+			}
+		}
+		property float MaxLod
+		{
+			float get()
+			{
+				return mMaxLod;
+			}
+			void set(float value)
+			{
+				mMaxLod = value;
+			}
+		}
+		property ManagedVulkan::BorderColor BorderColor
+		{
+			ManagedVulkan::BorderColor get()
+			{
+				return mBorderColor;
+			}
+			void set(ManagedVulkan::BorderColor value)
+			{
+				mBorderColor = value;
+			}
+		}
+		property bool UnnormalizedCoordinates
+		{
+			bool get()
+			{
+				return mUnnormalizedCoordinates;
+			}
+			void set(bool value)
+			{
+				mUnnormalizedCoordinates = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSamplerCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->magFilter = (VkFilter) mMagFilter;
+			dst->minFilter = (VkFilter) mMinFilter;
+			dst->mipmapMode = (VkSamplerMipmapMode) mMipmapMode;
+			dst->addressModeU = (VkSamplerAddressMode) mAddressModeU;
+			dst->addressModeV = (VkSamplerAddressMode) mAddressModeV;
+			dst->addressModeW = (VkSamplerAddressMode) mAddressModeW;
+			dst->mipLodBias = mMipLodBias;
+			dst->anisotropyEnable = mAnisotropyEnable ? 1 : 0;
+			dst->maxAnisotropy = mMaxAnisotropy;
+			dst->compareEnable = mCompareEnable ? 1 : 0;
+			dst->compareOp = (VkCompareOp) mCompareOp;
+			dst->minLod = mMinLod;
+			dst->maxLod = mMaxLod;
+			dst->borderColor = (VkBorderColor) mBorderColor;
+			dst->unnormalizedCoordinates = mUnnormalizedCoordinates ? 1 : 0;
+		}
+
+		void CopyFrom(VkSamplerCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			mMagFilter = (ManagedVulkan::Filter) src->magFilter;
+			mMinFilter = (ManagedVulkan::Filter) src->minFilter;
+			mMipmapMode = (ManagedVulkan::SamplerMipmapMode) src->mipmapMode;
+			mAddressModeU = (ManagedVulkan::SamplerAddressMode) src->addressModeU;
+			mAddressModeV = (ManagedVulkan::SamplerAddressMode) src->addressModeV;
+			mAddressModeW = (ManagedVulkan::SamplerAddressMode) src->addressModeW;
+			mMipLodBias = src->mipLodBias;
+			mAnisotropyEnable = src->anisotropyEnable != 0;
+			mMaxAnisotropy = src->maxAnisotropy;
+			mCompareEnable = src->compareEnable != 0;
+			mCompareOp = (ManagedVulkan::CompareOp) src->compareOp;
+			mMinLod = src->minLod;
+			mMaxLod = src->maxLod;
+			mBorderColor = (ManagedVulkan::BorderColor) src->borderColor;
+			mUnnormalizedCoordinates = src->unnormalizedCoordinates != 0;
+		}
+	};
+
+
+	public ref class DescriptorSetLayoutBinding
+	{
+	private:
+		UInt32 mBinding = 0;
+		ManagedVulkan::DescriptorType mDescriptorType;
+		ManagedVulkan::ShaderStageFlagBits mStageFlags;
+		array<ManagedVulkan::Sampler^>^ mImmutableSamplers = nullptr;
+	public:
+		property UInt32 Binding
+		{
+			UInt32 get()
+			{
+				return mBinding;
+			}
+			void set(UInt32 value)
+			{
+				mBinding = value;
+			}
+		}
+		property ManagedVulkan::DescriptorType DescriptorType
+		{
+			ManagedVulkan::DescriptorType get()
+			{
+				return mDescriptorType;
+			}
+			void set(ManagedVulkan::DescriptorType value)
+			{
+				mDescriptorType = value;
+			}
+		}
+		property ManagedVulkan::ShaderStageFlagBits StageFlags
+		{
+			ManagedVulkan::ShaderStageFlagBits get()
+			{
+				return mStageFlags;
+			}
+			void set(ManagedVulkan::ShaderStageFlagBits value)
+			{
+				mStageFlags = value;
+			}
+		}
+		property array<ManagedVulkan::Sampler^>^ ImmutableSamplers
+		{
+			array<ManagedVulkan::Sampler^>^ get()
+			{
+				return mImmutableSamplers;
+			}
+			void set(array<ManagedVulkan::Sampler^>^ value)
+			{
+				mImmutableSamplers = value;
+			}
+		}
+	internal:
+		void CopyTo(VkDescriptorSetLayoutBinding* dst, List<IntPtr>^ pins)
+		{
+			dst->binding = mBinding;
+			dst->descriptorType = (VkDescriptorType) mDescriptorType;
+			//dst->descriptorCount = mDescriptorCount;
+			dst->stageFlags = (VkShaderStageFlagBits) mStageFlags;
+			//dst->pImmutableSamplers = mImmutableSamplers;
+		}
+
+		void CopyFrom(VkDescriptorSetLayoutBinding* src)
+		{
+			mBinding = src->binding;
+			mDescriptorType = (ManagedVulkan::DescriptorType) src->descriptorType;
+			//mDescriptorCount = src->descriptorCount;
+			mStageFlags = (ManagedVulkan::ShaderStageFlagBits) src->stageFlags;
+			//	mImmutableSamplers = src->pImmutableSamplers;
+		}
+	};
+
+
+	public ref class DescriptorSetLayoutCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		array<DescriptorSetLayoutBinding^>^ mBindings = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property array<ManagedVulkan::DescriptorSetLayoutBinding^>^ Bindings
+		{
+			array<ManagedVulkan::DescriptorSetLayoutBinding^>^ get()
+			{
+				return mBindings;
+			}
+			void set(array<ManagedVulkan::DescriptorSetLayoutBinding^>^ value)
+			{
+				mBindings = value;
+			}
+		}
+	internal:
+		void CopyTo(VkDescriptorSetLayoutCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			//dst->bindingCount = mBindingCount;
+			//mBindings->CopyTo(&dst->pBindings, pins);
+		}
+
+		void CopyFrom(VkDescriptorSetLayoutCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			//pNext = src->pNext;
+			mFlags = src->flags;
+			//mBindingCount = src->bindingCount;
+			//mBindings->CopyFrom(&src->pBindings);
+		}
+	};
+
+	public ref class DescriptorPoolSize
+	{
+	private:
+		ManagedVulkan::DescriptorType mType;
+		UInt32 mDescriptorCount = 0;
+	public:
+		property ManagedVulkan::DescriptorType Type
+		{
+			ManagedVulkan::DescriptorType get()
+			{
+				return mType;
+			}
+			void set(ManagedVulkan::DescriptorType value)
+			{
+				mType = value;
+			}
+		}
+		property UInt32 DescriptorCount
+		{
+			UInt32 get()
+			{
+				return mDescriptorCount;
+			}
+			void set(UInt32 value)
+			{
+				mDescriptorCount = value;
+			}
+		}
+	internal:
+		void CopyTo(VkDescriptorPoolSize* dst, List<IntPtr>^ pins)
+		{
+			dst->type = (VkDescriptorType) mType;
+			dst->descriptorCount = mDescriptorCount;
+		}
+
+		void CopyFrom(VkDescriptorPoolSize* src)
+		{
+			mType = (ManagedVulkan::DescriptorType)src->type;
+			mDescriptorCount = src->descriptorCount;
+		}
+	};
+
+	public ref class DescriptorPoolCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		ManagedVulkan::DescriptorPoolCreateFlagBits mFlags;
+		UInt32 mMaxSets = 0;
+		array<ManagedVulkan::DescriptorPoolSize^>^ mPoolSizes = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property ManagedVulkan::DescriptorPoolCreateFlagBits Flags
+		{
+			ManagedVulkan::DescriptorPoolCreateFlagBits get()
+			{
+				return mFlags;
+			}
+			void set(ManagedVulkan::DescriptorPoolCreateFlagBits value)
+			{
+				mFlags = value;
+			}
+		}
+		property UInt32 MaxSets
+		{
+			UInt32 get()
+			{
+				return mMaxSets;
+			}
+			void set(UInt32 value)
+			{
+				mMaxSets = value;
+			}
+		}
+		property array<ManagedVulkan::DescriptorPoolSize^>^ PoolSizes
+		{
+			array<ManagedVulkan::DescriptorPoolSize^>^ get()
+			{
+				return mPoolSizes;
+			}
+			void set(array<ManagedVulkan::DescriptorPoolSize^>^ value)
+			{
+				mPoolSizes = value;
+			}
+		}
+	internal:
+		void CopyTo(VkDescriptorPoolCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = (VkDescriptorPoolCreateFlagBits) mFlags;
+			dst->maxSets = mMaxSets;
+			//dst->poolSizeCount = mPoolSizeCount;
+			//mPoolSizes->CopyTo(&dst->pPoolSizes, pins);
+		}
+
+		void CopyFrom(VkDescriptorPoolCreateInfo* src)
+		{
+			mSType = (ManagedVulkan::StructureType)src->sType;
+			mFlags = (ManagedVulkan::DescriptorPoolCreateFlagBits) src->flags;
+			mMaxSets = src->maxSets;
+			//mPoolSizeCount = src->poolSizeCount;
+			//mPoolSizes->CopyFrom(&src->pPoolSizes);
+		}
+	};
+
+	public ref class DescriptorSetAllocateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		ManagedVulkan::DescriptorPool^ mDescriptorPool = gcnew ManagedVulkan::DescriptorPool();
+		UInt32 mDescriptorSetCount = 0;
+		array<ManagedVulkan::DescriptorSetLayout^>^ mSetLayouts = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property ManagedVulkan::DescriptorPool^ DescriptorPool
+		{
+			ManagedVulkan::DescriptorPool^ get()
+			{
+				return mDescriptorPool;
+			}
+			void set(ManagedVulkan::DescriptorPool^ value)
+			{
+				mDescriptorPool = value;
+			}
+		}
+		property UInt32 DescriptorSetCount
+		{
+			UInt32 get()
+			{
+				return mDescriptorSetCount;
+			}
+			void set(UInt32 value)
+			{
+				mDescriptorSetCount = value;
+			}
+		}
+		property array<ManagedVulkan::DescriptorSetLayout^>^ SetLayouts
+		{
+			array<ManagedVulkan::DescriptorSetLayout^>^ get()
+			{
+				return mSetLayouts;
+			}
+			void set(array<ManagedVulkan::DescriptorSetLayout^>^ value)
+			{
+				mSetLayouts = value;
+			}
+		}
+	internal:
+		void CopyTo(VkDescriptorSetAllocateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->descriptorPool = mDescriptorPool->mHandle;
+			dst->descriptorSetCount = mDescriptorSetCount;
+			//dst->pSetLayouts = mSetLayouts;
+		}
+
+		void CopyFrom(VkDescriptorSetAllocateInfo* src)
+		{
+			mSType = (ManagedVulkan::StructureType)src->sType;
+			mDescriptorPool->mHandle = src->descriptorPool;
+			mDescriptorSetCount = src->descriptorSetCount;
+			//mSetLayouts = src->pSetLayouts;
+		}
+	};
+
+	public ref class DescriptorImageInfo
+	{
+	private:
+		ManagedVulkan::Sampler^ mSampler = gcnew ManagedVulkan::Sampler();
+		ManagedVulkan::ImageView^ mImageView = gcnew ManagedVulkan::ImageView();
+		ManagedVulkan::ImageLayout mImageLayout;
+	public:
+		property ManagedVulkan::Sampler^ Sampler
+		{
+			ManagedVulkan::Sampler^ get()
+			{
+				return mSampler;
+			}
+			void set(ManagedVulkan::Sampler^ value)
+			{
+				mSampler = value;
+			}
+		}
+		property ManagedVulkan::ImageView^ ImageView
+		{
+			ManagedVulkan::ImageView^ get()
+			{
+				return mImageView;
+			}
+			void set(ManagedVulkan::ImageView^ value)
+			{
+				mImageView = value;
+			}
+		}
+		property ManagedVulkan::ImageLayout ImageLayout
+		{
+			ManagedVulkan::ImageLayout get()
+			{
+				return mImageLayout;
+			}
+			void set(ManagedVulkan::ImageLayout value)
+			{
+				mImageLayout = value;
+			}
+		}
+	internal:
+		void CopyTo(VkDescriptorImageInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sampler = mSampler->mHandle;
+			dst->imageView = mImageView->mHandle;
+			dst->imageLayout = (VkImageLayout) mImageLayout;
+		}
+
+		void CopyFrom(VkDescriptorImageInfo* src)
+		{
+			mSampler->mHandle = src->sampler;
+			mImageView->mHandle = src->imageView;
+			mImageLayout = (ManagedVulkan::ImageLayout) src->imageLayout;
+		}
+	};
+
+	public ref class DescriptorBufferInfo
+	{
+	private:
+		ManagedVulkan::Buffer^ mBuffer = gcnew ManagedVulkan::Buffer();
+		UInt64 mOffset = 0;
+		UInt64 mRange = 0;
+	public:
+		property ManagedVulkan::Buffer^ Buffer
+		{
+			ManagedVulkan::Buffer^ get()
+			{
+				return mBuffer;
+			}
+			void set(ManagedVulkan::Buffer^ value)
+			{
+				mBuffer = value;
+			}
+		}
+		property UInt64 Offset
+		{
+			UInt64 get()
+			{
+				return mOffset;
+			}
+			void set(UInt64 value)
+			{
+				mOffset = value;
+			}
+		}
+		property UInt64 Range
+		{
+			UInt64 get()
+			{
+				return mRange;
+			}
+			void set(UInt64 value)
+			{
+				mRange = value;
+			}
+		}
+	internal:
+		void CopyTo(VkDescriptorBufferInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->buffer = mBuffer->mHandle;
+			dst->offset = mOffset;
+			dst->range = mRange;
+		}
+
+		void CopyFrom(VkDescriptorBufferInfo* src)
+		{
+			mBuffer->mHandle = src->buffer;
+			mOffset = src->offset;
+			mRange = src->range;
+		}
+	};
+
+	public ref class WriteDescriptorSet
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		ManagedVulkan::DescriptorSet^ mDstSet = gcnew ManagedVulkan::DescriptorSet();
+		UInt32 mDstBinding = 0;
+		UInt32 mDstArrayElement = 0;
+		UInt32 mDescriptorCount = 0;
+		ManagedVulkan::DescriptorType mDescriptorType;
+		// [mImageInfo, mBufferInfo, mTexelBufferView] have the same length - mDescriptorCount
+		array<ManagedVulkan::DescriptorImageInfo^>^ mImageInfo = nullptr;
+		array<ManagedVulkan::DescriptorBufferInfo^>^ mBufferInfo = nullptr;
+		array<ManagedVulkan::BufferView^>^ mTexelBufferView = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property ManagedVulkan::DescriptorSet^ DstSet
+		{
+			ManagedVulkan::DescriptorSet^ get()
+			{
+				return mDstSet;
+			}
+			void set(ManagedVulkan::DescriptorSet^ value)
+			{
+				mDstSet = value;
+			}
+		}
+		property UInt32 DstBinding
+		{
+			UInt32 get()
+			{
+				return mDstBinding;
+			}
+			void set(UInt32 value)
+			{
+				mDstBinding = value;
+			}
+		}
+		property UInt32 DstArrayElement
+		{
+			UInt32 get()
+			{
+				return mDstArrayElement;
+			}
+			void set(UInt32 value)
+			{
+				mDstArrayElement = value;
+			}
+		}
+		property UInt32 DescriptorCount
+		{
+			UInt32 get()
+			{
+				return mDescriptorCount;
+			}
+			void set(UInt32 value)
+			{
+				mDescriptorCount = value;
+			}
+		}
+		property ManagedVulkan::DescriptorType DescriptorType
+		{
+			ManagedVulkan::DescriptorType get()
+			{
+				return mDescriptorType;
+			}
+			void set(ManagedVulkan::DescriptorType value)
+			{
+				mDescriptorType = value;
+			}
+		}
+		property array<ManagedVulkan::DescriptorImageInfo^>^ ImageInfo
+		{
+			array<ManagedVulkan::DescriptorImageInfo^>^ get()
+			{
+				return mImageInfo;
+			}
+			void set(array<ManagedVulkan::DescriptorImageInfo^>^ value)
+			{
+				mImageInfo = value;
+			}
+		}
+		property array<ManagedVulkan::DescriptorBufferInfo^>^ BufferInfo
+		{
+			array<ManagedVulkan::DescriptorBufferInfo^>^ get()
+			{
+				return mBufferInfo;
+			}
+			void set(array<ManagedVulkan::DescriptorBufferInfo^>^ value)
+			{
+				mBufferInfo = value;
+			}
+		}
+		property array<ManagedVulkan::BufferView^>^ TexelBufferView
+		{
+			array<ManagedVulkan::BufferView^>^ get()
+			{
+				return mTexelBufferView;
+			}
+			void set(array<ManagedVulkan::BufferView^>^ value)
+			{
+				mTexelBufferView = value;
+			}
+		}
+	internal:
+		void CopyTo(VkWriteDescriptorSet* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->dstSet = mDstSet->mHandle;
+			dst->dstBinding = mDstBinding;
+			dst->dstArrayElement = mDstArrayElement;
+			dst->descriptorCount = mDescriptorCount;
+			dst->descriptorType = (VkDescriptorType) mDescriptorType;
+			//mImageInfo->CopyTo(&dst->pImageInfo, pins);
+			//mBufferInfo->CopyTo(&dst->pBufferInfo, pins);
+			//dst->pTexelBufferView = mTexelBufferView;
+		}
+
+		void CopyFrom(VkWriteDescriptorSet* src)
+		{
+			mSType = (ManagedVulkan::StructureType)src->sType;
+			//pNext = src->pNext;
+			mDstSet->mHandle = src->dstSet;
+			mDstBinding = src->dstBinding;
+			mDstArrayElement = src->dstArrayElement;
+			mDescriptorCount = src->descriptorCount;
+			mDescriptorType = (ManagedVulkan::DescriptorType) src->descriptorType;
+			//mImageInfo->CopyFrom(&src->pImageInfo);
+			//mBufferInfo->CopyFrom(&src->pBufferInfo);
+			//mTexelBufferView = src->pTexelBufferView;
+		}
+	};
+
+	public ref class CopyDescriptorSet
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		ManagedVulkan::DescriptorSet^ mSrcSet = gcnew ManagedVulkan::DescriptorSet();
+		UInt32 mSrcBinding = 0;
+		UInt32 mSrcArrayElement = 0;
+		ManagedVulkan::DescriptorSet^ mDstSet = gcnew ManagedVulkan::DescriptorSet();
+		UInt32 mDstBinding = 0;
+		UInt32 mDstArrayElement = 0;
+		UInt32 mDescriptorCount = 0;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property ManagedVulkan::DescriptorSet^ SrcSet
+		{
+			ManagedVulkan::DescriptorSet^ get()
+			{
+				return mSrcSet;
+			}
+			void set(ManagedVulkan::DescriptorSet^ value)
+			{
+				mSrcSet = value;
+			}
+		}
+		property UInt32 SrcBinding
+		{
+			UInt32 get()
+			{
+				return mSrcBinding;
+			}
+			void set(UInt32 value)
+			{
+				mSrcBinding = value;
+			}
+		}
+		property UInt32 SrcArrayElement
+		{
+			UInt32 get()
+			{
+				return mSrcArrayElement;
+			}
+			void set(UInt32 value)
+			{
+				mSrcArrayElement = value;
+			}
+		}
+		property ManagedVulkan::DescriptorSet^ DstSet
+		{
+			ManagedVulkan::DescriptorSet^ get()
+			{
+				return mDstSet;
+			}
+			void set(ManagedVulkan::DescriptorSet^ value)
+			{
+				mDstSet = value;
+			}
+		}
+		property UInt32 DstBinding
+		{
+			UInt32 get()
+			{
+				return mDstBinding;
+			}
+			void set(UInt32 value)
+			{
+				mDstBinding = value;
+			}
+		}
+		property UInt32 DstArrayElement
+		{
+			UInt32 get()
+			{
+				return mDstArrayElement;
+			}
+			void set(UInt32 value)
+			{
+				mDstArrayElement = value;
+			}
+		}
+		property UInt32 DescriptorCount
+		{
+			UInt32 get()
+			{
+				return mDescriptorCount;
+			}
+			void set(UInt32 value)
+			{
+				mDescriptorCount = value;
+			}
+		}
+	internal:
+		void CopyTo(VkCopyDescriptorSet* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->srcSet = mSrcSet->mHandle;
+			dst->srcBinding = mSrcBinding;
+			dst->srcArrayElement = mSrcArrayElement;
+			dst->dstSet = mDstSet->mHandle;
+			dst->dstBinding = mDstBinding;
+			dst->dstArrayElement = mDstArrayElement;
+			dst->descriptorCount = mDescriptorCount;
+		}
+
+		void CopyFrom(VkCopyDescriptorSet* src)
+		{
+			mSType = (StructureType)src->sType;
+			mSrcSet->mHandle = src->srcSet;
+			mSrcBinding = src->srcBinding;
+			mSrcArrayElement = src->srcArrayElement;
+			mDstSet->mHandle = src->dstSet;
+			mDstBinding = src->dstBinding;
+			mDstArrayElement = src->dstArrayElement;
+			mDescriptorCount = src->descriptorCount;
+		}
+	};
+
+
+	public ref class FramebufferCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		ManagedVulkan::RenderPass^ mRenderPass = gcnew ManagedVulkan::RenderPass();
+		array<ManagedVulkan::ImageView^>^ mAttachments = nullptr;
+		UInt32 mWidth = 0;
+		UInt32 mHeight = 0;
+		UInt32 mLayers = 0;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::RenderPass^ RenderPass
+		{
+			ManagedVulkan::RenderPass^ get()
+			{
+				return mRenderPass;
+			}
+			void set(ManagedVulkan::RenderPass^ value)
+			{
+				mRenderPass = value;
+			}
+		}
+		property array<ManagedVulkan::ImageView^>^ Attachments
+		{
+			array<ManagedVulkan::ImageView^>^ get()
+			{
+				return mAttachments;
+			}
+			void set(array<ManagedVulkan::ImageView^>^ value)
+			{
+				mAttachments = value;
+			}
+		}
+		property UInt32 Width
+		{
+			UInt32 get()
+			{
+				return mWidth;
+			}
+			void set(UInt32 value)
+			{
+				mWidth = value;
+			}
+		}
+		property UInt32 Height
+		{
+			UInt32 get()
+			{
+				return mHeight;
+			}
+			void set(UInt32 value)
+			{
+				mHeight = value;
+			}
+		}
+		property UInt32 Layers
+		{
+			UInt32 get()
+			{
+				return mLayers;
+			}
+			void set(UInt32 value)
+			{
+				mLayers = value;
+			}
+		}
+	internal:
+		void CopyTo(VkFramebufferCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->renderPass = mRenderPass->mHandle;
+			//dst->attachmentCount = mAttachmentCount;
+			//dst->pAttachments = mAttachments;
+			dst->width = mWidth;
+			dst->height = mHeight;
+			dst->layers = mLayers;
+		}
+
+		void CopyFrom(VkFramebufferCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+			mFlags = src->flags;
+			mRenderPass->mHandle = src->renderPass;
+			//mAttachmentCount = src->attachmentCount;
+			//mAttachments = src->pAttachments;
+			mWidth = src->width;
+			mHeight = src->height;
+			mLayers = src->layers;
+		}
+	};
+
+
+	public ref class AttachmentDescription
+	{
+	private:
+		ManagedVulkan::AttachmentDescriptionFlagBits mFlags;
+		ManagedVulkan::Format mFormat;
+		ManagedVulkan::SampleCountFlagBits mSamples;
+		ManagedVulkan::AttachmentLoadOp mLoadOp;
+		ManagedVulkan::AttachmentStoreOp mStoreOp;
+		ManagedVulkan::AttachmentLoadOp mStencilLoadOp;
+		ManagedVulkan::AttachmentStoreOp mStencilStoreOp;
+		ManagedVulkan::ImageLayout mInitialLayout;
+		ManagedVulkan::ImageLayout mFinalLayout;
+	public:
+		property ManagedVulkan::AttachmentDescriptionFlagBits Flags
+		{
+			ManagedVulkan::AttachmentDescriptionFlagBits get()
+			{
+				return mFlags;
+			}
+			void set(ManagedVulkan::AttachmentDescriptionFlagBits value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::Format Format
+		{
+			ManagedVulkan::Format get()
+			{
+				return mFormat;
+			}
+			void set(ManagedVulkan::Format value)
+			{
+				mFormat = value;
+			}
+		}
+		property ManagedVulkan::SampleCountFlagBits Samples
+		{
+			ManagedVulkan::SampleCountFlagBits get()
+			{
+				return mSamples;
+			}
+			void set(ManagedVulkan::SampleCountFlagBits value)
+			{
+				mSamples = value;
+			}
+		}
+		property ManagedVulkan::AttachmentLoadOp LoadOp
+		{
+			ManagedVulkan::AttachmentLoadOp get()
+			{
+				return mLoadOp;
+			}
+			void set(ManagedVulkan::AttachmentLoadOp value)
+			{
+				mLoadOp = value;
+			}
+		}
+		property ManagedVulkan::AttachmentStoreOp StoreOp
+		{
+			ManagedVulkan::AttachmentStoreOp get()
+			{
+				return mStoreOp;
+			}
+			void set(ManagedVulkan::AttachmentStoreOp value)
+			{
+				mStoreOp = value;
+			}
+		}
+		property ManagedVulkan::AttachmentLoadOp StencilLoadOp
+		{
+			ManagedVulkan::AttachmentLoadOp get()
+			{
+				return mStencilLoadOp;
+			}
+			void set(ManagedVulkan::AttachmentLoadOp value)
+			{
+				mStencilLoadOp = value;
+			}
+		}
+		property ManagedVulkan::AttachmentStoreOp StencilStoreOp
+		{
+			ManagedVulkan::AttachmentStoreOp get()
+			{
+				return mStencilStoreOp;
+			}
+			void set(ManagedVulkan::AttachmentStoreOp value)
+			{
+				mStencilStoreOp = value;
+			}
+		}
+		property ManagedVulkan::ImageLayout InitialLayout
+		{
+			ManagedVulkan::ImageLayout get()
+			{
+				return mInitialLayout;
+			}
+			void set(ManagedVulkan::ImageLayout value)
+			{
+				mInitialLayout = value;
+			}
+		}
+		property ManagedVulkan::ImageLayout FinalLayout
+		{
+			ManagedVulkan::ImageLayout get()
+			{
+				return mFinalLayout;
+			}
+			void set(ManagedVulkan::ImageLayout value)
+			{
+				mFinalLayout = value;
+			}
+		}
+	internal:
+		void CopyTo(VkAttachmentDescription* dst, List<IntPtr>^ pins)
+		{
+			dst->flags = (VkAttachmentDescriptionFlagBits) mFlags;
+			dst->format = (VkFormat) mFormat;
+			dst->samples = (VkSampleCountFlagBits) mSamples;
+			dst->loadOp = (VkAttachmentLoadOp) mLoadOp;
+			dst->storeOp = (VkAttachmentStoreOp) mStoreOp;
+			dst->stencilLoadOp = (VkAttachmentLoadOp) mStencilLoadOp;
+			dst->stencilStoreOp = (VkAttachmentStoreOp) mStencilStoreOp;
+			dst->initialLayout = (VkImageLayout) mInitialLayout;
+			dst->finalLayout = (VkImageLayout) mFinalLayout;
+		}
+
+		void CopyFrom(VkAttachmentDescription* src)
+		{
+			mFlags = (ManagedVulkan::AttachmentDescriptionFlagBits) src->flags;
+			mFormat = (ManagedVulkan::Format) src->format;
+			mSamples = (ManagedVulkan::SampleCountFlagBits)src->samples;
+			mLoadOp = (ManagedVulkan::AttachmentLoadOp) src->loadOp;
+			mStoreOp = (ManagedVulkan::AttachmentStoreOp) src->storeOp;
+			mStencilLoadOp = (ManagedVulkan::AttachmentLoadOp) src->stencilLoadOp;
+			mStencilStoreOp = (ManagedVulkan::AttachmentStoreOp) src->stencilStoreOp;
+			mInitialLayout = (ManagedVulkan::ImageLayout) src->initialLayout;
+			mFinalLayout = (ManagedVulkan::ImageLayout) src->finalLayout;
+		}
+	};
+
+	public ref class AttachmentReference
+	{
+	private:
+		UInt32 mAttachment = 0;
+		ManagedVulkan::ImageLayout mLayout;
+	public:
+		property UInt32 Attachment
+		{
+			UInt32 get()
+			{
+				return mAttachment;
+			}
+			void set(UInt32 value)
+			{
+				mAttachment = value;
+			}
+		}
+		property ManagedVulkan::ImageLayout Layout
+		{
+			ManagedVulkan::ImageLayout get()
+			{
+				return mLayout;
+			}
+			void set(ManagedVulkan::ImageLayout value)
+			{
+				mLayout = value;
+			}
+		}
+	internal:
+		void CopyTo(VkAttachmentReference* dst, List<IntPtr>^ pins)
+		{
+			dst->attachment = mAttachment;
+			dst->layout = (VkImageLayout) mLayout;
+		}
+
+		void CopyFrom(VkAttachmentReference* src)
+		{
+			mAttachment = src->attachment;
+			mLayout = (ManagedVulkan::ImageLayout) src->layout;
+		}
+	};
+
+
+	public ref class SubpassDescription
+	{
+	private:
+		UInt32 mFlags;
+		ManagedVulkan::PipelineBindPoint mPipelineBindPoint;
+		array<ManagedVulkan::AttachmentReference^>^ mInputAttachments = nullptr;
+		UInt32 mColorAttachmentCount = 0;
+		array<ManagedVulkan::AttachmentReference^>^ mColorAttachments = nullptr;
+		array<ManagedVulkan::AttachmentReference^>^ mResolveAttachments = nullptr;
+		AttachmentReference^ mDepthStencilAttachment = nullptr;
+		array<UInt32>^ mPreserveAttachments = nullptr;
+	public:
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::PipelineBindPoint PipelineBindPoint
+		{
+			ManagedVulkan::PipelineBindPoint get()
+			{
+				return mPipelineBindPoint;
+			}
+			void set(ManagedVulkan::PipelineBindPoint value)
+			{
+				mPipelineBindPoint = value;
+			}
+		}
+		property array<ManagedVulkan::AttachmentReference^>^ InputAttachments
+		{
+			array<ManagedVulkan::AttachmentReference^>^ get()
+			{
+				return mInputAttachments;
+			}
+			void set(array<ManagedVulkan::AttachmentReference^>^ value)
+			{
+				mInputAttachments = value;
+			}
+		}
+		property UInt32 ColorAttachmentCount
+		{
+			UInt32 get()
+			{
+				return mColorAttachmentCount;
+			}
+			void set(UInt32 value)
+			{
+				mColorAttachmentCount = value;
+			}
+		}
+		property array<ManagedVulkan::AttachmentReference^>^ ColorAttachments
+		{
+			array<ManagedVulkan::AttachmentReference^>^ get()
+			{
+				return mColorAttachments;
+			}
+			void set(array<ManagedVulkan::AttachmentReference^>^ value)
+			{
+				mColorAttachments = value;
+			}
+		}
+		property array<ManagedVulkan::AttachmentReference^>^ ResolveAttachments
+		{
+			array<ManagedVulkan::AttachmentReference^>^ get()
+			{
+				return mResolveAttachments;
+			}
+			void set(array<ManagedVulkan::AttachmentReference^>^ value)
+			{
+				mResolveAttachments = value;
+			}
+		}
+		property ManagedVulkan::AttachmentReference^ DepthStencilAttachment
+		{
+			ManagedVulkan::AttachmentReference^ get()
+			{
+				return mDepthStencilAttachment;
+			}
+			void set(ManagedVulkan::AttachmentReference^ value)
+			{
+				mDepthStencilAttachment = value;
+			}
+		}
+		property array<UInt32>^ PreserveAttachments
+		{
+			array<UInt32>^ get()
+			{
+				return mPreserveAttachments;
+			}
+			void set(array<UInt32>^ value)
+			{
+				mPreserveAttachments = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSubpassDescription* dst, List<IntPtr>^ pins)
+		{
+			dst->flags = mFlags;
+			dst->pipelineBindPoint = (VkPipelineBindPoint) mPipelineBindPoint;
+			//dst->inputAttachmentCount = mInputAttachmentCount;
+			//mInputAttachments->CopyTo(&dst->pInputAttachments, pins);
+			dst->colorAttachmentCount = mColorAttachmentCount;
+			//mColorAttachments->CopyTo(&dst->pColorAttachments, pins);
+			//mResolveAttachments->CopyTo(&dst->pResolveAttachments, pins);
+			//mDepthStencilAttachment->CopyTo(&dst->pDepthStencilAttachment, pins);
+			//dst->preserveAttachmentCount = mPreserveAttachmentCount;
+			//dst->pPreserveAttachments = mPreserveAttachments;
+		}
+
+		void CopyFrom(VkSubpassDescription* src)
+		{
+			mFlags = src->flags;
+			mPipelineBindPoint = (ManagedVulkan::PipelineBindPoint) src->pipelineBindPoint;
+			//mInputAttachmentCount = src->inputAttachmentCount;
+			//mInputAttachments->CopyFrom(&src->pInputAttachments);
+			mColorAttachmentCount = src->colorAttachmentCount;
+			//mColorAttachments->CopyFrom(&src->pColorAttachments);
+			//mResolveAttachments->CopyFrom(&src->pResolveAttachments);
+			//mDepthStencilAttachment->CopyFrom(&src->pDepthStencilAttachment);
+			//mPreserveAttachmentCount = src->preserveAttachmentCount;
+			//mPreserveAttachments = src->pPreserveAttachments;
+		}
+	};
+
+
+	public ref class SubpassDependency
+	{
+	private:
+		UInt32 mSrcSubpass;
+		UInt32 mDstSubpass;
+		ManagedVulkan::PipelineStageFlagBits mSrcStageMask;
+		ManagedVulkan::PipelineStageFlagBits mDstStageMask;
+		ManagedVulkan::AccessFlagBits mSrcAccessMask;
+		ManagedVulkan::AccessFlagBits mDstAccessMask;
+		ManagedVulkan::DependencyFlagBits mDependencyFlags;
+	public:
+		property UInt32 SrcSubpass
+		{
+			UInt32 get()
+			{
+				return mSrcSubpass;
+			}
+			void set(UInt32 value)
+			{
+				mSrcSubpass = value;
+			}
+		}
+		property UInt32 DstSubpass
+		{
+			UInt32 get()
+			{
+				return mDstSubpass;
+			}
+			void set(UInt32 value)
+			{
+				mDstSubpass = value;
+			}
+		}
+		property ManagedVulkan::PipelineStageFlagBits SrcStageMask
+		{
+			ManagedVulkan::PipelineStageFlagBits get()
+			{
+				return mSrcStageMask;
+			}
+			void set(ManagedVulkan::PipelineStageFlagBits value)
+			{
+				mSrcStageMask = value;
+			}
+		}
+		property ManagedVulkan::PipelineStageFlagBits DstStageMask
+		{
+			ManagedVulkan::PipelineStageFlagBits get()
+			{
+				return mDstStageMask;
+			}
+			void set(ManagedVulkan::PipelineStageFlagBits value)
+			{
+				mDstStageMask = value;
+			}
+		}
+		property ManagedVulkan::AccessFlagBits SrcAccessMask
+		{
+			ManagedVulkan::AccessFlagBits get()
+			{
+				return mSrcAccessMask;
+			}
+			void set(ManagedVulkan::AccessFlagBits value)
+			{
+				mSrcAccessMask = value;
+			}
+		}
+		property ManagedVulkan::AccessFlagBits DstAccessMask
+		{
+			ManagedVulkan::AccessFlagBits get()
+			{
+				return mDstAccessMask;
+			}
+			void set(ManagedVulkan::AccessFlagBits value)
+			{
+				mDstAccessMask = value;
+			}
+		}
+		property ManagedVulkan::DependencyFlagBits DependencyFlags
+		{
+			ManagedVulkan::DependencyFlagBits get()
+			{
+				return mDependencyFlags;
+			}
+			void set(ManagedVulkan::DependencyFlagBits value)
+			{
+				mDependencyFlags = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSubpassDependency* dst, List<IntPtr>^ pins)
+		{
+			dst->srcSubpass = mSrcSubpass;
+			dst->dstSubpass = mDstSubpass;
+			dst->srcStageMask = (VkPipelineStageFlags) mSrcStageMask;
+			dst->dstStageMask = (VkPipelineStageFlags) mDstStageMask;
+			dst->srcAccessMask = (VkAccessFlagBits) mSrcAccessMask;
+			dst->dstAccessMask = (VkAccessFlagBits) mDstAccessMask;
+			dst->dependencyFlags = (VkDependencyFlagBits) mDependencyFlags;
+		}
+
+		void CopyFrom(VkSubpassDependency* src)
+		{
+			mSrcSubpass = src->srcSubpass;
+			mDstSubpass = src->dstSubpass;
+			mSrcStageMask = (ManagedVulkan::PipelineStageFlagBits) src->srcStageMask;
+			mDstStageMask = (ManagedVulkan::PipelineStageFlagBits) src->dstStageMask;
+			mSrcAccessMask = (ManagedVulkan::AccessFlagBits) src->srcAccessMask;
+			mDstAccessMask = (ManagedVulkan::AccessFlagBits) src->dstAccessMask;
+			mDependencyFlags = (ManagedVulkan::DependencyFlagBits) src->dependencyFlags;
+		}
+	};
+
+
+	public ref class RenderPassCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		array<ManagedVulkan::AttachmentDescription^>^ mAttachments = nullptr;
+		array<ManagedVulkan::SubpassDescription^>^ mSubpasses = nullptr;
+		array<ManagedVulkan::SubpassDependency^>^ mDependencies = nullptr;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+
+		property array<ManagedVulkan::AttachmentDescription^>^ Attachments
+		{
+			array<ManagedVulkan::AttachmentDescription^>^ get()
+			{
+				return mAttachments;
+			}
+			void set(array<ManagedVulkan::AttachmentDescription^>^ value)
+			{
+				mAttachments = value;
+			}
+		}
+
+		property array<ManagedVulkan::SubpassDescription^>^ Subpasses
+		{
+			array<ManagedVulkan::SubpassDescription^>^ get()
+			{
+				return mSubpasses;
+			}
+			void set(array<ManagedVulkan::SubpassDescription^>^ value)
+			{
+				mSubpasses = value;
+			}
+		}
+		property array<ManagedVulkan::SubpassDependency^>^ Dependencies
+		{
+			array<ManagedVulkan::SubpassDependency^>^ get()
+			{
+				return mDependencies;
+			}
+			void set(array<ManagedVulkan::SubpassDependency^>^ value)
+			{
+				mDependencies = value;
+			}
+		}
+	internal:
+		void CopyTo(VkRenderPassCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			//dst->attachmentCount = mAttachmentCount;
+			//mAttachments->CopyTo(&dst->pAttachments, pins);
+			//dst->subpassCount = mSubpassCount;
+			//mSubpasses->CopyTo(&dst->pSubpasses, pins);
+			//dst->dependencyCount = mDependencyCount;
+			//mDependencies->CopyTo(&dst->pDependencies, pins);
+		}
+
+		void CopyFrom(VkRenderPassCreateInfo* src)
+		{
+			mSType = (StructureType)src->sType;
+
+			mFlags = src->flags;
+			//mAttachmentCount = src->attachmentCount;
+			//mAttachments->CopyFrom(&src->pAttachments);
+			//mSubpassCount = src->subpassCount;
+			//mSubpasses->CopyFrom(&src->pSubpasses);
+			//mDependencyCount = src->dependencyCount;
+			//mDependencies->CopyFrom(&src->pDependencies);
+		}
+	};
+
 }

@@ -2267,3 +2267,979 @@ ManagedVulkan::Result ManagedVulkan::Device::CreateGraphicsPipelines(ManagedVulk
 		}
 	}
 }
+
+ManagedVulkan::Result ManagedVulkan::Device::CreateComputePipelines(ManagedVulkan::PipelineCache^ pipelineCache, array<ManagedVulkan::ComputePipelineCreateInfo^>^ pCreateInfos, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] array<ManagedVulkan::Pipeline^>^% pPipelines)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkComputePipelineCreateInfo* arg_3 = nullptr;
+	VkPipeline* arg_5 = nullptr;
+	UInt32 createInfoCount = 0;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pipelineCache		
+		VkPipelineCache arg_1 = pipelineCache->mHandle;
+		// INITS 2 - createInfoCount		
+
+		uint32_t arg_2 = createInfoCount;
+		// INITS 3 - pCreateInfos		
+
+		if (pCreateInfos != nullptr)
+		{
+			createInfoCount = pCreateInfos->Length;
+			if (createInfoCount > 0)
+			{				
+				arg_3 = new VkComputePipelineCreateInfo[createInfoCount];				
+				for (UInt32 i = 0; i < createInfoCount; ++i)
+				{
+					auto src = (ManagedVulkan::ComputePipelineCreateInfo^) pCreateInfos[i];
+					VkComputePipelineCreateInfo* arg_3_3 = arg_3 + i;
+					src->CopyTo(arg_3_3, pins);
+
+					if (src->BasePipelineHandle != nullptr)
+					{
+						arg_3_3->basePipelineHandle = src->BasePipelineHandle->mHandle;
+					}
+				}
+			}			
+		}
+		// INITS 4 - pAllocator		
+		VkAllocationCallbacks inst_4;
+		VkAllocationCallbacks* arg_4 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_4 = &inst_4;
+			pAllocator->CopyTo(arg_4, pins);
+		}
+
+		// INITS 5 - pPipelines		
+		arg_5 = new VkPipeline[createInfoCount];
+
+		auto result = vkCreateComputePipelines(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
+
+		UInt32 count = (int)createInfoCount;
+		pPipelines = gcnew array<Pipeline^>(count);
+		for (UInt32 i = 0; i < count; ++i)
+		{
+			pPipelines[i] = gcnew Pipeline();
+			pPipelines[i]->mHandle = arg_5[i];
+		}
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_3 != nullptr)
+		{
+			delete[] arg_3;
+		}
+		if (arg_5 != nullptr)
+		{
+			delete[] arg_5;
+		}
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::DestroyPipeline(ManagedVulkan::Pipeline^ pipeline, ManagedVulkan::AllocationCallbacks^ pAllocator)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pipeline		
+		VkPipeline arg_1 = pipeline->mHandle;
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		vkDestroyPipeline(arg_0, arg_1, arg_2);
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::CreatePipelineLayout(ManagedVulkan::PipelineLayoutCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::PipelineLayout^% pPipelineLayout)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkPushConstantRange* arg_1_1 = nullptr;
+	VkDescriptorSetLayout* arg_1_2 = nullptr;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pCreateInfo		
+		VkPipelineLayoutCreateInfo* arg_1 = nullptr;
+		VkPipelineLayoutCreateInfo inst_1;
+		if (pCreateInfo != nullptr)
+		{
+			arg_1 = &inst_1;
+			pCreateInfo->CopyTo(arg_1, pins);
+
+			// FIELD - arg_1_1 pCreateInfo->PushConstantRanges	
+			{
+
+				UInt32 rangeCount = 0;
+				if (pCreateInfo->PushConstantRanges != nullptr)
+				{
+					rangeCount = pCreateInfo->PushConstantRanges->Length;
+					if (rangeCount > 0)
+					{
+						arg_1_1 = new VkPushConstantRange[rangeCount];
+
+						for (UInt32 i = 0; i < rangeCount; ++i)
+						{
+							auto srcRange = (ManagedVulkan::PushConstantRange^) pCreateInfo->PushConstantRanges[i];
+							srcRange->CopyTo(arg_1_1 + i, pins);
+						}
+					}
+				}
+				arg_1->pushConstantRangeCount = rangeCount;
+				arg_1->pPushConstantRanges = arg_1_1;
+			}
+
+			// FIELD - arg_1_2 pCreateInfo->SetLayouts
+			{
+				UInt32 noOfLayouts = 0;
+
+				if (pCreateInfo->SetLayouts != nullptr)
+				{
+					noOfLayouts = pCreateInfo->SetLayouts->Length;
+					if (noOfLayouts > 0)
+					{
+						arg_1_2 = new VkDescriptorSetLayout[noOfLayouts];
+
+						for (UInt32 i = 0; i < noOfLayouts; ++i)
+						{
+							auto srcLayout = (ManagedVulkan::DescriptorSetLayout^) pCreateInfo->SetLayouts[i];
+							srcLayout->mHandle = arg_1_2[i];
+						}
+					}
+				}
+				arg_1->setLayoutCount = noOfLayouts;
+				arg_1->pSetLayouts = arg_1_2;
+			}
+		}
+
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		// INITS 3 - pPipelineLayout		
+		VkPipelineLayout inst_3;
+		VkPipelineLayout* arg_3 = &inst_3;
+
+		auto result = vkCreatePipelineLayout(arg_0, arg_1, arg_2, arg_3);
+
+		pPipelineLayout = gcnew PipelineLayout();
+		pPipelineLayout->mHandle = inst_3;
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_1_1 != nullptr)
+		{
+			delete[] arg_1_1;
+		}
+
+
+		if (arg_1_2 != nullptr)
+		{
+			delete[] arg_1_2;
+		}
+		
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::DestroyPipelineLayout(ManagedVulkan::PipelineLayout^ pipelineLayout, ManagedVulkan::AllocationCallbacks^ pAllocator)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pipelineLayout		
+		VkPipelineLayout arg_1 = pipelineLayout->mHandle;
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		vkDestroyPipelineLayout(arg_0, arg_1, arg_2);
+
+
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::CreateSampler(ManagedVulkan::SamplerCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Sampler^% pSampler)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pCreateInfo		
+		VkSamplerCreateInfo inst_1;
+		VkSamplerCreateInfo* arg_1 = nullptr;
+		if (pCreateInfo != nullptr)
+		{
+			arg_1 = &inst_1;
+			pCreateInfo->CopyTo(arg_1, pins);
+		}
+
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+		// INITS 3 - pSampler		
+		VkSampler inst_3;
+		VkSampler* arg_3 = &inst_3;
+
+		auto result = vkCreateSampler(arg_0, arg_1, arg_2, arg_3);
+
+		pSampler = gcnew Sampler();
+		pSampler->mHandle = inst_3;
+
+		return (Result)result;
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::DestroySampler(ManagedVulkan::Sampler^ sampler, ManagedVulkan::AllocationCallbacks^ pAllocator)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - sampler		
+		VkSampler arg_1 = sampler->mHandle;
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		vkDestroySampler(arg_0, arg_1, arg_2);
+
+
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::CreateDescriptorSetLayout(ManagedVulkan::DescriptorSetLayoutCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::DescriptorSetLayout^% pSetLayout)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkDescriptorSetLayoutBinding* arg_1_1 = nullptr;
+	UInt32 noOfBindings = 0;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pCreateInfo		
+		VkDescriptorSetLayoutCreateInfo inst_1;
+		VkDescriptorSetLayoutCreateInfo* arg_1 = nullptr;
+		if (pCreateInfo != nullptr)
+		{
+			arg_1 = &inst_1;
+			pCreateInfo->CopyTo(arg_1, pins);
+			
+			if (pCreateInfo->Bindings != nullptr)
+			{
+				noOfBindings = pCreateInfo->Bindings->Length;
+				if (noOfBindings > 0)
+				{
+					arg_1_1 = new VkDescriptorSetLayoutBinding[noOfBindings];
+					for (UInt32 i = 0; i < noOfBindings; ++i)
+					{							
+						auto srcBinding = (ManagedVulkan::DescriptorSetLayoutBinding^) pCreateInfo->Bindings[i];
+						auto dstBinding = arg_1_1 + i;
+
+						srcBinding->CopyTo(arg_1_1 + i, pins);
+
+						{
+							VkSampler* samplers = nullptr;
+							UInt32 noOfSamplers = 0;
+
+							if (srcBinding->ImmutableSamplers != nullptr)
+							{
+								noOfSamplers = srcBinding->ImmutableSamplers->Length;
+								if (noOfSamplers > 0)
+								{
+									samplers = new VkSampler[noOfSamplers];
+									for (UInt32 j = 0; j < noOfSamplers; ++j)
+									{
+										auto srcImage = (ManagedVulkan::Sampler^) srcBinding->ImmutableSamplers[j];
+										samplers[j] = srcImage->mHandle;
+									}
+								}
+							}
+							dstBinding->descriptorCount = noOfSamplers;
+							dstBinding->pImmutableSamplers = samplers;
+						}
+					}
+				}
+			}
+			arg_1->pBindings = arg_1_1;
+			arg_1->bindingCount = noOfBindings;		
+		}
+
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		// INITS 3 - pSetLayout		
+		VkDescriptorSetLayout inst_3;
+		VkDescriptorSetLayout* arg_3 = &inst_3;
+
+		auto result = vkCreateDescriptorSetLayout(arg_0, arg_1, arg_2, arg_3);
+
+		pSetLayout = gcnew DescriptorSetLayout();
+		pSetLayout->mHandle = inst_3;
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_1_1 != nullptr)
+		{
+			for (UInt32 i = 0; i < noOfBindings; ++i)
+			{
+				auto binding = arg_1_1 + i;
+				if (binding->pImmutableSamplers != nullptr)
+				{
+					delete[] binding->pImmutableSamplers;
+				}								
+			}
+
+			delete[] arg_1_1;
+		}
+
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+
+void ManagedVulkan::Device::DestroyDescriptorSetLayout(ManagedVulkan::DescriptorSetLayout^ descriptorSetLayout, ManagedVulkan::AllocationCallbacks^ pAllocator)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - descriptorSetLayout		
+		VkDescriptorSetLayout arg_1 = descriptorSetLayout->mHandle;
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		vkDestroyDescriptorSetLayout(arg_0, arg_1, arg_2);
+
+
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::CreateDescriptorPool(ManagedVulkan::DescriptorPoolCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::DescriptorPool^% pDescriptorPool)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkDescriptorPoolSize* arg_1_5 = nullptr;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pCreateInfo		
+		VkDescriptorPoolCreateInfo inst_1;
+		VkDescriptorPoolCreateInfo* arg_1 = nullptr;
+		if (pCreateInfo != nullptr)
+		{
+			arg_1 = &inst_1;
+			pCreateInfo->CopyTo(arg_1, pins);
+
+			// FIELD - arg_1_5 pCreateInfo->PoolSizes
+			UInt32 noOfPools = 0;
+			if (pCreateInfo->PoolSizes != nullptr)
+			{
+				noOfPools = pCreateInfo->PoolSizes->Length;
+				if (noOfPools > 0)
+				{
+					arg_1_5 = new VkDescriptorPoolSize[noOfPools];
+					for (UInt32 i = 0; i < noOfPools; ++i)
+					{
+						auto srcPool = (ManagedVulkan::DescriptorPoolSize^) pCreateInfo->PoolSizes[i];						
+						srcPool->CopyTo(arg_1_5 + i, pins);
+					}
+				}
+			}
+			arg_1->poolSizeCount = noOfPools;
+			arg_1->pPoolSizes = arg_1_5;
+		}
+
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+		// INITS 3 - pDescriptorPool		
+		VkDescriptorPool inst_3;
+		VkDescriptorPool* arg_3 = &inst_3;
+
+		auto result = vkCreateDescriptorPool(arg_0, arg_1, arg_2, arg_3);
+
+		pDescriptorPool = gcnew DescriptorPool();
+		pDescriptorPool->mHandle = inst_3;
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_1_5 != nullptr)
+		{
+			delete[] arg_1_5;
+		}
+
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::DestroyDescriptorPool(ManagedVulkan::DescriptorPool^ descriptorPool, ManagedVulkan::AllocationCallbacks^ pAllocator)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - descriptorPool		
+		VkDescriptorPool arg_1 = descriptorPool->mHandle;
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		vkDestroyDescriptorPool(arg_0, arg_1, arg_2);
+
+
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::ResetDescriptorPool(ManagedVulkan::DescriptorPool^ descriptorPool, UInt32 flags)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - descriptorPool		
+		VkDescriptorPool arg_1 = descriptorPool->mHandle;
+		// INITS 2 - flags		
+		VkDescriptorPoolResetFlags arg_2 = flags;
+
+		auto result = vkResetDescriptorPool(arg_0, arg_1, arg_2);
+
+		return (Result)result;
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::AllocateDescriptorSets(ManagedVulkan::DescriptorSetAllocateInfo^ pAllocateInfo, array<ManagedVulkan::DescriptorSet^>^ pDescriptorSets)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkDescriptorSetLayout* arg_1_1 = nullptr;
+	VkDescriptorSet* arg_2 = nullptr;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pAllocateInfo		
+		VkDescriptorSetAllocateInfo inst_1;
+		VkDescriptorSetAllocateInfo* arg_1 = nullptr;
+
+		UInt32 descriptorCount = (pAllocateInfo != nullptr) ? pAllocateInfo->DescriptorSetCount : 0;
+		UInt32 noOfSetLayouts = (pDescriptorSets != nullptr) ? pDescriptorSets->Length : 0;
+
+		if (descriptorCount != noOfSetLayouts)
+		{
+			throw gcnew InvalidOperationException("pDescriptorSets.Length != pAllocateInfo.DescriptorSetCount");
+		}
+
+		if (pAllocateInfo != nullptr)
+		{
+			arg_1 = &inst_1;
+			pAllocateInfo->CopyTo(arg_1, pins);
+
+			UInt32 noOfLayouts = 0;
+			if (pAllocateInfo->SetLayouts != nullptr)
+			{
+				noOfLayouts = pAllocateInfo->SetLayouts->Length;
+				if (noOfLayouts > 0)
+				{
+					arg_1_1 = new VkDescriptorSetLayout[noOfLayouts];
+					for (UInt32 i = 0; i < noOfLayouts; ++i)
+					{
+						auto srcLayout = (ManagedVulkan::DescriptorSetLayout^) pAllocateInfo->SetLayouts[i];
+						arg_1_1[i] = srcLayout->mHandle;
+					}
+				}
+			}			
+			arg_1->pSetLayouts = arg_1_1;
+		}
+		// INITS 2 - pDescriptorSets		
+		
+		if (pDescriptorSets != nullptr)
+		{
+			if (noOfSetLayouts > 0)
+			{
+				arg_2 = new VkDescriptorSet[noOfSetLayouts];
+				for (UInt32 i = 0; i < noOfSetLayouts; ++i)
+				{
+					auto srcSet = (ManagedVulkan::DescriptorSetLayout^) pDescriptorSets[i];
+					arg_2[i] = srcSet->mHandle;
+				}
+			}
+		}			
+
+		auto result = vkAllocateDescriptorSets(arg_0, arg_1, arg_2);
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_1_1 != nullptr)
+		{
+			delete[] arg_1_1;
+		}
+
+		if (arg_2 != nullptr)
+		{
+			delete[] arg_2;
+		}
+
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::FreeDescriptorSets(ManagedVulkan::DescriptorPool^ descriptorPool, array<ManagedVulkan::DescriptorSet^>^ pDescriptorSets)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkDescriptorSet* arg_3 = nullptr;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - descriptorPool		
+		VkDescriptorPool arg_1 = descriptorPool->mHandle;
+		// INITS 2 - descriptorSetCount		
+		uint32_t arg_2 = 0;
+		// INITS 3 - pDescriptorSets		
+
+		if (pDescriptorSets != nullptr)
+		{
+			arg_2 = pDescriptorSets->Length;
+			if (arg_2 > 0)
+			{
+				arg_3 = new VkDescriptorSet[arg_2];
+				for (UInt32 i = 0; i < arg_2; ++i)
+				{
+					auto srcSet = (ManagedVulkan::DescriptorSet^) pDescriptorSets[i];
+					arg_3[i] = srcSet->mHandle;
+				}
+			}
+		}
+
+
+		auto result = vkFreeDescriptorSets(arg_0, arg_1, arg_2, arg_3);
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_3 != nullptr)
+		{
+			delete[] arg_3;
+		}
+
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::UpdateDescriptorSets(array<ManagedVulkan::WriteDescriptorSet^>^ pDescriptorWrites, array<ManagedVulkan::CopyDescriptorSet^>^ pDescriptorCopies)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkWriteDescriptorSet* arg_2 = nullptr;
+	// INITS 1 - descriptorWriteCount	
+	uint32_t descriptorWriteCount = 0;
+	VkCopyDescriptorSet* arg_4 = nullptr;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+
+		// INITS 2 - pDescriptorWrites		
+		if (pDescriptorWrites != nullptr)
+		{
+			descriptorWriteCount = pDescriptorWrites->Length;
+			if (descriptorWriteCount > 0)
+			{
+				arg_2 = new VkWriteDescriptorSet[descriptorWriteCount];				
+				for (UInt32 i = 0; i < descriptorWriteCount; ++i)
+				{
+					auto srcSet = (ManagedVulkan::WriteDescriptorSet^) pDescriptorWrites[i];
+					auto dstSet = arg_2 + i;
+					srcSet->CopyTo(dstSet, pins);
+
+					UInt32 descriptorCount = srcSet->DescriptorCount;
+					
+					// FIELD - arg_2_7 pDescriptorWrites->ImageInfo		
+					VkDescriptorImageInfo* arg_2_7 = nullptr;
+
+					// FIELD - arg_2_8 pDescriptorWrites->BufferInfo	
+					VkDescriptorBufferInfo* arg_2_8 = nullptr;
+
+					// FIELD - arg_2_9 pDescriptorWrites->TexelBufferView	
+					VkBufferView* arg_2_9 = nullptr;
+
+					if (srcSet->ImageInfo != nullptr)
+					{
+						arg_2_7 = new VkDescriptorImageInfo[descriptorCount];
+						for (UInt32 i = 0; i < descriptorCount; ++i)
+						{
+							auto srcImage = (ManagedVulkan::DescriptorImageInfo^) srcSet->ImageInfo[i];
+							srcImage->CopyTo(arg_2_7 + i, pins);
+						}
+					}
+
+					if (srcSet->BufferInfo != nullptr)
+					{
+						arg_2_8 = new VkDescriptorBufferInfo[descriptorCount];
+						for (UInt32 i = 0; i < descriptorCount; ++i)
+						{
+							auto srcBuffer = (ManagedVulkan::DescriptorBufferInfo^) srcSet->BufferInfo[i];
+							srcBuffer->CopyTo(arg_2_8 + i, pins);
+						}
+					}
+
+					if (srcSet->TexelBufferView != nullptr)
+					{
+						arg_2_9 = new VkBufferView[descriptorCount];
+						for (UInt32 i = 0; i < descriptorCount; ++i)
+						{
+							auto srcView = (ManagedVulkan::BufferView^) srcSet->TexelBufferView[i];
+							arg_2_9[i] = srcView->mHandle;
+						}
+					}
+
+					dstSet->pImageInfo = arg_2_7;
+					dstSet->pBufferInfo = arg_2_8;
+					dstSet->pTexelBufferView = arg_2_9;					
+				}
+			}			
+		}
+
+
+		// INITS 3 - descriptorCopyCount		
+		uint32_t descriptorCopyCount = 0;
+		// INITS 4 - pDescriptorCopies		
+
+		if (pDescriptorCopies != nullptr)
+		{
+			descriptorCopyCount = pDescriptorCopies->Length;
+			if (descriptorCopyCount > 0)
+			{
+				arg_4 = new VkCopyDescriptorSet[descriptorCopyCount];
+				for (UInt32 i = 0; i < descriptorCopyCount; ++i)
+				{
+					auto srcCopy = (ManagedVulkan::CopyDescriptorSet^) pDescriptorCopies[i];
+					srcCopy->CopyTo(arg_4 + i, pins);
+				}
+			}
+		}
+
+		vkUpdateDescriptorSets(arg_0, descriptorWriteCount, arg_2, descriptorCopyCount, arg_4);
+	}
+	finally
+	{
+		if (arg_2 != nullptr)
+		{
+			for (UInt32 i = 0; i < descriptorWriteCount; ++i)
+			{
+				auto parent = arg_2 + i;
+
+				if (parent->pImageInfo != nullptr)
+				{
+					delete parent->pImageInfo;
+				}
+
+				if (parent->pBufferInfo != nullptr)
+				{
+					delete parent->pBufferInfo;
+				}
+
+				if (parent->pTexelBufferView != nullptr)
+				{
+					delete parent->pTexelBufferView;
+				}
+			}
+
+			delete[] arg_2;
+		}
+
+		if (arg_4 != nullptr)
+		{
+			delete[] arg_4;
+		}
+
+
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::CreateFramebuffer(ManagedVulkan::FramebufferCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Framebuffer^% pFramebuffer)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkImageView* arg_1_1 = nullptr;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pCreateInfo		
+		VkFramebufferCreateInfo inst_1;
+		VkFramebufferCreateInfo* arg_1 = nullptr;
+		if (pCreateInfo != nullptr)
+		{
+			arg_1 = &inst_1;
+			pCreateInfo->CopyTo(arg_1, pins);
+			
+			UInt32 noOfAttachments = 0;
+			if (pCreateInfo->Attachments != nullptr)
+			{
+				noOfAttachments = pCreateInfo->Attachments->Length;
+				if (noOfAttachments > 0)
+				{
+					arg_1_1 = new VkImageView[noOfAttachments];
+					for (UInt32 i = 0; i < noOfAttachments; ++i)
+					{
+						auto attachment = (ManagedVulkan::ImageView^) pCreateInfo->Attachments[i];
+						arg_1_1[i] = attachment->mHandle;
+					}
+				}
+			}
+			arg_1->pAttachments = arg_1_1;
+			arg_1->attachmentCount = noOfAttachments;
+		}
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+		// INITS 3 - pFramebuffer		
+		VkFramebuffer inst_3;
+		VkFramebuffer* arg_3 = &inst_3;
+
+		auto result = vkCreateFramebuffer(arg_0, arg_1, arg_2, arg_3);
+
+		pFramebuffer = gcnew Framebuffer();
+		pFramebuffer->mHandle = inst_3;
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_1_1 != nullptr)
+		{
+			delete[] arg_1_1;
+		}
+
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::DestroyFramebuffer(ManagedVulkan::Framebuffer^ framebuffer, ManagedVulkan::AllocationCallbacks^ pAllocator)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - framebuffer		
+		VkFramebuffer arg_1 = framebuffer->mHandle;
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		vkDestroyFramebuffer(arg_0, arg_1, arg_2);
+
+
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}

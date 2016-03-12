@@ -4,6 +4,45 @@ using namespace System;
 
 namespace ManagedVulkan
 {
+	[FlagsAttribute] public enum class AccessFlagBits : UInt32
+	{
+		VK_ACCESS_INDIRECT_COMMAND_READ_BIT = 1 << 0, // Controls coherency of indirect command reads
+		VK_ACCESS_INDEX_READ_BIT = 1 << 1, // Controls coherency of index reads
+		VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT = 1 << 2, // Controls coherency of vertex attribute reads
+		VK_ACCESS_UNIFORM_READ_BIT = 1 << 3, // Controls coherency of uniform buffer reads
+		VK_ACCESS_INPUT_ATTACHMENT_READ_BIT = 1 << 4, // Controls coherency of input attachment reads
+		VK_ACCESS_SHADER_READ_BIT = 1 << 5, // Controls coherency of shader reads
+		VK_ACCESS_SHADER_WRITE_BIT = 1 << 6, // Controls coherency of shader writes
+		VK_ACCESS_COLOR_ATTACHMENT_READ_BIT = 1 << 7, // Controls coherency of color attachment reads
+		VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT = 1 << 8, // Controls coherency of color attachment writes
+		VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT = 1 << 9, // Controls coherency of depth/stencil attachment reads
+		VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT = 1 << 10, // Controls coherency of depth/stencil attachment writes
+		VK_ACCESS_TRANSFER_READ_BIT = 1 << 11, // Controls coherency of transfer reads
+		VK_ACCESS_TRANSFER_WRITE_BIT = 1 << 12, // Controls coherency of transfer writes
+		VK_ACCESS_HOST_READ_BIT = 1 << 13, // Controls coherency of host reads
+		VK_ACCESS_HOST_WRITE_BIT = 1 << 14, // Controls coherency of host writes
+		VK_ACCESS_MEMORY_READ_BIT = 1 << 15, // Controls coherency of memory reads
+		VK_ACCESS_MEMORY_WRITE_BIT = 1 << 16, // Controls coherency of memory writes
+	};
+
+	[FlagsAttribute] public enum class AttachmentDescriptionFlagBits : UInt32
+	{
+		VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT = 1 << 0, // The attachment may alias physical memory of another attachment in the same render pass
+	};
+
+	public enum class AttachmentLoadOp : UInt32
+	{
+		VK_ATTACHMENT_LOAD_OP_LOAD = 0,
+		VK_ATTACHMENT_LOAD_OP_CLEAR = 1,
+		VK_ATTACHMENT_LOAD_OP_DONT_CARE = 2,
+	};
+
+	public enum class AttachmentStoreOp : UInt32
+	{
+		VK_ATTACHMENT_STORE_OP_STORE = 0,
+		VK_ATTACHMENT_STORE_OP_DONT_CARE = 1,
+	};
+
 	public enum class BlendFactor : UInt32
 	{
 		VK_BLEND_FACTOR_ZERO = 0,
@@ -34,6 +73,16 @@ namespace ManagedVulkan
 		VK_BLEND_OP_REVERSE_SUBTRACT = 2,
 		VK_BLEND_OP_MIN = 3,
 		VK_BLEND_OP_MAX = 4,
+	};
+
+	public enum class BorderColor : UInt32
+	{
+		VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK = 0,
+		VK_BORDER_COLOR_INT_TRANSPARENT_BLACK = 1,
+		VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK = 2,
+		VK_BORDER_COLOR_INT_OPAQUE_BLACK = 3,
+		VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE = 4,
+		VK_BORDER_COLOR_INT_OPAQUE_WHITE = 5,
 	};
 
 	[FlagsAttribute] public enum class BufferCreateFlagBits : UInt32
@@ -92,6 +141,11 @@ namespace ManagedVulkan
 		VK_CULL_MODE_FRONT_AND_BACK = 0x3,
 	};
 
+	[FlagsAttribute] public enum class DependencyFlagBits : UInt32
+	{
+		VK_DEPENDENCY_BY_REGION_BIT = 1 << 0, // Dependency is per pixel region 
+	};
+
 	[FlagsAttribute] public enum class DisplayPlaneAlphaFlagBitsKHR : UInt32
 	{
 		VK_DISPLAY_PLANE_ALPHA_OPAQUE_BIT_KHR = 1 << 0,
@@ -142,6 +196,26 @@ namespace ManagedVulkan
 		VK_DEBUG_REPORT_OBJECT_TYPE_DEBUG_REPORT_EXT = 28,
 	};
 
+	[FlagsAttribute] public enum class DescriptorPoolCreateFlagBits : UInt32
+	{
+		VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT = 1 << 0, // Descriptor sets may be freed individually
+	};
+
+	public enum class DescriptorType : UInt32
+	{
+		VK_DESCRIPTOR_TYPE_SAMPLER = 0,
+		VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER = 1,
+		VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE = 2,
+		VK_DESCRIPTOR_TYPE_STORAGE_IMAGE = 3,
+		VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER = 4,
+		VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER = 5,
+		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER = 6,
+		VK_DESCRIPTOR_TYPE_STORAGE_BUFFER = 7,
+		VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC = 8,
+		VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC = 9,
+		VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT = 10,
+	};
+
 	public enum class DynamicState : UInt32
 	{
 		VK_DYNAMIC_STATE_VIEWPORT = 0,
@@ -158,6 +232,12 @@ namespace ManagedVulkan
 	[FlagsAttribute] public enum class FenceCreateFlagBits : UInt32
 	{
 		VK_FENCE_CREATE_SIGNALED_BIT = 1 << 0,
+	};
+
+	public enum class Filter : UInt32
+	{
+		VK_FILTER_NEAREST = 0,
+		VK_FILTER_LINEAR = 1,
 	};
 
 	public enum class Format : UInt32
@@ -422,11 +502,38 @@ namespace ManagedVulkan
 		VK_PHYSICAL_DEVICE_TYPE_CPU = 4,
 	};
 
+	public enum class PipelineBindPoint : UInt32
+	{
+		VK_PIPELINE_BIND_POINT_GRAPHICS = 0,
+		VK_PIPELINE_BIND_POINT_COMPUTE = 1,
+	};
+
 	[FlagsAttribute] public enum class PipelineCreateFlagBits : UInt32
 	{
 		VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT = 1 << 0,
 		VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT = 1 << 1,
 		VK_PIPELINE_CREATE_DERIVATIVE_BIT = 1 << 2,
+	};
+
+	[FlagsAttribute] public enum class PipelineStageFlagBits : UInt32
+	{
+		VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT = 1 << 0, // Before subsequent commands are processed
+		VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT = 1 << 1, // Draw/DispatchIndirect command fetch
+		VK_PIPELINE_STAGE_VERTEX_INPUT_BIT = 1 << 2, // Vertex/index fetch
+		VK_PIPELINE_STAGE_VERTEX_SHADER_BIT = 1 << 3, // Vertex shading
+		VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT = 1 << 4, // Tessellation control shading
+		VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT = 1 << 5, // Tessellation evaluation shading
+		VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT = 1 << 6, // Geometry shading
+		VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT = 1 << 7, // Fragment shading
+		VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT = 1 << 8, // Early fragment (depth and stencil) tests
+		VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT = 1 << 9, // Late fragment (depth and stencil) tests
+		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT = 1 << 10, // Color attachment writes
+		VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT = 1 << 11, // Compute shading
+		VK_PIPELINE_STAGE_TRANSFER_BIT = 1 << 12, // Transfer/copy operations
+		VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT = 1 << 13, // After previous commands have completed
+		VK_PIPELINE_STAGE_HOST_BIT = 1 << 14, // Indicates host (CPU) is a source/sink of the dependency
+		VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT = 1 << 15, // All stages of the graphics pipeline
+		VK_PIPELINE_STAGE_ALL_COMMANDS_BIT = 1 << 16, // All stages supported on the queue
 	};
 
 	public enum class PolygonMode : UInt32
@@ -496,6 +603,21 @@ namespace ManagedVulkan
 		VK_SAMPLE_COUNT_16_BIT = 1 << 4, // Sample count 16 supported
 		VK_SAMPLE_COUNT_32_BIT = 1 << 5, // Sample count 32 supported
 		VK_SAMPLE_COUNT_64_BIT = 1 << 6, // Sample count 64 supported
+	};
+
+	public enum class SamplerAddressMode : UInt32
+	{
+		VK_SAMPLER_ADDRESS_MODE_REPEAT = 0,
+		VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT = 1,
+		VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE = 2,
+		VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER = 3,
+		VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE = 4,
+	};
+
+	public enum class SamplerMipmapMode : UInt32
+	{
+		VK_SAMPLER_MIPMAP_MODE_NEAREST = 0, // Choose nearest mip level
+		VK_SAMPLER_MIPMAP_MODE_LINEAR = 1, // Linear filter between mip levels
 	};
 
 	[FlagsAttribute] public enum class ShaderStageFlagBits : UInt32
