@@ -86,18 +86,20 @@ namespace ManagedVulkan
 		void UpdateDescriptorSets(array<ManagedVulkan::WriteDescriptorSet^>^ pDescriptorWrites, array<ManagedVulkan::CopyDescriptorSet^>^ pDescriptorCopies);
 		ManagedVulkan::Result CreateFramebuffer(ManagedVulkan::FramebufferCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Framebuffer^% pFramebuffer);
 		void DestroyFramebuffer(ManagedVulkan::Framebuffer^ framebuffer, ManagedVulkan::AllocationCallbacks^ pAllocator);
-		//ManagedVulkan::Result CreateRenderPass(ManagedVulkan::RenderPassCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::RenderPass^% pRenderPass);
-		//	void DestroyRenderPass(ManagedVulkan::RenderPass^ renderPass, ManagedVulkan::AllocationCallbacks^ pAllocator);
-		//	void GetRenderAreaGranularity(ManagedVulkan::RenderPass^ renderPass, [Out] ManagedVulkan::Extent2D^% pGranularity);
-		//	ManagedVulkan::Result CreateCommandPool(ManagedVulkan::CommandPoolCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::CommandPool^% pCommandPool);
-		//	void DestroyCommandPool(ManagedVulkan::CommandPool^ commandPool, ManagedVulkan::AllocationCallbacks^ pAllocator);
-		//	ManagedVulkan::Result ResetCommandPool(ManagedVulkan::CommandPool^ commandPool, UInt32 flags);
-		//	ManagedVulkan::Result AllocateCommandBuffers(ManagedVulkan::CommandBufferAllocateInfo^ pAllocateInfo, ManagedVulkan::CommandBuffer pCommandBuffers);
-		//	void FreeCommandBuffers(ManagedVulkan::CommandPool^ commandPool, array<ManagedVulkan::CommandBuffer>^ pCommandBuffers);
-		//	ManagedVulkan::Result CreateSharedSwapchainsKHR(array<ManagedVulkan::SwapchainCreateInfoKHR^>^ pCreateInfos, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] array<ManagedVulkan::SwapchainKHR^>^% pSwapchains);
-		//	ManagedVulkan::Result CreateSwapchainKHR(ManagedVulkan::SwapchainCreateInfoKHR^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::SwapchainKHR^% pSwapchain);
-		//	void DestroySwapchainKHR(ManagedVulkan::SwapchainKHR^ swapchain, ManagedVulkan::AllocationCallbacks^ pAllocator);
-		//	ManagedVulkan::Result GetSwapchainImagesKHR(ManagedVulkan::SwapchainKHR^ swapchain, [Out] array<ManagedVulkan::Image^>^% pSwapchainImages);
-		//	ManagedVulkan::Result AcquireNextImageKHR(ManagedVulkan::SwapchainKHR^ swapchain, UInt64 timeout, ManagedVulkan::Semaphore^ semaphore, ManagedVulkan::Fence^ fence, UInt32 pImageIndex);
+		ManagedVulkan::Result CreateRenderPass(ManagedVulkan::RenderPassCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::RenderPass^% pRenderPass);
+		void DestroyRenderPass(ManagedVulkan::RenderPass^ renderPass, ManagedVulkan::AllocationCallbacks^ pAllocator);
+		void GetRenderAreaGranularity(ManagedVulkan::RenderPass^ renderPass, [Out] ManagedVulkan::Extent2D^% pGranularity);
+		ManagedVulkan::Result CreateCommandPool(ManagedVulkan::CommandPoolCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::CommandPool^% pCommandPool);
+		void DestroyCommandPool(ManagedVulkan::CommandPool^ commandPool, ManagedVulkan::AllocationCallbacks^ pAllocator);
+		ManagedVulkan::Result ResetCommandPool(ManagedVulkan::CommandPool^ commandPool, CommandPoolResetFlagBits flags);
+		ManagedVulkan::Result AllocateCommandBuffers(ManagedVulkan::CommandBufferAllocateInfo^ pAllocateInfo, array<ManagedVulkan::CommandBuffer^>^ pCommandBuffers);
+		void FreeCommandBuffers(ManagedVulkan::CommandPool^ commandPool, array<ManagedVulkan::CommandBuffer^>^ pCommandBuffers);
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
+		ManagedVulkan::Result CreateSharedSwapchainsKHR(array<ManagedVulkan::SwapchainCreateInfoKHR^>^ pCreateInfos, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] array<ManagedVulkan::SwapchainKHR^>^% pSwapchains);
+		ManagedVulkan::Result CreateSwapchainKHR(ManagedVulkan::SwapchainCreateInfoKHR^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::SwapchainKHR^% pSwapchain);
+		void DestroySwapchainKHR(ManagedVulkan::SwapchainKHR^ swapchain, ManagedVulkan::AllocationCallbacks^ pAllocator);
+		ManagedVulkan::Result GetSwapchainImagesKHR(ManagedVulkan::SwapchainKHR^ swapchain, [Out] array<ManagedVulkan::Image^>^% pSwapchainImages);
+		ManagedVulkan::Result AcquireNextImageKHR(ManagedVulkan::SwapchainKHR^ swapchain, UInt64 timeout, ManagedVulkan::Semaphore^ semaphore, ManagedVulkan::Fence^ fence, UInt32 pImageIndex);
+#endif
 	};
 }

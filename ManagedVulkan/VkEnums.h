@@ -110,6 +110,28 @@ namespace ManagedVulkan
 		VK_COLORSPACE_SRGB_NONLINEAR_KHR = 0,
 	};
 
+	public enum class CommandBufferLevel : UInt32
+	{
+		VK_COMMAND_BUFFER_LEVEL_PRIMARY = 0,
+		VK_COMMAND_BUFFER_LEVEL_SECONDARY = 1,
+	};
+
+	[FlagsAttribute] public enum class CommandBufferResetFlagBits : UInt32
+	{
+		VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT = 1 << 0, // Release resources owned by the buffer
+	};
+
+	[FlagsAttribute] public enum class CommandPoolCreateFlagBits : UInt32
+	{
+		VK_COMMAND_POOL_CREATE_TRANSIENT_BIT = 1 << 0, // Command buffers have a short lifetime
+		VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT = 1 << 1, // Command buffers may release their memory individually
+	};
+
+	[FlagsAttribute] public enum class CommandPoolResetFlagBits : UInt32
+	{
+		VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT = 1 << 0, // Release resources owned by the pool
+	};
+
 	public enum class CompareOp : UInt32
 	{
 		VK_COMPARE_OP_NEVER = 0,
@@ -131,6 +153,14 @@ namespace ManagedVulkan
 		VK_COMPONENT_SWIZZLE_G = 4,
 		VK_COMPONENT_SWIZZLE_B = 5,
 		VK_COMPONENT_SWIZZLE_A = 6,
+	};
+
+	[FlagsAttribute] public enum class CompositeAlphaFlagBitsKHR : UInt32
+	{
+		VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR = 1 << 0,
+		VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR = 1 << 1,
+		VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR = 1 << 2,
+		VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR = 1 << 3,
 	};
 
 	[FlagsAttribute] public enum class CullModeFlagBits : UInt32
@@ -473,6 +503,12 @@ namespace ManagedVulkan
 		VK_IMAGE_VIEW_TYPE_CUBE_ARRAY = 6,
 	};
 
+	public enum class IndexType : UInt32
+	{
+		VK_INDEX_TYPE_UINT16 = 0,
+		VK_INDEX_TYPE_UINT32 = 1,
+	};
+
 	public enum class LogicOp : UInt32
 	{
 		VK_LOGIC_OP_CLEAR = 0,
@@ -566,6 +602,11 @@ namespace ManagedVulkan
 		VK_PRIMITIVE_TOPOLOGY_PATCH_LIST = 10,
 	};
 
+	[FlagsAttribute] public enum class QueryControlFlagBits : UInt32
+	{
+		VK_QUERY_CONTROL_PRECISE_BIT = 1 << 0, // Require precise results to be collected by the query
+	};
+
 	public enum class QueryType : UInt32
 	{
 		VK_QUERY_TYPE_OCCLUSION = 0,
@@ -641,6 +682,13 @@ namespace ManagedVulkan
 	[FlagsAttribute] public enum class SparseMemoryBindFlagBits : UInt32
 	{
 		VK_SPARSE_MEMORY_BIND_METADATA_BIT = 1 << 0, // Operation binds resource metadata to memory
+	};
+
+	[FlagsAttribute] public enum class StencilFaceFlagBits : UInt32
+	{
+		VK_STENCIL_FACE_FRONT_BIT = 1 << 0, // Front face
+		VK_STENCIL_FACE_BACK_BIT = 1 << 1, // Back face
+		VK_STENCIL_FRONT_AND_BACK = 0x3, // Front and back faces
 	};
 
 	public enum class StencilOp : UInt32

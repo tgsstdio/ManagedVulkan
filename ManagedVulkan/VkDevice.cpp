@@ -3243,3 +3243,613 @@ void ManagedVulkan::Device::DestroyFramebuffer(ManagedVulkan::Framebuffer^ frame
 		}
 	}
 }
+
+ManagedVulkan::Result ManagedVulkan::Device::CreateRenderPass(ManagedVulkan::RenderPassCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::RenderPass^% pRenderPass)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkAttachmentDescription* arg_1_4 = nullptr;
+	VkSubpassDescription* arg_1_6 = nullptr;
+	VkSubpassDependency* arg_1_8 = nullptr;
+	UInt32 noOfSubpasses = 0;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pCreateInfo		
+		VkRenderPassCreateInfo inst_1;
+		VkRenderPassCreateInfo* arg_1 = nullptr;
+		if (pCreateInfo != nullptr)
+		{
+			arg_1 = &inst_1;
+			pCreateInfo->CopyTo(arg_1, pins);
+
+			// FIELD - arg_1_4 pCreateInfo->Attachments	
+			{
+				UInt32 noOfAttachments = 0;
+				if (pCreateInfo->Attachments != nullptr)
+				{
+					noOfAttachments = pCreateInfo->Attachments->Length;
+					if (noOfAttachments > 0)
+					{
+						arg_1_4 = new VkAttachmentDescription[noOfAttachments];
+						for (UInt32 i = 0; i < noOfAttachments; ++i)
+						{
+							auto srcAttachment = (ManagedVulkan::AttachmentDescription^) pCreateInfo->Attachments[i];
+							auto dstAttachment = arg_1_4 + i;
+							srcAttachment->CopyTo(dstAttachment, pins);
+						}
+					}
+				}
+				arg_1->attachmentCount = noOfAttachments;
+				arg_1->pAttachments = arg_1_4;
+			}
+
+			// FIELD - arg_1_6 pCreateInfo->Subpasses	
+			{
+				if (pCreateInfo->Subpasses != nullptr)
+				{
+					noOfSubpasses = pCreateInfo->Subpasses->Length;
+					if (noOfSubpasses > 0)
+					{
+						arg_1_6 = new VkSubpassDescription[noOfSubpasses];
+						for (UInt32 i = 0; i < noOfSubpasses; ++i)
+						{
+							auto srcSubpass = (ManagedVulkan::SubpassDescription^) pCreateInfo->Subpasses[i];
+							auto dstSubpass = arg_1_6 + i;
+							srcSubpass->CopyTo(dstSubpass, pins);
+
+							UInt32 noOfColourAttachments = srcSubpass->ColorAttachmentCount;
+
+							// FIELD - arg_1_6_3 pCreateInfo->Subpasses->InputAttachments		
+							{
+								VkAttachmentReference* arg_1_6_3 = nullptr;
+								UInt32 noOfInputs = 0;
+								if (srcSubpass->InputAttachments != nullptr)
+								{
+									noOfInputs = srcSubpass->InputAttachments->Length;
+									if (noOfInputs > 0)
+									{
+										arg_1_6_3 = new VkAttachmentReference[noOfInputs];
+										for (UInt32 j = 0; j < noOfInputs; ++j)
+										{
+											auto srcInput = (ManagedVulkan::AttachmentReference^) srcSubpass->InputAttachments[j];
+											auto dstInput = arg_1_6_3 + j;
+											srcInput->CopyTo(dstInput, pins);
+										}
+									}
+								}
+								dstSubpass->inputAttachmentCount = noOfInputs;
+								dstSubpass->pInputAttachments = arg_1_6_3;
+							}
+
+							// FIELD - arg_1_6_5 pCreateInfo->Subpasses->ColorAttachments		
+							{
+								VkAttachmentReference* arg_1_6_5 = nullptr;
+								UInt32 noOfColours = noOfColourAttachments;
+								if (srcSubpass->ColorAttachments != nullptr)
+								{
+									if (noOfColours > 0)
+									{
+										arg_1_6_5 = new VkAttachmentReference[noOfColours];
+										for (UInt32 j = 0; j < noOfColours; ++j)
+										{
+											auto srcInput = (ManagedVulkan::AttachmentReference^) srcSubpass->ColorAttachments[j];
+											auto dstInput = arg_1_6_5 + j;
+											srcInput->CopyTo(dstInput, pins);
+										}
+									}
+								}
+								dstSubpass->pColorAttachments = arg_1_6_5;
+							}
+
+							// FIELD - arg_1_6_6 pCreateInfo->Subpasses->ResolveAttachments
+							{
+								VkAttachmentReference* arg_1_6_6 = nullptr;
+								UInt32 noOfResolves = noOfColourAttachments;
+								if (srcSubpass->ResolveAttachments != nullptr)
+								{
+									if (noOfResolves > 0)
+									{
+										arg_1_6_6 = new VkAttachmentReference[noOfResolves];
+										for (UInt32 j = 0; j < noOfResolves; ++j)
+										{
+											auto srcInput = (ManagedVulkan::AttachmentReference^) srcSubpass->ResolveAttachments[j];
+											auto dstInput = arg_1_6_6 + j;
+											srcInput->CopyTo(dstInput, pins);
+										}
+									}
+								}
+								dstSubpass->pResolveAttachments = arg_1_6_6;
+							}
+
+							// FIELD - arg_1_6_7 pCreateInfo->Subpasses->DepthStencilAttachment		
+							{
+								VkAttachmentReference* arg_1_6_7 = nullptr;
+								if (srcSubpass->DepthStencilAttachment != nullptr)
+								{
+									arg_1_6_7 = new VkAttachmentReference();
+									srcSubpass->DepthStencilAttachment->CopyTo(arg_1_6_7, pins);
+								}
+								dstSubpass->pDepthStencilAttachment = arg_1_6_7;
+							}
+
+							// FIELD - arg_1_6_8 pCreateInfo->Subpasses->PreserveAttachments
+							{
+								UInt32* arg_1_6_8 = nullptr;
+								UInt32 noOfPreserves = 0;
+								if (srcSubpass->PreserveAttachments != nullptr)
+								{
+									noOfPreserves = srcSubpass->PreserveAttachments->Length;
+									if (noOfPreserves > 0)
+									{
+										arg_1_6_8 = new UInt32[noOfPreserves];
+										for (UInt32 j = 0; j < noOfPreserves; ++j)
+										{
+											auto srcInput = (UInt32) srcSubpass->PreserveAttachments[j];
+											arg_1_6_8[j] = srcInput;						
+										}
+									}
+								}
+								dstSubpass->pPreserveAttachments = arg_1_6_8;
+								dstSubpass->preserveAttachmentCount = noOfPreserves;
+							}
+
+						}
+					}
+				}
+				arg_1->subpassCount = noOfSubpasses;
+				arg_1->pSubpasses = arg_1_6;
+			}
+
+			// FIELD - arg_1_8 pCreateInfo->Dependencies		
+			{
+				UInt32 noOfDependencies = 0;
+				if (pCreateInfo->Dependencies != nullptr)
+				{
+					noOfDependencies = pCreateInfo->Dependencies->Length;
+					if (noOfDependencies > 0)
+					{
+						arg_1_8 = new VkSubpassDependency[noOfDependencies];
+						for (UInt32 i = 0; i < noOfDependencies; ++i)
+						{
+							auto srcDependency = (ManagedVulkan::SubpassDependency^) pCreateInfo->Dependencies[i];
+							srcDependency->CopyTo(arg_1_8 + i, pins);
+						}
+					}
+				}
+				arg_1->dependencyCount = noOfDependencies;
+				arg_1->pDependencies = arg_1_8;
+			}
+		}
+
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		// INITS 3 - pRenderPass		
+		VkRenderPass inst_3;
+		VkRenderPass* arg_3 = &inst_3;
+
+		auto result = vkCreateRenderPass(arg_0, arg_1, arg_2, arg_3);
+
+		pRenderPass = gcnew RenderPass();
+		pRenderPass->mHandle = inst_3;
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_1_4 != nullptr)
+		{
+			delete[] arg_1_4;
+		}
+
+		if (arg_1_6 != nullptr)
+		{
+			for (UInt32 i = 0; i < noOfSubpasses; ++i)
+			{
+				auto parent = (VkSubpassDescription*) arg_1_6 + i;
+				if (parent->pInputAttachments != nullptr)
+				{
+					delete[] parent->pInputAttachments;
+				}
+
+				if (parent->pColorAttachments != nullptr)
+				{
+					delete[] parent->pColorAttachments;
+				}
+
+				if (parent->pResolveAttachments != nullptr)
+				{
+					delete[] parent->pResolveAttachments;
+				}
+
+				if (parent->pDepthStencilAttachment != nullptr)
+				{
+					delete parent->pDepthStencilAttachment;
+				}
+
+				if (parent->pPreserveAttachments != nullptr)
+				{
+					delete[] parent->pPreserveAttachments;
+				}
+			}
+
+			delete[] arg_1_6;
+		}
+
+		if (arg_1_8 != nullptr)
+		{
+			delete[] arg_1_8;
+		}
+
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::DestroyRenderPass(ManagedVulkan::RenderPass^ renderPass, ManagedVulkan::AllocationCallbacks^ pAllocator)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - renderPass		
+		VkRenderPass arg_1 = renderPass->mHandle;
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		vkDestroyRenderPass(arg_0, arg_1, arg_2);
+
+
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::GetRenderAreaGranularity(ManagedVulkan::RenderPass^ renderPass, [Out] ManagedVulkan::Extent2D^% pGranularity)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - renderPass		
+		VkRenderPass arg_1 = renderPass->mHandle;
+		// INITS 2 - pGranularity		
+		VkExtent2D inst_2;
+		VkExtent2D* arg_2 = &inst_2;
+
+		vkGetRenderAreaGranularity(arg_0, arg_1, arg_2);
+
+		pGranularity = gcnew Extent2D();
+		pGranularity->CopyFrom(arg_2);
+
+
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::CreateCommandPool(ManagedVulkan::CommandPoolCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::CommandPool^% pCommandPool)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pCreateInfo		
+		VkCommandPoolCreateInfo inst_1;
+		VkCommandPoolCreateInfo* arg_1 = nullptr;
+		if (pCreateInfo != nullptr)
+		{
+			arg_1 = &inst_1;
+			pCreateInfo->CopyTo(arg_1, pins);
+		}
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+		// INITS 3 - pCommandPool		
+		VkCommandPool inst_3;
+		VkCommandPool* arg_3 = &inst_3;
+
+		auto result = vkCreateCommandPool(arg_0, arg_1, arg_2, arg_3);
+
+		pCommandPool = gcnew CommandPool();
+		pCommandPool->mHandle = inst_3;
+
+		return (Result) result;
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::DestroyCommandPool(ManagedVulkan::CommandPool^ commandPool, ManagedVulkan::AllocationCallbacks^ pAllocator)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - commandPool		
+		VkCommandPool arg_1 = commandPool->mHandle;
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		vkDestroyCommandPool(arg_0, arg_1, arg_2);
+
+
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+
+ManagedVulkan::Result ManagedVulkan::Device::ResetCommandPool(ManagedVulkan::CommandPool^ commandPool, CommandPoolResetFlagBits flags)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - commandPool		
+		VkCommandPool arg_1 = commandPool->mHandle;
+		// INITS 2 - flags		
+		VkCommandPoolResetFlags arg_2 = (VkCommandPoolResetFlagBits) flags;
+
+		auto result = vkResetCommandPool(arg_0, arg_1, arg_2);
+
+		return (Result)result;
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::AllocateCommandBuffers(ManagedVulkan::CommandBufferAllocateInfo^ pAllocateInfo, array<ManagedVulkan::CommandBuffer^>^ pCommandBuffers)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkCommandBuffer* arg_2 = nullptr;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pAllocateInfo		
+		VkCommandBufferAllocateInfo inst_1;
+		VkCommandBufferAllocateInfo* arg_1 = nullptr;
+
+		UInt32 commandBufferCount = (pAllocateInfo != nullptr) ? pAllocateInfo->CommandBufferCount  : 0;
+		UInt32 noOfBuffers = (pCommandBuffers != nullptr) ? pCommandBuffers->Length : 0;
+
+		if (noOfBuffers != commandBufferCount)
+		{
+			throw gcnew System::InvalidOperationException("pAllocateInfo->CommandBufferCount != pCommandBuffers");
+		}
+
+		if (pAllocateInfo != nullptr)
+		{
+			arg_1 = &inst_1;
+			pAllocateInfo->CopyTo(arg_1, pins);
+		}
+
+		// INITS 2 - pCommandBuffers		
+
+		if (pCommandBuffers != nullptr)
+		{
+			if (noOfBuffers > 0)
+			{
+				arg_2 = new VkCommandBuffer[noOfBuffers];
+				for (UInt32 i = 0; i < noOfBuffers; ++i)
+				{
+					auto srcBuffer = (ManagedVulkan::CommandBuffer^) pCommandBuffers[i];
+					arg_2[i] = srcBuffer->mHandle;
+				}
+			}
+		}
+
+		auto result = vkAllocateCommandBuffers(arg_0, arg_1, arg_2);
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_2 != nullptr)
+		{
+			delete[] arg_2;
+		}
+
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::FreeCommandBuffers(ManagedVulkan::CommandPool^ commandPool, array<ManagedVulkan::CommandBuffer^>^ pCommandBuffers)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkCommandBuffer* arg_3 = nullptr;
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - commandPool		
+		VkCommandPool arg_1 = commandPool->mHandle;
+		// INITS 2 - commandBufferCount		
+		uint32_t arg_2 = (pCommandBuffers != nullptr) ? pCommandBuffers->Length : 0;
+		// INITS 3 - pCommandBuffers		
+
+		if (pCommandBuffers != nullptr)
+		{
+			if (arg_2 > 0)
+			{
+				arg_3 = new VkCommandBuffer[arg_2];
+				for (UInt32 i = 0; i < arg_2; ++i)
+				{
+					auto srcBuffer = (ManagedVulkan::CommandBuffer^) pCommandBuffers[i];
+					arg_3[i] = srcBuffer->mHandle;
+				}
+			}
+		}
+
+		vkFreeCommandBuffers(arg_0, arg_1, arg_2, arg_3);
+
+
+	}
+	finally
+	{
+		if (arg_3 != nullptr)
+		{
+			delete[] arg_3;
+		}
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+#ifdef MANAGED_VULKAN_IMPLEMENTATION
+
+ManagedVulkan::Result ManagedVulkan::Device::CreateSharedSwapchainsKHR(array<ManagedVulkan::SwapchainCreateInfoKHR^>^ pCreateInfos, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] array<ManagedVulkan::SwapchainKHR^>^% pSwapchains)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkSwapchainCreateInfoKHR* arg_2 = nullptr;
+	VkSwapchainKHR* arg_4 = nullptr;
+	try
+	{
+		//// MAIN INIT
+
+		//// INITS 0 - device		
+		//VkDevice arg_0 = this->mHandle;
+		//// INITS 1 - swapchainCount		
+		//uint32_t arg_1 = swapchainCount;
+		//// INITS 2 - pCreateInfos		
+		//arg_2 = new VkSwapchainCreateInfoKHR[swapchainCount];
+		//// FIELD - arg_2_7 pCreateInfos->ImageExtent		
+		//VkExtent2D arg_2_7 = nullptr;
+		//VkExtent2D  inst_2_7;
+		//if (pCreateInfos != nullptr && pCreateInfos->ImageExtent != nullptr)
+		//{
+		//	arg_2_7 = &inst_2_7;
+		//	pCreateInfos->ImageExtent->CopyTo(arg_2_7, pins);
+		//	arg_2->imageExtent = arg_2_7;
+		//}
+		//// INITS 3 - pAllocator		
+		//VkAllocationCallbacks inst_3;
+		//VkAllocationCallbacks* arg_3 = nullptr;
+		//if (pAllocator != nullptr)
+		//{
+		//	arg_3 = &inst_3;
+		//	pAllocator->CopyTo(arg_3, pins);
+		//	arg_3 = inst_3;
+		//}
+		//// INITS 4 - pSwapchains		
+		//arg_4 = new VkSwapchainKHR[swapchainCount];
+
+		//auto result = vkCreateSharedSwapchainsKHR(arg_0, arg_1, arg_2, arg_3, arg_4);
+
+		//int count = (int)swapchainCount;
+		//pSwapchains = gcnew array<SwapchainKHR^> ^ (count);
+		//for (int i = 0; i < count; ++i)
+		//{
+		//	pSwapchains[i] = gcnew SwapchainKHR ^ ();
+		//	pSwapchains[i]->CopyFrom(arg_4 + i);
+		//}
+
+		auto result = vkCreateSharedSwapchainsKHR(nullptr, 0, nullptr, nullptr, nullptr);
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_2 != nullptr)
+		{
+			delete[] arg_2;
+		}
+		if (arg_4 != nullptr)
+		{
+			delete[] arg_4;
+		}
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+#endif

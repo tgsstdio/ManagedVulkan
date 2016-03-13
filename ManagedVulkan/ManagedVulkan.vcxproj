@@ -140,18 +140,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="VkBufferCopy.h" />
     <ClInclude Include="VkCommandBuffer.h" />
     <ClInclude Include="ManagedVulkan.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="VkCommandBufferBeginInfo.h" />
+    <ClInclude Include="VkCommandBufferInheritenceInfo.h" />
     <ClInclude Include="VkDelegates.h" />
     <ClInclude Include="VkDevice.h" />
     <ClInclude Include="VkEnums.h" />
+    <ClInclude Include="VkExtent2D.h" />
     <ClInclude Include="VkHandles.h" />
     <ClInclude Include="VkInstance.h" />
+    <ClInclude Include="VkOffset2D.h" />
     <ClInclude Include="VkPhysicalDevice.h" />
     <ClInclude Include="VkQueue.h" />
+    <ClInclude Include="VkRect2D.h" />
     <ClInclude Include="VkStructs.h" />
+    <ClInclude Include="VkVec4f.h" />
+    <ClInclude Include="VkViewport.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />

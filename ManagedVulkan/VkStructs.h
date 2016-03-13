@@ -7,6 +7,9 @@
 #include "VkEnums.h"
 #include "VkDelegates.h"
 #include "VkCommandBuffer.h"
+#include "VkViewport.h"
+#include "VkExtent2D.h"
+#include "VkRect2D.h"
 
 using namespace System;
 using namespace System::Runtime::InteropServices;
@@ -210,47 +213,7 @@ namespace ManagedVulkan
 		}
 	};
 
-	public ref class Extent2D
-	{
-	private:
-		UInt32 mWidth = 0;
-		UInt32 mHeight = 0;
-	public:
-		property UInt32 Width
-		{
-			UInt32 get()
-			{
-				return mWidth;
-			}
-			void set(UInt32 value)
-			{
-				mWidth = value;
-			}
-		}
-		property UInt32 Height
-		{
-			UInt32 get()
-			{
-				return mHeight;
-			}
-			void set(UInt32 value)
-			{
-				mHeight = value;
-			}
-		}
-	internal:
-		void CopyTo(VkExtent2D* dst, List<IntPtr>^ pins)
-		{
-			dst->width = mWidth;
-			dst->height = mHeight;
-		}
 
-		void CopyFrom(VkExtent2D* src)
-		{
-			mWidth = src->width;
-			mHeight = src->height;
-		}
-	};
 	
 	public ref class Extent3D
 	{
@@ -937,79 +900,6 @@ namespace ManagedVulkan
 			void set(float value)
 			{
 				mZ = value;
-			}
-		}
-	};
-
-	public ref struct Vec4f
-	{
-	private:
-		float mX;
-		float mY;
-		float mZ;
-		float mW;
-	internal:
-		void CopyTo(float* dst)
-		{
-			dst[0] = mX;
-			dst[1] = mY;
-			dst[2] = mZ;
-			dst[3] = mW;
-		}
-
-		void CopyFrom(float* src)
-		{
-			mX = src[0];
-			mY = src[1];
-			mZ = src[2];
-			mW = src[3];
-		}
-	public:
-		property float X
-		{
-			float get()
-			{
-				return mX;
-			}
-			void set(float value)
-			{
-				mX = value;
-			}
-		}
-
-		property float Y
-		{
-			float get()
-			{
-				return mY;
-			}
-			void set(float value)
-			{
-				mY = value;
-			}
-		}
-
-		property float Z
-		{
-			float get()
-			{
-				return mZ;
-			}
-			void set(float value)
-			{
-				mZ = value;
-			}
-		}
-
-		property float W
-		{
-			float get()
-			{
-				return mW;
-			}
-			void set(float value)
-			{
-				mW = value;
 			}
 		}
 	};
@@ -4537,49 +4427,6 @@ namespace ManagedVulkan
 		}
 	};
 
-	public ref class Offset2D
-	{
-	private:
-		Int32 mX = 0;
-		Int32 mY = 0;
-	public:
-		property Int32 X
-		{
-			Int32 get()
-			{
-				return mX;
-			}
-			void set(Int32 value)
-			{
-				mX = value;
-			}
-		}
-		property Int32 Y
-		{
-			Int32 get()
-			{
-				return mY;
-			}
-			void set(Int32 value)
-			{
-				mY = value;
-			}
-		}
-	internal:
-		void CopyTo(VkOffset2D* dst, List<IntPtr>^ pins)
-		{
-			dst->x = mX;
-			dst->y = mY;
-		}
-
-		void CopyFrom(VkOffset2D* src)
-		{
-			mX = src->x;
-			mY = src->y;
-		}
-	};
-
-
 	public ref class DisplayPlaneCapabilitiesKHR
 	{
 	private:
@@ -7590,147 +7437,6 @@ namespace ManagedVulkan
 		}
 	};
 
-	public ref class Viewport
-	{
-	private:
-		float mX = 0;
-		float mY = 0;
-		float mWidth = 0;
-		float mHeight = 0;
-		float mMinDepth = 0;
-		float mMaxDepth = 0;
-	public:
-		property float X
-		{
-			float get()
-			{
-				return mX;
-			}
-			void set(float value)
-			{
-				mX = value;
-			}
-		}
-		property float Y
-		{
-			float get()
-			{
-				return mY;
-			}
-			void set(float value)
-			{
-				mY = value;
-			}
-		}
-		property float Width
-		{
-			float get()
-			{
-				return mWidth;
-			}
-			void set(float value)
-			{
-				mWidth = value;
-			}
-		}
-		property float Height
-		{
-			float get()
-			{
-				return mHeight;
-			}
-			void set(float value)
-			{
-				mHeight = value;
-			}
-		}
-		property float MinDepth
-		{
-			float get()
-			{
-				return mMinDepth;
-			}
-			void set(float value)
-			{
-				mMinDepth = value;
-			}
-		}
-		property float MaxDepth
-		{
-			float get()
-			{
-				return mMaxDepth;
-			}
-			void set(float value)
-			{
-				mMaxDepth = value;
-			}
-		}
-	internal:
-		void CopyTo(VkViewport* dst, List<IntPtr>^ pins)
-		{
-			dst->x = mX;
-			dst->y = mY;
-			dst->width = mWidth;
-			dst->height = mHeight;
-			dst->minDepth = mMinDepth;
-			dst->maxDepth = mMaxDepth;
-		}
-
-		void CopyFrom(VkViewport* src)
-		{
-			mX = src->x;
-			mY = src->y;
-			mWidth = src->width;
-			mHeight = src->height;
-			mMinDepth = src->minDepth;
-			mMaxDepth = src->maxDepth;
-		}
-	};
-
-	public ref class Rect2D
-	{
-	private:
-		Offset2D^ mOffset = gcnew Offset2D();
-		Extent2D^ mExtent = gcnew Extent2D();
-	public:
-		property ManagedVulkan::Offset2D^ Offset
-		{
-			ManagedVulkan::Offset2D^ get()
-			{
-				return mOffset;
-			}
-			void set(ManagedVulkan::Offset2D^ value)
-			{
-				mOffset = value;
-			}
-		}
-		property ManagedVulkan::Extent2D^ Extent
-		{
-			ManagedVulkan::Extent2D^ get()
-			{
-				return mExtent;
-			}
-			void set(ManagedVulkan::Extent2D^ value)
-			{
-				mExtent = value;
-			}
-		}
-	internal:
-		void CopyTo(VkRect2D* dst, List<IntPtr>^ pins)
-		{
-			mOffset->CopyTo(&dst->offset, pins);
-			mExtent->CopyTo(&dst->extent, pins);
-		}
-
-		void CopyFrom(VkRect2D* src)
-		{
-			mOffset->CopyFrom(&src->offset);
-			mExtent->CopyFrom(&src->extent);
-		}
-	};
-
-
 	public ref class PipelineViewportStateCreateInfo
 	{
 	private:
@@ -10446,7 +10152,7 @@ namespace ManagedVulkan
 		UInt32 mColorAttachmentCount = 0;
 		array<ManagedVulkan::AttachmentReference^>^ mColorAttachments = nullptr;
 		array<ManagedVulkan::AttachmentReference^>^ mResolveAttachments = nullptr;
-		AttachmentReference^ mDepthStencilAttachment = nullptr;
+		ManagedVulkan::AttachmentReference^ mDepthStencilAttachment = nullptr;
 		array<UInt32>^ mPreserveAttachments = nullptr;
 	public:
 		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
@@ -10774,5 +10480,391 @@ namespace ManagedVulkan
 			//mDependencies->CopyFrom(&src->pDependencies);
 		}
 	};
+
+	public ref class CommandPoolCreateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		ManagedVulkan::CommandPoolCreateFlagBits mFlags;
+		UInt32 mQueueFamilyIndex = 0;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property ManagedVulkan::CommandPoolCreateFlagBits Flags
+		{
+			ManagedVulkan::CommandPoolCreateFlagBits get()
+			{
+				return mFlags;
+			}
+			void set(ManagedVulkan::CommandPoolCreateFlagBits value)
+			{
+				mFlags = value;
+			}
+		}
+		property UInt32 QueueFamilyIndex
+		{
+			UInt32 get()
+			{
+				return mQueueFamilyIndex;
+			}
+			void set(UInt32 value)
+			{
+				mQueueFamilyIndex = value;
+			}
+		}
+	internal:
+		void CopyTo(VkCommandPoolCreateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = (VkCommandPoolCreateFlagBits) mFlags;
+			dst->queueFamilyIndex = mQueueFamilyIndex;
+		}
+
+		void CopyFrom(VkCommandPoolCreateInfo* src)
+		{
+			mSType = (ManagedVulkan::StructureType)src->sType;
+
+			mFlags = (ManagedVulkan::CommandPoolCreateFlagBits) src->flags;
+			mQueueFamilyIndex = src->queueFamilyIndex;
+		}
+	};
+
+
+	public ref class CommandBufferAllocateInfo
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		ManagedVulkan::CommandPool^ mCommandPool = gcnew ManagedVulkan::CommandPool();
+		ManagedVulkan::CommandBufferLevel mLevel;
+		UInt32 mCommandBufferCount = 0;
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property ManagedVulkan::CommandPool^ CommandPool
+		{
+			ManagedVulkan::CommandPool^ get()
+			{
+				return mCommandPool;
+			}
+			void set(ManagedVulkan::CommandPool^ value)
+			{
+				mCommandPool = value;
+			}
+		}
+		property ManagedVulkan::CommandBufferLevel Level
+		{
+			ManagedVulkan::CommandBufferLevel get()
+			{
+				return mLevel;
+			}
+			void set(ManagedVulkan::CommandBufferLevel value)
+			{
+				mLevel = value;
+			}
+		}
+		property UInt32 CommandBufferCount
+		{
+			UInt32 get()
+			{
+				return mCommandBufferCount;
+			}
+			void set(UInt32 value)
+			{
+				mCommandBufferCount = value;
+			}
+		}
+	internal:
+		void CopyTo(VkCommandBufferAllocateInfo* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->commandPool = mCommandPool->mHandle;
+			dst->level = (VkCommandBufferLevel) mLevel;
+			dst->commandBufferCount = mCommandBufferCount;
+		}
+
+		void CopyFrom(VkCommandBufferAllocateInfo* src)
+		{
+			mSType = (ManagedVulkan::StructureType)src->sType;
+
+			mCommandPool->mHandle = src->commandPool;
+			mLevel = (ManagedVulkan::CommandBufferLevel) src->level;
+			mCommandBufferCount = src->commandBufferCount;
+		}
+	};
+
+	public ref class SwapchainCreateInfoKHR
+	{
+	private:
+		ManagedVulkan::StructureType mSType;
+		UInt32 mFlags;
+		ManagedVulkan::SurfaceKHR^ mSurface = gcnew ManagedVulkan::SurfaceKHR();
+		UInt32 mMinImageCount = 0;
+		ManagedVulkan::Format mImageFormat;
+		ManagedVulkan::ColorSpaceKHR mImageColorSpace;
+		ManagedVulkan::Extent2D^ mImageExtent = gcnew ManagedVulkan::Extent2D();
+		UInt32 mImageArrayLayers = 0;
+		UInt32 mImageUsage;
+		ManagedVulkan::SharingMode mImageSharingMode;
+		UInt32 mQueueFamilyIndexCount = 0;
+		UInt32 mQueueFamilyIndices = 0;
+		ManagedVulkan::SurfaceTransformFlagBitsKHR mPreTransform;
+		ManagedVulkan::CompositeAlphaFlagBitsKHR mCompositeAlpha;
+		ManagedVulkan::PresentModeKHR mPresentMode;
+		bool mClipped = false;
+		ManagedVulkan::SwapchainKHR^ mOldSwapchain = gcnew ManagedVulkan::SwapchainKHR();
+	public:
+		property ManagedVulkan::StructureType SType
+		{
+			ManagedVulkan::StructureType get()
+			{
+				return mSType;
+			}
+			void set(ManagedVulkan::StructureType value)
+			{
+				mSType = value;
+			}
+		}
+		property UInt32 Flags
+		{
+			UInt32 get()
+			{
+				return mFlags;
+			}
+			void set(UInt32 value)
+			{
+				mFlags = value;
+			}
+		}
+		property ManagedVulkan::SurfaceKHR^ Surface
+		{
+			ManagedVulkan::SurfaceKHR^ get()
+			{
+				return mSurface;
+			}
+			void set(ManagedVulkan::SurfaceKHR^ value)
+			{
+				mSurface = value;
+			}
+		}
+		property UInt32 MinImageCount
+		{
+			UInt32 get()
+			{
+				return mMinImageCount;
+			}
+			void set(UInt32 value)
+			{
+				mMinImageCount = value;
+			}
+		}
+		property ManagedVulkan::Format ImageFormat
+		{
+			ManagedVulkan::Format get()
+			{
+				return mImageFormat;
+			}
+			void set(ManagedVulkan::Format value)
+			{
+				mImageFormat = value;
+			}
+		}
+		property ManagedVulkan::ColorSpaceKHR ImageColorSpace
+		{
+			ManagedVulkan::ColorSpaceKHR get()
+			{
+				return mImageColorSpace;
+			}
+			void set(ManagedVulkan::ColorSpaceKHR value)
+			{
+				mImageColorSpace = value;
+			}
+		}
+		property ManagedVulkan::Extent2D^ ImageExtent
+		{
+			ManagedVulkan::Extent2D^ get()
+			{
+				return mImageExtent;
+			}
+			void set(ManagedVulkan::Extent2D^ value)
+			{
+				mImageExtent = value;
+			}
+		}
+		property UInt32 ImageArrayLayers
+		{
+			UInt32 get()
+			{
+				return mImageArrayLayers;
+			}
+			void set(UInt32 value)
+			{
+				mImageArrayLayers = value;
+			}
+		}
+		property UInt32 ImageUsage
+		{
+			UInt32 get()
+			{
+				return mImageUsage;
+			}
+			void set(UInt32 value)
+			{
+				mImageUsage = value;
+			}
+		}
+		property ManagedVulkan::SharingMode ImageSharingMode
+		{
+			ManagedVulkan::SharingMode get()
+			{
+				return mImageSharingMode;
+			}
+			void set(ManagedVulkan::SharingMode value)
+			{
+				mImageSharingMode = value;
+			}
+		}
+		property UInt32 QueueFamilyIndexCount
+		{
+			UInt32 get()
+			{
+				return mQueueFamilyIndexCount;
+			}
+			void set(UInt32 value)
+			{
+				mQueueFamilyIndexCount = value;
+			}
+		}
+		property UInt32 QueueFamilyIndices
+		{
+			UInt32 get()
+			{
+				return mQueueFamilyIndices;
+			}
+			void set(UInt32 value)
+			{
+				mQueueFamilyIndices = value;
+			}
+		}
+		property ManagedVulkan::SurfaceTransformFlagBitsKHR PreTransform
+		{
+			ManagedVulkan::SurfaceTransformFlagBitsKHR get()
+			{
+				return mPreTransform;
+			}
+			void set(ManagedVulkan::SurfaceTransformFlagBitsKHR value)
+			{
+				mPreTransform = value;
+			}
+		}
+		property ManagedVulkan::CompositeAlphaFlagBitsKHR CompositeAlpha
+		{
+			ManagedVulkan::CompositeAlphaFlagBitsKHR get()
+			{
+				return mCompositeAlpha;
+			}
+			void set(ManagedVulkan::CompositeAlphaFlagBitsKHR value)
+			{
+				mCompositeAlpha = value;
+			}
+		}
+		property ManagedVulkan::PresentModeKHR PresentMode
+		{
+			ManagedVulkan::PresentModeKHR get()
+			{
+				return mPresentMode;
+			}
+			void set(ManagedVulkan::PresentModeKHR value)
+			{
+				mPresentMode = value;
+			}
+		}
+		property bool Clipped
+		{
+			bool get()
+			{
+				return mClipped;
+			}
+			void set(bool value)
+			{
+				mClipped = value;
+			}
+		}
+		property ManagedVulkan::SwapchainKHR^ OldSwapchain
+		{
+			ManagedVulkan::SwapchainKHR^ get()
+			{
+				return mOldSwapchain;
+			}
+			void set(ManagedVulkan::SwapchainKHR^ value)
+			{
+				mOldSwapchain = value;
+			}
+		}
+	internal:
+		void CopyTo(VkSwapchainCreateInfoKHR* dst, List<IntPtr>^ pins)
+		{
+			dst->sType = (VkStructureType) mSType;
+			dst->pNext = nullptr;
+			dst->flags = mFlags;
+			dst->surface = mSurface->mHandle;
+			dst->minImageCount = mMinImageCount;
+			dst->imageFormat = (VkFormat) mImageFormat;
+			dst->imageColorSpace = (VkColorSpaceKHR) mImageColorSpace;
+			mImageExtent->CopyTo(&dst->imageExtent, pins);
+			dst->imageArrayLayers = mImageArrayLayers;
+			dst->imageUsage = mImageUsage;
+			dst->imageSharingMode = (VkSharingMode) mImageSharingMode;
+			//dst->queueFamilyIndexCount = mQueueFamilyIndexCount;
+			//dst->pQueueFamilyIndices = mQueueFamilyIndices;
+			dst->preTransform = (VkSurfaceTransformFlagBitsKHR) mPreTransform;
+			dst->compositeAlpha = (VkCompositeAlphaFlagBitsKHR) mCompositeAlpha;
+			dst->presentMode = (VkPresentModeKHR) mPresentMode;
+			dst->clipped = mClipped ? 1 : 0;
+			dst->oldSwapchain = mOldSwapchain->mHandle;
+		}
+
+		void CopyFrom(VkSwapchainCreateInfoKHR* src)
+		{
+			mSType = (StructureType)src->sType;
+
+			mFlags = src->flags;
+			mSurface->mHandle = src->surface;
+			mMinImageCount = src->minImageCount;
+			mImageFormat = (ManagedVulkan::Format) src->imageFormat;
+			mImageColorSpace = (ManagedVulkan::ColorSpaceKHR) src->imageColorSpace;
+			mImageExtent->CopyFrom(&src->imageExtent);
+			mImageArrayLayers = src->imageArrayLayers;
+			mImageUsage = src->imageUsage;
+			mImageSharingMode = (ManagedVulkan::SharingMode) src->imageSharingMode;
+			//mQueueFamilyIndexCount = src->queueFamilyIndexCount;
+			//mQueueFamilyIndices = src->pQueueFamilyIndices;
+			mPreTransform = (ManagedVulkan::SurfaceTransformFlagBitsKHR) src->preTransform;
+			mCompositeAlpha = (ManagedVulkan::CompositeAlphaFlagBitsKHR) src->compositeAlpha;
+			mPresentMode = (ManagedVulkan::PresentModeKHR) src->presentMode;
+			mClipped = src->clipped != 0;
+			mOldSwapchain->mHandle = src->oldSwapchain;
+		}
+	};
+
 
 }
