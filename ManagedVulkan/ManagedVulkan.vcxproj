@@ -141,6 +141,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VkBufferCopy.h" />
+    <ClInclude Include="VkBufferImageCopy.h" />
+    <ClInclude Include="VkBufferMemoryBarrier.h" />
+    <ClInclude Include="VkClearAttachment.h" />
+    <ClInclude Include="VkClearColorValue.h" />
+    <ClInclude Include="VkClearDepthStencilValue.h" />
+    <ClInclude Include="VkClearRect.h" />
+    <ClInclude Include="VkClearValue.h" />
     <ClInclude Include="VkCommandBuffer.h" />
     <ClInclude Include="ManagedVulkan.h" />
     <ClInclude Include="resource.h" />
@@ -151,14 +158,26 @@
     <ClInclude Include="VkDevice.h" />
     <ClInclude Include="VkEnums.h" />
     <ClInclude Include="VkExtent2D.h" />
+    <ClInclude Include="VkExtent3D.h" />
     <ClInclude Include="VkHandles.h" />
+    <ClInclude Include="VkImageBlit.h" />
+    <ClInclude Include="VkImageCopy.h" />
+    <ClInclude Include="VkImageMemoryBarrier.h" />
+    <ClInclude Include="VkImageResolve.h" />
+    <ClInclude Include="VkImageSubresourceLayers.h" />
+    <ClInclude Include="VkImageSubresourceRange.h" />
     <ClInclude Include="VkInstance.h" />
+    <ClInclude Include="VkMemoryBarrier.h" />
     <ClInclude Include="VkOffset2D.h" />
+    <ClInclude Include="VkOffset3D.h" />
     <ClInclude Include="VkPhysicalDevice.h" />
     <ClInclude Include="VkQueue.h" />
     <ClInclude Include="VkRect2D.h" />
+    <ClInclude Include="VkRenderPassBeginInfo.h" />
     <ClInclude Include="VkStructs.h" />
     <ClInclude Include="VkVec4f.h" />
+    <ClInclude Include="VkVec4i.h" />
+    <ClInclude Include="VkVec4Ui.h" />
     <ClInclude Include="VkViewport.h" />
   </ItemGroup>
   <ItemGroup>

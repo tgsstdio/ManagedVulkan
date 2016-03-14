@@ -756,6 +756,12 @@ namespace ManagedVulkan
 		VK_STRUCTURE_TYPE_LOADER_DEVICE_CREATE_INFO = 48,
 	};
 
+	public enum class SubpassContents : UInt32
+	{
+		VK_SUBPASS_CONTENTS_INLINE = 0,
+		VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS = 1,
+	};
+
 	[FlagsAttribute] public enum class SurfaceTransformFlagBitsKHR : UInt32
 	{
 		VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR = 1 << 0,

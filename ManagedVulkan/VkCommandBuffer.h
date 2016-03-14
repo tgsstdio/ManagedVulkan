@@ -11,6 +11,19 @@
 #include "VkRect2D.h"
 #include "VkVec4f.h"
 #include "VkBufferCopy.h"
+#include "VkImageCopy.h"
+#include "VkImageBlit.h"
+#include "VkBufferImageCopy.h"
+#include "VkImageSubresourceRange.h"
+#include "VkClearColorValue.h"
+#include "VkClearDepthStencilValue.h"
+#include "VkClearAttachment.h"
+#include "VkClearRect.h"
+#include "VkImageResolve.h"
+#include "VkBufferMemoryBarrier.h"
+#include "VkMemoryBarrier.h"
+#include "VkImageMemoryBarrier.h"
+#include "VkRenderPassBeginInfo.h"
 
 using namespace System;
 
@@ -44,29 +57,29 @@ namespace ManagedVulkan
 		void CmdDispatch(UInt32 x, UInt32 y, UInt32 z);
 		void CmdDispatchIndirect(ManagedVulkan::Buffer^ buffer, UInt64 offset);
 		void CmdCopyBuffer(ManagedVulkan::Buffer^ srcBuffer, ManagedVulkan::Buffer^ dstBuffer, array<ManagedVulkan::BufferCopy^>^ pRegions);
-		//	void CmdCopyImage(ManagedVulkan::Image^ srcImage, ManagedVulkan::VkImageLayout srcImageLayout, ManagedVulkan::Image^ dstImage, ManagedVulkan::VkImageLayout dstImageLayout, array<ManagedVulkan::ImageCopy^>^ pRegions);
-		//	void CmdBlitImage(ManagedVulkan::Image^ srcImage, ManagedVulkan::VkImageLayout srcImageLayout, ManagedVulkan::Image^ dstImage, ManagedVulkan::VkImageLayout dstImageLayout, array<ManagedVulkan::ImageBlit^>^ pRegions, ManagedVulkan::VkFilter filter);
-		//	void CmdCopyBufferToImage(ManagedVulkan::Buffer^ srcBuffer, ManagedVulkan::Image^ dstImage, ManagedVulkan::VkImageLayout dstImageLayout, array<ManagedVulkan::BufferImageCopy^>^ pRegions);
-		//	void CmdCopyImageToBuffer(ManagedVulkan::Image^ srcImage, ManagedVulkan::VkImageLayout srcImageLayout, ManagedVulkan::Buffer^ dstBuffer, array<ManagedVulkan::BufferImageCopy^>^ pRegions);
-		//	void CmdUpdateBuffer(ManagedVulkan::Buffer^ dstBuffer, UInt64 dstOffset, UInt64 dataSize, UInt32 pData);
-		//	void CmdFillBuffer(ManagedVulkan::Buffer^ dstBuffer, UInt64 dstOffset, UInt64 size, UInt32 data);
-		//	void CmdClearColorImage(ManagedVulkan::Image^ image, ManagedVulkan::VkImageLayout imageLayout, ManagedVulkan::ClearColorValue^ pColor, array<ManagedVulkan::ImageSubresourceRange^>^ pRanges);
-		//	void CmdClearDepthStencilImage(ManagedVulkan::Image^ image, ManagedVulkan::VkImageLayout imageLayout, ManagedVulkan::ClearDepthStencilValue^ pDepthStencil, array<ManagedVulkan::ImageSubresourceRange^>^ pRanges);
-		//	void CmdClearAttachments(array<ManagedVulkan::ClearAttachment^>^ pAttachments, array<ManagedVulkan::ClearRect^>^ pRects);
-		//	void CmdResolveImage(ManagedVulkan::Image^ srcImage, ManagedVulkan::VkImageLayout srcImageLayout, ManagedVulkan::Image^ dstImage, ManagedVulkan::VkImageLayout dstImageLayout, array<ManagedVulkan::ImageResolve^>^ pRegions);
-		//	void CmdSetEvent(ManagedVulkan::Event^ event, UInt32 stageMask);
-		//	void CmdResetEvent(ManagedVulkan::Event^ event, UInt32 stageMask);
-		//	void CmdWaitEvents(array<ManagedVulkan::Event^>^ pEvents, UInt32 srcStageMask, UInt32 dstStageMask, array<ManagedVulkan::MemoryBarrier^>^ pMemoryBarriers, array<ManagedVulkan::BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ManagedVulkan::ImageMemoryBarrier^>^ pImageMemoryBarriers);
-		//	void CmdPipelineBarrier(UInt32 srcStageMask, UInt32 dstStageMask, UInt32 dependencyFlags, array<ManagedVulkan::MemoryBarrier^>^ pMemoryBarriers, array<ManagedVulkan::BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ManagedVulkan::ImageMemoryBarrier^>^ pImageMemoryBarriers);
-		//	void CmdBeginQuery(ManagedVulkan::QueryPool^ queryPool, UInt32 query, UInt32 flags);
-		//	void CmdEndQuery(ManagedVulkan::QueryPool^ queryPool, UInt32 query);
-		//	void CmdResetQueryPool(ManagedVulkan::QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount);
-		//	void CmdWriteTimestamp(ManagedVulkan::VkPipelineStageFlagBits pipelineStage, ManagedVulkan::QueryPool^ queryPool, UInt32 query);
-		//	void CmdCopyQueryPoolResults(ManagedVulkan::QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount, ManagedVulkan::Buffer^ dstBuffer, UInt64 dstOffset, UInt64 stride, UInt32 flags);
-		//	void CmdPushConstants(ManagedVulkan::PipelineLayout^ layout, UInt32 stageFlags, UInt32 offset, UInt32 size, IntPtr pValues);
-		//	void CmdBeginRenderPass(ManagedVulkan::RenderPassBeginInfo^ pRenderPassBegin, ManagedVulkan::VkSubpassContents contents);
-		//	void CmdNextSubpass(ManagedVulkan::VkSubpassContents contents);
-		//	void CmdEndRenderPass();
-		//	void CmdExecuteCommands(array<ManagedVulkan::CommandBuffer>^ pCommandBuffers);
+		void CmdCopyImage(ManagedVulkan::Image^ srcImage, ManagedVulkan::ImageLayout srcImageLayout, ManagedVulkan::Image^ dstImage, ManagedVulkan::ImageLayout dstImageLayout, array<ManagedVulkan::ImageCopy^>^ pRegions);
+		void CmdBlitImage(ManagedVulkan::Image^ srcImage, ManagedVulkan::ImageLayout srcImageLayout, ManagedVulkan::Image^ dstImage, ManagedVulkan::ImageLayout dstImageLayout, array<ManagedVulkan::ImageBlit^>^ pRegions, ManagedVulkan::Filter filter);
+		void CmdCopyBufferToImage(ManagedVulkan::Buffer^ srcBuffer, ManagedVulkan::Image^ dstImage, ManagedVulkan::ImageLayout dstImageLayout, array<ManagedVulkan::BufferImageCopy^>^ pRegions);
+		void CmdCopyImageToBuffer(ManagedVulkan::Image^ srcImage, ManagedVulkan::ImageLayout srcImageLayout, ManagedVulkan::Buffer^ dstBuffer, array<ManagedVulkan::BufferImageCopy^>^ pRegions);
+		void CmdUpdateBuffer(ManagedVulkan::Buffer^ dstBuffer, UInt64 dstOffset, UInt64 dataSize, IntPtr^ pData);
+		void CmdFillBuffer(ManagedVulkan::Buffer^ dstBuffer, UInt64 dstOffset, UInt64 size, UInt32 data);
+		void CmdClearColorImage(ManagedVulkan::Image^ image, ManagedVulkan::ImageLayout imageLayout, ManagedVulkan::ClearColorValue^ pColor, array<ManagedVulkan::ImageSubresourceRange^>^ pRanges);
+		void CmdClearDepthStencilImage(ManagedVulkan::Image^ image, ManagedVulkan::ImageLayout imageLayout, ManagedVulkan::ClearDepthStencilValue^ pDepthStencil, array<ManagedVulkan::ImageSubresourceRange^>^ pRanges);
+		void CmdClearAttachments(array<ManagedVulkan::ClearAttachment^>^ pAttachments, array<ManagedVulkan::ClearRect^>^ pRects);
+		void CmdResolveImage(ManagedVulkan::Image^ srcImage, ManagedVulkan::ImageLayout srcImageLayout, ManagedVulkan::Image^ dstImage, ManagedVulkan::ImageLayout dstImageLayout, array<ManagedVulkan::ImageResolve^>^ pRegions);
+		void CmdSetEvent(ManagedVulkan::Event^ event, ManagedVulkan::PipelineStageFlagBits stageMask);
+		void CmdResetEvent(ManagedVulkan::Event^ event, ManagedVulkan::PipelineStageFlagBits stageMask);
+		void CmdWaitEvents(array<ManagedVulkan::Event^>^ pEvents, ManagedVulkan::PipelineStageFlagBits srcStageMask, ManagedVulkan::PipelineStageFlagBits dstStageMask, array<ManagedVulkan::MemoryBarrier^>^ pMemoryBarriers, array<ManagedVulkan::BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ManagedVulkan::ImageMemoryBarrier^>^ pImageMemoryBarriers);
+		void CmdPipelineBarrier(ManagedVulkan::PipelineStageFlagBits srcStageMask, ManagedVulkan::PipelineStageFlagBits dstStageMask, ManagedVulkan::DependencyFlagBits dependencyFlags, array<ManagedVulkan::MemoryBarrier^>^ pMemoryBarriers, array<ManagedVulkan::BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ManagedVulkan::ImageMemoryBarrier^>^ pImageMemoryBarriers);
+		void CmdBeginQuery(ManagedVulkan::QueryPool^ queryPool, UInt32 query, ManagedVulkan::QueryControlFlagBits flags);
+		void CmdEndQuery(ManagedVulkan::QueryPool^ queryPool, UInt32 query);
+		void CmdResetQueryPool(ManagedVulkan::QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount);
+		void CmdWriteTimestamp(ManagedVulkan::PipelineStageFlagBits pipelineStage, ManagedVulkan::QueryPool^ queryPool, UInt32 query);
+		void CmdCopyQueryPoolResults(ManagedVulkan::QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount, ManagedVulkan::Buffer^ dstBuffer, UInt64 dstOffset, UInt64 stride, UInt32 flags);
+		void CmdPushConstants(ManagedVulkan::PipelineLayout^ layout, UInt32 stageFlags, UInt32 offset, UInt32 size, IntPtr^ pValues);
+		void CmdBeginRenderPass(ManagedVulkan::RenderPassBeginInfo^ pRenderPassBegin, ManagedVulkan::SubpassContents contents);
+		void CmdNextSubpass(ManagedVulkan::SubpassContents contents);
+		void CmdEndRenderPass();
+		void CmdExecuteCommands(array<ManagedVulkan::CommandBuffer^>^ pCommandBuffers);
 	};
 }

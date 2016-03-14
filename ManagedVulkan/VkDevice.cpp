@@ -2924,7 +2924,7 @@ ManagedVulkan::Result ManagedVulkan::Device::AllocateDescriptorSets(ManagedVulka
 				arg_2 = new VkDescriptorSet[noOfSetLayouts];
 				for (UInt32 i = 0; i < noOfSetLayouts; ++i)
 				{
-					auto srcSet = (ManagedVulkan::DescriptorSetLayout^) pDescriptorSets[i];
+					auto srcSet = (ManagedVulkan::DescriptorSet^) pDescriptorSets[i];
 					arg_2[i] = srcSet->mHandle;
 				}
 			}

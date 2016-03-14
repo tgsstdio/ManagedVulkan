@@ -17,7 +17,7 @@ namespace ConsoleApplication1
 
             foreach(var ext in extensions)
             {
-                Console.WriteLine("Length : " + ext.SpecVersion + " - " + ext.ExtensionName);
+                Console.WriteLine("Spec version : " + ext.SpecVersion + " - " + ext.ExtensionName);
             }
             
             /**

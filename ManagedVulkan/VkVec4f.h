@@ -2,7 +2,7 @@
 
 namespace ManagedVulkan
 {
-	public ref struct Vec4f
+	public ref class Vec4f
 	{
 	private:
 		float mX;

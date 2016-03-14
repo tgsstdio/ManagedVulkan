@@ -9,7 +9,10 @@
 #include "VkCommandBuffer.h"
 #include "VkViewport.h"
 #include "VkExtent2D.h"
+#include "VkExtent3D.h"
 #include "VkRect2D.h"
+#include "VkOffset3D.h"
+
 
 using namespace System;
 using namespace System::Runtime::InteropServices;
@@ -212,65 +215,6 @@ namespace ManagedVulkan
 			//dst->pfnInternalFree = mPfnInternalFree;
 		}
 	};
-
-
-	
-	public ref class Extent3D
-	{
-	private:
-		UInt32 mWidth = 0;
-		UInt32 mHeight = 0;
-		UInt32 mDepth = 0;
-	public:
-		property UInt32 Width
-		{
-			UInt32 get()
-			{
-				return mWidth;
-			}
-			void set(UInt32 value)
-			{
-				mWidth = value;
-			}
-		}
-		property UInt32 Height
-		{
-			UInt32 get()
-			{
-				return mHeight;
-			}
-			void set(UInt32 value)
-			{
-				mHeight = value;
-			}
-		}
-		property UInt32 Depth
-		{
-			UInt32 get()
-			{
-				return mDepth;
-			}
-			void set(UInt32 value)
-			{
-				mDepth = value;
-			}
-		}
-	internal:
-		void CopyTo(VkExtent3D* dst, List<IntPtr>^ pins)
-		{
-			dst->width = mWidth;
-			dst->height = mHeight;
-			dst->depth = mDepth;
-		}
-
-		void CopyFrom(VkExtent3D* src)
-		{
-			mWidth = src->width;
-			mHeight = src->height;
-			mDepth = src->depth;
-		}
-	};
-
 
 	public ref class DisplaySurfaceCreateInfoKHR
 	{
@@ -5112,63 +5056,6 @@ namespace ManagedVulkan
 		}
 	};
 
-	public ref class Offset3D
-	{
-	private:
-		Int32 mX = 0;
-		Int32 mY = 0;
-		Int32 mZ = 0;
-	public:
-		property Int32 X
-		{
-			Int32 get()
-			{
-				return mX;
-			}
-			void set(Int32 value)
-			{
-				mX = value;
-			}
-		}
-		property Int32 Y
-		{
-			Int32 get()
-			{
-				return mY;
-			}
-			void set(Int32 value)
-			{
-				mY = value;
-			}
-		}
-		property Int32 Z
-		{
-			Int32 get()
-			{
-				return mZ;
-			}
-			void set(Int32 value)
-			{
-				mZ = value;
-			}
-		}
-	internal:
-		void CopyTo(VkOffset3D* dst, List<IntPtr>^ pins)
-		{
-			dst->x = mX;
-			dst->y = mY;
-			dst->z = mZ;
-		}
-
-		void CopyFrom(VkOffset3D* src)
-		{
-			mX = src->x;
-			mY = src->y;
-			mZ = src->z;
-		}
-	};
-
-
 	public ref class SparseImageMemoryBind
 	{
 	private:
@@ -6553,90 +6440,6 @@ namespace ManagedVulkan
 			mG = (ManagedVulkan::ComponentSwizzle) src->g;
 			mB = (ManagedVulkan::ComponentSwizzle) src->b;
 			mA = (ManagedVulkan::ComponentSwizzle) src->a;
-		}
-	};
-
-	public ref class ImageSubresourceRange
-	{
-	private:
-		UInt32 mAspectMask;
-		UInt32 mBaseMipLevel = 0;
-		UInt32 mLevelCount = 0;
-		UInt32 mBaseArrayLayer = 0;
-		UInt32 mLayerCount = 0;
-	public:
-		property UInt32 AspectMask
-		{
-			UInt32 get()
-			{
-				return mAspectMask;
-			}
-			void set(UInt32 value)
-			{
-				mAspectMask = value;
-			}
-		}
-		property UInt32 BaseMipLevel
-		{
-			UInt32 get()
-			{
-				return mBaseMipLevel;
-			}
-			void set(UInt32 value)
-			{
-				mBaseMipLevel = value;
-			}
-		}
-		property UInt32 LevelCount
-		{
-			UInt32 get()
-			{
-				return mLevelCount;
-			}
-			void set(UInt32 value)
-			{
-				mLevelCount = value;
-			}
-		}
-		property UInt32 BaseArrayLayer
-		{
-			UInt32 get()
-			{
-				return mBaseArrayLayer;
-			}
-			void set(UInt32 value)
-			{
-				mBaseArrayLayer = value;
-			}
-		}
-		property UInt32 LayerCount
-		{
-			UInt32 get()
-			{
-				return mLayerCount;
-			}
-			void set(UInt32 value)
-			{
-				mLayerCount = value;
-			}
-		}
-	internal:
-		void CopyTo(VkImageSubresourceRange* dst, List<IntPtr>^ pins)
-		{
-			dst->aspectMask = mAspectMask;
-			dst->baseMipLevel = mBaseMipLevel;
-			dst->levelCount = mLevelCount;
-			dst->baseArrayLayer = mBaseArrayLayer;
-			dst->layerCount = mLayerCount;
-		}
-
-		void CopyFrom(VkImageSubresourceRange* src)
-		{
-			mAspectMask = src->aspectMask;
-			mBaseMipLevel = src->baseMipLevel;
-			mLevelCount = src->levelCount;
-			mBaseArrayLayer = src->baseArrayLayer;
-			mLayerCount = src->layerCount;
 		}
 	};
 
