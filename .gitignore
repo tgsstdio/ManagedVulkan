@@ -14,9 +14,13 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
+# SQL compact dbs
+*.sdf
+
 
 # Windows shortcuts
 *.lnk
+
 
 Debug/*
 Release/*
@@ -24,12 +28,16 @@ Lib/*
 */ipch/*
 ipch/*
 
+Binaries/*
+
 */Debug/*
 */Release/*
 */x64/Debug/*
 */x64/Release/*
 */bin/*
 */obj/*
+
+.vs/*
 
 # =========================
 # Operating System Files
