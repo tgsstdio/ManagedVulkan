@@ -6,6 +6,10 @@
 
 My own managed C++ / CLI interface for Vulkan (on my Windows machines compiled with Visual Studio 2015 Community Edition) generated from VulkanSharp's VK_XML_URL = https://raw.githubusercontent.com/KhronosGroup/Vulkan-Docs/1.0/src/spec/vk.xml
 
+# Version 1.1.0
+Based on Windows LUNARG 1.0.3 SDK
+All functions are implemented except for GetDeviceProcAddr(String pName) & AllocationCallbacks
+
 # Version 1.0.0
 
 Now using Semantic Versioning v2.0.0 (http://semver.org/)
