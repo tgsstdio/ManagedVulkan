@@ -220,7 +220,7 @@ namespace ManagedVulkan
 	{
 	private:
 		ManagedVulkan::StructureType mSType;
-		DisplaySurfaceCreateFlagsKHR mFlags;
+		UInt32 mFlags;
 		DisplayModeKHR^ mDisplayMode = nullptr;
 		UInt32 mPlaneIndex = 0;
 		UInt32 mPlaneStackIndex = 0;
@@ -240,13 +240,13 @@ namespace ManagedVulkan
 				mSType = value;
 			}
 		}
-		property DisplaySurfaceCreateFlagsKHR Flags
+		property UInt32 Flags
 		{
-			DisplaySurfaceCreateFlagsKHR get()
+			UInt32 get()
 			{
 				return mFlags;
 			}
-			void set(DisplaySurfaceCreateFlagsKHR value)
+			void set(UInt32 value)
 			{
 				mFlags = value;
 			}

@@ -21,6 +21,8 @@ $RECYCLE.BIN/
 Debug/*
 Release/*
 Lib/*
+*/ipch/*
+ipch/*
 
 */Debug/*
 */Release/*

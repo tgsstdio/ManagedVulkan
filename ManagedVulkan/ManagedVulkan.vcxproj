@@ -90,11 +90,11 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>VK_USE_PLATFORM_WIN32_KHR;WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>D:\Program Files %28x86%29\Vulkan 1.0.3.1\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Program Files %28x86%29\Vulkan 1.0.5.0\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>vulkan-1.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Program Files %28x86%29\Vulkan 1.0.3.1\Source\lib32;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Program Files %28x86%29\Vulkan 1.0.5.0\Source\lib32</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -107,7 +107,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>vulkan-1.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Program Files %28x86%29\Vulkan 1.0.3.1\Source\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Program Files %28x86%29\Vulkan 1.0.5.0\Source\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
