@@ -37,7 +37,7 @@ Binaries/*
 */bin/*
 */obj/*
 
-.vs/*
+.vs\*
 
 # =========================
 # Operating System Files
@@ -69,3 +69,5 @@ Temporary Items
 .apdisk
 *.ipch
 *.ipch
+*.suo
+*.opendb
