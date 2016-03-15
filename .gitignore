@@ -29,6 +29,7 @@ Lib/*
 ipch/*
 
 Binaries/*
+packages/*
 
 */Debug/*
 */Release/*

@@ -8,6 +8,20 @@ My own managed C++ / CLI interface for Vulkan (on my Windows machines compiled w
 
 # Version 2.0.0
  - Using Windows LunarG 1.0.5 Vulkan SDK implementation
+ 
+## Implementation
+  - Enums 
+	- All enums - **Done**
+	- Remove common prefixes  *TODO*
+ - Delegates -  **Done**
+ - Unions - **Done**
+ - Bitmasks
+	-  All Bitmasks - **Done**
+	-  Remove common prefixes  *TODO*
+ - Helper Structs (really classes) for managed types - **DONE**
+ - Header file for Windows only windowing functions - **DONE**
+ - Group class (proxies) for similar instances - **DONE**
+ - External synchronization ?? *TODO*
 
 # Version 1.1.0
  - Using Windows LunarG 1.0.3.1 Vulkan SDK implementation

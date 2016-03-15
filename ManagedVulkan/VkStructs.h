@@ -130,75 +130,75 @@ namespace ManagedVulkan
 	public ref class AllocationCallbacks
 	{
 	private:
-		IntPtr mUserData = IntPtr::Zero;
-		PFN_vkAllocationFunction^ mPfnAllocation = nullptr;
-		PFN_vkReallocationFunction^ mPfnReallocation = nullptr;
-		PFN_vkFreeFunction^ mPfnFree = nullptr;
-		PFN_vkInternalAllocationNotification^ mPfnInternalAllocation = nullptr;
-		PFN_vkInternalFreeNotification^ mPfnInternalFree = nullptr;
+		IntPtr^ mUserData = nullptr;
+		ManagedVulkan::vkAllocationFunction^ mPfnAllocation = nullptr;
+		ManagedVulkan::vkReallocationFunction^ mPfnReallocation = nullptr;
+		ManagedVulkan::vkFreeFunction^ mPfnFree = nullptr;
+		ManagedVulkan::vkInternalAllocationNotification^ mPfnInternalAllocation = nullptr;
+		ManagedVulkan::vkInternalFreeNotification^ mPfnInternalFree = nullptr;
 	public:
-		property IntPtr UserData
+		property IntPtr^ UserData
 		{
-			IntPtr get()
+			IntPtr^ get()
 			{
 				return mUserData;
 			}
-			void set(IntPtr value)
+			void set(IntPtr^ value)
 			{
 				mUserData = value;
 			}
 		}
-		property ManagedVulkan::PFN_vkAllocationFunction^ PfnAllocation
+		property ManagedVulkan::vkAllocationFunction^ PfnAllocation
 		{
-			ManagedVulkan::PFN_vkAllocationFunction^ get()
+			ManagedVulkan::vkAllocationFunction^ get()
 			{
 				return mPfnAllocation;
 			}
-			void set(ManagedVulkan::PFN_vkAllocationFunction^ value)
+			void set(ManagedVulkan::vkAllocationFunction^ value)
 			{
 				mPfnAllocation = value;
 			}
 		}
-		property ManagedVulkan::PFN_vkReallocationFunction^ PfnReallocation
+		property ManagedVulkan::vkReallocationFunction^ PfnReallocation
 		{
-			ManagedVulkan::PFN_vkReallocationFunction^ get()
+			ManagedVulkan::vkReallocationFunction^ get()
 			{
 				return mPfnReallocation;
 			}
-			void set(ManagedVulkan::PFN_vkReallocationFunction^ value)
+			void set(ManagedVulkan::vkReallocationFunction^ value)
 			{
 				mPfnReallocation = value;
 			}
 		}
-		property ManagedVulkan::PFN_vkFreeFunction^ PfnFree
+		property ManagedVulkan::vkFreeFunction^ PfnFree
 		{
-			ManagedVulkan::PFN_vkFreeFunction^ get()
+			ManagedVulkan::vkFreeFunction^ get()
 			{
 				return mPfnFree;
 			}
-			void set(ManagedVulkan::PFN_vkFreeFunction^ value)
+			void set(ManagedVulkan::vkFreeFunction^ value)
 			{
 				mPfnFree = value;
 			}
 		}
-		property ManagedVulkan::PFN_vkInternalAllocationNotification^ PfnInternalAllocation
+		property ManagedVulkan::vkInternalAllocationNotification^ PfnInternalAllocation
 		{
-			ManagedVulkan::PFN_vkInternalAllocationNotification^ get()
+			ManagedVulkan::vkInternalAllocationNotification^ get()
 			{
 				return mPfnInternalAllocation;
 			}
-			void set(ManagedVulkan::PFN_vkInternalAllocationNotification^ value)
+			void set(ManagedVulkan::vkInternalAllocationNotification^ value)
 			{
 				mPfnInternalAllocation = value;
 			}
 		}
-		property ManagedVulkan::PFN_vkInternalFreeNotification^ PfnInternalFree
+		property ManagedVulkan::vkInternalFreeNotification^ PfnInternalFree
 		{
-			ManagedVulkan::PFN_vkInternalFreeNotification^ get()
+			ManagedVulkan::vkInternalFreeNotification^ get()
 			{
 				return mPfnInternalFree;
 			}
-			void set(ManagedVulkan::PFN_vkInternalFreeNotification^ value)
+			void set(ManagedVulkan::vkInternalFreeNotification^ value)
 			{
 				mPfnInternalFree = value;
 			}
@@ -207,12 +207,45 @@ namespace ManagedVulkan
 		void CopyTo(VkAllocationCallbacks* dst, List<IntPtr>^ pins)
 		{
 			// TODO : HOOK DELEGATES TO C++
-			//dst->pUserData = mUserData.ToPointer();
-			//dst->pfnAllocation = (void*) mPfnAllocation;
-			//dst->pfnReallocation = mPfnReallocation;
-			//dst->pfnFree = mPfnFree;
-			//dst->pfnInternalAllocation = mPfnInternalAllocation;
-			//dst->pfnInternalFree = mPfnInternalFree;
+			if (mUserData != nullptr)
+			{
+				dst->pUserData = mUserData->ToPointer();
+			}
+
+			if (mPfnAllocation != nullptr)
+			{
+				auto stub = Marshal::GetFunctionPointerForDelegate(mPfnAllocation);
+				dst->pfnAllocation = static_cast<PFN_vkAllocationFunction>(stub.ToPointer());
+				//pins->Add(stub);
+			}
+
+			if (mPfnReallocation != nullptr)
+			{
+				auto stub = Marshal::GetFunctionPointerForDelegate(mPfnReallocation);
+				dst->pfnReallocation = static_cast<PFN_vkReallocationFunction>(stub.ToPointer());
+				//pins->Add(stub);
+			}
+
+			if (mPfnFree != nullptr)
+			{
+				auto stub = Marshal::GetFunctionPointerForDelegate(mPfnFree);
+				dst->pfnFree = static_cast<PFN_vkFreeFunction>(stub.ToPointer());
+				//pins->Add(stub);
+			}
+
+			if (mPfnInternalAllocation != nullptr)
+			{
+				auto stub = Marshal::GetFunctionPointerForDelegate(mPfnInternalAllocation);
+				dst->pfnInternalAllocation = static_cast<PFN_vkInternalAllocationNotification>(stub.ToPointer());
+				//pins->Add(stub);
+			}
+
+			if (mPfnInternalFree != nullptr)
+			{
+				auto stub = Marshal::GetFunctionPointerForDelegate(mPfnInternalFree);
+				dst->pfnInternalFree = static_cast<PFN_vkInternalFreeNotification>(stub.ToPointer());
+				//pins->Add(stub);
+			}
 		}
 	};
 
@@ -443,9 +476,7 @@ namespace ManagedVulkan
 		ManagedVulkan::StructureType mSType;
 		VkInstanceCreateFlags mFlags;
 		ApplicationInfo^ mApplicationInfo = nullptr;
-		UInt32 mEnabledLayerCount = 0;
 		array<String^>^ mEnabledLayerNames = nullptr;
-		UInt32 mEnabledExtensionCount = 0;
 		array<String^>^ mEnabledExtensionNames = nullptr;
 	public:
 		property StructureType SType
@@ -481,17 +512,6 @@ namespace ManagedVulkan
 				mApplicationInfo = value;
 			}
 		}
-		property UInt32 EnabledLayerCount
-		{
-			UInt32 get()
-			{
-				return mEnabledLayerCount;
-			}
-			void set(UInt32 value)
-			{
-				mEnabledLayerCount = value;
-			}
-		}
 		property array<String^>^ EnabledLayerNames
 		{
 			array<String^>^ get()
@@ -501,17 +521,6 @@ namespace ManagedVulkan
 			void set(array<String^>^ value)
 			{
 				mEnabledLayerNames = value;
-			}
-		}
-		property UInt32 EnabledExtensionCount
-		{
-			UInt32 get()
-			{
-				return mEnabledExtensionCount;
-			}
-			void set(UInt32 value)
-			{
-				mEnabledExtensionCount = value;
 			}
 		}
 		property array<String^>^ EnabledExtensionNames
@@ -679,7 +688,7 @@ namespace ManagedVulkan
 	private:
 		ManagedVulkan::StructureType mSType;
 		ManagedVulkan::DebugReportFlagBitsEXT mFlags;
-		PFN_vkDebugReportCallbackEXT^ mPfnCallback = nullptr;
+		ManagedVulkan::vkDebugReportCallbackEXT^ mPfnCallback = nullptr;
 		IntPtr mUserData = IntPtr::Zero;
 	public:
 		property ManagedVulkan::StructureType SType
@@ -704,13 +713,13 @@ namespace ManagedVulkan
 				mFlags = value;
 			}
 		}
-		property ManagedVulkan::PFN_vkDebugReportCallbackEXT^ PfnCallback
+		property ManagedVulkan::vkDebugReportCallbackEXT^ PfnCallback
 		{
-			ManagedVulkan::PFN_vkDebugReportCallbackEXT^ get()
+			ManagedVulkan::vkDebugReportCallbackEXT^ get()
 			{
 				return mPfnCallback;
 			}
-			void set(ManagedVulkan::PFN_vkDebugReportCallbackEXT^ value)
+			void set(ManagedVulkan::vkDebugReportCallbackEXT^ value)
 			{
 				mPfnCallback = value;
 			}

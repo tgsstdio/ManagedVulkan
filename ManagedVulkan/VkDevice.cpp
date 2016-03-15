@@ -1,11 +1,8 @@
 #include "stdafx.h"
 #include "VkDevice.h"
 
-#ifdef VK_DEBUG_REPORT
-ManagedVulkan::PFN_vkVoidFunction^ ManagedVulkan::Device::GetDeviceProcAddr(String^ pName)
+ManagedVulkan::vkVoidFunction^ ManagedVulkan::Device::GetDeviceProcAddr(String^ pName)
 {
-	throw gcnew NotImplementedException();
-
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
 	{
@@ -18,11 +15,17 @@ ManagedVulkan::PFN_vkVoidFunction^ ManagedVulkan::Device::GetDeviceProcAddr(Stri
 		pins->Add(inst_1);
 		char* arg_1 = static_cast<char*>(inst_1.ToPointer());;
 
-		int result = vkGetDeviceProcAddr(arg_0, arg_1);
+		PFN_vkVoidFunction result = vkGetDeviceProcAddr(arg_0, arg_1);
 
-
-
-		return (PFN_vkVoidFunction)result;
+		if (result != nullptr)
+		{
+			IntPtr stub(result);
+			return Marshal::GetDelegateForFunctionPointer<vkVoidFunction^>(stub);
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 	finally
 	{
@@ -33,7 +36,7 @@ ManagedVulkan::PFN_vkVoidFunction^ ManagedVulkan::Device::GetDeviceProcAddr(Stri
 		}
 	}
 }
-#endif
+
 
 void ManagedVulkan::Device::DestroyDevice(ManagedVulkan::AllocationCallbacks^ pAllocator)
 {

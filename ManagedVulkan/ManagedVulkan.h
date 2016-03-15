@@ -20,6 +20,7 @@ namespace ManagedVulkan
 	public ref class Vulkan
 	{
 	public:
+		static UInt32 MakeVersion(UInt32 major, UInt32 minor, UInt32 patch);
 		static ManagedVulkan::Result CreateInstance(ManagedVulkan::InstanceCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Instance^% pInstance);
 		static ManagedVulkan::Result EnumerateInstanceLayerProperties([Out] array<ManagedVulkan::LayerProperties^>^% pProperties);
 		static ManagedVulkan::Result EnumerateInstanceExtensionProperties(String^ pLayerName, [Out] array<ManagedVulkan::ExtensionProperties^>^% pProperties);

@@ -80,7 +80,7 @@ ManagedVulkan::Result ManagedVulkan::Instance::EnumeratePhysicalDevices([Out] ar
 	}
 }
 
-ManagedVulkan::PFN_vkVoidFunction^ ManagedVulkan::Instance::GetInstanceProcAddr(String^ pName)
+ManagedVulkan::vkVoidFunction^ ManagedVulkan::Instance::GetInstanceProcAddr(String^ pName)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try

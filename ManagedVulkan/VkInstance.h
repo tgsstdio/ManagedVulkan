@@ -26,7 +26,7 @@ namespace ManagedVulkan
 	public:
 		void DestroyInstance(ManagedVulkan::AllocationCallbacks^ pAllocator);
 		ManagedVulkan::Result EnumeratePhysicalDevices([Out] array<ManagedVulkan::PhysicalDevice^>^% pPhysicalDevices);
-		ManagedVulkan::PFN_vkVoidFunction^ GetInstanceProcAddr(String^ pName);
+		ManagedVulkan::vkVoidFunction^ GetInstanceProcAddr(String^ pName);
 
 #ifdef VK_CREATE_DISPLAY_PLANE_SURFACE
 		ManagedVulkan::Result CreateDisplayPlaneSurfaceKHR(ManagedVulkan::DisplaySurfaceCreateInfoKHR^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::SurfaceKHR^% pSurface);

@@ -23,7 +23,7 @@ namespace ManagedVulkan
 		VkDevice mHandle;
 	public:
 		//TODO: figure out delegates
-		//ManagedVulkan::PFN_vkVoidFunction^ GetDeviceProcAddr(String^ pName);
+		ManagedVulkan::vkVoidFunction^ GetDeviceProcAddr(String^ pName);
 		void DestroyDevice(ManagedVulkan::AllocationCallbacks^ pAllocator);
 		void GetDeviceQueue(UInt32 queueFamilyIndex, UInt32 queueIndex, [Out] ManagedVulkan::Queue^% pQueue);
 		ManagedVulkan::Result DeviceWaitIdle();

@@ -7,6 +7,12 @@ using namespace System;
 using namespace System::Runtime::InteropServices;
 
 // Vulkan
+
+UInt32 ManagedVulkan::Vulkan::MakeVersion(UInt32 major, UInt32 minor, UInt32 patch)
+{
+	return VK_MAKE_VERSION(major, minor, patch);
+}
+
 ManagedVulkan::Result ManagedVulkan::Vulkan::CreateInstance(ManagedVulkan::InstanceCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Instance^% pInstance)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
