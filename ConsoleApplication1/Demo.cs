@@ -15,6 +15,22 @@ namespace ConsoleApplication1
         private const string KHR_SURFACE_EXTENSION_NAME = "VK_KHR_surface";
         private const string KHR_WIN32_SURFACE_EXTENSION_NAME = "VK_KHR_win32_surface";
         private const string KHR_XCB_SURFACE_EXTENSION_NAME = "VK_KHR_xcb_surface";
+
+        internal void Run()
+        {
+            Int32 currentFrame = 0;
+            while (!mQuit)
+            {
+                mNativeWindow.ProcessEvents();
+
+                ++currentFrame;
+                if (mFrameCount != Int32.MaxValue && currentFrame >= mFrameCount)
+                {
+                    mQuit = true;
+                }
+            }
+        }
+
         private const string EXT_DEBUG_REPORT_EXTENSION_NAME = "VK_EXT_debug_report";
         private const string KHR_SWAPCHAIN_EXTENSION_NAME = "VK_KHR_swapchain";
 
@@ -34,10 +50,17 @@ namespace ConsoleApplication1
         private IntPtr mWindow;
         private string[] mDeviceValidationLayers;
         private readonly string APP_SHORT_NAME = "Demo";
+        private readonly string Name = "Cube";
+
         private Instance mInstance;
         private PhysicalDevice mGPU;
-        private int mEnabledLayerCount;
 
+        private int mEnabledLayerCount;
+        //private vkCreateDebugReportCallbackEXT mCreateDebugReportCallback;
+        //private vkDestroyDebugReportCallbackEXT mDestroyDebugReportCallback;
+        //private vkDebugReportCallbackEXT mDebugReportMessage;
+        private DebugReportCallbackEXT mMsgCallback;
+        private bool mPrepared;
 
         public bool Init(string[] args)
         {
@@ -138,7 +161,7 @@ namespace ConsoleApplication1
             ManagedVulkan.LayerProperties[] instance_layers;
             err = ManagedVulkan.Vulkan.EnumerateInstanceLayerProperties(out instance_layers);
 
-            Debug.Assert(err != 0);
+            Debug.Assert(err == Result.VK_SUCCESS);
 
             if (mValidate)
             {
@@ -267,7 +290,7 @@ Please look at the Getting Started guide for additional information.";
 
             ManagedVulkan.PhysicalDevice[] physicalDevices;
             err = mInstance.EnumeratePhysicalDevices(out physicalDevices);
-            Debug.Assert(err != 0);
+            Debug.Assert(err == Result.VK_SUCCESS);
 
             if (physicalDevices != null && physicalDevices.Length > 0)
             {
@@ -290,7 +313,7 @@ Please look at the Getting Started guide for additional information.";
 
             ManagedVulkan.LayerProperties[] device_layers;
             err = mGPU.EnumerateDeviceLayerProperties(out device_layers);
-            Debug.Assert(err != 0);
+            Debug.Assert(err == Result.VK_SUCCESS);
 
             if (device_layers != null)
             {
@@ -316,7 +339,7 @@ Please look at the Getting Started guide for additional information.";
 
             ManagedVulkan.ExtensionProperties[] device_extensions;
             err = mGPU.EnumerateDeviceExtensionProperties(null, out device_extensions);
-            Debug.Assert(err != 0);
+            Debug.Assert(err == Result.VK_SUCCESS);
 
             if (device_extensions != null)
             {
@@ -330,6 +353,7 @@ Please look at the Getting Started guide for additional information.";
                     Debug.Assert(extension_names.Count < 64);
                 }
             }
+            mExtensionNames = extension_names.ToArray();
 
             if (!swapchainExtFound)
             {
@@ -343,14 +367,135 @@ Please look at the Getting Started guide for additional information.";
 
             if (mValidate)
             {
+                //ManagedVulkan.vkCreateDebugReportCallbackEXT createDebugReportCallback;
+                //if (mInstance.GetInstanceProcAddr("vkCreateDebugReportCallbackEXT", out createDebugReportCallback))
+                //{
+                //    mCreateDebugReportCallback = createDebugReportCallback;
+                //}
+                //else
+                //{
+                //    throw new VulkanLibraryException("vkGetProcAddr Failure", "GetProcAddr: Unable to find vkCreateDebugReportCallbackEXT");
+                //}
 
+                //ManagedVulkan.vkDestroyDebugReportCallbackEXT destroyDebugReportCallback;
+                //if (mInstance.GetInstanceProcAddr("vkDestroyDebugReportCallbackEXT", out destroyDebugReportCallback))
+                //{
+                //    mDestroyDebugReportCallback = destroyDebugReportCallback;
+                //}
+                //else
+                //{
+                //    throw new VulkanLibraryException("vkGetProcAddr Failure", "GetProcAddr: Unable to find vkDestroyDebugReportCallbackEXT");
+                //}
+
+                //ManagedVulkan.vkDebugReportCallbackEXT debugReportMessageCallback;
+                //if (mInstance.GetInstanceProcAddr("vkDestroyDebugReportCallbackEXT", out debugReportMessageCallback))
+                //{
+                //    mDebugReportMessage = debugReportMessageCallback;
+                //}
+                //else
+                //{
+                //    throw new VulkanLibraryException("vkGetProcAddr Failure", "GetProcAddr: Unable to find vkDebugReportMessageEXT");
+                //}
+
+                vkDebugReportCallbackEXT callback = this.dbgFunc;
+
+                var dbgCreateInfo = new ManagedVulkan.DebugReportCallbackCreateInfoEXT()
+                {
+                    SType = ManagedVulkan.StructureType.VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT,
+                    PfnCallback = callback,
+                    UserData = IntPtr.Zero,
+                    Flags = DebugReportFlagBitsEXT.VK_DEBUG_REPORT_ERROR_BIT_EXT | DebugReportFlagBitsEXT.VK_DEBUG_REPORT_WARNING_BIT_EXT,
+                };
+
+                ManagedVulkan.DebugReportCallbackEXT msgCallback;
+                err = mInstance.CreateDebugReportCallbackEXT(dbgCreateInfo, null, out msgCallback);
+                switch (err)
+                {
+                    case Result.VK_SUCCESS:
+                        break;
+                    case Result.VK_ERROR_OUT_OF_HOST_MEMORY:
+                        throw new VulkanLibraryException("CreateDebugReportCallback Failure", "CreateDebugReportCallback: out of host memory");
+                    default:
+                        throw new VulkanLibraryException("CreateDebugReportCallback Failure", "CreateDebugReportCallback: unknown failure");
+                }
+                mMsgCallback = msgCallback;
             }
+
+            ManagedVulkan.QueueFamilyProperties[] queue_props;
+            mGPU.GetPhysicalDeviceQueueFamilyProperties(out queue_props);
+
+            Debug.Assert(queue_props.Length > 1);
+            mQueueProperties = queue_props;
+
+            QueueFamilyProperties found = null;
+            foreach (var queue in queue_props)
+            {
+                // Find a queue that supports gfx
+                if ((queue.QueueFlags & ManagedVulkan.QueueFlagBits.VK_QUEUE_GRAPHICS_BIT) == ManagedVulkan.QueueFlagBits.VK_QUEUE_GRAPHICS_BIT)
+                {
+                    found = queue;
+                    break;
+                }
+            }
+            Debug.Assert(found != null);
+
+            //  If app has specific feature requirements it should check supported
+            //  features based on this query
+            ManagedVulkan.PhysicalDeviceFeatures physDevFeatures;
+            mGPU.GetPhysicalDeviceFeatures(out physDevFeatures);
+
+            // NOT NEEDED AS IMPLEMENTED IN LUNAR SDK
+            //GET_INSTANCE_PROC_ADDR(demo->inst, GetPhysicalDeviceSurfaceSupportKHR);
+            //GET_INSTANCE_PROC_ADDR(demo->inst, GetPhysicalDeviceSurfaceCapabilitiesKHR);
+            //GET_INSTANCE_PROC_ADDR(demo->inst, GetPhysicalDeviceSurfaceFormatsKHR);
+            //GET_INSTANCE_PROC_ADDR(demo->inst, GetPhysicalDeviceSurfacePresentModesKHR);
+            //GET_INSTANCE_PROC_ADDR(demo->inst, GetSwapchainImagesKHR);
+        }
+
+        private bool dbgFunc(
+                ManagedVulkan.DebugReportFlagBitsEXT flags,
+                ManagedVulkan.DebugReportObjectTypeEXT objectType,
+                ulong srcObject, ulong location, int msgCode,
+                string pLayerPrefix, string pMsg, IntPtr userData)
+        {
+            string message = "";
+
+            if ((flags & ManagedVulkan.DebugReportFlagBitsEXT.VK_DEBUG_REPORT_ERROR_BIT_EXT)
+                == ManagedVulkan.DebugReportFlagBitsEXT.VK_DEBUG_REPORT_ERROR_BIT_EXT)
+            {
+                message = string.Format("ERROR: [{0}] Code {1} : {2}", pLayerPrefix, msgCode, pMsg);
+            }
+            else if ((flags & ManagedVulkan.DebugReportFlagBitsEXT.VK_DEBUG_REPORT_WARNING_BIT_EXT)
+                == ManagedVulkan.DebugReportFlagBitsEXT.VK_DEBUG_REPORT_WARNING_BIT_EXT)
+            {
+                // We know that we're submitting queues without fences, ignore this
+                // warning
+                if (pMsg == "vkQueueSubmit parameter, VkFence fence, is null pointer")
+                {
+                    return false;
+                }
+                Debug.WriteLine(string.Format("WARNING: [{0}] Code {1} : {2}", pLayerPrefix, msgCode, pMsg));
+            }
+            else
+            {
+                return false;
+            }
+
+            Debug.WriteLine(message);
+            /*
+             * false indicates that layer should not bail-out of an
+             * API call that had validation failures. This may mean that the
+             * app dies inside the driver due to invalid parameter(s).
+             * That's what would happen without validation layers, so we'll
+             * keep that behavior here.
+             */
+            return false;
         }
 
         private bool CheckLayers(string[] instance_validation_layers, LayerProperties[] instance_layers)
         {
             var collection = new StringCollection();
-            foreach(var layer in instance_layers)
+            foreach (var layer in instance_layers)
             {
                 collection.Add(layer.LayerName);
             }
@@ -372,14 +517,145 @@ Please look at the Getting Started guide for additional information.";
             // ONLY FOR NON-WIN32 implementation
         }
 
+        private OpenTK.INativeWindow mNativeWindow;
+        private bool mQuit;
+        private SurfaceKHR mSurface;
+        private QueueFamilyProperties[] mQueueProperties;
+        private uint mGraphicsQueueNodeIndex;
+        private string[] mExtensionNames;
+        private ManagedVulkan.Device mDevice;
+
         public void CreateWindow()
         {
+            mNativeWindow = new OpenTK.NativeWindow();
+            mNativeWindow.Width = mWidth;
+            mNativeWindow.Height = mHeight;
+            mNativeWindow.WindowBorder = WindowBorder.Resizable;
+            mNativeWindow.KeyDown += new EventHandler<OpenTK.Input.KeyboardKeyEventArgs>(Keyboard_KeyDown);
+            mNativeWindow.Visible = true;
 
+            mQuit = false;
+        }
+
+
+        private void Keyboard_KeyDown(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
+        {
+            if (e.Key == OpenTK.Input.Key.Escape)
+            {
+                mNativeWindow.Close();
+                mQuit = true;
+                return;
+            }
         }
 
         public void InitVkSwapchain()
         {
+            ManagedVulkan.Result err;
 
+            // #ifdef _WIN32
+            var createInfo = new ManagedVulkan.Win32SurfaceCreateInfoKHR
+            {
+                SType = ManagedVulkan.StructureType.VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
+                Flags = 0,
+                Hinstance = Process.GetCurrentProcess().Handle,
+                Hwnd = mNativeWindow.WindowInfo.Handle,
+            };
+
+            ManagedVulkan.SurfaceKHR surface;
+            err = mInstance.CreateWin32SurfaceKHR(createInfo, null, out surface);
+            Debug.Assert(err == Result.VK_SUCCESS);
+            mSurface = surface;
+
+            bool[] supportsPresent = new bool[mQueueProperties.Length];
+
+            // Iterate over each queue to learn whether it supports presenting:
+            for (UInt32 i = 0; i < mQueueProperties.Length; ++i)
+            {
+                mGPU.GetPhysicalDeviceSurfaceSupportKHR(i, mSurface, out supportsPresent[i]);
+            }
+
+            // Search for a graphics and a present queue in the array of queue
+            // families, try to find one that supports both
+            UInt32 graphicsQueueNodeIndex = UInt32.MaxValue;
+            UInt32 presentQueueNodeIndex = UInt32.MaxValue;
+            for (UInt32 i = 0; i < mQueueProperties.Length; i++)
+            {
+                var queue = mQueueProperties[i];
+
+                if ((queue.QueueFlags & QueueFlagBits.VK_QUEUE_GRAPHICS_BIT) != 0)
+                {
+                    if (graphicsQueueNodeIndex == UInt32.MaxValue)
+                    {
+                        graphicsQueueNodeIndex = i;
+                    }
+
+                    if (supportsPresent[i])
+                    {
+                        graphicsQueueNodeIndex = i;
+                        presentQueueNodeIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            if (presentQueueNodeIndex == UInt32.MaxValue)
+            {
+                // If didn't find a queue that supports both graphics and present, then
+                // find a separate present queue.
+                for (UInt32 i = 0; i < mQueueProperties.Length; ++i)
+                {
+                    if (supportsPresent[i])
+                    {
+                        presentQueueNodeIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            // Generate error if could not find both a graphics and a present queue
+            if (graphicsQueueNodeIndex == UInt32.MaxValue ||
+                presentQueueNodeIndex == UInt32.MaxValue)
+            {
+                throw new VulkanLibraryException("Swapchain Initialization Failure", "Could not find a graphics and a present queue");
+            }
+
+            // VERBATIM from cube.c
+            // TODO: Add support for separate queues, including presentation,
+            //       synchronization, and appropriate tracking for QueueSubmit.
+            // NOTE: While it is possible for an application to use a separate graphics
+            //       and a present queues, this demo program assumes it is only using
+            //       one:
+            if (graphicsQueueNodeIndex != presentQueueNodeIndex)
+            {
+                throw new VulkanLibraryException("Swapchain Initialization Failure", "Could not find a common graphics and a present queue");
+            }
+
+            mGraphicsQueueNodeIndex = graphicsQueueNodeIndex;
+            CreateDevice();
+        }
+
+        private void CreateDevice()
+        {
+            float[] queue_priorities = new float[]{ 0.0f };
+            var queue = new ManagedVulkan.DeviceQueueCreateInfo
+            {
+                SType = ManagedVulkan.StructureType.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+                QueueFamilyIndex = mGraphicsQueueNodeIndex,
+                QueuePriorities = queue_priorities,
+            };
+
+            var deviceInfo = new ManagedVulkan.DeviceCreateInfo
+            {
+                SType = ManagedVulkan.StructureType.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+                QueueCreateInfos = new[] { queue },
+                EnabledLayerNames = (mValidate) ? mDeviceValidationLayers : null,
+                EnabledExtensionNames = mExtensionNames,
+                EnabledFeatures = null,
+            };
+            ManagedVulkan.Device device;
+            ManagedVulkan.Result err = mGPU.CreateDevice(deviceInfo, null, out device);
+            Debug.Assert(err == ManagedVulkan.Result.VK_SUCCESS);
+            mDevice = device;
         }
 
         public void Prepare()
@@ -389,8 +665,27 @@ Please look at the Getting Started guide for additional information.";
 
         public void Cleanup()
         {
+            mPrepared = false;
 
+            if (mDevice != null)
+            {
+                mDevice.DestroyDevice(null);
+            }
+
+            if (mValidate)
+            {
+                mInstance.DestroyDebugReportCallbackEXT(mMsgCallback, null);
+            }
+
+            if (mSurface != null)
+            {
+                mInstance.DestroySurfaceKHR(mSurface, null);
+            }
+
+            if (mInstance != null)
+            {
+                mInstance.DestroyInstance(null);
+            }
         }
-
     }
 }

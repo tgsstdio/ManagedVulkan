@@ -273,7 +273,7 @@ namespace ManagedVulkan
 				mSType = value;
 			}
 		}
-		property UInt32 Flags
+		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
 		{
 			UInt32 get()
 			{
@@ -416,39 +416,39 @@ namespace ManagedVulkan
 	public ref class FormatProperties
 	{
 	private:
-		UInt32 mLinearTilingFeatures;
-		UInt32 mOptimalTilingFeatures;
-		UInt32 mBufferFeatures;
+		ManagedVulkan::FormatFeatureFlagBits mLinearTilingFeatures;
+		ManagedVulkan::FormatFeatureFlagBits mOptimalTilingFeatures;
+		ManagedVulkan::FormatFeatureFlagBits mBufferFeatures;
 	public:
-		property UInt32 LinearTilingFeatures
+		property ManagedVulkan::FormatFeatureFlagBits LinearTilingFeatures
 		{
-			UInt32 get()
+			ManagedVulkan::FormatFeatureFlagBits get()
 			{
 				return mLinearTilingFeatures;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::FormatFeatureFlagBits value)
 			{
 				mLinearTilingFeatures = value;
 			}
 		}
-		property UInt32 OptimalTilingFeatures
+		property ManagedVulkan::FormatFeatureFlagBits OptimalTilingFeatures
 		{
-			UInt32 get()
+			ManagedVulkan::FormatFeatureFlagBits get()
 			{
 				return mOptimalTilingFeatures;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::FormatFeatureFlagBits value)
 			{
 				mOptimalTilingFeatures = value;
 			}
 		}
-		property UInt32 BufferFeatures
+		property ManagedVulkan::FormatFeatureFlagBits BufferFeatures
 		{
-			UInt32 get()
+			ManagedVulkan::FormatFeatureFlagBits get()
 			{
 				return mBufferFeatures;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::FormatFeatureFlagBits value)
 			{
 				mBufferFeatures = value;
 			}
@@ -456,16 +456,16 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkFormatProperties* dst, List<IntPtr>^ pins)
 		{
-			dst->linearTilingFeatures = mLinearTilingFeatures;
-			dst->optimalTilingFeatures = mOptimalTilingFeatures;
-			dst->bufferFeatures = mBufferFeatures;
+			dst->linearTilingFeatures = (VkFormatFeatureFlagBits) mLinearTilingFeatures;
+			dst->optimalTilingFeatures = (VkFormatFeatureFlagBits)mOptimalTilingFeatures;
+			dst->bufferFeatures = (VkFormatFeatureFlagBits) mBufferFeatures;
 		}
 
 		void CopyFrom(VkFormatProperties* src)
 		{
-			mLinearTilingFeatures = src->linearTilingFeatures;
-			mOptimalTilingFeatures = src->optimalTilingFeatures;
-			mBufferFeatures = src->bufferFeatures;
+			mLinearTilingFeatures = (ManagedVulkan::FormatFeatureFlagBits) src->linearTilingFeatures;
+			mOptimalTilingFeatures = (ManagedVulkan::FormatFeatureFlagBits) src->optimalTilingFeatures;
+			mBufferFeatures = (ManagedVulkan::FormatFeatureFlagBits) src->bufferFeatures;
 		}
 	};
 
@@ -1041,16 +1041,16 @@ namespace ManagedVulkan
 		UInt32 mMaxFramebufferWidth = 0;
 		UInt32 mMaxFramebufferHeight = 0;
 		UInt32 mMaxFramebufferLayers = 0;
-		UInt32 mFramebufferColorSampleCounts;
-		UInt32 mFramebufferDepthSampleCounts;
-		UInt32 mFramebufferStencilSampleCounts;
-		UInt32 mFramebufferNoAttachmentsSampleCounts;
+		ManagedVulkan::SampleCountFlagBits mFramebufferColorSampleCounts;
+		ManagedVulkan::SampleCountFlagBits mFramebufferDepthSampleCounts;
+		ManagedVulkan::SampleCountFlagBits mFramebufferStencilSampleCounts;
+		ManagedVulkan::SampleCountFlagBits mFramebufferNoAttachmentsSampleCounts;
 		UInt32 mMaxColorAttachments = 0;
-		UInt32 mSampledImageColorSampleCounts;
-		UInt32 mSampledImageIntegerSampleCounts;
-		UInt32 mSampledImageDepthSampleCounts;
-		UInt32 mSampledImageStencilSampleCounts;
-		UInt32 mStorageImageSampleCounts;
+		ManagedVulkan::SampleCountFlagBits mSampledImageColorSampleCounts;
+		ManagedVulkan::SampleCountFlagBits mSampledImageIntegerSampleCounts;
+		ManagedVulkan::SampleCountFlagBits mSampledImageDepthSampleCounts;
+		ManagedVulkan::SampleCountFlagBits mSampledImageStencilSampleCounts;
+		ManagedVulkan::SampleCountFlagBits mStorageImageSampleCounts;
 		UInt32 mMaxSampleMaskWords = 0;
 		bool mTimestampComputeAndGraphics = false;
 		float mTimestampPeriod = 0;
@@ -1948,46 +1948,46 @@ namespace ManagedVulkan
 				mMaxFramebufferLayers = value;
 			}
 		}
-		property UInt32 FramebufferColorSampleCounts
+		property ManagedVulkan::SampleCountFlagBits FramebufferColorSampleCounts
 		{
-			UInt32 get()
+			ManagedVulkan::SampleCountFlagBits get()
 			{
 				return mFramebufferColorSampleCounts;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SampleCountFlagBits value)
 			{
 				mFramebufferColorSampleCounts = value;
 			}
 		}
-		property UInt32 FramebufferDepthSampleCounts
+		property ManagedVulkan::SampleCountFlagBits FramebufferDepthSampleCounts
 		{
-			UInt32 get()
+			ManagedVulkan::SampleCountFlagBits get()
 			{
 				return mFramebufferDepthSampleCounts;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SampleCountFlagBits value)
 			{
 				mFramebufferDepthSampleCounts = value;
 			}
 		}
-		property UInt32 FramebufferStencilSampleCounts
+		property ManagedVulkan::SampleCountFlagBits FramebufferStencilSampleCounts
 		{
-			UInt32 get()
+			ManagedVulkan::SampleCountFlagBits get()
 			{
 				return mFramebufferStencilSampleCounts;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SampleCountFlagBits value)
 			{
 				mFramebufferStencilSampleCounts = value;
 			}
 		}
-		property UInt32 FramebufferNoAttachmentsSampleCounts
+		property ManagedVulkan::SampleCountFlagBits FramebufferNoAttachmentsSampleCounts
 		{
-			UInt32 get()
+			ManagedVulkan::SampleCountFlagBits get()
 			{
 				return mFramebufferNoAttachmentsSampleCounts;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SampleCountFlagBits value)
 			{
 				mFramebufferNoAttachmentsSampleCounts = value;
 			}
@@ -2003,57 +2003,57 @@ namespace ManagedVulkan
 				mMaxColorAttachments = value;
 			}
 		}
-		property UInt32 SampledImageColorSampleCounts
+		property ManagedVulkan::SampleCountFlagBits SampledImageColorSampleCounts
 		{
-			UInt32 get()
+			ManagedVulkan::SampleCountFlagBits get()
 			{
 				return mSampledImageColorSampleCounts;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SampleCountFlagBits value)
 			{
 				mSampledImageColorSampleCounts = value;
 			}
 		}
-		property UInt32 SampledImageIntegerSampleCounts
+		property ManagedVulkan::SampleCountFlagBits SampledImageIntegerSampleCounts
 		{
-			UInt32 get()
+			ManagedVulkan::SampleCountFlagBits get()
 			{
 				return mSampledImageIntegerSampleCounts;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SampleCountFlagBits value)
 			{
 				mSampledImageIntegerSampleCounts = value;
 			}
 		}
-		property UInt32 SampledImageDepthSampleCounts
+		property ManagedVulkan::SampleCountFlagBits SampledImageDepthSampleCounts
 		{
-			UInt32 get()
+			ManagedVulkan::SampleCountFlagBits get()
 			{
 				return mSampledImageDepthSampleCounts;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SampleCountFlagBits value)
 			{
 				mSampledImageDepthSampleCounts = value;
 			}
 		}
-		property UInt32 SampledImageStencilSampleCounts
+		property ManagedVulkan::SampleCountFlagBits SampledImageStencilSampleCounts
 		{
-			UInt32 get()
+			ManagedVulkan::SampleCountFlagBits get()
 			{
 				return mSampledImageStencilSampleCounts;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SampleCountFlagBits value)
 			{
 				mSampledImageStencilSampleCounts = value;
 			}
 		}
-		property UInt32 StorageImageSampleCounts
+		property ManagedVulkan::SampleCountFlagBits StorageImageSampleCounts
 		{
-			UInt32 get()
+			ManagedVulkan::SampleCountFlagBits get()
 			{
 				return mStorageImageSampleCounts;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SampleCountFlagBits value)
 			{
 				mStorageImageSampleCounts = value;
 			}
@@ -2317,16 +2317,16 @@ namespace ManagedVulkan
 			dst->maxFramebufferWidth = mMaxFramebufferWidth;
 			dst->maxFramebufferHeight = mMaxFramebufferHeight;
 			dst->maxFramebufferLayers = mMaxFramebufferLayers;
-			dst->framebufferColorSampleCounts = mFramebufferColorSampleCounts;
-			dst->framebufferDepthSampleCounts = mFramebufferDepthSampleCounts;
-			dst->framebufferStencilSampleCounts = mFramebufferStencilSampleCounts;
-			dst->framebufferNoAttachmentsSampleCounts = mFramebufferNoAttachmentsSampleCounts;
+			dst->framebufferColorSampleCounts = (VkSampleCountFlagBits) mFramebufferColorSampleCounts;
+			dst->framebufferDepthSampleCounts = (VkSampleCountFlagBits) mFramebufferDepthSampleCounts;
+			dst->framebufferStencilSampleCounts = (VkSampleCountFlagBits) mFramebufferStencilSampleCounts;
+			dst->framebufferNoAttachmentsSampleCounts = (VkSampleCountFlagBits) mFramebufferNoAttachmentsSampleCounts;
 			dst->maxColorAttachments = mMaxColorAttachments;
-			dst->sampledImageColorSampleCounts = mSampledImageColorSampleCounts;
-			dst->sampledImageIntegerSampleCounts = mSampledImageIntegerSampleCounts;
-			dst->sampledImageDepthSampleCounts = mSampledImageDepthSampleCounts;
-			dst->sampledImageStencilSampleCounts = mSampledImageStencilSampleCounts;
-			dst->storageImageSampleCounts = mStorageImageSampleCounts;
+			dst->sampledImageColorSampleCounts = (VkSampleCountFlagBits) mSampledImageColorSampleCounts;
+			dst->sampledImageIntegerSampleCounts = (VkSampleCountFlagBits) mSampledImageIntegerSampleCounts;
+			dst->sampledImageDepthSampleCounts = (VkSampleCountFlagBits) mSampledImageDepthSampleCounts;
+			dst->sampledImageStencilSampleCounts = (VkSampleCountFlagBits) mSampledImageStencilSampleCounts;
+			dst->storageImageSampleCounts = (VkSampleCountFlagBits) mStorageImageSampleCounts;
 			dst->maxSampleMaskWords = mMaxSampleMaskWords;
 			dst->timestampComputeAndGraphics = mTimestampComputeAndGraphics;
 			dst->timestampPeriod = mTimestampPeriod;
@@ -2427,16 +2427,16 @@ namespace ManagedVulkan
 			mMaxFramebufferWidth = src->maxFramebufferWidth;
 			mMaxFramebufferHeight = src->maxFramebufferHeight;
 			mMaxFramebufferLayers = src->maxFramebufferLayers;
-			mFramebufferColorSampleCounts = src->framebufferColorSampleCounts;
-			mFramebufferDepthSampleCounts = src->framebufferDepthSampleCounts;
-			mFramebufferStencilSampleCounts = src->framebufferStencilSampleCounts;
-			mFramebufferNoAttachmentsSampleCounts = src->framebufferNoAttachmentsSampleCounts;
+			mFramebufferColorSampleCounts = (ManagedVulkan::SampleCountFlagBits) src->framebufferColorSampleCounts;
+			mFramebufferDepthSampleCounts = (ManagedVulkan::SampleCountFlagBits) src->framebufferDepthSampleCounts;
+			mFramebufferStencilSampleCounts = (ManagedVulkan::SampleCountFlagBits) src->framebufferStencilSampleCounts;
+			mFramebufferNoAttachmentsSampleCounts = (ManagedVulkan::SampleCountFlagBits) src->framebufferNoAttachmentsSampleCounts;
 			mMaxColorAttachments = src->maxColorAttachments;
-			mSampledImageColorSampleCounts = src->sampledImageColorSampleCounts;
-			mSampledImageIntegerSampleCounts = src->sampledImageIntegerSampleCounts;
-			mSampledImageDepthSampleCounts = src->sampledImageDepthSampleCounts;
-			mSampledImageStencilSampleCounts = src->sampledImageStencilSampleCounts;
-			mStorageImageSampleCounts = src->storageImageSampleCounts;
+			mSampledImageColorSampleCounts = (ManagedVulkan::SampleCountFlagBits) src->sampledImageColorSampleCounts;
+			mSampledImageIntegerSampleCounts = (ManagedVulkan::SampleCountFlagBits) src->sampledImageIntegerSampleCounts;
+			mSampledImageDepthSampleCounts = (ManagedVulkan::SampleCountFlagBits) src->sampledImageDepthSampleCounts;
+			mSampledImageStencilSampleCounts = (ManagedVulkan::SampleCountFlagBits) src->sampledImageStencilSampleCounts;
+			mStorageImageSampleCounts = (ManagedVulkan::SampleCountFlagBits) src->storageImageSampleCounts;
 			mMaxSampleMaskWords = src->maxSampleMaskWords;
 			mTimestampComputeAndGraphics = src->timestampComputeAndGraphics != 0;
 			mTimestampPeriod = src->timestampPeriod;
@@ -2696,18 +2696,18 @@ namespace ManagedVulkan
 	public ref class QueueFamilyProperties
 	{
 	private:
-		UInt32 mQueueFlags;
+		ManagedVulkan::QueueFlagBits mQueueFlags;
 		UInt32 mQueueCount = 0;
 		UInt32 mTimestampValidBits = 0;
 		Extent3D^ mMinImageTransferGranularity = gcnew Extent3D();
 	public:
-		property UInt32 QueueFlags
+		property ManagedVulkan::QueueFlagBits QueueFlags
 		{
-			UInt32 get()
+			ManagedVulkan::QueueFlagBits get()
 			{
 				return mQueueFlags;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::QueueFlagBits value)
 			{
 				mQueueFlags = value;
 			}
@@ -2748,7 +2748,7 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkQueueFamilyProperties* dst, List<IntPtr>^ pins)
 		{
-			dst->queueFlags = mQueueFlags;
+			dst->queueFlags = (VkQueueFlagBits) mQueueFlags;
 			dst->queueCount = mQueueCount;
 			dst->timestampValidBits = mTimestampValidBits;
 			mMinImageTransferGranularity->CopyTo(&dst->minImageTransferGranularity, pins);
@@ -2756,7 +2756,7 @@ namespace ManagedVulkan
 
 		void CopyFrom(VkQueueFamilyProperties* src)
 		{
-			mQueueFlags = src->queueFlags;
+			mQueueFlags = (ManagedVulkan::QueueFlagBits) src->queueFlags;
 			mQueueCount = src->queueCount;
 			mTimestampValidBits = src->timestampValidBits;
 			mMinImageTransferGranularity->CopyFrom(&src->minImageTransferGranularity);
@@ -3884,11 +3884,8 @@ namespace ManagedVulkan
 	private:
 		ManagedVulkan::StructureType mSType;
 		UInt32 mFlags;
-		UInt32 mQueueCreateInfoCount = 0;
-		DeviceQueueCreateInfo^ mQueueCreateInfos = nullptr;
-		UInt32 mEnabledLayerCount = 0;
+		array<ManagedVulkan::DeviceQueueCreateInfo^>^ mQueueCreateInfos = nullptr;
 		array<String^>^ mEnabledLayerNames = nullptr;
-		UInt32 mEnabledExtensionCount = 0;
 		array<String^>^ mEnabledExtensionNames = nullptr;
 		PhysicalDeviceFeatures^ mEnabledFeatures = nullptr;
 	public:
@@ -3914,37 +3911,15 @@ namespace ManagedVulkan
 				mFlags = value;
 			}
 		}
-		property UInt32 QueueCreateInfoCount
+		property array<ManagedVulkan::DeviceQueueCreateInfo^>^ QueueCreateInfos
 		{
-			UInt32 get()
-			{
-				return mQueueCreateInfoCount;
-			}
-			void set(UInt32 value)
-			{
-				mQueueCreateInfoCount = value;
-			}
-		}
-		property ManagedVulkan::DeviceQueueCreateInfo^ QueueCreateInfos
-		{
-			ManagedVulkan::DeviceQueueCreateInfo^ get()
+			array<ManagedVulkan::DeviceQueueCreateInfo^>^ get()
 			{
 				return mQueueCreateInfos;
 			}
-			void set(ManagedVulkan::DeviceQueueCreateInfo^ value)
+			void set(array<ManagedVulkan::DeviceQueueCreateInfo^>^ value)
 			{
 				mQueueCreateInfos = value;
-			}
-		}
-		property UInt32 EnabledLayerCount
-		{
-			UInt32 get()
-			{
-				return mEnabledLayerCount;
-			}
-			void set(UInt32 value)
-			{
-				mEnabledLayerCount = value;
 			}
 		}
 		property array<String^>^ EnabledLayerNames
@@ -3956,17 +3931,6 @@ namespace ManagedVulkan
 			void set(array<String^>^ value)
 			{
 				mEnabledLayerNames = value;
-			}
-		}
-		property UInt32 EnabledExtensionCount
-		{
-			UInt32 get()
-			{
-				return mEnabledExtensionCount;
-			}
-			void set(UInt32 value)
-			{
-				mEnabledExtensionCount = value;
 			}
 		}
 		property array<String^>^ EnabledExtensionNames
@@ -4083,7 +4047,7 @@ namespace ManagedVulkan
 		String^ mDisplayName = nullptr;
 		Extent2D^ mPhysicalDimensions = gcnew Extent2D();
 		Extent2D^ mPhysicalResolution = gcnew Extent2D();
-		UInt32 mSupportedTransforms;
+		ManagedVulkan::SurfaceTransformFlagBitsKHR mSupportedTransforms;
 		bool mPlaneReorderPossible = false;
 		bool mPersistentContent = false;
 	public:
@@ -4131,13 +4095,13 @@ namespace ManagedVulkan
 				mPhysicalResolution = value;
 			}
 		}
-		property UInt32 SupportedTransforms
+		property ManagedVulkan::SurfaceTransformFlagBitsKHR SupportedTransforms
 		{
-			UInt32 get()
+			ManagedVulkan::SurfaceTransformFlagBitsKHR get()
 			{
 				return mSupportedTransforms;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SurfaceTransformFlagBitsKHR value)
 			{
 				mSupportedTransforms = value;
 			}
@@ -4175,7 +4139,7 @@ namespace ManagedVulkan
 
 			mPhysicalDimensions->CopyTo(&dst->physicalDimensions, pins);
 			mPhysicalResolution->CopyTo(&dst->physicalResolution, pins);
-			dst->supportedTransforms = mSupportedTransforms ? 1 : 0;
+			dst->supportedTransforms = (VkSurfaceTransformFlagBitsKHR) mSupportedTransforms;
 			dst->planeReorderPossible = mPlaneReorderPossible ? 1 : 0;
 			dst->persistentContent = mPersistentContent ? 1 : 0;
 		}
@@ -4186,7 +4150,7 @@ namespace ManagedVulkan
 			mDisplayName = gcnew String(mDisplayName);
 			mPhysicalDimensions->CopyFrom(&src->physicalDimensions);
 			mPhysicalResolution->CopyFrom(&src->physicalResolution);
-			mSupportedTransforms = src->supportedTransforms != 0;
+			mSupportedTransforms = (ManagedVulkan::SurfaceTransformFlagBitsKHR) src->supportedTransforms;
 			mPlaneReorderPossible = src->planeReorderPossible != 0;
 			mPersistentContent = src->persistentContent != 0;
 		}
@@ -4383,7 +4347,7 @@ namespace ManagedVulkan
 	public ref class DisplayPlaneCapabilitiesKHR
 	{
 	private:
-		UInt32 mSupportedAlpha;
+		ManagedVulkan::DisplayPlaneAlphaFlagBitsKHR mSupportedAlpha;
 		Offset2D^ mMinSrcPosition = gcnew Offset2D();
 		Offset2D^ mMaxSrcPosition = gcnew Offset2D();
 		Extent2D^ mMinSrcExtent = gcnew Extent2D();
@@ -4393,13 +4357,13 @@ namespace ManagedVulkan
 		Extent2D^ mMinDstExtent = gcnew Extent2D();
 		Extent2D^ mMaxDstExtent = gcnew Extent2D();
 	public:
-		property UInt32 SupportedAlpha
+		property ManagedVulkan::DisplayPlaneAlphaFlagBitsKHR SupportedAlpha
 		{
-			UInt32 get()
+			ManagedVulkan::DisplayPlaneAlphaFlagBitsKHR get()
 			{
 				return mSupportedAlpha;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::DisplayPlaneAlphaFlagBitsKHR value)
 			{
 				mSupportedAlpha = value;
 			}
@@ -4495,7 +4459,7 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkDisplayPlaneCapabilitiesKHR* dst, List<IntPtr>^ pins)
 		{
-			dst->supportedAlpha = mSupportedAlpha;
+			dst->supportedAlpha = (VkDisplayPlaneAlphaFlagBitsKHR) mSupportedAlpha;
 			mMinSrcPosition->CopyTo(&dst->minSrcPosition, pins);
 			mMaxSrcPosition->CopyTo(&dst->maxSrcPosition, pins);
 			mMinSrcExtent->CopyTo(&dst->minSrcExtent, pins);
@@ -4508,7 +4472,7 @@ namespace ManagedVulkan
 
 		void CopyFrom(VkDisplayPlaneCapabilitiesKHR* src)
 		{
-			mSupportedAlpha = src->supportedAlpha;
+			mSupportedAlpha = (ManagedVulkan::DisplayPlaneAlphaFlagBitsKHR) src->supportedAlpha;
 			mMinSrcPosition->CopyFrom(&src->minSrcPosition);
 			mMaxSrcPosition->CopyFrom(&src->maxSrcPosition);
 			mMinSrcExtent->CopyFrom(&src->minSrcExtent);
@@ -4525,14 +4489,14 @@ namespace ManagedVulkan
 	private:
 		UInt32	minImageCount;
 		UInt32	mMaxImageCount;
-		Extent2D^	mCurrentExtent = gcnew Extent2D();
-		Extent2D^	mMinImageExtent = gcnew Extent2D();
-		Extent2D^	mMaxImageExtent = gcnew Extent2D();
+		ManagedVulkan::Extent2D^	mCurrentExtent = gcnew ManagedVulkan::Extent2D();
+		ManagedVulkan::Extent2D^	mMinImageExtent = gcnew ManagedVulkan::Extent2D();
+		ManagedVulkan::Extent2D^	mMaxImageExtent = gcnew ManagedVulkan::Extent2D();
 		UInt32	mMaxImageArrayLayers;
-		UInt32	mSupportedTransforms;
+		ManagedVulkan::SurfaceTransformFlagBitsKHR	mSupportedTransforms;
 		ManagedVulkan::SurfaceTransformFlagBitsKHR	mCurrentTransform;
-		UInt32	mSupportedCompositeAlpha;
-		UInt32	mSupportedUsageFlags;
+		ManagedVulkan::CompositeAlphaFlagBitsKHR	mSupportedCompositeAlpha;
+		ManagedVulkan::ImageUsageFlagBits mSupportedUsageFlags;
 	public:
 		property UInt32 MinImageCount
 		{
@@ -4606,13 +4570,13 @@ namespace ManagedVulkan
 			}		
 		}
 
-		property UInt32 SupportedTransforms
+		property ManagedVulkan::SurfaceTransformFlagBitsKHR SupportedTransforms
 		{
-			UInt32 get()
+			ManagedVulkan::SurfaceTransformFlagBitsKHR get()
 			{
 				return mSupportedTransforms;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::SurfaceTransformFlagBitsKHR value)
 			{
 				mSupportedTransforms = value;
 			}
@@ -4630,25 +4594,25 @@ namespace ManagedVulkan
 			}
 		}
 
-		property UInt32 SupportedCompositeAlpha
+		property ManagedVulkan::CompositeAlphaFlagBitsKHR SupportedCompositeAlpha
 		{
-			UInt32 get()
+			ManagedVulkan::CompositeAlphaFlagBitsKHR get()
 			{
 				return mSupportedCompositeAlpha;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::CompositeAlphaFlagBitsKHR value)
 			{
 				mSupportedCompositeAlpha = value;
 			}
 		}
 
-		property UInt32 SupportedUsageFlags
+		property ManagedVulkan::ImageUsageFlagBits SupportedUsageFlags
 		{
-			UInt32 get()
+			ManagedVulkan::ImageUsageFlagBits get()
 			{
 				return mSupportedUsageFlags;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::ImageUsageFlagBits value)
 			{
 				mSupportedUsageFlags = value;
 			}
@@ -4662,10 +4626,10 @@ namespace ManagedVulkan
 			mMinImageExtent->CopyTo(&dst->minImageExtent, pins);
 			mMaxImageExtent->CopyTo(&dst->maxImageExtent, pins);
 			dst->maxImageArrayLayers = mMaxImageArrayLayers;
-			dst->supportedTransforms = mSupportedTransforms;
+			dst->supportedTransforms = (VkSurfaceTransformFlagBitsKHR) mSupportedTransforms;
 			dst->currentTransform = (VkSurfaceTransformFlagBitsKHR) mCurrentTransform;
-			dst->supportedCompositeAlpha = mSupportedCompositeAlpha;
-			dst->supportedUsageFlags = mSupportedUsageFlags;
+			dst->supportedCompositeAlpha = (VkCompositeAlphaFlagBitsKHR) mSupportedCompositeAlpha;
+			dst->supportedUsageFlags = (VkImageUsageFlagBits) mSupportedUsageFlags;
 		}
 
 		void CopyFrom(VkSurfaceCapabilitiesKHR* src)
@@ -4676,10 +4640,10 @@ namespace ManagedVulkan
 			mMinImageExtent->CopyFrom(&src->minImageExtent);
 			mMaxImageExtent->CopyFrom(&src->maxImageExtent);
 			mMaxImageArrayLayers = src->maxImageArrayLayers;
-			mSupportedTransforms = src->supportedTransforms;
+			mSupportedTransforms = (ManagedVulkan::SurfaceTransformFlagBitsKHR) src->supportedTransforms;
 			mCurrentTransform = (ManagedVulkan::SurfaceTransformFlagBitsKHR) src->currentTransform;
-			mSupportedCompositeAlpha = src->supportedCompositeAlpha;
-			mSupportedUsageFlags = src->supportedUsageFlags;
+			mSupportedCompositeAlpha = (ManagedVulkan::CompositeAlphaFlagBitsKHR) src->supportedCompositeAlpha;
+			mSupportedUsageFlags = (ManagedVulkan::ImageUsageFlagBits) src->supportedUsageFlags;
 		}
 	};
 
@@ -10435,10 +10399,10 @@ namespace ManagedVulkan
 		ManagedVulkan::ColorSpaceKHR mImageColorSpace;
 		ManagedVulkan::Extent2D^ mImageExtent = gcnew ManagedVulkan::Extent2D();
 		UInt32 mImageArrayLayers = 0;
-		UInt32 mImageUsage;
+		ManagedVulkan::ImageUsageFlagBits mImageUsage;
 		ManagedVulkan::SharingMode mImageSharingMode;
-		UInt32 mQueueFamilyIndexCount = 0;
-		UInt32 mQueueFamilyIndices = 0;
+		//UInt32 mQueueFamilyIndexCount = 0;
+		array<UInt32>^ mQueueFamilyIndices = nullptr;
 		ManagedVulkan::SurfaceTransformFlagBitsKHR mPreTransform;
 		ManagedVulkan::CompositeAlphaFlagBitsKHR mCompositeAlpha;
 		ManagedVulkan::PresentModeKHR mPresentMode;
@@ -10533,13 +10497,13 @@ namespace ManagedVulkan
 				mImageArrayLayers = value;
 			}
 		}
-		property UInt32 ImageUsage
+		property ManagedVulkan::ImageUsageFlagBits ImageUsage
 		{
-			UInt32 get()
+			ManagedVulkan::ImageUsageFlagBits get()
 			{
 				return mImageUsage;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::ImageUsageFlagBits value)
 			{
 				mImageUsage = value;
 			}
@@ -10555,24 +10519,13 @@ namespace ManagedVulkan
 				mImageSharingMode = value;
 			}
 		}
-		property UInt32 QueueFamilyIndexCount
+		property array<UInt32>^ QueueFamilyIndices
 		{
-			UInt32 get()
-			{
-				return mQueueFamilyIndexCount;
-			}
-			void set(UInt32 value)
-			{
-				mQueueFamilyIndexCount = value;
-			}
-		}
-		property UInt32 QueueFamilyIndices
-		{
-			UInt32 get()
+			array<UInt32>^ get()
 			{
 				return mQueueFamilyIndices;
 			}
-			void set(UInt32 value)
+			void set(array<UInt32>^ value)
 			{
 				mQueueFamilyIndices = value;
 			}
@@ -10644,7 +10597,7 @@ namespace ManagedVulkan
 			dst->imageColorSpace = (VkColorSpaceKHR) mImageColorSpace;
 			mImageExtent->CopyTo(&dst->imageExtent, pins);
 			dst->imageArrayLayers = mImageArrayLayers;
-			dst->imageUsage = mImageUsage;
+			dst->imageUsage = (VkImageUsageFlags) mImageUsage;
 			dst->imageSharingMode = (VkSharingMode) mImageSharingMode;
 			//dst->queueFamilyIndexCount = mQueueFamilyIndexCount;
 			//dst->pQueueFamilyIndices = mQueueFamilyIndices;
@@ -10666,7 +10619,7 @@ namespace ManagedVulkan
 			mImageColorSpace = (ManagedVulkan::ColorSpaceKHR) src->imageColorSpace;
 			mImageExtent->CopyFrom(&src->imageExtent);
 			mImageArrayLayers = src->imageArrayLayers;
-			mImageUsage = src->imageUsage;
+			mImageUsage = (ManagedVulkan::ImageUsageFlagBits) src->imageUsage;
 			mImageSharingMode = (ManagedVulkan::SharingMode) src->imageSharingMode;
 			//mQueueFamilyIndexCount = src->queueFamilyIndexCount;
 			//mQueueFamilyIndices = src->pQueueFamilyIndices;

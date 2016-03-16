@@ -84,6 +84,18 @@ ManagedVulkan::Result ManagedVulkan::Vulkan::CreateInstance(ManagedVulkan::Insta
 		pInstance = gcnew ManagedVulkan::Instance();
 		pInstance->mHandle = inst_2;
 
+		auto createCallback = vkGetInstanceProcAddr(inst_2, "CreateDebugReportCallbackEXT");
+		pInstance->mCreateDebugReportCallbackEXT = (createCallback != nullptr) ? (PFN_vkCreateDebugReportCallbackEXT)createCallback : nullptr;
+
+		auto destroyCallback = vkGetInstanceProcAddr(inst_2, "DestroyDebugReportCallbackEXT");
+		pInstance->mDestroyDebugReportCallbackEXT = (destroyCallback != nullptr) ? (PFN_vkDestroyDebugReportCallbackEXT)destroyCallback : nullptr;
+
+		auto debugReport = vkGetInstanceProcAddr(inst_2, "DebugReportMessageEXT");
+		pInstance->mDebugReportMessageEXT = (debugReport != nullptr) ? (PFN_vkDebugReportMessageEXT)debugReport : nullptr;
+
+		auto createPlane = vkGetInstanceProcAddr(inst_2, "CreateDisplayPlaneSurfaceKHR");
+		pInstance->mCreateDisplayPlaneSurface = (createPlane != nullptr) ? (PFN_vkCreateDisplayPlaneSurfaceKHR)createPlane : nullptr;
+
 		return (Result)result;
 	}
 	finally

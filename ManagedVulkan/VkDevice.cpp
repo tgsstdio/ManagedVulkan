@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "VkDevice.h"
-
-ManagedVulkan::vkVoidFunction^ ManagedVulkan::Device::GetDeviceProcAddr(String^ pName)
+generic <class VkDelegate>
+where VkDelegate : System::Delegate, ref class
+bool ManagedVulkan::Device::GetDeviceProcAddr(String^ pName, [Out] VkDelegate% del)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
@@ -20,11 +21,12 @@ ManagedVulkan::vkVoidFunction^ ManagedVulkan::Device::GetDeviceProcAddr(String^ 
 		if (result != nullptr)
 		{
 			IntPtr stub(result);
-			return Marshal::GetDelegateForFunctionPointer<vkVoidFunction^>(stub);
+			del = Marshal::GetDelegateForFunctionPointer<VkDelegate>(stub);
+			return true;
 		}
 		else
 		{
-			return nullptr;
+			return false;
 		}
 	}
 	finally
@@ -3785,55 +3787,250 @@ void ManagedVulkan::Device::FreeCommandBuffers(ManagedVulkan::CommandPool^ comma
 	}
 }
 
-#ifdef MANAGED_VULKAN_IMPLEMENTATION
+ManagedVulkan::Result ManagedVulkan::Device::GetSwapchainImagesKHR(ManagedVulkan::SwapchainKHR^ swapchain, [Out] array<ManagedVulkan::Image^>^% pSwapchainImages)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	VkImage* arg_3 = nullptr;
+	try
+	{
+
+		// 1ST CALL		
+		// 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// 1 - swapchain		
+		VkSwapchainKHR arg_1 = swapchain->mHandle;
+		// 2 - pSwapchainImageCount		
+		UInt32 pSwapchainImageCount = 0;
+		UInt32* arg_2 = &pSwapchainImageCount;
+
+		auto firstResult = vkGetSwapchainImagesKHR(arg_0, arg_1, arg_2, nullptr);
+
+		if (firstResult != VK_SUCCESS)
+		{
+			return (Result)firstResult;
+		}
+
+		// MAIN INIT
+
+		// INITS 3 - pSwapchainImages		
+		arg_3 = new VkImage[pSwapchainImageCount];
+
+		auto result = vkGetSwapchainImagesKHR(arg_0, arg_1, arg_2, arg_3);
+
+		int count = (int)pSwapchainImageCount;
+		pSwapchainImages = gcnew array<Image^>(count);
+		for (int i = 0; i < count; ++i)
+		{
+			pSwapchainImages[i] = gcnew Image();
+			pSwapchainImages[i]->mHandle = arg_3[i];
+		}
+
+		return (Result)result;
+	}
+	finally
+	{
+		if (arg_3 != nullptr)
+		{
+			delete[] arg_3;
+		}
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::AcquireNextImageKHR(ManagedVulkan::SwapchainKHR^ swapchain, UInt64 timeout, ManagedVulkan::Semaphore^ semaphore, ManagedVulkan::Fence^ fence,[Out] UInt32^% pImageIndex)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - swapchain		
+		VkSwapchainKHR arg_1 = swapchain->mHandle;
+		// INITS 2 - timeout		
+		uint64_t arg_2 = timeout;
+		// INITS 3 - semaphore		
+		VkSemaphore arg_3 = semaphore->mHandle;
+		// INITS 4 - fence		
+		VkFence arg_4 = fence->mHandle;
+		// INITS 5 - pImageIndex		
+		UInt32 inst_5;
+		uint32_t* arg_5 = &inst_5;
+
+		auto result = vkAcquireNextImageKHR(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
+		pImageIndex = inst_5;
+
+		return (Result) result;
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+void ManagedVulkan::Device::DestroySwapchainKHR(ManagedVulkan::SwapchainKHR^ swapchain, ManagedVulkan::AllocationCallbacks^ pAllocator)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - swapchain		
+		VkSwapchainKHR arg_1 = swapchain->mHandle;
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+
+		vkDestroySwapchainKHR(arg_0, arg_1, arg_2);
+
+
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
+
+ManagedVulkan::Result ManagedVulkan::Device::CreateSwapchainKHR(ManagedVulkan::SwapchainCreateInfoKHR^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::SwapchainKHR^% pSwapchain)
+{
+	List<IntPtr>^ pins = gcnew List<IntPtr>();
+	try
+	{
+		// MAIN INIT
+
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - pCreateInfo		
+		VkSwapchainCreateInfoKHR inst_1;
+		VkSwapchainCreateInfoKHR* arg_1 = nullptr;
+		if (pCreateInfo != nullptr)
+		{
+			arg_1 = &inst_1;
+			pCreateInfo->CopyTo(arg_1, pins);
+		}
+		// INITS 2 - pAllocator		
+		VkAllocationCallbacks inst_2;
+		VkAllocationCallbacks* arg_2 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_2 = &inst_2;
+			pAllocator->CopyTo(arg_2, pins);
+		}
+		// INITS 3 - pSwapchain		
+		VkSwapchainKHR inst_3;
+		VkSwapchainKHR* arg_3 = &inst_3;
+
+		auto result = vkCreateSwapchainKHR(arg_0, arg_1, arg_2, arg_3);
+
+		pSwapchain = gcnew SwapchainKHR();
+		pSwapchain->mHandle = inst_3;
+
+		return (Result)result;
+	}
+	finally
+	{
+		// FREE ALL PINNED STRINGS
+		for each(auto str in pins)
+		{
+			Marshal::FreeHGlobal(str);
+		}
+	}
+}
 
 ManagedVulkan::Result ManagedVulkan::Device::CreateSharedSwapchainsKHR(array<ManagedVulkan::SwapchainCreateInfoKHR^>^ pCreateInfos, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] array<ManagedVulkan::SwapchainKHR^>^% pSwapchains)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	VkSwapchainCreateInfoKHR* arg_2 = nullptr;
 	VkSwapchainKHR* arg_4 = nullptr;
+	UInt32 arg_1 = 0;
 	try
 	{
-		//// MAIN INIT
+		// FUNCTION STUB
+		if (this->mCreateSharedSwapchainsKHR == nullptr)
+		{
+			throw gcnew System::NotSupportedException("vkGetDeviceProcAddr failed to find vkCreateSharedSwapchainsKHR");
+		}
 
-		//// INITS 0 - device		
-		//VkDevice arg_0 = this->mHandle;
-		//// INITS 1 - swapchainCount		
-		//uint32_t arg_1 = swapchainCount;
-		//// INITS 2 - pCreateInfos		
-		//arg_2 = new VkSwapchainCreateInfoKHR[swapchainCount];
-		//// FIELD - arg_2_7 pCreateInfos->ImageExtent		
-		//VkExtent2D arg_2_7 = nullptr;
-		//VkExtent2D  inst_2_7;
-		//if (pCreateInfos != nullptr && pCreateInfos->ImageExtent != nullptr)
-		//{
-		//	arg_2_7 = &inst_2_7;
-		//	pCreateInfos->ImageExtent->CopyTo(arg_2_7, pins);
-		//	arg_2->imageExtent = arg_2_7;
-		//}
-		//// INITS 3 - pAllocator		
-		//VkAllocationCallbacks inst_3;
-		//VkAllocationCallbacks* arg_3 = nullptr;
-		//if (pAllocator != nullptr)
-		//{
-		//	arg_3 = &inst_3;
-		//	pAllocator->CopyTo(arg_3, pins);
-		//	arg_3 = inst_3;
-		//}
-		//// INITS 4 - pSwapchains		
-		//arg_4 = new VkSwapchainKHR[swapchainCount];
+		// INITS 0 - device		
+		VkDevice arg_0 = this->mHandle;
+		// INITS 1 - swapchainCount		
+		{
+			UInt32 swapchainCount = 0;
+			// INITS 2 - pCreateInfos
+			if (pCreateInfos != nullptr)
+			{
+				swapchainCount = pCreateInfos->Length;
+				if (swapchainCount > 0)
+				{
+					arg_2 = new VkSwapchainCreateInfoKHR[swapchainCount];
+					for (UInt32 i = 0; i < swapchainCount; ++i)
+					{
+						auto srcInfo = pCreateInfos[i];
+						auto dstInfo = arg_2 + i;
+						srcInfo->CopyTo(dstInfo, pins);
 
-		//auto result = vkCreateSharedSwapchainsKHR(arg_0, arg_1, arg_2, arg_3, arg_4);
+						UInt32 noOfIndices = 0;
+						UInt32* destIndices = nullptr;
+						if (srcInfo->QueueFamilyIndices != nullptr)
+						{
+							noOfIndices = srcInfo->QueueFamilyIndices->Length;
+							if (noOfIndices > 0)
+							{
+								destIndices = new UInt32[noOfIndices];
+								for (UInt32 j = 0; j < noOfIndices; ++j)
+								{
+									destIndices[j] = (UInt32) srcInfo->QueueFamilyIndices[j];
+								}
+							}
+						}
+						dstInfo->queueFamilyIndexCount = noOfIndices;
+						dstInfo->pQueueFamilyIndices = destIndices;
+					}
+				}
+			}			
+			arg_1 = swapchainCount;
+		}
 
-		//int count = (int)swapchainCount;
-		//pSwapchains = gcnew array<SwapchainKHR^> ^ (count);
-		//for (int i = 0; i < count; ++i)
-		//{
-		//	pSwapchains[i] = gcnew SwapchainKHR ^ ();
-		//	pSwapchains[i]->CopyFrom(arg_4 + i);
-		//}
+		// INITS 3 - pAllocator		
+		VkAllocationCallbacks inst_3;
+		VkAllocationCallbacks* arg_3 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_3 = &inst_3;
+			pAllocator->CopyTo(arg_3, pins);
+		}
 
-		auto result = vkCreateSharedSwapchainsKHR(nullptr, 0, nullptr, nullptr, nullptr);
+		// INITS 4 - pSwapchains		
+		arg_4 = new VkSwapchainKHR[arg_1];
+
+		auto result = this->mCreateSharedSwapchainsKHR(arg_0, arg_1, arg_2, arg_3, arg_4);
+
+		pSwapchains = gcnew array<SwapchainKHR^>(arg_1);
+		for (UInt32 i = 0; i < arg_1; ++i)
+		{
+			pSwapchains[i] = gcnew SwapchainKHR();
+			pSwapchains[i]->mHandle = arg_4[i];
+		}
 
 		return (Result)result;
 	}
@@ -3841,6 +4038,16 @@ ManagedVulkan::Result ManagedVulkan::Device::CreateSharedSwapchainsKHR(array<Man
 	{
 		if (arg_2 != nullptr)
 		{
+			for (UInt32 i = 0; i < arg_1; ++i)
+			{
+				auto parent = arg_2 + i;
+
+				if (parent->pQueueFamilyIndices != nullptr)
+				{
+					delete[] parent->pQueueFamilyIndices;
+				}
+			}
+
 			delete[] arg_2;
 		}
 		if (arg_4 != nullptr)
@@ -3854,5 +4061,3 @@ ManagedVulkan::Result ManagedVulkan::Device::CreateSharedSwapchainsKHR(array<Man
 		}
 	}
 }
-
-#endif

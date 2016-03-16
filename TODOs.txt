@@ -1,3 +1,4 @@
 Implementation side of code
 QUESTION - Remove interfaces as handles themselves can't be abstracted away
 REMOVE ALL StructureType Properties from CreateInfo classes
+Use GET_DEVICE_PROC_ADDR and GET_INSTANCE_PROC_ADDR for any missing implementations

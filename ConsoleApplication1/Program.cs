@@ -10,24 +10,27 @@ namespace ConsoleApplication1
 
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
-            ManagedVulkan.ExtensionProperties[] extensions;
-            var result = vK.EnumerateInstanceExtensionProperties(null, out extensions);
-
-            foreach(var ext in extensions)
+            Demo d = new Demo();
+            try
             {
-                Console.WriteLine("Spec version : " + ext.SpecVersion + " - " + ext.ExtensionName);
+                d.Init(args);
+                d.CreateWindow();
+                d.InitVkSwapchain();
+                d.Prepare();
+                d.Run();
             }
-            
-            /**
-            ManagedVulkan.CreateInstanceInfo info = new ManagedVulkan.CreateInstanceInfo()
+            catch (VulkanLibraryException vlex)
             {
-                EnabledExtensionNames = extensions,
-            };
-            **/
-
-            //ManagedVulkan.Instance inst = vK.CreateInstance(info);
+                Console.WriteLine(vlex.Category);
+                Console.WriteLine(vlex.Message);
+            }
+            finally
+            {
+                d.Cleanup();
+            }
         }
     }
 }

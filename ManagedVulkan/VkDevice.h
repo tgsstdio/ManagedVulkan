@@ -21,9 +21,12 @@ namespace ManagedVulkan
 	{
 	internal:
 		VkDevice mHandle;
+		PFN_vkCreateSharedSwapchainsKHR mCreateSharedSwapchainsKHR;
 	public:
 		//TODO: figure out delegates
-		ManagedVulkan::vkVoidFunction^ GetDeviceProcAddr(String^ pName);
+		generic <class VkDelegate>
+		where VkDelegate : System::Delegate, ref class
+		bool ManagedVulkan::Device::GetDeviceProcAddr(String^ pName, [Out] VkDelegate% del);
 		void DestroyDevice(ManagedVulkan::AllocationCallbacks^ pAllocator);
 		void GetDeviceQueue(UInt32 queueFamilyIndex, UInt32 queueIndex, [Out] ManagedVulkan::Queue^% pQueue);
 		ManagedVulkan::Result DeviceWaitIdle();
@@ -94,12 +97,10 @@ namespace ManagedVulkan
 		ManagedVulkan::Result ResetCommandPool(ManagedVulkan::CommandPool^ commandPool, CommandPoolResetFlagBits flags);
 		ManagedVulkan::Result AllocateCommandBuffers(ManagedVulkan::CommandBufferAllocateInfo^ pAllocateInfo, array<ManagedVulkan::CommandBuffer^>^ pCommandBuffers);
 		void FreeCommandBuffers(ManagedVulkan::CommandPool^ commandPool, array<ManagedVulkan::CommandBuffer^>^ pCommandBuffers);
-#ifdef MANAGED_VULKAN_IMPLEMENTATION
 		ManagedVulkan::Result CreateSharedSwapchainsKHR(array<ManagedVulkan::SwapchainCreateInfoKHR^>^ pCreateInfos, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] array<ManagedVulkan::SwapchainKHR^>^% pSwapchains);
 		ManagedVulkan::Result CreateSwapchainKHR(ManagedVulkan::SwapchainCreateInfoKHR^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::SwapchainKHR^% pSwapchain);
 		void DestroySwapchainKHR(ManagedVulkan::SwapchainKHR^ swapchain, ManagedVulkan::AllocationCallbacks^ pAllocator);
+		ManagedVulkan::Result AcquireNextImageKHR(ManagedVulkan::SwapchainKHR^ swapchain, UInt64 timeout, ManagedVulkan::Semaphore^ semaphore, ManagedVulkan::Fence^ fence, [Out] UInt32^% pImageIndex);
 		ManagedVulkan::Result GetSwapchainImagesKHR(ManagedVulkan::SwapchainKHR^ swapchain, [Out] array<ManagedVulkan::Image^>^% pSwapchainImages);
-		ManagedVulkan::Result AcquireNextImageKHR(ManagedVulkan::SwapchainKHR^ swapchain, UInt64 timeout, ManagedVulkan::Semaphore^ semaphore, ManagedVulkan::Fence^ fence, UInt32 pImageIndex);
-#endif
 	};
 }

@@ -1,6 +1,6 @@
 # Managed Vulkan
 
-*15 March 2016*
+*17 March 2016*
 
 ## NOTE : most likely a leaky messy Vulkan prototype library for C# applications
 
@@ -8,6 +8,17 @@ My own managed C++ / CLI interface for Vulkan (on my Windows machines compiled w
 
 # Version 2.0.0
  - Using Windows LunarG 1.0.5 Vulkan SDK implementation
+ - BREAKING CHANGES to ManagedVulkan classes & functions
+ - Added utility function ManagedVulkan.Vulkan.MakeVersion
+ - Using run-time lookups (e.g. GetInstanceProcAddr, GetDeviceProcAddr) to fill out missing implementations of 
+   - vkGetPhysicalDeviceDisplayPropertiesKHR
+   - vkGetPhysicalDeviceDisplayPlanePropertiesKHR
+   - vkGetDisplayPlaneSupportedDisplaysKHR
+   - vkGetDisplayModePropertiesKHR
+   - vkCreateDisplayModeKHR
+   - vkGetDisplayPlaneCapabilitiesKHR
+   - vkCreateSharedSwapchainsKHR
+ - C# translation of cube.c from Windows LunarG 1.0.5 Vulkan SDK
  
 ## Implementation
   - Enums 

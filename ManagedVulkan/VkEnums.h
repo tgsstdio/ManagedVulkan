@@ -459,6 +459,23 @@ namespace ManagedVulkan
 		VK_FORMAT_ASTC_12x12_SRGB_BLOCK = 184,
 	};
 
+	[FlagsAttribute] public enum class FormatFeatureFlagBits : UInt32
+	{
+		VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT = 1 << 0, // Format can be used for sampled images (SAMPLED_IMAGE and COMBINED_IMAGE_SAMPLER descriptor types)
+		VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT = 1 << 1, // Format can be used for storage images (STORAGE_IMAGE descriptor type)
+		VK_FORMAT_FEATURE_STORAGE_IMAGE_ATOMIC_BIT = 1 << 2, // Format supports atomic operations in case it's used for storage images
+		VK_FORMAT_FEATURE_UNIFORM_TEXEL_BUFFER_BIT = 1 << 3, // Format can be used for uniform texel buffers (TBOs)
+		VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_BIT = 1 << 4, // Format can be used for storage texel buffers (IBOs)
+		VK_FORMAT_FEATURE_STORAGE_TEXEL_BUFFER_ATOMIC_BIT = 1 << 5, // Format supports atomic operations in case it's used for storage texel buffers
+		VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT = 1 << 6, // Format can be used for vertex buffers (VBOs)
+		VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT = 1 << 7, // Format can be used for color attachment images
+		VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT = 1 << 8, // Format supports blending in case it's used for color attachment images
+		VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT = 1 << 9, // Format can be used for depth/stencil attachment images
+		VK_FORMAT_FEATURE_BLIT_SRC_BIT = 1 << 10, // Format can be used as the source image of blits with vkCmdBlitImage
+		VK_FORMAT_FEATURE_BLIT_DST_BIT = 1 << 11, // Format can be used as the destination image of blits with vkCmdBlitImage
+		VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT = 1 << 12, // Format can be filtered with VK_FILTER_LINEAR when being sampled
+	};
+
 	public enum class FrontFace : UInt32
 	{
 		VK_FRONT_FACE_COUNTER_CLOCKWISE = 0,
@@ -490,6 +507,27 @@ namespace ManagedVulkan
 		VK_IMAGE_TYPE_1D = 0,
 		VK_IMAGE_TYPE_2D = 1,
 		VK_IMAGE_TYPE_3D = 2,
+	};
+
+	[FlagsAttribute] public enum class ImageCreateFlagBits : UInt32
+	{
+		VK_IMAGE_CREATE_SPARSE_BINDING_BIT = 1 << 0, // Image should support sparse backing
+		VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT = 1 << 1, // Image should support sparse backing with partial residency
+		VK_IMAGE_CREATE_SPARSE_ALIASED_BIT = 1 << 2, // Image should support constent data access to physical memory blocks mapped into multiple locations of sparse images
+		VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT = 1 << 3, // Allows image views to have different format than the base image
+		VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT = 1 << 4, // Allows creating image views with cube type from the created image
+	};
+
+	[FlagsAttribute] public enum class ImageUsageFlagBits : UInt32
+	{
+		VK_IMAGE_USAGE_TRANSFER_SRC_BIT = 1 << 0, // Can be used as a source of transfer operations
+		VK_IMAGE_USAGE_TRANSFER_DST_BIT = 1 << 1, // Can be used as a destination of transfer operations
+		VK_IMAGE_USAGE_SAMPLED_BIT = 1 << 2, // Can be sampled from (SAMPLED_IMAGE and COMBINED_IMAGE_SAMPLER descriptor types)
+		VK_IMAGE_USAGE_STORAGE_BIT = 1 << 3, // Can be used as storage image (STORAGE_IMAGE descriptor type)
+		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT = 1 << 4, // Can be used as framebuffer color attachment
+		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT = 1 << 5, // Can be used as framebuffer depth/stencil attachment
+		VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT = 1 << 6, // Image data not needed outside of rendering
+		VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT = 1 << 7, // Can be used as framebuffer input attachment
 	};
 
 	public enum class ImageViewType : UInt32
@@ -605,6 +643,14 @@ namespace ManagedVulkan
 		VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_WITH_ADJACENCY = 8,
 		VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP_WITH_ADJACENCY = 9,
 		VK_PRIMITIVE_TOPOLOGY_PATCH_LIST = 10,
+	};
+
+	[FlagsAttribute] public enum class QueueFlagBits : UInt32
+	{
+		VK_QUEUE_GRAPHICS_BIT = 1 << 0, // Queue supports graphics operations
+		VK_QUEUE_COMPUTE_BIT = 1 << 1, // Queue supports compute operations
+		VK_QUEUE_TRANSFER_BIT = 1 << 2, // Queue supports transfer operations
+		VK_QUEUE_SPARSE_BINDING_BIT = 1 << 3, // Queue supports sparse resource memory management operations
 	};
 
 	[FlagsAttribute] public enum class QueryControlFlagBits : UInt32

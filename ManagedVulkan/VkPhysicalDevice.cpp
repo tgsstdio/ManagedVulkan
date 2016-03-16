@@ -162,7 +162,7 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceFormatProperties(ManagedVul
 	}
 }
 
-ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceImageFormatProperties(ManagedVulkan::Format format, ManagedVulkan::ImageType type, ManagedVulkan::ImageTiling tiling, UInt32 usage, UInt32 flags, [Out] ManagedVulkan::ImageFormatProperties^% pImageFormatProperties)
+ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceImageFormatProperties(ManagedVulkan::Format format, ManagedVulkan::ImageType type, ManagedVulkan::ImageTiling tiling, ManagedVulkan::ImageUsageFlagBits usage, ManagedVulkan::ImageCreateFlagBits flags, [Out] ManagedVulkan::ImageFormatProperties^% pImageFormatProperties)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
@@ -178,9 +178,9 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceImageForma
 		// INITS 3 - tiling		
 		VkImageTiling arg_3 = (VkImageTiling)tiling;
 		// INITS 4 - usage		
-		VkImageUsageFlags arg_4 = usage;
+		VkImageUsageFlags arg_4 = (VkImageUsageFlagBits) usage;
 		// INITS 5 - flags		
-		VkImageCreateFlags arg_5 = flags;
+		VkImageCreateFlags arg_5 = (VkImageCreateFlags) flags;
 		// INITS 6 - pImageFormatProperties		
 		VkImageFormatProperties inst_6;
 		VkImageFormatProperties* arg_6 = &inst_6;
@@ -207,6 +207,7 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::CreateDevice(ManagedVulkan:
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	char** arg_1_6 = nullptr;
 	char** arg_1_8 = nullptr;
+	VkDeviceQueueCreateInfo* arg_1_4 = nullptr;
 	try
 	{
 		// MAIN INIT
@@ -219,21 +220,30 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::CreateDevice(ManagedVulkan:
 		pCreateInfo->CopyTo(arg_1, pins);
 
 		// FIELD - arg_1_4 pCreateInfo->QueueCreateInfos		
-		VkDeviceQueueCreateInfo* arg_1_4 = nullptr;
-		VkDeviceQueueCreateInfo  inst_1_4;
+
 		if (pCreateInfo != nullptr && pCreateInfo->QueueCreateInfos != nullptr)
 		{
-			arg_1_4 = &inst_1_4;
-			pCreateInfo->QueueCreateInfos->CopyTo(arg_1_4, pins);
+			UInt32 queueCreateInfoCount = pCreateInfo->QueueCreateInfos->Length;
+			if (queueCreateInfoCount > 0)
+			{
+				arg_1_4 = new VkDeviceQueueCreateInfo[queueCreateInfoCount];
+				for (UInt32 j = 0; j < queueCreateInfoCount; ++j)
+				{
+					auto srcInfo = (ManagedVulkan::DeviceQueueCreateInfo^) pCreateInfo->QueueCreateInfos[j];
+					srcInfo->CopyTo(arg_1_4 + j, pins);
+				}
+			}
 			arg_1->pQueueCreateInfos = arg_1_4;
+			arg_1->queueCreateInfoCount = queueCreateInfoCount;
 		}
+
 
 		// FIELD - arg_1_6 pCreateInfo->EnabledLayerNames		
 		if (pCreateInfo != nullptr && pCreateInfo->EnabledLayerNames != nullptr)
 		{
-			int enabledLayerCount = (int)pCreateInfo->EnabledLayerNames->Length;
+			UInt32 enabledLayerCount = pCreateInfo->EnabledLayerNames->Length;
 			arg_1_6 = new char*[enabledLayerCount];
-			for (int j = 0; j < enabledLayerCount; ++j)
+			for (UInt32 j = 0; j < enabledLayerCount; ++j)
 			{
 				IntPtr inst_1_6 = Marshal::StringToHGlobalAnsi((String^)pCreateInfo->EnabledLayerNames[j]);
 				pins->Add(inst_1_6);
@@ -246,9 +256,9 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::CreateDevice(ManagedVulkan:
 		// FIELD - arg_1_8 pCreateInfo->EnabledExtensionNames		
 		if (pCreateInfo != nullptr && pCreateInfo->EnabledExtensionNames != nullptr)
 		{
-			int enabledExtensionCount = (int)pCreateInfo->EnabledExtensionNames->Length;
+			UInt32 enabledExtensionCount = pCreateInfo->EnabledExtensionNames->Length;
 			arg_1_8 = new char*[enabledExtensionCount];
-			for (int j = 0; j < enabledExtensionCount; ++j)
+			for (UInt32 j = 0; j < enabledExtensionCount; ++j)
 			{
 				IntPtr inst_1_8 = Marshal::StringToHGlobalAnsi((String^)pCreateInfo->EnabledExtensionNames[j]);
 				pins->Add(inst_1_8);
@@ -285,10 +295,18 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::CreateDevice(ManagedVulkan:
 		pDevice = gcnew Device();
 		pDevice->mHandle = inst_3;
 
+		auto callback = vkGetDeviceProcAddr(inst_3, "vkCreateSharedSwapchainsKHR");
+		pDevice->mCreateSharedSwapchainsKHR = (callback != nullptr) ? (PFN_vkCreateSharedSwapchainsKHR) callback : nullptr;
+
 		return (Result)result;
 	}
 	finally
 	{
+		if (arg_1_4 != nullptr)
+		{
+			delete[] arg_1_4;
+		}
+
 		if (arg_1_6 != nullptr)
 		{
 			delete[] arg_1_6;
@@ -467,7 +485,7 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSparseImageFormatProperties
 	}
 }
 
-#ifdef MANAGED_VULKAN_IMPLEMENTATION
+
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPropertiesKHR([Out] array<ManagedVulkan::DisplayPropertiesKHR^>^% pProperties)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
@@ -475,6 +493,11 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPro
 	try
 	{
 		// MAIN INIT
+		if (this->mGetPhysicalDeviceDisplayPropertiesKHR == nullptr)
+		{
+			throw gcnew System::NotSupportedException("GetProcAddr: Unable to find vkCreateDisplayPlaneSurfaceKHR");
+		}
+
 
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;
@@ -482,23 +505,23 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPro
 		// INITS 1 - pPropertyCount		
 		uint32_t* arg_1 = &pPropertyCount;
 
-		int firstResult = vkGetPhysicalDeviceDisplayPropertiesKHR(arg_0, arg_1, arg_2);
+		int firstResult = this->mGetPhysicalDeviceDisplayPropertiesKHR(arg_0, arg_1, arg_2);
 
 		if (firstResult != VK_SUCCESS)
 		{
-			return (Result)firstResult;
+			return (ManagedVulkan::Result)firstResult;
 		}
 
 		// INITS 2 - pProperties		
 		arg_2 = new VkDisplayPropertiesKHR[pPropertyCount];
 
-		int result = vkGetPhysicalDeviceDisplayPropertiesKHR(arg_0, arg_1, arg_2);
+		int result = this->mGetPhysicalDeviceDisplayPropertiesKHR(arg_0, arg_1, arg_2);
 
 		int count = (int)pPropertyCount;
-		pProperties = gcnew array<DisplayPropertiesKHR^>(count);
+		pProperties = gcnew array<ManagedVulkan::DisplayPropertiesKHR^>(count);
 		for (int i = 0; i < count; ++i)
 		{
-			pProperties[i] = gcnew DisplayPropertiesKHR();
+			pProperties[i] = gcnew ManagedVulkan::DisplayPropertiesKHR();
 			pProperties[i]->CopyFrom(arg_2 + i);
 		}
 
@@ -517,9 +540,7 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPro
 		}
 	}
 }
-#endif
 
-#ifdef MANAGED_VULKAN_IMPLEMENTATION
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPlanePropertiesKHR([Out] array<ManagedVulkan::DisplayPlanePropertiesKHR^>^% pProperties)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
@@ -527,6 +548,10 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPla
 	try
 	{
 		// MAIN INIT
+		if (this->mGetPhysicalDeviceDisplayPlanePropertiesKHR != nullptr)
+		{
+			throw gcnew System::NotSupportedException("GetProcAddr: Unable to find vkGetPhysicalDeviceDisplayPlanePropertiesKHR");
+		}
 
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;
@@ -534,7 +559,7 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPla
 		uint32_t pPropertyCount = 0;
 		uint32_t* arg_1 = &pPropertyCount;
 
-		int firstResult = vkGetPhysicalDeviceDisplayPlanePropertiesKHR(arg_0, arg_1, nullptr);
+		int firstResult = this->mGetPhysicalDeviceDisplayPlanePropertiesKHR(arg_0, arg_1, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -544,7 +569,7 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPla
 		// INITS 2 - pProperties		
 		arg_2 = new VkDisplayPlanePropertiesKHR[pPropertyCount];
 
-		int result = vkGetPhysicalDeviceDisplayPlanePropertiesKHR(arg_0, arg_1, arg_2);
+		int result = this->mGetPhysicalDeviceDisplayPlanePropertiesKHR(arg_0, arg_1, arg_2);
 
 		int count = (int)pPropertyCount;
 		pProperties = gcnew array<DisplayPlanePropertiesKHR^>(count);
@@ -569,9 +594,7 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceDisplayPla
 		}
 	}
 }
-#endif
 
-#ifdef MANAGED_VULKAN_IMPLEMENTATION
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayPlaneSupportedDisplaysKHR(UInt32 planeIndex, [Out] array<ManagedVulkan::DisplayKHR^>^% pDisplays)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
@@ -579,6 +602,10 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayPlaneSupportedDis
 	try
 	{
 		// MAIN INIT
+		if (this->mGetDisplayPlaneSupportedDisplaysKHR == nullptr)
+		{
+			throw gcnew System::NotSupportedException("GetProcAddr: Unable to find vkGetDisplayPlaneSupportedDisplaysKHR");
+		}
 
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;
@@ -590,7 +617,7 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayPlaneSupportedDis
 		// INITS 2 - pDisplayCount		
 		uint32_t* arg_2 = &pDisplayCount;
 
-		int firstResult = vkGetDisplayPlaneSupportedDisplaysKHR(arg_0, arg_1, arg_2, nullptr);
+		int firstResult = this->mGetDisplayPlaneSupportedDisplaysKHR(arg_0, arg_1, arg_2, nullptr);
 		if (firstResult != VK_SUCCESS)
 		{
 			return (Result)firstResult;
@@ -599,7 +626,7 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayPlaneSupportedDis
 		// INITS 3 - pDisplays		
 		arg_3 = new VkDisplayKHR[pDisplayCount];
 
-		int result = vkGetDisplayPlaneSupportedDisplaysKHR(arg_0, arg_1, arg_2, arg_3);
+		int result = this->mGetDisplayPlaneSupportedDisplaysKHR(arg_0, arg_1, arg_2, arg_3);
 
 		int count = (int)pDisplayCount;
 		pDisplays = gcnew array<DisplayKHR^>(count);
@@ -624,16 +651,18 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayPlaneSupportedDis
 		}
 	}
 }
-#endif
 
-#ifdef MANAGED_VULKAN_IMPLEMENTATION
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayModePropertiesKHR(ManagedVulkan::DisplayKHR^ display, [Out] array<ManagedVulkan::DisplayModePropertiesKHR^>^% pProperties)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	VkDisplayModePropertiesKHR* arg_3 = nullptr;
 	try
 	{
-		// MAIN INIT
+		// FUNCTION STUB
+		if (this->mGetDisplayModePropertiesKHR == nullptr)
+		{
+			throw gcnew System::NotSupportedException("GetProcAddr: Unable to find vkGetDisplayModePropertiesKHR");
+		}
 
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;
@@ -643,7 +672,7 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayModePropertiesKHR
 		uint32_t pPropertyCount = 0;
 		uint32_t* arg_2 = &pPropertyCount;
 
-		int firstResult = vkGetDisplayModePropertiesKHR(arg_0, arg_1, arg_2, nullptr);
+		int firstResult = this->mGetDisplayModePropertiesKHR(arg_0, arg_1, arg_2, nullptr);
 
 		if (firstResult != VK_SUCCESS)
 		{
@@ -653,7 +682,7 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayModePropertiesKHR
 		// INITS 3 - pProperties		
 		arg_3 = new VkDisplayModePropertiesKHR[pPropertyCount];
 
-		int result = vkGetDisplayModePropertiesKHR(arg_0, arg_1, arg_2, arg_3);
+		int result = this->mGetDisplayModePropertiesKHR(arg_0, arg_1, arg_2, arg_3);
 
 		int count = (int)pPropertyCount;
 		pProperties = gcnew array<DisplayModePropertiesKHR^>(count);
@@ -678,15 +707,17 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayModePropertiesKHR
 		}
 	}
 }
-#endif
 
-#ifdef MANAGED_VULKAN_IMPLEMENTATION
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::CreateDisplayModeKHR(ManagedVulkan::DisplayKHR^ display, DisplayModeCreateInfoKHR^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::DisplayModeKHR^% pMode)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
 	{
-		// MAIN INIT
+		// FUNCTION STUB
+		if (this->mCreateDisplayModeKHR == nullptr)
+		{
+			throw gcnew System::NotSupportedException("GetProcAddr: Unable to find vkCreateDisplayModeKHR");
+		}
 
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;
@@ -713,7 +744,7 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::CreateDisplayModeKHR(Manage
 		VkDisplayModeKHR inst_4;
 		VkDisplayModeKHR* arg_4 = &inst_4;
 
-		auto result = vkCreateDisplayModeKHR(arg_0, arg_1, arg_2, arg_3, arg_4);
+		auto result = this->mCreateDisplayModeKHR(arg_0, arg_1, arg_2, arg_3, arg_4);
 
 		pMode = gcnew DisplayModeKHR();
 		pMode->mHandle = inst_4;
@@ -729,7 +760,6 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::CreateDisplayModeKHR(Manage
 		}
 	}
 }
-#endif
 
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetPhysicalDeviceSurfaceSupportKHR(UInt32 queueFamilyIndex, ManagedVulkan::SurfaceKHR^ surface,[Out] bool% pSupported)
 {
@@ -932,13 +962,16 @@ bool ManagedVulkan::PhysicalDevice::GetPhysicalDeviceWin32PresentationSupportKHR
 
 #endif
 
-#ifdef MANAGED_VULKAN_IMPLEMENTATION
 ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayPlaneCapabilitiesKHR(ManagedVulkan::DisplayModeKHR^ mode, UInt32 planeIndex, [Out] ManagedVulkan::DisplayPlaneCapabilitiesKHR^% pCapabilities)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
 	{
-		// MAIN INIT
+		// FUNCTION STUB
+		if (this->mGetDisplayPlaneCapabilitiesKHR == nullptr)
+		{
+			throw gcnew System::NotSupportedException("GetProcAddr: Unable to find vkGetDisplayPlaneCapabilitiesKHR");
+		}
 
 		// INITS 0 - physicalDevice		
 		VkPhysicalDevice arg_0 = this->mHandle;
@@ -950,7 +983,7 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayPlaneCapabilities
 		VkDisplayPlaneCapabilitiesKHR inst_3;
 		VkDisplayPlaneCapabilitiesKHR* arg_3 = &inst_3;
 
-		int result = vkGetDisplayPlaneCapabilitiesKHR(arg_0, arg_1, arg_2, arg_3);
+		int result = this->mGetDisplayPlaneCapabilitiesKHR(arg_0, arg_1, arg_2, arg_3);
 
 		pCapabilities = gcnew DisplayPlaneCapabilitiesKHR();
 		pCapabilities->CopyFrom(arg_3);
@@ -966,4 +999,3 @@ ManagedVulkan::Result ManagedVulkan::PhysicalDevice::GetDisplayPlaneCapabilities
 		}
 	}
 }
-#endif

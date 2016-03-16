@@ -21,6 +21,6 @@ namespace ManagedVulkan
 
 	public delegate void vkVoidFunction();
 
-	public delegate void vkDebugReportCallbackEXT(ManagedVulkan::DebugReportFlagBitsEXT flags, ManagedVulkan::DebugReportObjectTypeEXT objectType, UInt64 object, size_t location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage, IntPtr pUserData);
+	public delegate bool vkDebugReportCallbackEXT(ManagedVulkan::DebugReportFlagBitsEXT flags, ManagedVulkan::DebugReportObjectTypeEXT objectType, UInt64 object, size_t location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage, IntPtr pUserData);
 
 }

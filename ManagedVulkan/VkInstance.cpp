@@ -13,8 +13,12 @@ void ManagedVulkan::Instance::DestroyInstance(ManagedVulkan::AllocationCallbacks
 		VkInstance arg_0 = this->mHandle;
 		// INITS 1 - pAllocator		
 		VkAllocationCallbacks inst_1;
-		VkAllocationCallbacks* arg_1 = &inst_1;
-		pAllocator->CopyTo(arg_1, pins);
+		VkAllocationCallbacks* arg_1 = nullptr;
+		if (pAllocator != nullptr)
+		{
+			arg_1 = &inst_1;
+			pAllocator->CopyTo(arg_1, pins);
+		}
 
 		vkDestroyInstance(arg_0, arg_1);
 	}
@@ -56,12 +60,32 @@ ManagedVulkan::Result ManagedVulkan::Instance::EnumeratePhysicalDevices([Out] ar
 
 		int result = vkEnumeratePhysicalDevices(arg_0, arg_1, arg_2);
 
+		auto callback_0 = vkGetInstanceProcAddr(this->mHandle, "vkGetPhysicalDeviceDisplayPropertiesKHR");
+		PFN_vkGetPhysicalDeviceDisplayPropertiesKHR getPhysicalDevicePtr_0 =  (callback_0 != nullptr) ? (PFN_vkGetPhysicalDeviceDisplayPropertiesKHR) callback_0 : nullptr;
+
+		auto callback_1 = vkGetInstanceProcAddr(this->mHandle, "vkGetPhysicalDeviceDisplayPlanePropertiesKHR");
+		PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR getPhysicalDevicePtr_1 = (callback_1 != nullptr) ? (PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR)callback_1 : nullptr;		
+
+		auto callback_2 = vkGetInstanceProcAddr(this->mHandle, "vkGetDisplayPlaneSupportedDisplaysKHR");
+		PFN_vkGetDisplayPlaneSupportedDisplaysKHR getPhysicalDevicePtr_2 = (callback_2 != nullptr) ? (PFN_vkGetDisplayPlaneSupportedDisplaysKHR)callback_2 : nullptr;
+		
+		auto callback_3 = vkGetInstanceProcAddr(this->mHandle, "vkGetDisplayModePropertiesKHR");
+		PFN_vkGetDisplayModePropertiesKHR getPhysicalDevicePtr_3 = (callback_3 != nullptr) ? (PFN_vkGetDisplayModePropertiesKHR) callback_3 : nullptr;
+
+		auto callback_4 = vkGetInstanceProcAddr(this->mHandle, "vkCreateDisplayModeKHR");
+		PFN_vkCreateDisplayModeKHR getPhysicalDevicePtr_4 = (callback_4 != nullptr) ? (PFN_vkCreateDisplayModeKHR)callback_4 : nullptr;
+
 		int count = (int)pPhysicalDeviceCount;
 		pPhysicalDevices = gcnew array<PhysicalDevice^>(count);
 		for (int i = 0; i < count; ++i)
 		{
 			pPhysicalDevices[i] = gcnew PhysicalDevice();
 			pPhysicalDevices[i]->mHandle = arg_2[i];
+			pPhysicalDevices[i]->mGetPhysicalDeviceDisplayPropertiesKHR = getPhysicalDevicePtr_0;
+			pPhysicalDevices[i]->mGetPhysicalDeviceDisplayPlanePropertiesKHR = getPhysicalDevicePtr_1;
+			pPhysicalDevices[i]->mGetDisplayPlaneSupportedDisplaysKHR = getPhysicalDevicePtr_2;
+			pPhysicalDevices[i]->mGetDisplayModePropertiesKHR = getPhysicalDevicePtr_3;
+			pPhysicalDevices[i]->mCreateDisplayModeKHR = getPhysicalDevicePtr_4;
 		}
 
 		return (Result)result;
@@ -80,7 +104,9 @@ ManagedVulkan::Result ManagedVulkan::Instance::EnumeratePhysicalDevices([Out] ar
 	}
 }
 
-ManagedVulkan::vkVoidFunction^ ManagedVulkan::Instance::GetInstanceProcAddr(String^ pName)
+generic <typename VkDelegate>
+where VkDelegate : System::Delegate, ref class
+bool ManagedVulkan::Instance::GetInstanceProcAddr(String^ pName, [Out] VkDelegate% del)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
@@ -94,11 +120,18 @@ ManagedVulkan::vkVoidFunction^ ManagedVulkan::Instance::GetInstanceProcAddr(Stri
 		pins->Add(inst_1);
 		char* arg_1 = static_cast<char*>(inst_1.ToPointer());
 
-		void* result = (void*)vkGetInstanceProcAddr(arg_0, arg_1);
+		PFN_vkVoidFunction result = vkGetInstanceProcAddr(arg_0, arg_1);
 
-		throw gcnew System::NotImplementedException();
-
-		return nullptr;
+		if (result != nullptr)
+		{
+			IntPtr stub(result);
+			del = Marshal::GetDelegateForFunctionPointer<VkDelegate>(stub);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	finally
 	{
@@ -110,14 +143,14 @@ ManagedVulkan::vkVoidFunction^ ManagedVulkan::Instance::GetInstanceProcAddr(Stri
 	}
 }
 
-#ifdef VK_CREATE_DISPLAY_PLANE_SURFACE
-
 ManagedVulkan::Result ManagedVulkan::Instance::CreateDisplayPlaneSurfaceKHR(ManagedVulkan::DisplaySurfaceCreateInfoKHR^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::SurfaceKHR^% pSurface)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
 	{
-		// MAIN INIT
+		// FUNCTION STUB
+		if (mCreateDisplayPlaneSurface == nullptr)
+			throw gcnew System::NotSupportedException("GetProcAddr: Unable to find vkCreateDisplayPlaneSurfaceKHR");
 
 		// INITS 0 - instance		
 		VkInstance arg_0 = this->mHandle;
@@ -147,7 +180,7 @@ ManagedVulkan::Result ManagedVulkan::Instance::CreateDisplayPlaneSurfaceKHR(Mana
 		VkSurfaceKHR inst_3;
 		VkSurfaceKHR* arg_3 = &inst_3;
 
-		int result = vkCreateDisplayPlaneSurfaceKHR(arg_0, arg_1, arg_2, arg_3);
+		auto result = this->mCreateDisplayPlaneSurface(arg_0, arg_1, arg_2, arg_3);
 
 		pSurface = gcnew SurfaceKHR();
 		pSurface->mHandle = inst_3;
@@ -163,8 +196,6 @@ ManagedVulkan::Result ManagedVulkan::Instance::CreateDisplayPlaneSurfaceKHR(Mana
 		}
 	}
 }
-
-#endif
 
 void ManagedVulkan::Instance::DestroySurfaceKHR(ManagedVulkan::SurfaceKHR^ surface, ManagedVulkan::AllocationCallbacks^ pAllocator)
 {
@@ -250,13 +281,18 @@ ManagedVulkan::Result ManagedVulkan::Instance::CreateWin32SurfaceKHR(ManagedVulk
 
 #endif
 
-#ifdef VK_DEBUG_REPORT
+
 ManagedVulkan::Result ManagedVulkan::Instance::CreateDebugReportCallbackEXT(ManagedVulkan::DebugReportCallbackCreateInfoEXT^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::DebugReportCallbackEXT^% pCallback)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
 	{
 		// MAIN INIT
+		if (this->mCreateDebugReportCallbackEXT == nullptr)
+		{
+			throw gcnew System::NotSupportedException("GetProcAddr: Unable to find vkCreateDebugReportCallbackEXT");
+		}
+
 
 		// INITS 0 - instance		
 		VkInstance arg_0 = this->mHandle;
@@ -279,9 +315,9 @@ ManagedVulkan::Result ManagedVulkan::Instance::CreateDebugReportCallbackEXT(Mana
 		}
 		// INITS 3 - pCallback		
 		VkDebugReportCallbackEXT inst_3;
-		VkDebugReportCallbackEXT* arg_3 = nullptr;
+		VkDebugReportCallbackEXT* arg_3 = &inst_3;
 
-		int result = vkCreateDebugReportCallbackEXT(arg_0, arg_1, arg_2, arg_3);
+		auto result = this->mCreateDebugReportCallbackEXT(arg_0, arg_1, arg_2, arg_3);
 
 		pCallback = gcnew DebugReportCallbackEXT();
 		pCallback->mHandle = inst_3;
@@ -303,6 +339,12 @@ void ManagedVulkan::Instance::DestroyDebugReportCallbackEXT(ManagedVulkan::Debug
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
 	{
+		// FUNCTION STUB
+		if (this->mDestroyDebugReportCallbackEXT == nullptr)
+		{
+			throw gcnew System::NotSupportedException("GetProcAddr: Unable to find vkDestroyDebugReportCallbackEXT");
+		}
+
 		// MAIN INIT
 
 		// INITS 0 - instance		
@@ -318,7 +360,7 @@ void ManagedVulkan::Instance::DestroyDebugReportCallbackEXT(ManagedVulkan::Debug
 			pAllocator->CopyTo(arg_2, pins);
 		}
 
-		vkDestroyDebugReportCallbackEXT(arg_0, arg_1, arg_2);
+		this->mDestroyDebugReportCallbackEXT(arg_0, arg_1, arg_2);
 
 
 	}
@@ -332,12 +374,16 @@ void ManagedVulkan::Instance::DestroyDebugReportCallbackEXT(ManagedVulkan::Debug
 	}
 }
 
-void ManagedVulkan::Instance::DebugReportMessageEXT(ManagedVulkan::DebugReportFlagsEXT flags, ManagedVulkan::DebugReportObjectTypeEXT objectType, UInt64 object, size_t location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage)
+void ManagedVulkan::Instance::DebugReportMessageEXT(ManagedVulkan::DebugReportFlagBitsEXT flags, ManagedVulkan::DebugReportObjectTypeEXT objectType, UInt64 object, size_t location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
 	{
-		// MAIN INIT
+		// FUNCTION STUB
+		if (this->mDebugReportMessageEXT == nullptr)
+		{
+			throw gcnew System::NotSupportedException("GetProcAddr: Unable to find DebugReportMessageEXT");
+		}
 
 		// INITS 0 - instance		
 		VkInstance arg_0 = this->mHandle;
@@ -360,7 +406,7 @@ void ManagedVulkan::Instance::DebugReportMessageEXT(ManagedVulkan::DebugReportFl
 		pins->Add(inst_7);
 		char* arg_7 = static_cast<char*>(inst_7.ToPointer());;
 
-		vkDebugReportMessageEXT(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7);
+		this->mDebugReportMessageEXT(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7);
 
 
 	}
@@ -374,5 +420,4 @@ void ManagedVulkan::Instance::DebugReportMessageEXT(ManagedVulkan::DebugReportFl
 	}
 }
 
-#endif
 
