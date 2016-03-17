@@ -482,6 +482,23 @@ namespace ManagedVulkan
 		VK_FRONT_FACE_CLOCKWISE = 1,
 	};
 
+	[FlagsAttribute] public enum class ImageAspectFlagBits : UInt32
+	{
+		VK_IMAGE_ASPECT_COLOR_BIT = 1 << 0,
+		VK_IMAGE_ASPECT_DEPTH_BIT = 1 << 1,
+		VK_IMAGE_ASPECT_STENCIL_BIT = 1 << 2,
+		VK_IMAGE_ASPECT_METADATA_BIT = 1 << 3,
+	};
+
+	[FlagsAttribute] public enum class ImageCreateFlagBits : UInt32
+	{
+		VK_IMAGE_CREATE_SPARSE_BINDING_BIT = 1 << 0, // Image should support sparse backing
+		VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT = 1 << 1, // Image should support sparse backing with partial residency
+		VK_IMAGE_CREATE_SPARSE_ALIASED_BIT = 1 << 2, // Image should support constent data access to physical memory blocks mapped into multiple locations of sparse images
+		VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT = 1 << 3, // Allows image views to have different format than the base image
+		VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT = 1 << 4, // Allows creating image views with cube type from the created image
+	};
+
 	public enum class ImageLayout : UInt32
 	{
 		VK_IMAGE_LAYOUT_UNDEFINED = 0, // Implicit layout an image is when its contents are undefined due to various reasons (e.g. right after creation)
@@ -493,6 +510,11 @@ namespace ManagedVulkan
 		VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL = 6, // Optimal layout when image is used only as source of transfer operations
 		VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL = 7, // Optimal layout when image is used only as destination of transfer operations
 		VK_IMAGE_LAYOUT_PREINITIALIZED = 8, // Initial layout used when the data is populated by the CPU
+		VK_IMAGE_LAYOUT_PRESENT_SRC_KHR = 1000001002,
+		VK_IMAGE_LAYOUT_BEGIN_RANGE = VK_IMAGE_LAYOUT_UNDEFINED,
+		VK_IMAGE_LAYOUT_END_RANGE = VK_IMAGE_LAYOUT_PREINITIALIZED,
+		VK_IMAGE_LAYOUT_RANGE_SIZE = (VK_IMAGE_LAYOUT_PREINITIALIZED - VK_IMAGE_LAYOUT_UNDEFINED + 1),
+		VK_IMAGE_LAYOUT_MAX_ENUM = 0x7FFFFFFF
 	};
 
 
@@ -509,14 +531,6 @@ namespace ManagedVulkan
 		VK_IMAGE_TYPE_3D = 2,
 	};
 
-	[FlagsAttribute] public enum class ImageCreateFlagBits : UInt32
-	{
-		VK_IMAGE_CREATE_SPARSE_BINDING_BIT = 1 << 0, // Image should support sparse backing
-		VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT = 1 << 1, // Image should support sparse backing with partial residency
-		VK_IMAGE_CREATE_SPARSE_ALIASED_BIT = 1 << 2, // Image should support constent data access to physical memory blocks mapped into multiple locations of sparse images
-		VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT = 1 << 3, // Allows image views to have different format than the base image
-		VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT = 1 << 4, // Allows creating image views with cube type from the created image
-	};
 
 	[FlagsAttribute] public enum class ImageUsageFlagBits : UInt32
 	{

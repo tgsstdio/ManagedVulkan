@@ -126,13 +126,13 @@
     <ClInclude Include="VkBufferMemoryBarrier.h">
       <Filter>Header Files\Structs</Filter>
     </ClInclude>
-    <ClInclude Include="VkMemoryBarrier.h">
-      <Filter>Header Files\Structs</Filter>
-    </ClInclude>
     <ClInclude Include="VkImageMemoryBarrier.h">
       <Filter>Header Files\Structs</Filter>
     </ClInclude>
     <ClInclude Include="VkRenderPassBeginInfo.h">
+      <Filter>Header Files\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="MvMemoryBarrier.h">
       <Filter>Header Files\Structs</Filter>
     </ClInclude>
   </ItemGroup>

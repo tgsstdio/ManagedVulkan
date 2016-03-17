@@ -527,6 +527,10 @@ Please look at the Getting Started guide for additional information.";
         private ManagedVulkan.ColorSpaceKHR mColorSpace;
         private int mCurrentFrame;
         private ManagedVulkan.PhysicalDeviceMemoryProperties mMemoryProperties;
+        private CommandPool mCommandPool;
+        private SwapchainKHR mSwapchain;
+
+        private SwapchainBuffers[] mBuffers;
 
         public void CreateWindow()
         {
@@ -694,12 +698,340 @@ Please look at the Getting Started guide for additional information.";
 
         public void Prepare()
         {
+            ManagedVulkan.Result err;
+
+            var cmd_pool_info = new ManagedVulkan.CommandPoolCreateInfo
+            {
+                SType = ManagedVulkan.StructureType.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+                QueueFamilyIndex = mGraphicsQueueNodeIndex,
+                Flags = 0,
+            };
+            ManagedVulkan.CommandPool cmd_pool;
+            err = mDevice.CreateCommandPool(cmd_pool_info, null, out cmd_pool);
+            Debug.Assert(err == Result.VK_SUCCESS);
+            mCommandPool = cmd_pool;
+
+            var cmd = new ManagedVulkan.CommandBufferAllocateInfo
+            {
+                SType = ManagedVulkan.StructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+                CommandPool = mCommandPool,
+                Level = CommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+                CommandBufferCount = 1,                
+            };
+
+            PrepareBuffers();
+            PrepareDepth();
+            PrepareTextures();
+            PrepareCubeDataBuffer();
+
+            PrepareDescriptorLayout();
+            PrepareRenderPass();
+            PreparePipeline();
+        }
+
+        private void PrepareBuffers()
+        {
+            ManagedVulkan.Result err;
+            ManagedVulkan.SwapchainKHR oldSwapchain = mSwapchain;
+
+            SurfaceCapabilitiesKHR surfCapabilities;
+            err = mGPU.GetPhysicalDeviceSurfaceCapabilitiesKHR(mSurface, out surfCapabilities);
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            ManagedVulkan.PresentModeKHR[] presentModes;
+            err = mGPU.GetPhysicalDeviceSurfacePresentModesKHR(mSurface, out presentModes);
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            var swapchainExtent = new ManagedVulkan.Extent2D();
+            // width and height are either both -1, or both not -1.
+            if ((int) surfCapabilities.CurrentExtent.Width == -1)
+            {
+                // If the surface size is undefined, the size is set to
+                // the size of the images requested.
+                swapchainExtent.Width = (UInt32) mWidth;
+                swapchainExtent.Height = (UInt32) mHeight;
+            }
+            else
+            {
+                // If the surface size is defined, the swap chain size must match
+                swapchainExtent = surfCapabilities.CurrentExtent;
+                mWidth = (int) swapchainExtent.Width;
+                mHeight = (int) swapchainExtent.Height;
+            }
+
+            // If mailbox mode is available, use it, as is the lowest-latency non-
+            // tearing mode.  If not, try IMMEDIATE which will usually be available,
+            // and is fastest (though it tears).  If not, fall back to FIFO which is
+            // always available.
+            PresentModeKHR swapchainPresentMode = PresentModeKHR.VK_PRESENT_MODE_FIFO_KHR;
+            foreach(var mode in presentModes)
+            {
+                if (mode == PresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR)
+                {
+                    swapchainPresentMode = PresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR;
+                    break;
+                }
+
+                if (swapchainPresentMode != PresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR && mode == PresentModeKHR.VK_PRESENT_MODE_IMMEDIATE_KHR)
+                {
+                    swapchainPresentMode = PresentModeKHR.VK_PRESENT_MODE_IMMEDIATE_KHR;
+                }
+            }
+
+            // Determine the number of VkImage's to use in the swap chain (we desire to
+            // own only 1 image at a time, besides the images being displayed and
+            // queued for display):
+            UInt32 desiredNumberOfSwapchainImages =  surfCapabilities.MinImageCount + 1;
+            if ((surfCapabilities.MaxImageCount > 0) &&
+                (desiredNumberOfSwapchainImages > surfCapabilities.MaxImageCount))
+            {
+                // Application must settle for fewer images than desired:
+                desiredNumberOfSwapchainImages = surfCapabilities.MaxImageCount;
+            }
+
+            ManagedVulkan.SurfaceTransformFlagBitsKHR preTransform;
+            if ((surfCapabilities.SupportedTransforms & SurfaceTransformFlagBitsKHR.VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) != 0)
+            {
+                preTransform = SurfaceTransformFlagBitsKHR.VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+            }
+            else
+            {
+                preTransform = surfCapabilities.CurrentTransform;
+            }
+
+            var swapchain = new ManagedVulkan.SwapchainCreateInfoKHR
+            {
+                SType = ManagedVulkan.StructureType.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR,
+                Surface = mSurface,
+                MinImageCount = desiredNumberOfSwapchainImages,
+                ImageFormat = mFormat,
+                ImageColorSpace = mColorSpace,
+                ImageExtent = swapchainExtent,
+                ImageUsage = ManagedVulkan.ImageUsageFlagBits.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+                PreTransform = preTransform,
+                CompositeAlpha = CompositeAlphaFlagBitsKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+                ImageArrayLayers = 1,
+                ImageSharingMode = SharingMode.VK_SHARING_MODE_EXCLUSIVE,
+                QueueFamilyIndices = null,
+                PresentMode = swapchainPresentMode,
+                OldSwapchain = (oldSwapchain == null) ? new ManagedVulkan.SwapchainKHR() : oldSwapchain,
+                Clipped = true,
+            };
+
+            SwapchainKHR output;
+            err = mDevice.CreateSwapchainKHR(swapchain, null, out output);
+            Debug.Assert(err == Result.VK_SUCCESS);
+            mSwapchain = output;
+
+            // If we just re-created an existing swapchain, we should destroy the old
+            // swapchain at this point.
+            // Note: destroying the swapchain also cleans up all its associated
+            // presentable images once the platform is done with them.
+            if (oldSwapchain != null && !oldSwapchain.IsNullHandle())
+            {
+                mDevice.DestroySwapchainKHR(oldSwapchain, null);
+            }
+
+            ManagedVulkan.Image[] swapchainImages;
+            err = mDevice.GetSwapchainImagesKHR(mSwapchain, out swapchainImages);
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            int swapchainImageCount = swapchainImages.Length;
+            mBuffers = new SwapchainBuffers[swapchainImageCount];
+
+            for (int i = 0; i < swapchainImageCount; ++i)
+            {
+                var color_image_view = new ManagedVulkan.ImageViewCreateInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+                    Format = mFormat,
+                    Components = new ComponentMapping
+                    {
+                        R = ComponentSwizzle.VK_COMPONENT_SWIZZLE_R,
+                        G = ComponentSwizzle.VK_COMPONENT_SWIZZLE_G,
+                        B = ComponentSwizzle.VK_COMPONENT_SWIZZLE_B,
+                        A = ComponentSwizzle.VK_COMPONENT_SWIZZLE_A,
+                    },
+                    SubresourceRange = new ImageSubresourceRange
+                    {
+                        AspectMask = ImageAspectFlagBits.VK_IMAGE_ASPECT_COLOR_BIT,
+                        BaseMipLevel = 0,
+                        LevelCount = 0,
+                        BaseArrayLayer = 0,
+                        LayerCount = 1,
+                    },
+                    ViewType = ImageViewType.VK_IMAGE_VIEW_TYPE_2D,
+                    Flags = 0,
+                };
+
+                mBuffers[i].Image = swapchainImages[i];
+
+                // Render loop will expect image to have been used before and in
+                // VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
+                // layout and will change to COLOR_ATTACHMENT_OPTIMAL, so init the image
+                // to that state
+                SetImageLayout(mBuffers[i].Image, ImageAspectFlagBits.VK_IMAGE_ASPECT_COLOR_BIT,
+                    ImageLayout.VK_IMAGE_LAYOUT_UNDEFINED, ImageLayout.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, 0);
+            }
+        }
+
+        CommandBuffer mCmd = new CommandBuffer(); // Buffer for initialization commands
+
+        private void SetImageLayout(Image image, ImageAspectFlagBits aspectMask, ImageLayout old_image_layout, ImageLayout new_image_layout, AccessFlagBits srcAccessMask)
+        {
+            ManagedVulkan.Result err;
+
+            if (mCmd.IsNullHandle())
+            {
+                var cmdInfo = new ManagedVulkan.CommandBufferAllocateInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+                    CommandPool = mCommandPool,
+                    Level = CommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+                    CommandBufferCount = 1,
+                };
+
+                CommandBuffer[] cmdBuffers;
+                err = mDevice.AllocateCommandBuffers(cmdInfo,out cmdBuffers);
+                Debug.Assert(err == Result.VK_SUCCESS);
+                Debug.Assert(cmdBuffers != null);
+                Debug.Assert(cmdBuffers.Length == 1);
+                mCmd = cmdBuffers[0];
+
+                var cmd_buf_hinfo = new ManagedVulkan.CommandBufferInheritanceInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
+                    RenderPass = new ManagedVulkan.RenderPass(),
+                    Subpass = 0,
+                    Framebuffer = new ManagedVulkan.Framebuffer(),
+                    OcclusionQueryEnable = false,
+                    QueryFlags = 0,
+                    PipelineStatistics = 0,
+                };
+                var cmd_buf_info = new ManagedVulkan.CommandBufferBeginInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+                    Flags = 0,
+                    InheritanceInfo = cmd_buf_hinfo,
+                };
+
+                err = mCmd.BeginCommandBuffer(cmd_buf_info);
+                Debug.Assert(err == Result.VK_SUCCESS);
+            }
+
+            var image_memory_barrier = new ManagedVulkan.ImageMemoryBarrier
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+                SrcAccessMask = srcAccessMask,
+                DstAccessMask = 0,
+                OldLayout = old_image_layout,
+                NewLayout = new_image_layout,
+                Image = image,
+                SubresourceRange = new ImageSubresourceRange
+                {
+                    AspectMask = aspectMask,
+                    BaseMipLevel = 0,
+                    LevelCount = 1,
+                    BaseArrayLayer = 0,
+                    LayerCount = 1,
+                },
+            };
+
+            if (new_image_layout == ImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+            {
+                /* Make sure anything that was copying from this image has completed */
+                image_memory_barrier.DstAccessMask = AccessFlagBits.VK_ACCESS_TRANSFER_READ_BIT;
+            }
+
+            if (new_image_layout == ImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+            {
+                image_memory_barrier.DstAccessMask = AccessFlagBits.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+            }
+
+            if (new_image_layout == ImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
+            {
+                image_memory_barrier.DstAccessMask = AccessFlagBits.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+            }
+
+            if (new_image_layout == ImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+            {
+                /* Make sure any Copy or CPU writes to image are flushed */
+                image_memory_barrier.DstAccessMask =
+                    AccessFlagBits.VK_ACCESS_SHADER_READ_BIT | AccessFlagBits.VK_ACCESS_INPUT_ATTACHMENT_READ_BIT;
+            }
+
+            PipelineStageFlagBits src_stages = PipelineStageFlagBits.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+            PipelineStageFlagBits dest_stages = PipelineStageFlagBits.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+
+            mCmd.CmdPipelineBarrier(src_stages, dest_stages, 0, null, null, new[] { image_memory_barrier });
 
         }
+
+        private void PreparePipeline()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PrepareRenderPass()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PrepareDescriptorLayout()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PrepareCubeDataBuffer()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PrepareTextures()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PrepareDepth()
+        {
+            throw new NotImplementedException();
+        }
+
+
 
         public void Cleanup()
         {
             mPrepared = false;
+
+            if (mSwapchain != null)
+            {
+                mDevice.DestroySwapchainKHR(mSwapchain, null);
+            }
+
+
+            if (mBuffers != null)
+            {
+                foreach (var buffer in mBuffers)
+                {
+                    if (buffer != null)
+                    {
+                        if (buffer.View != null)
+                        {
+                            mDevice.DestroyImageView(buffer.View, null);
+                        }
+                        if (buffer.Cmd != null)
+                        {
+                            mDevice.FreeCommandBuffers(mCommandPool, new[] { buffer.Cmd });
+                        }
+                    }
+                }
+            }
+
+
+            if (mCommandPool != null)
+            {
+                mDevice.DestroyCommandPool(mCommandPool, null);
+            }
 
             if (mDevice != null)
             {

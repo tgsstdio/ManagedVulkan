@@ -23,6 +23,11 @@ namespace ManagedVulkan
 		VkDevice mHandle;
 		PFN_vkCreateSharedSwapchainsKHR mCreateSharedSwapchainsKHR;
 	public:
+		bool IsNullHandle()
+		{
+			return mHandle == VK_NULL_HANDLE;
+		}
+
 		//TODO: figure out delegates
 		generic <class VkDelegate>
 		where VkDelegate : System::Delegate, ref class
@@ -47,9 +52,10 @@ namespace ManagedVulkan
 		ManagedVulkan::Result ResetFences(array<ManagedVulkan::Fence^>^ pFences);
 		ManagedVulkan::Result GetFenceStatus(ManagedVulkan::Fence^ fence);
 		ManagedVulkan::Result WaitForFences(array<ManagedVulkan::Fence^>^ pFences, bool waitAll, UInt64 timeout);
-		ManagedVulkan::Result CreateSemaphore(ManagedVulkan::SemaphoreCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Semaphore^% pSemaphore);
+		// Renamed CreateSemaphore to CreateVkSemaphore due to Windows preprocessor
+		ManagedVulkan::Result CreateVkSemaphore(ManagedVulkan::SemaphoreCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Semaphore^% pSemaphore);
 		void DestroySemaphore(ManagedVulkan::Semaphore^ semaphore, ManagedVulkan::AllocationCallbacks^ pAllocator);
-		ManagedVulkan::Result CreateEvent(ManagedVulkan::EventCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Event^% pEvent);
+		ManagedVulkan::Result CreateVkEvent(ManagedVulkan::EventCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Event^% pEvent);
 		void DestroyEvent(ManagedVulkan::Event^ event, ManagedVulkan::AllocationCallbacks^ pAllocator);
 		ManagedVulkan::Result GetEventStatus(ManagedVulkan::Event^ event);
 		ManagedVulkan::Result SetEvent(ManagedVulkan::Event^ event);
@@ -94,8 +100,9 @@ namespace ManagedVulkan
 		void GetRenderAreaGranularity(ManagedVulkan::RenderPass^ renderPass, [Out] ManagedVulkan::Extent2D^% pGranularity);
 		ManagedVulkan::Result CreateCommandPool(ManagedVulkan::CommandPoolCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::CommandPool^% pCommandPool);
 		void DestroyCommandPool(ManagedVulkan::CommandPool^ commandPool, ManagedVulkan::AllocationCallbacks^ pAllocator);
-		ManagedVulkan::Result ResetCommandPool(ManagedVulkan::CommandPool^ commandPool, CommandPoolResetFlagBits flags);
-		ManagedVulkan::Result AllocateCommandBuffers(ManagedVulkan::CommandBufferAllocateInfo^ pAllocateInfo, array<ManagedVulkan::CommandBuffer^>^ pCommandBuffers);
+		ManagedVulkan::Result ResetCommandPool(ManagedVulkan::CommandPool^ commandPool, CommandPoolResetFlagBits flags);		
+		/// Creates new CommandBuffers instead of allocate command buffers into pCommandBuffer slots
+		ManagedVulkan::Result AllocateCommandBuffers(ManagedVulkan::CommandBufferAllocateInfo^ pAllocateInfo, [Out] array<ManagedVulkan::CommandBuffer^>^% pCommandBuffers);
 		void FreeCommandBuffers(ManagedVulkan::CommandPool^ commandPool, array<ManagedVulkan::CommandBuffer^>^ pCommandBuffers);
 		ManagedVulkan::Result CreateSharedSwapchainsKHR(array<ManagedVulkan::SwapchainCreateInfoKHR^>^ pCreateInfos, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] array<ManagedVulkan::SwapchainKHR^>^% pSwapchains);
 		ManagedVulkan::Result CreateSwapchainKHR(ManagedVulkan::SwapchainCreateInfoKHR^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::SwapchainKHR^% pSwapchain);

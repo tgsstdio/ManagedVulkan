@@ -14,6 +14,11 @@ namespace ManagedVulkan
 	internal:
 		VkQueue mHandle;
 	public:
+		bool IsNullHandle()
+		{
+			return mHandle == VK_NULL_HANDLE;
+		}
+
 		ManagedVulkan::Result QueueSubmit(array<ManagedVulkan::SubmitInfo^>^ pSubmits, ManagedVulkan::Fence^ fence);
 		ManagedVulkan::Result QueueWaitIdle();
 		ManagedVulkan::Result QueueBindSparse(array<ManagedVulkan::BindSparseInfo^>^ pBindInfo, ManagedVulkan::Fence^ fence);

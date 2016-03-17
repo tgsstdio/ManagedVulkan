@@ -1394,7 +1394,7 @@ void ManagedVulkan::CommandBuffer::CmdResetEvent(ManagedVulkan::Event^ event, Ma
 	}
 }
 
-void ManagedVulkan::CommandBuffer::CmdWaitEvents(array<ManagedVulkan::Event^>^ pEvents, ManagedVulkan::PipelineStageFlagBits srcStageMask, ManagedVulkan::PipelineStageFlagBits dstStageMask, array<ManagedVulkan::MemoryBarrier^>^ pMemoryBarriers, array<ManagedVulkan::BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ManagedVulkan::ImageMemoryBarrier^>^ pImageMemoryBarriers)
+void ManagedVulkan::CommandBuffer::CmdWaitEvents(array<ManagedVulkan::Event^>^ pEvents, ManagedVulkan::PipelineStageFlagBits srcStageMask, ManagedVulkan::PipelineStageFlagBits dstStageMask, array<ManagedVulkan::MvMemoryBarrier^>^ pMemoryBarriers, array<ManagedVulkan::BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ManagedVulkan::ImageMemoryBarrier^>^ pImageMemoryBarriers)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	VkEvent* arg_2 = nullptr;
@@ -1526,7 +1526,7 @@ void ManagedVulkan::CommandBuffer::CmdWaitEvents(array<ManagedVulkan::Event^>^ p
 }
 
 
-void ManagedVulkan::CommandBuffer::CmdPipelineBarrier(ManagedVulkan::PipelineStageFlagBits srcStageMask, ManagedVulkan::PipelineStageFlagBits dstStageMask, ManagedVulkan::DependencyFlagBits dependencyFlags, array<ManagedVulkan::MemoryBarrier^>^ pMemoryBarriers, array<ManagedVulkan::BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ManagedVulkan::ImageMemoryBarrier^>^ pImageMemoryBarriers)
+void ManagedVulkan::CommandBuffer::CmdPipelineBarrier(ManagedVulkan::PipelineStageFlagBits srcStageMask, ManagedVulkan::PipelineStageFlagBits dstStageMask, ManagedVulkan::DependencyFlagBits dependencyFlags, array<ManagedVulkan::MvMemoryBarrier^>^ pMemoryBarriers, array<ManagedVulkan::BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ManagedVulkan::ImageMemoryBarrier^>^ pImageMemoryBarriers)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	VkMemoryBarrier* arg_5 = nullptr;

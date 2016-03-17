@@ -28,6 +28,11 @@ namespace ManagedVulkan
 		PFN_vkDebugReportMessageEXT mDebugReportMessageEXT;
 		PFN_vkCreateDisplayPlaneSurfaceKHR mCreateDisplayPlaneSurface;
 	public:
+		bool IsNullHandle()
+		{
+			return mHandle == VK_NULL_HANDLE;
+		}
+
 		void DestroyInstance(ManagedVulkan::AllocationCallbacks^ pAllocator);
 		ManagedVulkan::Result EnumeratePhysicalDevices([Out] array<ManagedVulkan::PhysicalDevice^>^% pPhysicalDevices);
 		generic <typename VkDelegate>

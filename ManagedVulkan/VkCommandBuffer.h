@@ -21,7 +21,7 @@
 #include "VkClearRect.h"
 #include "VkImageResolve.h"
 #include "VkBufferMemoryBarrier.h"
-#include "VkMemoryBarrier.h"
+#include "MvMemoryBarrier.h"
 #include "VkImageMemoryBarrier.h"
 #include "VkRenderPassBeginInfo.h"
 
@@ -34,6 +34,11 @@ namespace ManagedVulkan
 	internal:
 		VkCommandBuffer mHandle;
 	public:
+		bool IsNullHandle()
+		{
+			return mHandle == VK_NULL_HANDLE;
+		}
+
 		ManagedVulkan::Result BeginCommandBuffer(ManagedVulkan::CommandBufferBeginInfo^ pBeginInfo);
 		ManagedVulkan::Result EndCommandBuffer();
 		ManagedVulkan::Result ResetCommandBuffer(CommandBufferResetFlagBits flags);
@@ -69,8 +74,8 @@ namespace ManagedVulkan
 		void CmdResolveImage(ManagedVulkan::Image^ srcImage, ManagedVulkan::ImageLayout srcImageLayout, ManagedVulkan::Image^ dstImage, ManagedVulkan::ImageLayout dstImageLayout, array<ManagedVulkan::ImageResolve^>^ pRegions);
 		void CmdSetEvent(ManagedVulkan::Event^ event, ManagedVulkan::PipelineStageFlagBits stageMask);
 		void CmdResetEvent(ManagedVulkan::Event^ event, ManagedVulkan::PipelineStageFlagBits stageMask);
-		void CmdWaitEvents(array<ManagedVulkan::Event^>^ pEvents, ManagedVulkan::PipelineStageFlagBits srcStageMask, ManagedVulkan::PipelineStageFlagBits dstStageMask, array<ManagedVulkan::MemoryBarrier^>^ pMemoryBarriers, array<ManagedVulkan::BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ManagedVulkan::ImageMemoryBarrier^>^ pImageMemoryBarriers);
-		void CmdPipelineBarrier(ManagedVulkan::PipelineStageFlagBits srcStageMask, ManagedVulkan::PipelineStageFlagBits dstStageMask, ManagedVulkan::DependencyFlagBits dependencyFlags, array<ManagedVulkan::MemoryBarrier^>^ pMemoryBarriers, array<ManagedVulkan::BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ManagedVulkan::ImageMemoryBarrier^>^ pImageMemoryBarriers);
+		void CmdWaitEvents(array<ManagedVulkan::Event^>^ pEvents, ManagedVulkan::PipelineStageFlagBits srcStageMask, ManagedVulkan::PipelineStageFlagBits dstStageMask, array<ManagedVulkan::MvMemoryBarrier^>^ pMemoryBarriers, array<ManagedVulkan::BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ManagedVulkan::ImageMemoryBarrier^>^ pImageMemoryBarriers);
+		void CmdPipelineBarrier(ManagedVulkan::PipelineStageFlagBits srcStageMask, ManagedVulkan::PipelineStageFlagBits dstStageMask, ManagedVulkan::DependencyFlagBits dependencyFlags, array<ManagedVulkan::MvMemoryBarrier^>^ pMemoryBarriers, array<ManagedVulkan::BufferMemoryBarrier^>^ pBufferMemoryBarriers, array<ManagedVulkan::ImageMemoryBarrier^>^ pImageMemoryBarriers);
 		void CmdBeginQuery(ManagedVulkan::QueryPool^ queryPool, UInt32 query, ManagedVulkan::QueryControlFlagBits flags);
 		void CmdEndQuery(ManagedVulkan::QueryPool^ queryPool, UInt32 query);
 		void CmdResetQueryPool(ManagedVulkan::QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount);

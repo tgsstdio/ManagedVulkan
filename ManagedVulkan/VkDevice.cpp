@@ -760,7 +760,7 @@ ManagedVulkan::Result ManagedVulkan::Device::WaitForFences(array<ManagedVulkan::
 	}
 }
 
-ManagedVulkan::Result ManagedVulkan::Device::CreateSemaphore(ManagedVulkan::SemaphoreCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Semaphore^% pSemaphore)
+ManagedVulkan::Result ManagedVulkan::Device::CreateVkSemaphore(ManagedVulkan::SemaphoreCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Semaphore^% pSemaphore)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
@@ -840,7 +840,7 @@ void ManagedVulkan::Device::DestroySemaphore(ManagedVulkan::Semaphore^ semaphore
 	}
 }
 
-ManagedVulkan::Result ManagedVulkan::Device::CreateEvent(ManagedVulkan::EventCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Event^% pEvent)
+ManagedVulkan::Result ManagedVulkan::Device::CreateVkEvent(ManagedVulkan::EventCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Event^% pEvent)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
@@ -3678,7 +3678,7 @@ ManagedVulkan::Result ManagedVulkan::Device::ResetCommandPool(ManagedVulkan::Com
 	}
 }
 
-ManagedVulkan::Result ManagedVulkan::Device::AllocateCommandBuffers(ManagedVulkan::CommandBufferAllocateInfo^ pAllocateInfo, array<ManagedVulkan::CommandBuffer^>^ pCommandBuffers)
+ManagedVulkan::Result ManagedVulkan::Device::AllocateCommandBuffers(ManagedVulkan::CommandBufferAllocateInfo^ pAllocateInfo,[Out] array<ManagedVulkan::CommandBuffer^>^% pCommandBuffers)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	VkCommandBuffer* arg_2 = nullptr;
@@ -3693,12 +3693,6 @@ ManagedVulkan::Result ManagedVulkan::Device::AllocateCommandBuffers(ManagedVulka
 		VkCommandBufferAllocateInfo* arg_1 = nullptr;
 
 		UInt32 commandBufferCount = (pAllocateInfo != nullptr) ? pAllocateInfo->CommandBufferCount  : 0;
-		UInt32 noOfBuffers = (pCommandBuffers != nullptr) ? pCommandBuffers->Length : 0;
-
-		if (noOfBuffers != commandBufferCount)
-		{
-			throw gcnew System::InvalidOperationException("pAllocateInfo->CommandBufferCount != pCommandBuffers");
-		}
 
 		if (pAllocateInfo != nullptr)
 		{
@@ -3707,21 +3701,22 @@ ManagedVulkan::Result ManagedVulkan::Device::AllocateCommandBuffers(ManagedVulka
 		}
 
 		// INITS 2 - pCommandBuffers		
-
-		if (pCommandBuffers != nullptr)
+		if (commandBufferCount > 0)
 		{
-			if (noOfBuffers > 0)
-			{
-				arg_2 = new VkCommandBuffer[noOfBuffers];
-				for (UInt32 i = 0; i < noOfBuffers; ++i)
-				{
-					auto srcBuffer = (ManagedVulkan::CommandBuffer^) pCommandBuffers[i];
-					arg_2[i] = srcBuffer->mHandle;
-				}
-			}
-		}
+			arg_2 = new VkCommandBuffer[commandBufferCount];
+		}		
 
 		auto result = vkAllocateCommandBuffers(arg_0, arg_1, arg_2);
+
+		if (commandBufferCount > 0)
+		{
+			pCommandBuffers = gcnew array<ManagedVulkan::CommandBuffer^>(commandBufferCount);
+			for (UInt32 i = 0; i < commandBufferCount; ++i)
+			{
+				pCommandBuffers[i] = gcnew ManagedVulkan::CommandBuffer();
+				pCommandBuffers[i]->mHandle = arg_2[i];
+			}
+		}
 
 		return (Result)result;
 	}

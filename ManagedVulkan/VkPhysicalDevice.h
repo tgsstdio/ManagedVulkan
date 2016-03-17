@@ -30,6 +30,11 @@ namespace ManagedVulkan
 		PFN_vkCreateDisplayModeKHR mCreateDisplayModeKHR;
 		PFN_vkGetDisplayPlaneCapabilitiesKHR mGetDisplayPlaneCapabilitiesKHR;
 	public:
+		bool IsNullHandle()
+		{
+			return mHandle == VK_NULL_HANDLE;
+		}
+
 		void GetPhysicalDeviceProperties([Out] ManagedVulkan::PhysicalDeviceProperties^% pProperties);
 		void GetPhysicalDeviceQueueFamilyProperties([Out] array<ManagedVulkan::QueueFamilyProperties^>^% pQueueFamilyProperties);
 		void GetPhysicalDeviceMemoryProperties([Out] ManagedVulkan::PhysicalDeviceMemoryProperties^% pMemoryProperties);

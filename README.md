@@ -9,6 +9,11 @@ My own managed C++ / CLI interface for Vulkan (on my Windows machines compiled w
 # Version 2.0.0
  - Using Windows LunarG 1.0.5 Vulkan SDK implementation
  - BREAKING CHANGES to ManagedVulkan classes & functions
+   - Renamed functions due to collisions with Windows headers
+      - from CreateEvent to CreateVkEvent
+	  - from CreateSemaphore to CreateVkSemaphore
+   - Renamed class due to collisions with Windows headers and Vulkan headers
+      - from MemoryBarrier to MvMemoryBarrier
  - Added utility function ManagedVulkan.Vulkan.MakeVersion
  - Using run-time lookups (e.g. GetInstanceProcAddr, GetDeviceProcAddr) to fill out missing implementations of 
    - vkGetPhysicalDeviceDisplayPropertiesKHR

@@ -9,7 +9,8 @@ using namespace System::Collections::Generic;
 
 namespace ManagedVulkan
 {
-	public ref class MemoryBarrier
+	/// MemoryBarrier is reserved in win.nt
+	public ref class MvMemoryBarrier
 	{
 	private:
 		ManagedVulkan::StructureType mSType;

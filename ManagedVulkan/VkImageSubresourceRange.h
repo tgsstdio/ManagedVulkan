@@ -10,19 +10,19 @@ namespace ManagedVulkan
 	public ref class ImageSubresourceRange
 	{
 	private:
-		UInt32 mAspectMask;
+		ManagedVulkan::ImageAspectFlagBits mAspectMask;
 		UInt32 mBaseMipLevel = 0;
 		UInt32 mLevelCount = 0;
 		UInt32 mBaseArrayLayer = 0;
 		UInt32 mLayerCount = 0;
 	public:
-		property UInt32 AspectMask
+		property ManagedVulkan::ImageAspectFlagBits AspectMask
 		{
-			UInt32 get()
+			ManagedVulkan::ImageAspectFlagBits get()
 			{
 				return mAspectMask;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::ImageAspectFlagBits value)
 			{
 				mAspectMask = value;
 			}
@@ -74,7 +74,7 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkImageSubresourceRange* dst, List<IntPtr>^ pins)
 		{
-			dst->aspectMask = mAspectMask;
+			dst->aspectMask = (VkImageAspectFlagBits) mAspectMask;
 			dst->baseMipLevel = mBaseMipLevel;
 			dst->levelCount = mLevelCount;
 			dst->baseArrayLayer = mBaseArrayLayer;
@@ -83,7 +83,7 @@ namespace ManagedVulkan
 
 		void CopyFrom(VkImageSubresourceRange* src)
 		{
-			mAspectMask = src->aspectMask;
+			mAspectMask = (ManagedVulkan::ImageAspectFlagBits) src->aspectMask;
 			mBaseMipLevel = src->baseMipLevel;
 			mLevelCount = src->levelCount;
 			mBaseArrayLayer = src->baseArrayLayer;
