@@ -87,10 +87,38 @@ void ManagedVulkan::PhysicalDevice::GetPhysicalDeviceMemoryProperties([Out] Mana
 
 		vkGetPhysicalDeviceMemoryProperties(arg_0, arg_1);
 
-		pMemoryProperties = gcnew PhysicalDeviceMemoryProperties();
-		pMemoryProperties->CopyFrom(arg_1);
+		pMemoryProperties = gcnew PhysicalDeviceMemoryProperties();		
+		{
+			UInt32 noOfHeaps = arg_1->memoryHeapCount;
+			if (noOfHeaps > 0)
+			{
+				auto heaps = gcnew array<ManagedVulkan::MemoryHeap^>(noOfHeaps);
+				for (UInt32 i = 0; i < noOfHeaps; ++i)
+				{
+					auto dstHeap = gcnew ManagedVulkan::MemoryHeap();
+					auto srcHeap = arg_1->memoryHeaps + i;
+					dstHeap->CopyFrom(srcHeap);
+					heaps[i] = dstHeap;
+				}
+				pMemoryProperties->MemoryHeaps = heaps;
+			}
+		}
 
-
+		{
+			UInt32 noOfTypes = arg_1->memoryTypeCount;
+			if (noOfTypes > 0)
+			{
+				auto types = gcnew array<ManagedVulkan::MemoryType^>(noOfTypes);
+				for (UInt32 i = 0; i < noOfTypes; ++i)
+				{
+					auto dstType = gcnew ManagedVulkan::MemoryType();
+					auto srcType = arg_1->memoryTypes + i;
+					dstType->CopyFrom(srcType);
+					types[i] = dstType;
+				}
+				pMemoryProperties->MemoryTypes = types;
+			}
+		}
 	}
 	finally
 	{

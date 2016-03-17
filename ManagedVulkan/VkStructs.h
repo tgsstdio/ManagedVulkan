@@ -2767,7 +2767,7 @@ namespace ManagedVulkan
 	{
 	private:
 		UInt64 mSize = 0;
-		UInt32 mFlags;
+		ManagedVulkan::MemoryHeapFlagBits mFlags;
 	public:
 		property UInt64 Size
 		{
@@ -2780,13 +2780,13 @@ namespace ManagedVulkan
 				mSize = value;
 			}
 		}
-		property UInt32 Flags	// IGNORE - RESERVED / ALWAYS UInt32
+		property ManagedVulkan::MemoryHeapFlagBits Flags
 		{
-			UInt32 get()
+			ManagedVulkan::MemoryHeapFlagBits get()
 			{
 				return mFlags;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::MemoryHeapFlagBits value)
 			{
 				mFlags = value;
 			}
@@ -2795,29 +2795,29 @@ namespace ManagedVulkan
 		void CopyTo(VkMemoryHeap* dst, List<IntPtr>^ pins)
 		{
 			dst->size = mSize;
-			dst->flags = mFlags;
+			dst->flags = (VkMemoryHeapFlagBits) mFlags;
 		}
 
 		void CopyFrom(VkMemoryHeap* src)
 		{
 			mSize = src->size;
-			mFlags = src->flags;
+			mFlags = (ManagedVulkan::MemoryHeapFlagBits) src->flags;
 		}
 	};
 
 	public ref class MemoryType
 	{
 	private:
-		UInt32 mPropertyFlags;
+		ManagedVulkan::MemoryPropertyFlagBits mPropertyFlags;
 		UInt32 mHeapIndex = 0;
 	public:
-		property UInt32 PropertyFlags
+		property ManagedVulkan::MemoryPropertyFlagBits PropertyFlags
 		{
-			UInt32 get()
+			ManagedVulkan::MemoryPropertyFlagBits get()
 			{
 				return mPropertyFlags;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::MemoryPropertyFlagBits value)
 			{
 				mPropertyFlags = value;
 			}
@@ -2836,13 +2836,13 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkMemoryType* dst, List<IntPtr>^ pins)
 		{
-			dst->propertyFlags = mPropertyFlags;
+			dst->propertyFlags = (VkMemoryPropertyFlagBits) mPropertyFlags;
 			dst->heapIndex = mHeapIndex;
 		}
 
 		void CopyFrom(VkMemoryType* src)
 		{
-			mPropertyFlags = src->propertyFlags;
+			mPropertyFlags = (ManagedVulkan::MemoryPropertyFlagBits) src->propertyFlags;
 			mHeapIndex = src->heapIndex;
 		}
 	};
@@ -3634,25 +3634,12 @@ namespace ManagedVulkan
 	public ref class PhysicalDeviceMemoryProperties
 	{
 	private:
-		const int MAX_MEMORY_TYPES = 32;
-		const int MAX_MEMORY_HEAPS = 16;
+		//const int MAX_MEMORY_TYPES = 32;
+		//const int MAX_MEMORY_HEAPS = 16;
 
-		UInt32 mMemoryTypeCount = 0;
-		array<MemoryType^>^ mMemoryTypes = gcnew array<MemoryType^>(MAX_MEMORY_TYPES);
-		UInt32 mMemoryHeapCount = 0;
-		array<MemoryHeap^>^ mMemoryHeaps = gcnew array<MemoryHeap^>(MAX_MEMORY_HEAPS);
+		array<MemoryType^>^ mMemoryTypes = nullptr;
+		array<MemoryHeap^>^ mMemoryHeaps = nullptr;
 	public:
-		property UInt32 MemoryTypeCount
-		{
-			UInt32 get()
-			{
-				return mMemoryTypeCount;
-			}
-			void set(UInt32 value)
-			{
-				mMemoryTypeCount = value;
-			}
-		}
 		property array<MemoryType^>^ MemoryTypes
 		{
 			array<MemoryType^>^ get()
@@ -3662,17 +3649,6 @@ namespace ManagedVulkan
 			void set(array<MemoryType^>^ value)
 			{
 				mMemoryTypes = value;
-			}
-		}
-		property UInt32 MemoryHeapCount
-		{
-			UInt32 get()
-			{
-				return mMemoryHeapCount;
-			}
-			void set(UInt32 value)
-			{
-				mMemoryHeapCount = value;
 			}
 		}
 		property array<MemoryHeap^>^ MemoryHeaps
@@ -3689,36 +3665,12 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkPhysicalDeviceMemoryProperties* dst, List<IntPtr>^ pins)
 		{
-			dst->memoryTypeCount = mMemoryTypeCount;
-
-			for (UInt32 i = 0; i < mMemoryTypeCount; ++i)
-			{
-				mMemoryTypes[i]->CopyTo(dst->memoryTypes + i, pins);
-			}
-
-			dst->memoryHeapCount = mMemoryHeapCount;
-			for (UInt32 i = 0; i < mMemoryHeapCount; ++i)
-			{
-
-				mMemoryHeaps[i]->CopyTo(dst->memoryHeaps + i, pins);
-			}
+			// HANDLED BY FUNCTION
 		}
 
 		void CopyFrom(VkPhysicalDeviceMemoryProperties* src)
 		{
-			mMemoryTypeCount = src->memoryTypeCount;
-
-			for (UInt32 i = 0; i < mMemoryTypeCount; ++i)
-			{
-				mMemoryTypes[i]->CopyFrom(src->memoryTypes + i);
-			}
-
-			mMemoryHeapCount = src->memoryHeapCount;
-			for (UInt32 i = 0; i < mMemoryHeapCount; ++i)
-			{
-
-				mMemoryHeaps[i]->CopyFrom(src->memoryHeaps + i);
-			}
+			// HANDLED BY FUNCTION
 		}
 	};
 

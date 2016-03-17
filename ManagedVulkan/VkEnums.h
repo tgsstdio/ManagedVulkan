@@ -572,6 +572,20 @@ namespace ManagedVulkan
 		VK_LOGIC_OP_SET = 15,
 	};
 
+	[FlagsAttribute] public enum class MemoryHeapFlagBits : UInt32
+	{
+		VK_MEMORY_HEAP_DEVICE_LOCAL_BIT = 1 << 0, // If set, heap represents device memory
+	};
+
+	[FlagsAttribute] public enum class MemoryPropertyFlagBits : UInt32
+	{
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT = 1 << 0, // If otherwise stated, then allocate memory on device
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT = 1 << 1, // Memory is mappable by host
+		VK_MEMORY_PROPERTY_HOST_COHERENT_BIT = 1 << 2, // Memory will have i/o coherency. If not set, application may need to use vkFlushMappedMemoryRanges and vkInvalidateMappedMemoryRanges to flush/invalidate host cache
+		VK_MEMORY_PROPERTY_HOST_CACHED_BIT = 1 << 3, // Memory will be cached by the host
+		VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT = 1 << 4, // Memory may be allocated by the driver when it is required
+	};
+
 	public enum class PhysicalDeviceType : UInt32
 	{
 		VK_PHYSICAL_DEVICE_TYPE_OTHER = 0,

@@ -18,13 +18,12 @@ namespace ConsoleApplication1
 
         internal void Run()
         {
-            Int32 currentFrame = 0;
             while (!mQuit)
             {
                 mNativeWindow.ProcessEvents();
 
-                ++currentFrame;
-                if (mFrameCount != Int32.MaxValue && currentFrame >= mFrameCount)
+                ++mCurrentFrame;
+                if (mFrameCount != Int32.MaxValue && mCurrentFrame >= mFrameCount)
                 {
                     mQuit = true;
                 }
@@ -52,8 +51,8 @@ namespace ConsoleApplication1
         private readonly string APP_SHORT_NAME = "Demo";
         private readonly string Name = "Cube";
 
-        private Instance mInstance;
-        private PhysicalDevice mGPU;
+        private ManagedVulkan.Instance mInstance;
+        private ManagedVulkan.PhysicalDevice mGPU;
 
         private int mEnabledLayerCount;
         //private vkCreateDebugReportCallbackEXT mCreateDebugReportCallback;
@@ -519,11 +518,15 @@ Please look at the Getting Started guide for additional information.";
 
         private OpenTK.INativeWindow mNativeWindow;
         private bool mQuit;
-        private SurfaceKHR mSurface;
-        private QueueFamilyProperties[] mQueueProperties;
+        private ManagedVulkan.SurfaceKHR mSurface;
+        private ManagedVulkan.QueueFamilyProperties[] mQueueProperties;
         private uint mGraphicsQueueNodeIndex;
         private string[] mExtensionNames;
         private ManagedVulkan.Device mDevice;
+        private ManagedVulkan.Format mFormat;
+        private ManagedVulkan.ColorSpaceKHR mColorSpace;
+        private int mCurrentFrame;
+        private ManagedVulkan.PhysicalDeviceMemoryProperties mMemoryProperties;
 
         public void CreateWindow()
         {
@@ -632,6 +635,37 @@ Please look at the Getting Started guide for additional information.";
 
             mGraphicsQueueNodeIndex = graphicsQueueNodeIndex;
             CreateDevice();
+
+            ManagedVulkan.Queue deviceQueue;
+            mDevice.GetDeviceQueue(mGraphicsQueueNodeIndex, 0, out deviceQueue);
+
+            // Get the list of VkFormat's that are supported:
+            ManagedVulkan.SurfaceFormatKHR[] surfFormats;
+            err = mGPU.GetPhysicalDeviceSurfaceFormatsKHR(mSurface, out surfFormats);
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            // If the format list includes just one entry of VK_FORMAT_UNDEFINED,
+            // the surface has no preferred format.  Otherwise, at least one
+            // supported format will be returned.
+            if (surfFormats.Length == 1 && surfFormats[0].Format == ManagedVulkan.Format.VK_FORMAT_UNDEFINED)
+            {
+                mFormat = Format.VK_FORMAT_B8G8R8A8_UNORM;
+            }
+            else
+            {
+                Debug.Assert(surfFormats.Length >= 1);
+                mFormat = surfFormats[0].Format;
+            }
+            mColorSpace = surfFormats[0].ColorSpace;
+
+            mQuit = false;
+            mCurrentFrame = 0;
+
+            // Get Memory information and properties
+
+            ManagedVulkan.PhysicalDeviceMemoryProperties props;
+            mGPU.GetPhysicalDeviceMemoryProperties(out props);
+            mMemoryProperties = props;
         }
 
         private void CreateDevice()
