@@ -1571,6 +1571,8 @@ Please look at the Getting Started guide for additional information.";
         private DescriptorSetLayout mDescLayout;
         private PipelineLayout mPipelineLayout;
         private RenderPass mRenderPass;
+        private PipelineCache mPipelineCache;
+        private Pipeline mPipeline;
 
         private void PrepareCubeDataBuffer()
         {
@@ -1772,12 +1774,198 @@ Please look at the Getting Started guide for additional information.";
 
         private void PreparePipeline()
         {
-            throw new NotImplementedException();
+            Result err;
+
+            var pipelineCacheInfo = new PipelineCacheCreateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO,
+            };
+
+            err = mDevice.CreatePipelineCache(pipelineCacheInfo, null, out mPipelineCache);
+
+            var defaultStencilState = new StencilOpState
+            {
+                FailOp = StencilOp.VK_STENCIL_OP_KEEP,
+                PassOp = StencilOp.VK_STENCIL_OP_KEEP,
+                CompareOp = CompareOp.VK_COMPARE_OP_ALWAYS,
+            };
+
+            var vertShaderModule = PrepareVS();
+            var fragShaderModule = PrepareFS();
+
+            var pipelineInfo = new GraphicsPipelineCreateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
+                Layout = mPipelineLayout,
+                VertexInputState = new PipelineVertexInputStateCreateInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+                },
+                InputAssemblyState = new PipelineInputAssemblyStateCreateInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+                    Topology = PrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+                },
+                RasterizationState = new PipelineRasterizationStateCreateInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+                    PolygonMode = PolygonMode.VK_POLYGON_MODE_FILL,
+                    CullMode = CullModeFlagBits.VK_CULL_MODE_BACK_BIT,
+                    FrontFace = FrontFace.VK_FRONT_FACE_COUNTER_CLOCKWISE,
+                    DepthClampEnable = false,
+                    RasterizerDiscardEnable = false,
+                    DepthBiasEnable = false,
+                },
+                ColorBlendState = new PipelineColorBlendStateCreateInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+                    Attachments = new[] {
+                        new PipelineColorBlendAttachmentState
+                        {
+                            ColorWriteMask = 0xf,
+                            BlendEnable = false,
+                        }
+                    },
+                },
+                MultisampleState = new PipelineMultisampleStateCreateInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+                    SampleMask = null,
+                    RasterizationSamples = SampleCountFlagBits.VK_SAMPLE_COUNT_1_BIT,
+                },
+                ViewportState = new PipelineViewportStateCreateInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+                    Viewports = null,
+                    Scissors = null,
+                    ViewportCount = 1,
+                },
+                DepthStencilState = new PipelineDepthStencilStateCreateInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+                    DepthTestEnable = true,
+                    DepthWriteEnable = true,
+                    DepthCompareOp = CompareOp.VK_COMPARE_OP_LESS_OR_EQUAL,
+                    Back = defaultStencilState,
+                    StencilTestEnable = false,
+                    Front = defaultStencilState,
+                },
+                DynamicState = new PipelineDynamicStateCreateInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
+                    DynamicStates = new[]
+                    {
+                        DynamicState.VK_DYNAMIC_STATE_VIEWPORT,
+                        DynamicState.VK_DYNAMIC_STATE_SCISSOR,
+                    },
+                },
+                Stages = new[]
+                {
+                    new PipelineShaderStageCreateInfo
+                    {
+                        SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+                        Stage = ShaderStageFlagBits.VK_SHADER_STAGE_VERTEX_BIT,
+                        Module = vertShaderModule,
+                        Name = "main",
+                    },
+                    new PipelineShaderStageCreateInfo
+                    {
+                        SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+                        Stage = ShaderStageFlagBits.VK_SHADER_STAGE_FRAGMENT_BIT,
+                        Module = fragShaderModule,
+                        Name = "main",
+                    },
+                },
+                RenderPass = mRenderPass,
+            };
+
+            Pipeline[] output;
+            err = mDevice.CreateGraphicsPipelines(mPipelineCache, new[] { pipelineInfo }, null, out output);
+            Debug.Assert(err == Result.VK_SUCCESS);
+            Debug.Assert(output.Length == 1);
+            mPipeline = output[0];
+
+            mDevice.DestroyShaderModule(vertShaderModule, null);
+            mDevice.DestroyShaderModule(fragShaderModule, null);
+        }
+
+        private ShaderModule PrepareVS()
+        {
+            var vertShaderCode = ReadSpv("cube-vert.spv");
+            return PrepareShaderModule(vertShaderCode);
+        }
+
+        private UInt32[] ReadSpv(string filename)
+        {
+            using (var fs = File.Open(filename, FileMode.Open))
+            using (var ms = new MemoryStream())
+            using (var reader = new BinaryReader(ms))
+            {
+
+                fs.CopyTo(ms);
+                Debug.Assert(ms.Length % 4 == 0);
+                long arrayLength = ms.Length / sizeof(UInt32);
+                var dest = new UInt32[arrayLength];
+
+                long i = 0;
+                while (i < arrayLength)
+                {
+                    dest[i] = reader.ReadUInt32(); 
+                    ++i;
+                }
+                return dest;                   
+            }
+         }
+
+        private ShaderModule PrepareShaderModule(UInt32[] code)
+        {
+            var moduleCreateInfo = new ShaderModuleCreateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+                Code = code,
+                Flags = 0,
+            };
+
+            ManagedVulkan.ShaderModule module;
+            Result err = mDevice.CreateShaderModule(moduleCreateInfo, null, out module);
+            return module;
+        }
+
+        private ShaderModule PrepareFS()
+        {
+            var fragShaderCode = ReadSpv("cube-frag.spv");
+            return  PrepareShaderModule(fragShaderCode);
         }
 
         public void Cleanup()
         {
             mPrepared = false;
+
+            if (mPipeline != null)
+            {
+                mDevice.DestroyPipeline(mPipeline, null);
+            }
+
+            if (mPipelineCache != null)
+            {
+                mDevice.DestroyPipelineCache(mPipelineCache, null);
+            }
+
+            if (mRenderPass != null)
+            {
+                mDevice.DestroyRenderPass(mRenderPass, null);
+            }
+
+            if (mPipelineLayout != null)
+            {
+                mDevice.DestroyPipelineLayout(mPipelineLayout, null);
+            }
+
+            if (mDescLayout != null)
+            {
+                mDevice.DestroyDescriptorSetLayout(mDescLayout, null);
+            }
+
 
             for (UInt32 i = 0; i < DEMO_TEXTURE_COUNT; ++i)
             {

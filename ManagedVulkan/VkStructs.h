@@ -7197,7 +7197,9 @@ namespace ManagedVulkan
 	private:
 		ManagedVulkan::StructureType mSType;
 		UInt32 mFlags;
+		UInt32 mViewportCount;
 		array<ManagedVulkan::Viewport^>^ mViewports = nullptr;
+		// UInt32 mScissorCount; // always same as mScissorCount;
 		array<ManagedVulkan::Rect2D^>^ mScissors = nullptr;
 	public:
 		property ManagedVulkan::StructureType SType
@@ -7222,6 +7224,19 @@ namespace ManagedVulkan
 				mFlags = value;
 			}
 		}
+
+		property UInt32 ViewportCount
+		{
+			UInt32 get()
+			{
+				return mViewportCount;
+			}
+			void set(UInt32 value)
+			{
+				mViewportCount = value;
+			}
+		}
+
 		property array<ManagedVulkan::Viewport^>^ Viewports
 		{
 			array<ManagedVulkan::Viewport^>^ get()

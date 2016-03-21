@@ -1999,6 +1999,10 @@ ManagedVulkan::Result ManagedVulkan::Device::CreateGraphicsPipelines(ManagedVulk
 											}
 										}
 									}
+									else
+									{
+										noOfViewPorts = src->ViewportState->ViewportCount;
+									}
 									arg_3_8->pViewports = arg_3_8_4;
 									arg_3_8->viewportCount = noOfViewPorts;
 								}
@@ -2018,6 +2022,11 @@ ManagedVulkan::Result ManagedVulkan::Device::CreateGraphicsPipelines(ManagedVulk
 											auto scissor = (ManagedVulkan::Rect2D^) src->ViewportState->Scissors[j];
 											scissor->CopyTo(arg_3_8_6 + j, pins);
 										}
+									}
+									else
+									{
+										// MUST BE SAME 
+										noOfScissors = src->ViewportState->ViewportCount;
 									}
 									arg_3_8->pScissors = arg_3_8_6;
 									arg_3_8->scissorCount = noOfScissors;

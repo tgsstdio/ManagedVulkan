@@ -27,6 +27,10 @@ namespace ConsoleApplication1
                 Console.WriteLine(vlex.Category);
                 Console.WriteLine(vlex.Message);
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             finally
             {
                 d.Cleanup();
