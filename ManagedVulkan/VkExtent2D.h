@@ -10,9 +10,21 @@ namespace ManagedVulkan
 	public ref class Extent2D
 	{
 	private:
-		UInt32 mWidth = 0;
-		UInt32 mHeight = 0;
+		UInt32 mWidth;
+		UInt32 mHeight;
 	public:
+		Extent2D() : Extent2D(0, 0)
+		{
+			
+		}
+
+		Extent2D(UInt32 width, UInt32 height)
+		{
+			mWidth = width;
+			mHeight = height;
+		}
+
+
 		property UInt32 Width
 		{
 			UInt32 get()

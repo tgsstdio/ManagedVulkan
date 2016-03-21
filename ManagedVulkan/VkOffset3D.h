@@ -10,10 +10,22 @@ namespace ManagedVulkan
 	public ref class Offset3D
 	{
 	private:
-		Int32 mX = 0;
-		Int32 mY = 0;
-		Int32 mZ = 0;
+		Int32 mX;
+		Int32 mY;
+		Int32 mZ;
 	public:
+		Offset3D() : Offset3D(0, 0, 0)
+		{
+
+		}
+
+		Offset3D(Int32 x, Int32 y, Int32 z)
+		{
+			mX = x;
+			mY = y;
+			mZ = z;
+		}
+
 		property Int32 X
 		{
 			Int32 get()

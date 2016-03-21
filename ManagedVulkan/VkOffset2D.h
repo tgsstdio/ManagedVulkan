@@ -9,9 +9,20 @@ namespace ManagedVulkan
 	public ref class Offset2D
 	{
 	private:
-		Int32 mX = 0;
-		Int32 mY = 0;
+		Int32 mX;
+		Int32 mY;
 	public:
+		Offset2D() : Offset2D(0, 0)
+		{
+				
+		}
+
+		Offset2D(Int32 x, Int32 y)
+		{
+			mX = x;
+			mY = y;
+		}
+
 		property Int32 X
 		{
 			Int32 get()

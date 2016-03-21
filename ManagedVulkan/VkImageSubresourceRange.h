@@ -16,6 +16,25 @@ namespace ManagedVulkan
 		UInt32 mBaseArrayLayer = 0;
 		UInt32 mLayerCount = 0;
 	public:
+		ImageSubresourceRange()
+		{
+			// parameterless
+		}
+
+		ImageSubresourceRange(
+			ManagedVulkan::ImageAspectFlagBits aspectMask,
+			UInt32 baseMipLevel,
+			UInt32 levelCount,
+			UInt32 baseArrayLayer,
+			UInt32 layerCount)
+		{
+			mAspectMask = aspectMask;
+			mBaseMipLevel = baseMipLevel;
+			mLevelCount = levelCount;
+			mBaseArrayLayer = baseArrayLayer;
+			mLayerCount = layerCount;
+		}
+
 		property ManagedVulkan::ImageAspectFlagBits AspectMask
 		{
 			ManagedVulkan::ImageAspectFlagBits get()

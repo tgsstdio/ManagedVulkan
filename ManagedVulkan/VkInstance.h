@@ -47,7 +47,7 @@ namespace ManagedVulkan
 #endif
 		ManagedVulkan::Result CreateDebugReportCallbackEXT(ManagedVulkan::DebugReportCallbackCreateInfoEXT^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::DebugReportCallbackEXT^% pCallback);
 		void DestroyDebugReportCallbackEXT(ManagedVulkan::DebugReportCallbackEXT^ callback, ManagedVulkan::AllocationCallbacks^ pAllocator);
-		void DebugReportMessageEXT(ManagedVulkan::DebugReportFlagBitsEXT flags, ManagedVulkan::DebugReportObjectTypeEXT objectType, UInt64 object, size_t location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage);
+		void DebugReportMessageEXT(ManagedVulkan::DebugReportFlagBitsEXT flags, ManagedVulkan::DebugReportObjectTypeEXT objectType, UInt64 object, UIntPtr location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage);
 	};
 
 	//public delegate ManagedVulkan::Result vkCreateDebugReportCallbackEXT(ManagedVulkan::Instance^ instance, ManagedVulkan::DebugReportCallbackCreateInfoEXT^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::DebugReportCallbackEXT^% pCallback);

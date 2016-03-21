@@ -208,7 +208,7 @@ void ManagedVulkan::Device::FreeMemory(ManagedVulkan::DeviceMemory^ memory, Mana
 	}
 }
 
-ManagedVulkan::Result ManagedVulkan::Device::MapMemory(ManagedVulkan::DeviceMemory^ memory, UInt64 offset, UInt64 size, UInt32 flags,[Out] IntPtr^% ppData)
+ManagedVulkan::Result ManagedVulkan::Device::MapMemory(ManagedVulkan::DeviceMemory^ memory, UInt64 offset, UInt64 size, UInt32 flags,[Out] IntPtr% ppData)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
@@ -231,7 +231,7 @@ ManagedVulkan::Result ManagedVulkan::Device::MapMemory(ManagedVulkan::DeviceMemo
 
 		auto result = vkMapMemory(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
 
-		ppData = gcnew IntPtr(inst_5);
+		ppData = IntPtr(inst_5);
 
 		return (Result)result;
 	}
@@ -760,7 +760,9 @@ ManagedVulkan::Result ManagedVulkan::Device::WaitForFences(array<ManagedVulkan::
 	}
 }
 
-ManagedVulkan::Result ManagedVulkan::Device::CreateVkSemaphore(ManagedVulkan::SemaphoreCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Semaphore^% pSemaphore)
+#undef CreateSemaphore
+
+ManagedVulkan::Result ManagedVulkan::Device::CreateSemaphore(ManagedVulkan::SemaphoreCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Semaphore^% pSemaphore)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
@@ -840,7 +842,8 @@ void ManagedVulkan::Device::DestroySemaphore(ManagedVulkan::Semaphore^ semaphore
 	}
 }
 
-ManagedVulkan::Result ManagedVulkan::Device::CreateVkEvent(ManagedVulkan::EventCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Event^% pEvent)
+#undef CreateEvent
+ManagedVulkan::Result ManagedVulkan::Device::CreateEvent(ManagedVulkan::EventCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Event^% pEvent)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
@@ -1080,7 +1083,7 @@ void ManagedVulkan::Device::DestroyQueryPool(ManagedVulkan::QueryPool^ queryPool
 }
 
 
-ManagedVulkan::Result ManagedVulkan::Device::GetQueryPoolResults(ManagedVulkan::QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount, size_t dataSize, IntPtr pData, UInt64 stride, UInt32 flags)
+ManagedVulkan::Result ManagedVulkan::Device::GetQueryPoolResults(ManagedVulkan::QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount, UIntPtr dataSize, IntPtr pData, UInt64 stride, UInt32 flags)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
@@ -1096,7 +1099,7 @@ ManagedVulkan::Result ManagedVulkan::Device::GetQueryPoolResults(ManagedVulkan::
 		// INITS 3 - queryCount		
 		uint32_t arg_3 = queryCount;
 		// INITS 4 - dataSize		
-		size_t arg_4 = (size_t)dataSize;
+		size_t arg_4 = dataSize.Size == 8 ? dataSize.ToUInt64() : dataSize.ToUInt32();
 		// INITS 5 - pData		
 		void* arg_5 = 0;
 		// INITS 6 - stride		
@@ -2653,6 +2656,10 @@ ManagedVulkan::Result ManagedVulkan::Device::CreateDescriptorSetLayout(ManagedVu
 										samplers[j] = srcImage->mHandle;
 									}
 								}
+							}
+							else
+							{
+								noOfSamplers = srcBinding->DescriptorCount;
 							}
 							dstBinding->descriptorCount = noOfSamplers;
 							dstBinding->pImmutableSamplers = samplers;

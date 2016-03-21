@@ -1027,7 +1027,7 @@ namespace ManagedVulkan
 		Vec2Ui^ mMaxViewportDimensions = gcnew Vec2Ui();
 		Vec2f^ mViewportBoundsRange = gcnew Vec2f();
 		UInt32 mViewportSubPixelBits = 0;
-		size_t mMinMemoryMapAlignment;
+		UIntPtr mMinMemoryMapAlignment;
 		UInt64 mMinTexelBufferOffsetAlignment = 0;
 		UInt64 mMinUniformBufferOffsetAlignment = 0;
 		UInt64 mMinStorageBufferOffsetAlignment = 0;
@@ -1794,13 +1794,13 @@ namespace ManagedVulkan
 				mViewportSubPixelBits = value;
 			}
 		}
-		property size_t MinMemoryMapAlignment
+		property UIntPtr MinMemoryMapAlignment
 		{
-			size_t get()
+			UIntPtr get()
 			{
 				return mMinMemoryMapAlignment;
 			}
-			void set(size_t value)
+			void set(UIntPtr value)
 			{
 				mMinMemoryMapAlignment = value;
 			}
@@ -2303,7 +2303,7 @@ namespace ManagedVulkan
 			mMaxViewportDimensions->CopyTo(dst->maxViewportDimensions);
 			mViewportBoundsRange->CopyTo(dst->viewportBoundsRange);
 			dst->viewportSubPixelBits = mViewportSubPixelBits;
-			dst->minMemoryMapAlignment = mMinMemoryMapAlignment;
+			dst->minMemoryMapAlignment = (mMinMemoryMapAlignment.Size == 8) ? mMinMemoryMapAlignment.ToUInt64() : mMinMemoryMapAlignment.ToUInt32();
 			dst->minTexelBufferOffsetAlignment = mMinTexelBufferOffsetAlignment;
 			dst->minUniformBufferOffsetAlignment = mMinUniformBufferOffsetAlignment;
 			dst->minStorageBufferOffsetAlignment = mMinStorageBufferOffsetAlignment;
@@ -2413,7 +2413,7 @@ namespace ManagedVulkan
 			mMaxViewportDimensions->CopyFrom(src->maxViewportDimensions);
 			mViewportBoundsRange->CopyFrom(src->viewportBoundsRange);
 			mViewportSubPixelBits = src->viewportSubPixelBits;
-			mMinMemoryMapAlignment = src->minMemoryMapAlignment;
+			mMinMemoryMapAlignment = UIntPtr(src->minMemoryMapAlignment);
 			mMinTexelBufferOffsetAlignment = src->minTexelBufferOffsetAlignment;
 			mMinUniformBufferOffsetAlignment = src->minUniformBufferOffsetAlignment;
 			mMinStorageBufferOffsetAlignment = src->minStorageBufferOffsetAlignment;
@@ -4928,17 +4928,17 @@ namespace ManagedVulkan
 	public ref class ImageSubresource
 	{
 	private:
-		UInt32 mAspectMask;
+		ManagedVulkan::ImageAspectFlagBits mAspectMask;
 		UInt32 mMipLevel = 0;
 		UInt32 mArrayLayer = 0;
 	public:
-		property UInt32 AspectMask
+		property ManagedVulkan::ImageAspectFlagBits AspectMask
 		{
-			UInt32 get()
+			ManagedVulkan::ImageAspectFlagBits get()
 			{
 				return mAspectMask;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::ImageAspectFlagBits value)
 			{
 				mAspectMask = value;
 			}
@@ -4968,14 +4968,14 @@ namespace ManagedVulkan
 	internal:
 		void CopyTo(VkImageSubresource* dst, List<IntPtr>^ pins)
 		{
-			dst->aspectMask = mAspectMask;
+			dst->aspectMask = (VkImageAspectFlagBits) mAspectMask;
 			dst->mipLevel = mMipLevel;
 			dst->arrayLayer = mArrayLayer;
 		}
 
 		void CopyFrom(VkImageSubresource* src)
 		{
-			mAspectMask = src->aspectMask;
+			mAspectMask = (ManagedVulkan::ImageAspectFlagBits) src->aspectMask;
 			mMipLevel = src->mipLevel;
 			mArrayLayer = src->arrayLayer;
 		}
@@ -6025,7 +6025,7 @@ namespace ManagedVulkan
 		UInt32 mArrayLayers = 0;
 		ManagedVulkan::SampleCountFlagBits mSamples;
 		ManagedVulkan::ImageTiling mTiling;
-		UInt32 mUsage;
+		ManagedVulkan::ImageUsageFlagBits mUsage;
 		ManagedVulkan::SharingMode mSharingMode;
 		array<UInt32>^ mQueueFamilyIndices = nullptr;
 		ManagedVulkan::ImageLayout mInitialLayout;
@@ -6129,13 +6129,13 @@ namespace ManagedVulkan
 				mTiling = value;
 			}
 		}
-		property UInt32 Usage
+		property ManagedVulkan::ImageUsageFlagBits Usage
 		{
-			UInt32 get()
+			ManagedVulkan::ImageUsageFlagBits get()
 			{
 				return mUsage;
 			}
-			void set(UInt32 value)
+			void set(ManagedVulkan::ImageUsageFlagBits value)
 			{
 				mUsage = value;
 			}
@@ -6187,7 +6187,7 @@ namespace ManagedVulkan
 			dst->arrayLayers = mArrayLayers;
 			dst->samples = (VkSampleCountFlagBits) mSamples;
 			dst->tiling = (VkImageTiling) mTiling;
-			dst->usage = mUsage;
+			dst->usage = (VkImageUsageFlagBits) mUsage;
 			dst->sharingMode = (VkSharingMode) mSharingMode;
 			//dst->queueFamilyIndexCount = mQueueFamilyIndexCount;
 			//dst->pQueueFamilyIndices = mQueueFamilyIndices;
@@ -6206,7 +6206,7 @@ namespace ManagedVulkan
 			mArrayLayers = src->arrayLayers;
 			mSamples = (ManagedVulkan::SampleCountFlagBits) src->samples;
 			mTiling = (ManagedVulkan::ImageTiling)src->tiling;
-			mUsage = src->usage;
+			mUsage = (ManagedVulkan::ImageUsageFlagBits) src->usage;
 			mSharingMode = (ManagedVulkan::SharingMode) src->sharingMode;
 			//mQueueFamilyIndexCount = src->queueFamilyIndexCount;
 			//mQueueFamilyIndices = src->pQueueFamilyIndices;
@@ -6217,12 +6217,26 @@ namespace ManagedVulkan
 	public ref class SubresourceLayout
 	{
 	private:
-		UInt64 mOffset = 0;
-		UInt64 mSize = 0;
-		UInt64 mRowPitch = 0;
-		UInt64 mArrayPitch = 0;
-		UInt64 mDepthPitch = 0;
+		UInt64 mOffset;
+		UInt64 mSize;
+		UInt64 mRowPitch;
+		UInt64 mArrayPitch;
+		UInt64 mDepthPitch;
 	public:
+		SubresourceLayout() : SubresourceLayout(0, 0, 0, 0, 0)
+		{
+				
+		}
+
+		SubresourceLayout(UInt64 offset, UInt64 size, UInt64 rowPitch, UInt64 arrayPitch, UInt64 depthPitch)
+		{
+			mOffset = offset;
+			mSize = size;
+			mRowPitch = rowPitch;
+			mArrayPitch = arrayPitch;
+			mDepthPitch = depthPitch;
+		}
+
 		property UInt64 Offset
 		{
 			UInt64 get()
@@ -6306,6 +6320,19 @@ namespace ManagedVulkan
 		ManagedVulkan::ComponentSwizzle mB;
 		ManagedVulkan::ComponentSwizzle mA;
 	public:
+		ComponentMapping()
+		{
+			// parameterless
+		}
+
+		ComponentMapping(ManagedVulkan::ComponentSwizzle r, ManagedVulkan::ComponentSwizzle g, ManagedVulkan::ComponentSwizzle b, ManagedVulkan::ComponentSwizzle a)
+		{
+			mR = r;
+			mG = g;
+			mB = b;
+			mA = a;
+		}
+
 		property ManagedVulkan::ComponentSwizzle R
 		{
 			ManagedVulkan::ComponentSwizzle get()
@@ -8875,6 +8902,7 @@ namespace ManagedVulkan
 	private:
 		UInt32 mBinding = 0;
 		ManagedVulkan::DescriptorType mDescriptorType;
+		UInt32 mDescriptorCount = 0;
 		ManagedVulkan::ShaderStageFlagBits mStageFlags;
 		array<ManagedVulkan::Sampler^>^ mImmutableSamplers = nullptr;
 	public:
@@ -8900,6 +8928,19 @@ namespace ManagedVulkan
 				mDescriptorType = value;
 			}
 		}
+
+		property UInt32 DescriptorCount
+		{
+			UInt32 get()
+			{
+				return mDescriptorCount;
+			}
+			void set(UInt32 value)
+			{
+				mDescriptorCount = value;
+			}
+		}
+
 		property ManagedVulkan::ShaderStageFlagBits StageFlags
 		{
 			ManagedVulkan::ShaderStageFlagBits get()

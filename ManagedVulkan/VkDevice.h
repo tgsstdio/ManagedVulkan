@@ -37,7 +37,7 @@ namespace ManagedVulkan
 		ManagedVulkan::Result DeviceWaitIdle();
 		ManagedVulkan::Result AllocateMemory(ManagedVulkan::MemoryAllocateInfo^ pAllocateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator,[Out] ManagedVulkan::DeviceMemory^% pMemory);
 		void FreeMemory(ManagedVulkan::DeviceMemory^ memory, ManagedVulkan::AllocationCallbacks^ pAllocator);
-		ManagedVulkan::Result MapMemory(ManagedVulkan::DeviceMemory^ memory, UInt64 offset, UInt64 size, UInt32 flags, [Out] IntPtr^% ppData);
+		ManagedVulkan::Result MapMemory(ManagedVulkan::DeviceMemory^ memory, UInt64 offset, UInt64 size, UInt32 flags, [Out] IntPtr% ppData);
 		void UnmapMemory(ManagedVulkan::DeviceMemory^ memory);
 		ManagedVulkan::Result FlushMappedMemoryRanges(array<ManagedVulkan::MappedMemoryRange^>^ pMemoryRanges);
 		ManagedVulkan::Result InvalidateMappedMemoryRanges(array<ManagedVulkan::MappedMemoryRange^>^ pMemoryRanges);
@@ -53,16 +53,19 @@ namespace ManagedVulkan
 		ManagedVulkan::Result GetFenceStatus(ManagedVulkan::Fence^ fence);
 		ManagedVulkan::Result WaitForFences(array<ManagedVulkan::Fence^>^ pFences, bool waitAll, UInt64 timeout);
 		// Renamed CreateSemaphore to CreateVkSemaphore due to Windows preprocessor
-		ManagedVulkan::Result CreateVkSemaphore(ManagedVulkan::SemaphoreCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Semaphore^% pSemaphore);
+
+#undef CreateSemaphore
+		ManagedVulkan::Result CreateSemaphore(ManagedVulkan::SemaphoreCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Semaphore^% pSemaphore);
 		void DestroySemaphore(ManagedVulkan::Semaphore^ semaphore, ManagedVulkan::AllocationCallbacks^ pAllocator);
-		ManagedVulkan::Result CreateVkEvent(ManagedVulkan::EventCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Event^% pEvent);
+#undef CreateEvent
+		ManagedVulkan::Result CreateEvent(ManagedVulkan::EventCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Event^% pEvent);
 		void DestroyEvent(ManagedVulkan::Event^ event, ManagedVulkan::AllocationCallbacks^ pAllocator);
 		ManagedVulkan::Result GetEventStatus(ManagedVulkan::Event^ event);
 		ManagedVulkan::Result SetEvent(ManagedVulkan::Event^ event);
 		ManagedVulkan::Result ResetEvent(ManagedVulkan::Event^ event);
 		ManagedVulkan::Result CreateQueryPool(ManagedVulkan::QueryPoolCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::QueryPool^% pQueryPool);
 		void DestroyQueryPool(ManagedVulkan::QueryPool^ queryPool, ManagedVulkan::AllocationCallbacks^ pAllocator);
-		ManagedVulkan::Result GetQueryPoolResults(ManagedVulkan::QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount, size_t dataSize, IntPtr pData, UInt64 stride, UInt32 flags);
+		ManagedVulkan::Result GetQueryPoolResults(ManagedVulkan::QueryPool^ queryPool, UInt32 firstQuery, UInt32 queryCount, UIntPtr dataSize, IntPtr pData, UInt64 stride, UInt32 flags);
 		ManagedVulkan::Result CreateBuffer(ManagedVulkan::BufferCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Buffer^% pBuffer);
 		void DestroyBuffer(ManagedVulkan::Buffer^ buffer, ManagedVulkan::AllocationCallbacks^ pAllocator);
 		ManagedVulkan::Result CreateBufferView(ManagedVulkan::BufferViewCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::BufferView^% pView);

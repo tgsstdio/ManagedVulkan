@@ -10,10 +10,22 @@ namespace ManagedVulkan
 	public ref class Extent3D
 	{
 	private:
-		UInt32 mWidth = 0;
-		UInt32 mHeight = 0;
-		UInt32 mDepth = 0;
+		UInt32 mWidth;
+		UInt32 mHeight;
+		UInt32 mDepth;
 	public:
+		Extent3D() : Extent3D(0, 0, 0)
+		{
+
+		}
+
+		Extent3D(UInt32 width, UInt32 height, UInt32 depth)
+		{
+			mWidth = width;
+			mHeight = height;
+			mDepth = depth;
+		}
+
 		property UInt32 Width
 		{
 			UInt32 get()

@@ -7,6 +7,8 @@ using ManagedVulkan;
 using OpenTK;
 using System.Collections.Specialized;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
 
 namespace ConsoleApplication1
 {
@@ -454,7 +456,7 @@ Please look at the Getting Started guide for additional information.";
         private bool dbgFunc(
                 ManagedVulkan.DebugReportFlagBitsEXT flags,
                 ManagedVulkan.DebugReportObjectTypeEXT objectType,
-                ulong srcObject, ulong location, int msgCode,
+                ulong srcObject, UIntPtr location, int msgCode,
                 string pLayerPrefix, string pMsg, IntPtr userData)
         {
             string message = "";
@@ -642,6 +644,7 @@ Please look at the Getting Started guide for additional information.";
 
             ManagedVulkan.Queue deviceQueue;
             mDevice.GetDeviceQueue(mGraphicsQueueNodeIndex, 0, out deviceQueue);
+            mQueue = deviceQueue;
 
             // Get the list of VkFormat's that are supported:
             ManagedVulkan.SurfaceFormatKHR[] surfFormats;
@@ -901,9 +904,9 @@ Please look at the Getting Started guide for additional information.";
                 var cmd_buf_hinfo = new ManagedVulkan.CommandBufferInheritanceInfo
                 {
                     SType = StructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
-                    RenderPass = new ManagedVulkan.RenderPass(),
+                    RenderPass = new ManagedVulkan.RenderPass(), // NULL HANDLE
                     Subpass = 0,
-                    Framebuffer = new ManagedVulkan.Framebuffer(),
+                    Framebuffer = new ManagedVulkan.Framebuffer(), // NULL HANDLE
                     OcclusionQueryEnable = false,
                     QueryFlags = 0,
                     PipelineStatistics = 0,
@@ -967,47 +970,871 @@ Please look at the Getting Started guide for additional information.";
 
         }
 
+        DepthValue mDepth;
+        private void PrepareDepth()
+        {
+            mDepth = new DepthValue();
+            var depth_format = ManagedVulkan.Format.VK_FORMAT_D16_UNORM;
+
+            var imageInfo = new ManagedVulkan.ImageCreateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+                ImageType = ImageType.VK_IMAGE_TYPE_2D,
+                Format = depth_format,
+                Extent = new Extent3D
+                {
+                    Width = (uint) mWidth,
+                    Height = (uint) mHeight,
+                    Depth = 1,
+                },
+                MipLevels = 1,
+                ArrayLayers = 1,
+                Samples = SampleCountFlagBits.VK_SAMPLE_COUNT_1_BIT,
+                Tiling = ImageTiling.VK_IMAGE_TILING_OPTIMAL,
+                Usage = ImageUsageFlagBits.VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+                Flags = 0,
+            };
+
+            ManagedVulkan.Result err;
+            
+
+            mDepth.Format = depth_format;
+
+            ManagedVulkan.Image depthImage;
+            err = mDevice.CreateImage(imageInfo, null, out depthImage);
+            Debug.Assert(err == Result.VK_SUCCESS);
+            mDepth.Image = depthImage;
+
+            MemoryRequirements mem_reqs;
+            mDevice.GetImageMemoryRequirements(mDepth.Image, out mem_reqs);
+
+
+            UInt32 memoryTypeIndex;
+            bool pass = memoryTypeFromProperties(mem_reqs.MemoryTypeBits, 0, out memoryTypeIndex);
+            Debug.Assert(pass);
+
+            mDepth.MemAlloc = new MemoryAllocateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+                AllocationSize = mem_reqs.Size,
+                MemoryTypeIndex = memoryTypeIndex,
+            };
+
+            /* allocate memory */
+            ManagedVulkan.DeviceMemory deviceMem; 
+            err = mDevice.AllocateMemory(mDepth.MemAlloc, null, out deviceMem);
+            Debug.Assert(err == Result.VK_SUCCESS);
+            mDepth.Mem = deviceMem;
+
+            /* bind memory */
+            err = mDevice.BindImageMemory(mDepth.Image, mDepth.Mem, 0);
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            SetImageLayout(mDepth.Image,
+                ImageAspectFlagBits.VK_IMAGE_ASPECT_DEPTH_BIT,
+                ImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
+                ImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+                0);
+
+
+            var viewInfo = new ManagedVulkan.ImageViewCreateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+                Image = mDepth.Image,
+                Format = depth_format,
+                SubresourceRange = new ImageSubresourceRange
+                {
+                    AspectMask = ImageAspectFlagBits.VK_IMAGE_ASPECT_DEPTH_BIT,
+                    BaseMipLevel = 0,
+                    LevelCount = 1,
+                    BaseArrayLayer = 0,
+                    LayerCount = 1
+                },
+                Flags = 0,
+                ViewType = ImageViewType.VK_IMAGE_VIEW_TYPE_2D,
+            };
+
+            /* create image view */
+            ImageView imgView;
+            err = mDevice.CreateImageView(viewInfo, null, out imgView);
+            Debug.Assert(err == Result.VK_SUCCESS);
+            mDepth.View = imgView;
+        }
+
+        private bool memoryTypeFromProperties(uint typeBits, MemoryPropertyFlagBits requirements_mask, out uint typeIndex)
+        {
+            // Search memtypes to find first index with those properties
+            for (UInt32 i = 0; i < mMemoryProperties.MemoryTypes.Length; i++)
+            {
+                if ((typeBits & 1) == 1)
+                {
+                    // Type is available, does it match user properties?
+                    if ((mMemoryProperties.MemoryTypes[i].PropertyFlags & requirements_mask) == requirements_mask)
+                    {
+                        typeIndex = i;
+                        return true;
+                    }
+                }
+                typeBits >>= 1;
+            }
+            // No memory types matched, return failure
+            typeIndex = 0;
+            return false;
+        }
+
+        const UInt32 DEMO_TEXTURE_COUNT = 1;
+        string[] tex_files = { "lunarg.ppm" };
+        TextureObject[] mTextures = new TextureObject[DEMO_TEXTURE_COUNT];
+        private Queue mQueue;
+
+        private void PrepareTextures()
+        {
+            var tex_format = ManagedVulkan.Format.VK_FORMAT_R8G8B8A8_UNORM;
+
+            ManagedVulkan.FormatProperties props;
+            mGPU.GetPhysicalDeviceFormatProperties(tex_format, out props);
+
+            for (UInt32 i = 0; i < DEMO_TEXTURE_COUNT; i++)
+            {
+                ManagedVulkan.Result err;
+
+                if (
+                        (
+                            (
+                                props.LinearTilingFeatures 
+                                &
+                                FormatFeatureFlagBits.VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT
+                            ) != 0
+                        )
+                        &&
+                            !mUseStagingBuffer
+                    )
+                {
+                    /* Device can texture using linear textures */
+                    mTextures[i] = PrepareTextureImage(
+                        tex_files[i],
+                        //out mTextures[i],
+                        ImageTiling.VK_IMAGE_TILING_LINEAR,
+                        ImageUsageFlagBits.VK_IMAGE_USAGE_SAMPLED_BIT,
+                        ManagedVulkan.MemoryPropertyFlagBits.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+                    );
+                }
+                else if (
+                    (props.OptimalTilingFeatures & FormatFeatureFlagBits.VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) != 0
+                    )
+                {
+                    var staging = PrepareTextureImage(
+                             tex_files[i],
+                             ImageTiling.VK_IMAGE_TILING_LINEAR,
+                             ImageUsageFlagBits.VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+                             ManagedVulkan.MemoryPropertyFlagBits.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+
+                    mTextures[i] = PrepareTextureImage(
+                        tex_files[i],
+                        ImageTiling.VK_IMAGE_TILING_OPTIMAL,
+                        ImageUsageFlagBits.VK_IMAGE_USAGE_TRANSFER_DST_BIT | ImageUsageFlagBits.VK_IMAGE_USAGE_SAMPLED_BIT,
+                        MemoryPropertyFlagBits.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+                    SetImageLayout(staging.Image,
+                        ImageAspectFlagBits.VK_IMAGE_ASPECT_COLOR_BIT,
+                        staging.ImageLayout,
+                        ImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                        0);
+
+                    SetImageLayout(mTextures[i].Image,
+                        ImageAspectFlagBits.VK_IMAGE_ASPECT_COLOR_BIT,
+                        mTextures[i].ImageLayout,
+                        ImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                        0);
+
+                    var copyRegion = new ManagedVulkan.ImageCopy
+                    {
+                        SrcSubresource = new ImageSubresourceLayers
+                        (
+                            ManagedVulkan.ImageAspectFlagBits.VK_IMAGE_ASPECT_COLOR_BIT,
+                            0,
+                            0,
+                            1
+                        ),
+                        SrcOffset = new Offset3D(0, 0, 0),
+                        DstSubresource = new ImageSubresourceLayers
+                        (
+                            ManagedVulkan.ImageAspectFlagBits.VK_IMAGE_ASPECT_COLOR_BIT,
+                            0,
+                            0,
+                            1
+                        ),
+                        DstOffset = new Offset3D(0, 0, 0),
+                        Extent = new Extent3D((uint) staging.Width, (uint) staging.Height, 1),
+                    };
+
+                    mCmd.CmdCopyImage(staging.Image,
+                        ImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                        mTextures[i].Image,
+                        ImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                        new[] { copyRegion });
+
+                    FlushInitCmd();
+
+                    DestroyTextureImage(staging);
+                }
+                else
+                {
+                    /* Can't support VK_FORMAT_R8G8B8A8_UNORM !? */
+                    throw new VulkanLibraryException("PrepareTextures", "No support for R8G8B8A8_UNORM as texture image format");
+                }
+
+                var sampler = new ManagedVulkan.SamplerCreateInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+                    MagFilter = Filter.VK_FILTER_NEAREST,
+                    MinFilter = Filter.VK_FILTER_NEAREST,
+                    MipmapMode = SamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_NEAREST,
+                    AddressModeU = SamplerAddressMode.VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+                    AddressModeV = SamplerAddressMode.VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+                    AddressModeW = SamplerAddressMode.VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,
+                    MipLodBias = 0.0f,
+                    AnisotropyEnable = false,
+                    MaxAnisotropy = 1,
+                    CompareOp = CompareOp.VK_COMPARE_OP_NEVER,
+                    MinLod = 0.0f,
+                    MaxLod = 0.0f,
+                    BorderColor = BorderColor.VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE,
+                    UnnormalizedCoordinates = false,
+                };
+
+                /* create sampler */
+                ManagedVulkan.Sampler texSampler;
+                err = mDevice.CreateSampler(sampler, null, out texSampler);
+                Debug.Assert(err == Result.VK_SUCCESS);
+                mTextures[i].Sampler = texSampler;
+
+                /* create image view */
+                var view = new ManagedVulkan.ImageViewCreateInfo
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+                    Image = mTextures[i].Image,
+                    ViewType = ImageViewType.VK_IMAGE_VIEW_TYPE_2D,
+                    Format = tex_format,
+                    Components = new ComponentMapping(
+                        ComponentSwizzle.VK_COMPONENT_SWIZZLE_R,
+                        ComponentSwizzle.VK_COMPONENT_SWIZZLE_G,
+                        ComponentSwizzle.VK_COMPONENT_SWIZZLE_B,
+                        ComponentSwizzle.VK_COMPONENT_SWIZZLE_A),
+                    SubresourceRange = new ImageSubresourceRange(ImageAspectFlagBits.VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1),
+                    Flags = 0,
+                };
+
+                ManagedVulkan.ImageView imgView;
+                err = mDevice.CreateImageView(view, null, out imgView);
+                Debug.Assert(err == Result.VK_SUCCESS);
+                mTextures[i].View = imgView;
+            }
+        }
+
+        private void DestroyTextureImage(TextureObject tex_objs)
+        {
+            /* clean up staging resources */
+            mDevice.FreeMemory(tex_objs.Mem, null);
+            mDevice.DestroyImage(tex_objs.Image, null);
+        }
+
+        private void FlushInitCmd()
+        {
+            ManagedVulkan.Result err;
+
+            if (mCmd == null || mCmd.IsNullHandle())
+            {
+                return;
+            }
+
+            err = mCmd.EndCommandBuffer();
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            var cmd_bufs = new[] { mCmd };
+            var nullFence = new ManagedVulkan.Fence();
+            Debug.Assert(nullFence.IsNullHandle());
+
+            var submit_info = new ManagedVulkan.SubmitInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_SUBMIT_INFO,
+                WaitSemaphoreCount = 0,
+                WaitSemaphores = null,
+                WaitDstStageMask = null,
+                CommandBuffers = cmd_bufs,
+                SignalSemaphores = null,
+            };
+
+            err = mQueue.QueueSubmit(new[] { submit_info }, nullFence);
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            err = mQueue.QueueWaitIdle();
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            mDevice.FreeCommandBuffers(mCommandPool, cmd_bufs);
+            mCmd = new CommandBuffer();
+            bool isNullHandle = mCmd.IsNullHandle();
+            Debug.Assert(isNullHandle);
+        }
+
+        private TextureObject PrepareTextureImage(
+             string filename,
+             ImageTiling tiling,
+             ImageUsageFlagBits usage,
+             MemoryPropertyFlagBits required_props)
+        {
+            var result = new TextureObject();
+            var tex_format = Format.VK_FORMAT_R8G8B8A8_UNORM;
+            int width = 0;
+            int height = 0;
+            ManagedVulkan.Result err;
+
+            ManagedVulkan.SubresourceLayout layout = null;
+            byte[] data = null;
+
+            if (!loadTexture(filename, ref data, ref layout, ref width, ref height))
+            {
+                throw new VulkanLibraryException("PrepareTextureImage", "Failed to load textures");
+            }
+
+            result.Width = width;
+            result.Height = height;
+
+            var image_create_info = new ManagedVulkan.ImageCreateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+                ImageType = ImageType.VK_IMAGE_TYPE_2D,
+                Format = tex_format,
+                Extent = new Extent3D
+                {
+                    Width = (uint) width,
+                    Height = (uint) height,
+                    Depth = 1,
+                },
+                MipLevels = 1,
+                ArrayLayers = 1,
+                Samples = SampleCountFlagBits.VK_SAMPLE_COUNT_1_BIT,
+                Tiling = tiling,
+                Usage = usage,
+                Flags = 0,
+                InitialLayout = ImageLayout.VK_IMAGE_LAYOUT_PREINITIALIZED,
+            };
+
+            ManagedVulkan.Image texImage;
+            err = mDevice.CreateImage(image_create_info, null, out texImage);
+            Debug.Assert(err == Result.VK_SUCCESS);
+            result.Image = texImage;
+
+            ManagedVulkan.MemoryRequirements mem_reqs;
+            mDevice.GetImageMemoryRequirements(result.Image, out mem_reqs);
+
+            uint typeIndex;
+            bool pass = memoryTypeFromProperties(mem_reqs.MemoryTypeBits, required_props, out typeIndex);
+            Debug.Assert(pass);
+
+            result.MemAlloc = new MemoryAllocateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+                AllocationSize = mem_reqs.Size,
+                MemoryTypeIndex = typeIndex,
+            };
+
+            /* allocate memory */
+            ManagedVulkan.DeviceMemory memory;
+            err = mDevice.AllocateMemory(result.MemAlloc, null, out memory);
+            Debug.Assert(err == Result.VK_SUCCESS);
+            result.Mem = memory;
+
+            /* bind memory */
+            err = mDevice.BindImageMemory(result.Image, result.Mem, 0);
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            if ((required_props & MemoryPropertyFlagBits.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0)
+            {
+                var subRes = new ManagedVulkan.ImageSubresource
+                {
+                    AspectMask = ImageAspectFlagBits.VK_IMAGE_ASPECT_COLOR_BIT,
+                    MipLevel = 0,
+                    ArrayLayer = 0,
+                };
+
+                mDevice.GetImageSubresourceLayout(result.Image, subRes, out layout);
+
+                // IMPORTANT ! - writing to unmanaged memory 
+                IntPtr destination;
+                ulong length = result.MemAlloc.AllocationSize;
+                err = mDevice.MapMemory(result.Mem, 0, result.MemAlloc.AllocationSize, 0, out destination);
+
+                data = new byte[result.MemAlloc.AllocationSize];
+                if (!loadTexture(filename, ref data, ref layout, ref width, ref height))
+                {
+                    throw new VulkanLibraryException("PrepareTextureImage", string.Format("Error loading texture: {0}\n", filename));
+                }
+
+                // IMPORTANT !! - writing to unmanaged memory 
+                System.Runtime.InteropServices.Marshal.Copy(data, 0, destination, (int)length);
+                mDevice.UnmapMemory(result.Mem);
+
+            }
+
+
+            return result;
+        }
+
+        /* Load a ppm file into memory */
+        bool loadTexture(string fileName, ref byte[] data, ref ManagedVulkan.SubresourceLayout layout, ref int width, ref int height)
+        {
+            if (!File.Exists(fileName))
+            {
+                return false;
+            }
+
+            using (var fs = File.Open(fileName, FileMode.Open))
+            using (var reader = new StreamReader(fs))
+            {
+                var header = reader.ReadLine();
+
+                if (header == null)
+                {
+                    return false;
+                }
+
+                if (header != "P6\n")
+                {
+                    return false;
+                }
+
+                string comment = null;
+                do
+                {
+                    comment = reader.ReadLine();
+
+                    if (comment == null)
+                    {
+                        return false;
+                    }
+                }
+                while (comment != null && comment.StartsWith("#"));
+
+                var dimensions = reader.ReadLine();
+
+                if (dimensions == null)
+                {
+                    return false;
+                }
+
+                var dims = dimensions.Split(' ');
+
+                if (dims.Length != 2)
+                {
+                    return false;
+                }
+
+                if (!int.TryParse(dims[0], out width))
+                {
+                    return false;
+                }
+
+                if (!int.TryParse(dims[1], out height))
+                {
+                    return false;
+                }
+
+                if (data == null)
+                {
+                    return true;
+                }
+
+                var maxColorValue = reader.ReadLine();
+
+                if (maxColorValue != "255\n")
+                {
+                    return false;
+                }
+
+                int offset = 0;
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        int count = fs.Read(data, offset, 3);
+                        offset += count;
+                        data[offset] = 255; /* Alpha of 1 */
+                        ++offset;
+                    }
+                    offset += (int) layout.RowPitch;
+                }
+
+                return true;
+            }
+        }
+
+        float[] g_vertex_buffer_data = {
+            -1.0f,-1.0f,-1.0f,  // -X side
+            -1.0f,-1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f,-1.0f,
+            -1.0f,-1.0f,-1.0f,
+
+            -1.0f,-1.0f,-1.0f,  // -Z side
+             1.0f, 1.0f,-1.0f,
+             1.0f,-1.0f,-1.0f,
+            -1.0f,-1.0f,-1.0f,
+            -1.0f, 1.0f,-1.0f,
+             1.0f, 1.0f,-1.0f,
+
+            -1.0f,-1.0f,-1.0f,  // -Y side
+             1.0f,-1.0f,-1.0f,
+             1.0f,-1.0f, 1.0f,
+            -1.0f,-1.0f,-1.0f,
+             1.0f,-1.0f, 1.0f,
+            -1.0f,-1.0f, 1.0f,
+
+            -1.0f, 1.0f,-1.0f,  // +Y side
+            -1.0f, 1.0f, 1.0f,
+             1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f,-1.0f,
+             1.0f, 1.0f, 1.0f,
+             1.0f, 1.0f,-1.0f,
+
+             1.0f, 1.0f,-1.0f,  // +X side
+             1.0f, 1.0f, 1.0f,
+             1.0f,-1.0f, 1.0f,
+             1.0f,-1.0f, 1.0f,
+             1.0f,-1.0f,-1.0f,
+             1.0f, 1.0f,-1.0f,
+
+            -1.0f, 1.0f, 1.0f,  // +Z side
+            -1.0f,-1.0f, 1.0f,
+             1.0f, 1.0f, 1.0f,
+            -1.0f,-1.0f, 1.0f,
+             1.0f,-1.0f, 1.0f,
+             1.0f, 1.0f, 1.0f,
+        };
+
+        float[] g_uv_buffer_data = {
+            0.0f, 0.0f,  // -X side
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+
+            1.0f, 0.0f,  // -Z side
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+
+            1.0f, 1.0f,  // -Y side
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+
+            1.0f, 1.0f,  // +Y side
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+
+            1.0f, 1.0f,  // +X side
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+
+            0.0f, 1.0f,  // +Z side
+            0.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+        };
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct TexCube_VS_Uniforms
+        {
+            public OpenTK.Matrix4 mvp;
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.Struct, SizeConst = 12)]
+            public OpenTK.Vector4[] position;
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.Struct, SizeConst = 12)]
+            public OpenTK.Vector4[] attr;
+        }
+
+        private UniformData mUniformData = null;
+        private DescriptorSetLayout mDescLayout;
+        private PipelineLayout mPipelineLayout;
+        private RenderPass mRenderPass;
+
+        private void PrepareCubeDataBuffer()
+        {
+            mUniformData = new UniformData();
+
+            ManagedVulkan.Result err;
+            bool pass;
+
+            TexCube_VS_Uniforms data = new TexCube_VS_Uniforms();
+
+            OpenTK.Matrix4 VP;
+            Matrix4.Mult(ref mProjectionMatrix, ref mViewMatrix, out VP);
+
+            OpenTK.Matrix4 MVP;
+            Matrix4.Mult(ref VP, ref mModelMatrix, out MVP);
+
+            Debug.Assert(data.position == null);
+            data.position = new OpenTK.Vector4[12];
+            Debug.Assert(data.attr == null);
+            data.attr = new OpenTK.Vector4[12];
+
+            for (int i = 0; i < 12 * 3; i++)
+            {
+                data.position[i] = new OpenTK.Vector4
+                    (
+                        x: g_vertex_buffer_data[i * 3],
+                        y: g_vertex_buffer_data[i * 3 + 1],
+                        z: g_vertex_buffer_data[i * 3 + 2],
+                        w: 1.0f
+                    );
+                data.attr[i] = new OpenTK.Vector4
+                    (
+                        x: g_uv_buffer_data[2 * i],
+                        y: g_uv_buffer_data[2 * i + 1],
+                        z: 0,
+                        w: 0
+                    );
+            }
+
+
+            var buf_info = new ManagedVulkan.BufferCreateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+                Usage = BufferUsageFlagBits.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                Size = (ulong) Marshal.SizeOf(typeof(TexCube_VS_Uniforms)),                
+            };
+
+            ManagedVulkan.Buffer dataBuffer;
+            err = mDevice.CreateBuffer(buf_info, null, out dataBuffer);
+            Debug.Assert(err == Result.VK_SUCCESS);
+            mUniformData.Buf = dataBuffer;
+
+            MemoryRequirements mem_reqs;
+            mDevice.GetBufferMemoryRequirements(mUniformData.Buf, out mem_reqs);
+
+            UInt32 typeIndex;
+            pass = memoryTypeFromProperties(mem_reqs.MemoryTypeBits,
+                MemoryPropertyFlagBits.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+                out typeIndex);
+            Debug.Assert(pass);
+
+            mUniformData.MemAlloc = new MemoryAllocateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+                AllocationSize = mem_reqs.Size,
+                MemoryTypeIndex = typeIndex,
+            };
+
+            ManagedVulkan.DeviceMemory mem;
+            err = mDevice.AllocateMemory(mUniformData.MemAlloc, null, out mem);
+            Debug.Assert(err == Result.VK_SUCCESS);
+            mUniformData.Mem = mem;
+
+            IntPtr dest;
+            err = mDevice.MapMemory(mUniformData.Mem, 0, mUniformData.MemAlloc.AllocationSize, 0, out dest);
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            int size = Marshal.SizeOf(typeof(TexCube_VS_Uniforms));
+            // HOPE THIS WORKS
+            Marshal.StructureToPtr(data, dest, false);
+
+            mDevice.UnmapMemory(mUniformData.Mem);
+
+            err = mDevice.BindBufferMemory(mUniformData.Buf, mUniformData.Mem, 0);
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            mUniformData.BufferInfo = new DescriptorBufferInfo
+            {
+                Buffer = mUniformData.Buf,
+                Offset = 0,
+                Range = (uint) size,
+            };
+        }
+
+        private void PrepareDescriptorLayout()
+        {
+            var layout_bindings = new []
+            {
+                new ManagedVulkan.DescriptorSetLayoutBinding
+                {
+                    Binding = 0,
+                    DescriptorType = DescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                    DescriptorCount = 1,
+                    StageFlags = ShaderStageFlagBits.VK_SHADER_STAGE_VERTEX_BIT,
+                    ImmutableSamplers = null,
+                },
+                new ManagedVulkan.DescriptorSetLayoutBinding
+                {
+                    Binding = 1,
+                    DescriptorType = DescriptorType.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                    DescriptorCount = DEMO_TEXTURE_COUNT,
+                    StageFlags = ShaderStageFlagBits.VK_SHADER_STAGE_FRAGMENT_BIT,
+                    ImmutableSamplers = null,
+                },
+            };
+
+            var descriptor_layout = new DescriptorSetLayoutCreateInfo
+            {
+                SType  = StructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+                Bindings = layout_bindings,
+            };
+
+            ManagedVulkan.Result err;
+
+            err = mDevice.CreateDescriptorSetLayout(descriptor_layout, null, out mDescLayout);
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            var pPipelineLayoutCreateInfo = new PipelineLayoutCreateInfo
+            {
+                SType= StructureType.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
+                SetLayouts = new [] {mDescLayout},
+            };
+            
+            err = mDevice.CreatePipelineLayout(pPipelineLayoutCreateInfo, null, out mPipelineLayout);
+            Debug.Assert(err == Result.VK_SUCCESS);            
+        }
+
+        private void PrepareRenderPass()
+        {
+            var attachments = new[]
+            {
+                new ManagedVulkan.AttachmentDescription
+                {
+                    Format = mFormat,
+                    Samples = SampleCountFlagBits.VK_SAMPLE_COUNT_1_BIT,
+                    LoadOp = AttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_CLEAR,
+                    StoreOp = AttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE,
+                    StencilLoadOp = AttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+                    StencilStoreOp = AttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE,
+                    InitialLayout = ImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+                    FinalLayout = ImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+                },
+                new ManagedVulkan.AttachmentDescription
+                {
+                    Format = mDepth.Format,
+                    Samples = SampleCountFlagBits.VK_SAMPLE_COUNT_1_BIT,
+                    LoadOp = AttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_CLEAR,
+                    StoreOp = AttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE,
+                    StencilLoadOp = AttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+                    StencilStoreOp = AttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE,
+                    InitialLayout = ImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+                    FinalLayout = ImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+                },
+            };
+
+            var color_reference = new AttachmentReference {
+                Attachment = 0, 
+                Layout = ImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+            };
+
+            var depth_reference = new AttachmentReference
+            {
+                Attachment = 1,
+                Layout = ImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+            };
+
+            var subpass = new SubpassDescription
+            {
+                PipelineBindPoint = PipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS,
+                Flags = 0,
+                InputAttachments = null,
+                ColorAttachments = new[] { color_reference },
+                ResolveAttachments = null,
+                DepthStencilAttachment = depth_reference,
+                PreserveAttachments = null,
+            };
+
+            var rp_info = new RenderPassCreateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
+                Attachments = attachments,
+                Subpasses = new[] { subpass },
+                Dependencies = null,
+            };
+
+            Result err = mDevice.CreateRenderPass(rp_info, null, out mRenderPass);
+            Debug.Assert(err == Result.VK_SUCCESS);
+        }
+
         private void PreparePipeline()
         {
             throw new NotImplementedException();
         }
 
-        private void PrepareRenderPass()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void PrepareDescriptorLayout()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void PrepareCubeDataBuffer()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void PrepareTextures()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void PrepareDepth()
-        {
-            throw new NotImplementedException();
-        }
-
-
-
         public void Cleanup()
         {
             mPrepared = false;
+
+            for (UInt32 i = 0; i < DEMO_TEXTURE_COUNT; ++i)
+            {
+                var texture = mTextures[i];
+                if (texture != null)
+                {
+                    if (texture.View != null)
+                    {
+                        mDevice.DestroyImageView(texture.View, null);
+                    }
+
+                    if (texture.Image != null)
+                    {
+                        mDevice.DestroyImage(texture.Image, null);
+                    }
+
+                    if (texture.Mem != null)
+                    {
+                        mDevice.FreeMemory(texture.Mem, null);
+                    }
+
+                    if (texture.Sampler != null)
+                    {
+                        mDevice.DestroySampler(texture.Sampler, null);
+                    }
+                }
+            }
 
             if (mSwapchain != null)
             {
                 mDevice.DestroySwapchainKHR(mSwapchain, null);
             }
 
+            if (mDepth != null)
+            {
+                if (mDepth.View != null)
+                    mDevice.DestroyImageView(mDepth.View, null);
+
+                if (mDepth.Image != null)
+                    mDevice.DestroyImage(mDepth.Image, null);
+
+                if (mDepth.Mem != null)
+                    mDevice.FreeMemory(mDepth.Mem, null);
+            }
+
+            if (mUniformData != null)
+            {
+                if(mUniformData.Buf != null)
+                {
+                    mDevice.DestroyBuffer(mUniformData.Buf, null);
+                }
+
+                if (mUniformData.Mem != null)
+                {
+                    mDevice.FreeMemory(mUniformData.Mem, null);
+                }
+            }
 
             if (mBuffers != null)
             {

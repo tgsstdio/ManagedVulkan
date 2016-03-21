@@ -10,7 +10,8 @@ using namespace System::Collections::Generic;
 namespace ManagedVulkan
 {
 	/// MemoryBarrier is reserved in win.nt
-	public ref class MvMemoryBarrier
+#undef MemoryBarrier
+	public ref class MemoryBarrier
 	{
 	private:
 		ManagedVulkan::StructureType mSType;

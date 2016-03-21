@@ -374,7 +374,7 @@ void ManagedVulkan::Instance::DestroyDebugReportCallbackEXT(ManagedVulkan::Debug
 	}
 }
 
-void ManagedVulkan::Instance::DebugReportMessageEXT(ManagedVulkan::DebugReportFlagBitsEXT flags, ManagedVulkan::DebugReportObjectTypeEXT objectType, UInt64 object, size_t location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage)
+void ManagedVulkan::Instance::DebugReportMessageEXT(ManagedVulkan::DebugReportFlagBitsEXT flags, ManagedVulkan::DebugReportObjectTypeEXT objectType, UInt64 object, UIntPtr location, Int32 messageCode, String^ pLayerPrefix, String^ pMessage)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	try
@@ -394,7 +394,7 @@ void ManagedVulkan::Instance::DebugReportMessageEXT(ManagedVulkan::DebugReportFl
 		// INITS 3 - object		
 		uint64_t arg_3 = object;
 		// INITS 4 - location		
-		size_t arg_4 = location;
+		size_t arg_4 = (location.Size == 8) ? location.ToUInt64() : location.ToUInt32();
 		// INITS 5 - messageCode		
 		int32_t arg_5 = messageCode;
 		// INITS 6 - pLayerPrefix		

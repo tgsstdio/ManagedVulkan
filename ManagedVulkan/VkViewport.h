@@ -10,13 +10,28 @@ namespace ManagedVulkan
 	public ref class Viewport
 	{
 	private:
-		float mX = 0;
-		float mY = 0;
-		float mWidth = 0;
-		float mHeight = 0;
-		float mMinDepth = 0;
-		float mMaxDepth = 0;
+		float mX;
+		float mY;
+		float mWidth;
+		float mHeight;
+		float mMinDepth;
+		float mMaxDepth;
 	public:
+		Viewport() : Viewport(0, 0, 0, 0, 0, 0)
+		{
+
+		}
+
+		Viewport(float x, float y, float width, float height, float minDepth, float maxDepth)
+		{
+			mX = x;
+			mY = y;
+			mWidth = width;
+			mHeight = height;
+			mMinDepth = minDepth;
+			mMaxDepth = maxDepth;
+		}
+
 		property float X
 		{
 			float get()
