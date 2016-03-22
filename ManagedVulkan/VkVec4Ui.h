@@ -27,6 +27,19 @@ namespace ManagedVulkan
 			mZ = src[2];
 		}
 	public:
+		Vec4Ui() : Vec4Ui(0,0,0,0)
+		{
+
+		}
+
+		Vec4Ui(UInt32 x, UInt32 y, UInt32 z, UInt32 w)
+		{
+			mX = x;
+			mY = y;
+			mZ = z;
+			mW = w;
+		}
+
 		property UInt32 X
 		{
 			UInt32 get()

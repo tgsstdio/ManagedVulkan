@@ -4647,7 +4647,7 @@ namespace ManagedVulkan
 		ManagedVulkan::StructureType mSType;
 		UInt32 mWaitSemaphoreCount = 0;
 		array<ManagedVulkan::Semaphore^>^ mWaitSemaphores = nullptr;
-		array<UInt32>^ mWaitDstStageMask;
+		array<UInt32>^ mWaitDstStageMask = nullptr;
 		array<ManagedVulkan::CommandBuffer^>^ mCommandBuffers = nullptr;
 		array<ManagedVulkan::Semaphore^>^ mSignalSemaphores = nullptr;
 	public:

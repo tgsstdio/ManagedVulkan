@@ -709,18 +709,8 @@ Please look at the Getting Started guide for additional information.";
                 QueueFamilyIndex = mGraphicsQueueNodeIndex,
                 Flags = 0,
             };
-            ManagedVulkan.CommandPool cmd_pool;
-            err = mDevice.CreateCommandPool(cmd_pool_info, null, out cmd_pool);
+            err = mDevice.CreateCommandPool(cmd_pool_info, null, out mCommandPool);
             Debug.Assert(err == Result.VK_SUCCESS);
-            mCommandPool = cmd_pool;
-
-            var cmd = new ManagedVulkan.CommandBufferAllocateInfo
-            {
-                SType = ManagedVulkan.StructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-                CommandPool = mCommandPool,
-                Level = CommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-                CommandBufferCount = 1,                
-            };
 
             PrepareBuffers();
             PrepareDepth();
@@ -730,6 +720,258 @@ Please look at the Getting Started guide for additional information.";
             PrepareDescriptorLayout();
             PrepareRenderPass();
             PreparePipeline();
+
+
+            var cmd = new ManagedVulkan.CommandBufferAllocateInfo
+            {
+                SType = ManagedVulkan.StructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+                CommandPool = mCommandPool,
+                Level = CommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+                CommandBufferCount = 1,
+            };
+
+            foreach (var sw in mBuffers)
+            {
+                ManagedVulkan.CommandBuffer[] cBuffers;
+                err = mDevice.AllocateCommandBuffers(cmd, out cBuffers);
+                Debug.Assert(err == Result.VK_SUCCESS);
+                Debug.Assert(cBuffers.Length == 1);
+                sw.Cmd = cBuffers[0];
+            }
+
+            PrepareDescriptorPool();
+            PrepareDescriptorSet();
+
+            PrepareFrameBuffers();
+
+            for (UInt32 i = 0; i < mBuffers.Length; ++i)
+            {
+                mCurrentBuffer = i;
+                DrawBuildCmd(mBuffers[i].Cmd);
+            }
+
+            /*
+             * Prepare functions above may generate pipeline commands
+             * that need to be flushed before beginning the render loop.
+             */
+            FlushInitCmd();
+
+        }
+
+        private void DrawBuildCmd(CommandBuffer cmd_buf)
+        {
+            var cmd_buf_hinfo = new CommandBufferInheritanceInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO,
+                RenderPass = new RenderPass(), // NULL HANDLE
+                Subpass = 0,
+                Framebuffer = new Framebuffer(), // NULL HANDLE
+                OcclusionQueryEnable = false,
+                QueryFlags = 0,
+                PipelineStatistics = 0,
+            };
+
+            var cmd_buf_info = new CommandBufferBeginInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+                Flags = 0,
+                InheritanceInfo = cmd_buf_hinfo,
+            };
+
+            var clear_values = new[] 
+            {
+                new ManagedVulkan.ClearValue()
+                {
+                    Color = new ClearColorValue { Float32s = new Vec4f (0.2f, 0.2f, 0.2f, 0.2f) },
+                },
+                new ManagedVulkan.ClearValue
+                {
+                    DepthStencil = new ClearDepthStencilValue(1.0f, 0)
+                }
+            };
+
+            var rp_begin = new RenderPassBeginInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+                RenderPass = mRenderPass,
+                Framebuffer = mFrameBuffers[mCurrentBuffer],
+                RenderArea = new Rect2D
+                {
+                    Offset = new Offset2D
+                    {
+                        X = 0, Y = 0,
+                    },
+                    Extent = new Extent2D
+                    {
+                        Width = (uint)mWidth,
+                        Height = (uint)mHeight,
+                    }
+                },
+                ClearValues = clear_values,
+            };
+
+            Result err = cmd_buf.BeginCommandBuffer(cmd_buf_info);
+            Debug.Assert(err == Result.VK_SUCCESS);
+
+            cmd_buf.CmdBeginRenderPass(rp_begin, SubpassContents.VK_SUBPASS_CONTENTS_INLINE);
+
+                cmd_buf.CmdBindPipeline(PipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline);
+                cmd_buf.CmdBindDescriptorSets(
+                    PipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS,
+                    mPipelineLayout,
+                    0,
+                    1,
+                    new[] { mDescSet },
+                    null);
+
+                var viewport = new ManagedVulkan.Viewport
+                {
+                    Height = mHeight,
+                    Width = mWidth,
+                    MinDepth = 0.0f,
+                    MaxDepth = 1.0f,
+                };
+                cmd_buf.CmdSetViewport(0, 1, new[] { viewport });
+
+                var scissor = new ManagedVulkan.Rect2D
+                {
+                    Extent = new Extent2D
+                    {
+                        Width = (uint) mWidth,
+                        Height = (uint) mHeight,
+                    },
+                    Offset = new Offset2D(0, 0),
+                };
+                cmd_buf.CmdSetScissor(0, 1, new[] { scissor });
+                cmd_buf.CmdDraw(12 * 3, 1, 0, 0);
+
+            cmd_buf.CmdEndRenderPass();
+
+            var prePresentBarrier = new ManagedVulkan.ImageMemoryBarrier
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+                SrcAccessMask = AccessFlagBits.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                DstAccessMask = AccessFlagBits.VK_ACCESS_MEMORY_READ_BIT,
+                OldLayout = ImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+                NewLayout = ImageLayout.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+                SrcQueueFamilyIndex = Vulkan.QUEUE_FAMILY_IGNORED,
+                DstQueueFamilyIndex = Vulkan.QUEUE_FAMILY_IGNORED,
+                SubresourceRange = new ImageSubresourceRange(ImageAspectFlagBits.VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1),
+                Image = mBuffers[mCurrentBuffer].Image,
+            };
+
+            cmd_buf.CmdPipelineBarrier(PipelineStageFlagBits.VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,
+                PipelineStageFlagBits.VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                0,
+                null,
+                null,
+                new[] { prePresentBarrier });
+
+            err = cmd_buf.EndCommandBuffer();
+            Debug.Assert(err == Result.VK_SUCCESS);
+        }
+
+        private void PrepareFrameBuffers()
+        {
+            var attachments = new ImageView[2];
+            attachments[1] = mDepth.View;
+
+            var fb_info = new FramebufferCreateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+                RenderPass = mRenderPass,
+                Attachments = attachments,
+                Width = (uint) mWidth,
+                Height = (uint) mHeight,
+                Layers = 1,                
+            };
+
+            mFrameBuffers = new ManagedVulkan.Framebuffer[mBuffers.Length];
+
+            for(int i = 0; i < mFrameBuffers.Length; ++i)
+            {
+                attachments[0] = mBuffers[i].View;
+                Result err = mDevice.CreateFramebuffer(fb_info, null, out mFrameBuffers[i]);
+                Debug.Assert(err == Result.VK_SUCCESS);
+            }
+        }
+
+        private void PrepareDescriptorPool()
+        {
+            var type_counts = new[]
+            {
+                new DescriptorPoolSize
+                {
+                    Type = DescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                    DescriptorCount = 1,
+                },
+                new DescriptorPoolSize
+                {
+                    Type = DescriptorType.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                    DescriptorCount = DEMO_TEXTURE_COUNT,
+                }
+            };
+
+            var descriptor_pool = new DescriptorPoolCreateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
+                MaxSets = 1,
+                PoolSizes = type_counts,
+            };
+
+
+            Result err = mDevice.CreateDescriptorPool(descriptor_pool, null, out mDescPool);
+            Debug.Assert(err == Result.VK_SUCCESS);
+        }
+
+
+        private void PrepareDescriptorSet()
+        {
+            var alloc_info = new DescriptorSetAllocateInfo
+            {
+                SType = StructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+                DescriptorPool = mDescPool,
+                DescriptorSetCount = 1,
+                SetLayouts = new[] { mDescLayout },
+            };
+
+            DescriptorSet[] dSets;
+            Result err = mDevice.AllocateDescriptorSets(alloc_info, out dSets);
+            Debug.Assert(err == Result.VK_SUCCESS);
+            Debug.Assert(dSets.Length == 1);
+            mDescSet = dSets[0];
+
+            var tex_descs = new DescriptorImageInfo[DEMO_TEXTURE_COUNT];
+            for (int i = 0; i < mTextures.Length; ++i)
+            {
+                var description = new DescriptorImageInfo();
+                description.Sampler = mTextures[i].Sampler;
+                description.ImageView = mTextures[i].View;
+                description.ImageLayout = ImageLayout.VK_IMAGE_LAYOUT_GENERAL;
+                tex_descs[i] = description;
+            }
+
+            var writeSets = new[]
+            {
+                new WriteDescriptorSet
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+                    DstSet = mDescSet,
+                    DescriptorCount = 1,
+                    DescriptorType = DescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                    BufferInfo = new [] {mUniformData.BufferInfo },
+                },
+                new WriteDescriptorSet
+                {
+                    SType = StructureType.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+                    DstSet = mDescSet,
+                    DescriptorCount = 1,
+                    DescriptorType = DescriptorType.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+                    ImageInfo = tex_descs,
+                },
+            };
+
+            mDevice.UpdateDescriptorSets(writeSets, null);
         }
 
         private void PrepareBuffers()
@@ -875,6 +1117,13 @@ Please look at the Getting Started guide for additional information.";
                 // to that state
                 SetImageLayout(mBuffers[i].Image, ImageAspectFlagBits.VK_IMAGE_ASPECT_COLOR_BIT,
                     ImageLayout.VK_IMAGE_LAYOUT_UNDEFINED, ImageLayout.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, 0);
+
+                color_image_view.Image = mBuffers[i].Image;
+
+                ManagedVulkan.ImageView imgView;
+                err = mDevice.CreateImageView(color_image_view, null, out imgView);
+                Debug.Assert(err == Result.VK_SUCCESS);
+                mBuffers[i].View = imgView;
             }
         }
 
@@ -1252,8 +1501,8 @@ Please look at the Getting Started guide for additional information.";
             Debug.Assert(err == Result.VK_SUCCESS);
 
             var cmd_bufs = new[] { mCmd };
-            var nullFence = new ManagedVulkan.Fence();
-            Debug.Assert(nullFence.IsNullHandle());
+           // var nullFence = new ManagedVulkan.Fence();
+           // Debug.Assert(nullFence.IsNullHandle());
 
             var submit_info = new ManagedVulkan.SubmitInfo
             {
@@ -1265,7 +1514,9 @@ Please look at the Getting Started guide for additional information.";
                 SignalSemaphores = null,
             };
 
-            err = mQueue.QueueSubmit(new[] { submit_info }, nullFence);
+            err = mQueue.QueueSubmit(new[] { submit_info }, null);
+
+           // err = mQueue.QueueSubmit(null, null);
             Debug.Assert(err == Result.VK_SUCCESS);
 
             err = mQueue.QueueWaitIdle();
@@ -1470,6 +1721,8 @@ Please look at the Getting Started guide for additional information.";
             }
         }
 
+        #region Cube Vertex Data
+
         float[] g_vertex_buffer_data = {
             -1.0f,-1.0f,-1.0f,  // -X side
             -1.0f,-1.0f, 1.0f,
@@ -1558,6 +1811,8 @@ Please look at the Getting Started guide for additional information.";
             1.0f, 1.0f,
         };
 
+        #endregion
+
         [StructLayout(LayoutKind.Sequential)]
         private struct TexCube_VS_Uniforms
         {
@@ -1574,6 +1829,10 @@ Please look at the Getting Started guide for additional information.";
         private RenderPass mRenderPass;
         private PipelineCache mPipelineCache;
         private Pipeline mPipeline;
+        private DescriptorPool mDescPool;
+        private DescriptorSet mDescSet;
+        private Framebuffer[] mFrameBuffers;
+        private uint mCurrentBuffer;
 
         private void PrepareCubeDataBuffer()
         {
@@ -1953,62 +2212,90 @@ Please look at the Getting Started guide for additional information.";
         {
             mPrepared = false;
 
+            if (mFrameBuffers != null)
+            {
+                foreach(var fb in mFrameBuffers)
+                {
+                    if (fb != null)
+                    {
+                        mDevice.DestroyFramebuffer(fb, null);
+                    }
+                }
+                mFrameBuffers = null;
+            }
+
+            if(mDescPool != null)
+            {
+                mDevice.DestroyDescriptorPool(mDescPool, null);
+                mDescPool = null;
+            }
+
             if (mPipeline != null)
             {
                 mDevice.DestroyPipeline(mPipeline, null);
+                mPipeline = null;
             }
 
             if (mPipelineCache != null)
             {
                 mDevice.DestroyPipelineCache(mPipelineCache, null);
+                mPipelineCache = null;
             }
 
             if (mRenderPass != null)
             {
                 mDevice.DestroyRenderPass(mRenderPass, null);
+                mRenderPass = null;
             }
 
             if (mPipelineLayout != null)
             {
                 mDevice.DestroyPipelineLayout(mPipelineLayout, null);
+                mPipelineLayout = null;
             }
 
             if (mDescLayout != null)
             {
                 mDevice.DestroyDescriptorSetLayout(mDescLayout, null);
+                mDescLayout = null;
             }
 
-
-            for (UInt32 i = 0; i < DEMO_TEXTURE_COUNT; ++i)
+            if (mTextures != null)
             {
-                var texture = mTextures[i];
-                if (texture != null)
+                for (UInt32 i = 0; i < DEMO_TEXTURE_COUNT; ++i)
                 {
-                    if (texture.View != null)
+                    var texture = mTextures[i];
+                    if (texture != null)
                     {
-                        mDevice.DestroyImageView(texture.View, null);
-                    }
+                        if (texture.View != null)
+                        {
+                            mDevice.DestroyImageView(texture.View, null);
+                        }
 
-                    if (texture.Image != null)
-                    {
-                        mDevice.DestroyImage(texture.Image, null);
-                    }
+                        if (texture.Image != null)
+                        {
+                            mDevice.DestroyImage(texture.Image, null);
+                        }
 
-                    if (texture.Mem != null)
-                    {
-                        mDevice.FreeMemory(texture.Mem, null);
-                    }
+                        if (texture.Mem != null)
+                        {
+                            mDevice.FreeMemory(texture.Mem, null);
+                        }
 
-                    if (texture.Sampler != null)
-                    {
-                        mDevice.DestroySampler(texture.Sampler, null);
+                        if (texture.Sampler != null)
+                        {
+                            mDevice.DestroySampler(texture.Sampler, null);
+                        }
                     }
                 }
+                mTextures = null;
             }
+
 
             if (mSwapchain != null)
             {
                 mDevice.DestroySwapchainKHR(mSwapchain, null);
+                mSwapchain = null;
             }
 
             if (mDepth != null)
@@ -2021,6 +2308,8 @@ Please look at the Getting Started guide for additional information.";
 
                 if (mDepth.Mem != null)
                     mDevice.FreeMemory(mDepth.Mem, null);
+
+                mDepth = null;
             }
 
             if (mUniformData != null)
@@ -2034,6 +2323,8 @@ Please look at the Getting Started guide for additional information.";
                 {
                     mDevice.FreeMemory(mUniformData.Mem, null);
                 }
+
+                mUniformData = null;
             }
 
             if (mBuffers != null)
@@ -2052,32 +2343,38 @@ Please look at the Getting Started guide for additional information.";
                         }
                     }
                 }
+                mBuffers = null;
             }
 
 
             if (mCommandPool != null)
             {
                 mDevice.DestroyCommandPool(mCommandPool, null);
+                mCommandPool = null;
             }
 
             if (mDevice != null)
             {
                 mDevice.DestroyDevice(null);
+                mDevice = null;
             }
 
             if (mValidate)
             {
                 mInstance.DestroyDebugReportCallbackEXT(mMsgCallback, null);
+                mMsgCallback = null;
             }
 
             if (mSurface != null)
             {
                 mInstance.DestroySurfaceKHR(mSurface, null);
+                mSurface = null;
             }
 
             if (mInstance != null)
             {
                 mInstance.DestroyInstance(null);
+                mInstance = null;
             }
         }
     }

@@ -2890,7 +2890,7 @@ ManagedVulkan::Result ManagedVulkan::Device::ResetDescriptorPool(ManagedVulkan::
 	}
 }
 
-ManagedVulkan::Result ManagedVulkan::Device::AllocateDescriptorSets(ManagedVulkan::DescriptorSetAllocateInfo^ pAllocateInfo, array<ManagedVulkan::DescriptorSet^>^ pDescriptorSets)
+ManagedVulkan::Result ManagedVulkan::Device::AllocateDescriptorSets(ManagedVulkan::DescriptorSetAllocateInfo^ pAllocateInfo,[Out] array<ManagedVulkan::DescriptorSet^>^% pDescriptorSets)
 {
 	List<IntPtr>^ pins = gcnew List<IntPtr>();
 	VkDescriptorSetLayout* arg_1_1 = nullptr;
@@ -2905,13 +2905,7 @@ ManagedVulkan::Result ManagedVulkan::Device::AllocateDescriptorSets(ManagedVulka
 		VkDescriptorSetAllocateInfo inst_1;
 		VkDescriptorSetAllocateInfo* arg_1 = nullptr;
 
-		UInt32 descriptorCount = (pAllocateInfo != nullptr) ? pAllocateInfo->DescriptorSetCount : 0;
-		UInt32 noOfSetLayouts = (pDescriptorSets != nullptr) ? pDescriptorSets->Length : 0;
-
-		if (descriptorCount != noOfSetLayouts)
-		{
-			throw gcnew InvalidOperationException("pDescriptorSets.Length != pAllocateInfo.DescriptorSetCount");
-		}
+		UInt32 noOfSetLayouts = (pAllocateInfo != nullptr) ? pAllocateInfo->DescriptorSetCount : 0;
 
 		if (pAllocateInfo != nullptr)
 		{
@@ -2934,22 +2928,18 @@ ManagedVulkan::Result ManagedVulkan::Device::AllocateDescriptorSets(ManagedVulka
 			}			
 			arg_1->pSetLayouts = arg_1_1;
 		}
-		// INITS 2 - pDescriptorSets		
-		
-		if (pDescriptorSets != nullptr)
-		{
-			if (noOfSetLayouts > 0)
-			{
-				arg_2 = new VkDescriptorSet[noOfSetLayouts];
-				for (UInt32 i = 0; i < noOfSetLayouts; ++i)
-				{
-					auto srcSet = (ManagedVulkan::DescriptorSet^) pDescriptorSets[i];
-					arg_2[i] = srcSet->mHandle;
-				}
-			}
-		}			
+		// INITS 2 - pDescriptorSets	
+		arg_2 = new VkDescriptorSet[noOfSetLayouts];					
 
 		auto result = vkAllocateDescriptorSets(arg_0, arg_1, arg_2);
+
+		pDescriptorSets = gcnew array<ManagedVulkan::DescriptorSet^>(noOfSetLayouts);
+		for (UInt32 i = 0; i < noOfSetLayouts; ++i)
+		{
+			auto dst = gcnew ManagedVulkan::DescriptorSet();
+			dst->mHandle = arg_2[i];
+			pDescriptorSets[i] = dst;
+		}			
 
 		return (Result)result;
 	}

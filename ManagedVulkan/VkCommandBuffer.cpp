@@ -443,9 +443,9 @@ void ManagedVulkan::CommandBuffer::CmdBindDescriptorSets(ManagedVulkan::Pipeline
 		
 		UInt32 noOfSets = (pDescriptorSets != nullptr) ? pDescriptorSets->Length : 0;
 
-		if (firstSet + descriptorSetCount >= noOfSets)
+		if (firstSet >= noOfSets)
 		{
-			throw gcnew InvalidOperationException("firstSet + descriptorSetCount >= pDescriptorSets->Length");
+			throw gcnew InvalidOperationException("firstSet >= pDescriptorSets->Length");
 		}
 
 		if (pDescriptorSets != nullptr)

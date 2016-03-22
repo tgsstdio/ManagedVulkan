@@ -96,9 +96,14 @@ ManagedVulkan::Result ManagedVulkan::Queue::QueueSubmit(array<ManagedVulkan::Sub
 
 
 		// INITS 3 - fence		
-		VkFence arg_3 = fence->mHandle;
+		VkFence arg_3 = VK_NULL_HANDLE;
+		if (fence != nullptr)
+		{
+			arg_3 = fence->mHandle;
+		}
 
-		int result = vkQueueSubmit(arg_0, arg_1, arg_2, arg_3);
+
+		auto result = vkQueueSubmit(arg_0, arg_1, arg_2, arg_3);
 
 		return (Result)result;
 	}

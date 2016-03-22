@@ -9,9 +9,20 @@ namespace ManagedVulkan
 	public ref class ClearDepthStencilValue
 	{
 	private:
-		float mDepth = 0;
-		UInt32 mStencil = 0;
+		float mDepth;
+		UInt32 mStencil;
 	public:
+		ClearDepthStencilValue() : ClearDepthStencilValue(0.0, 0)
+		{
+
+		}
+
+		ClearDepthStencilValue(float depth, UInt32 stencil)
+		{
+			mDepth = depth;
+			mStencil = stencil;
+		}
+
 		property float Depth
 		{
 			float get()

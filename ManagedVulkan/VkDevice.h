@@ -93,7 +93,7 @@ namespace ManagedVulkan
 		ManagedVulkan::Result CreateDescriptorPool(ManagedVulkan::DescriptorPoolCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::DescriptorPool^% pDescriptorPool);
 		void DestroyDescriptorPool(ManagedVulkan::DescriptorPool^ descriptorPool, ManagedVulkan::AllocationCallbacks^ pAllocator);
 		ManagedVulkan::Result ResetDescriptorPool(ManagedVulkan::DescriptorPool^ descriptorPool, UInt32 flags);
-		ManagedVulkan::Result AllocateDescriptorSets(ManagedVulkan::DescriptorSetAllocateInfo^ pAllocateInfo, array<ManagedVulkan::DescriptorSet^>^ pDescriptorSets);
+		ManagedVulkan::Result AllocateDescriptorSets(ManagedVulkan::DescriptorSetAllocateInfo^ pAllocateInfo,[Out] array<ManagedVulkan::DescriptorSet^>^% pDescriptorSets);
 		ManagedVulkan::Result FreeDescriptorSets(ManagedVulkan::DescriptorPool^ descriptorPool,  array<ManagedVulkan::DescriptorSet^>^ pDescriptorSets);
 		void UpdateDescriptorSets(array<ManagedVulkan::WriteDescriptorSet^>^ pDescriptorWrites, array<ManagedVulkan::CopyDescriptorSet^>^ pDescriptorCopies);
 		ManagedVulkan::Result CreateFramebuffer(ManagedVulkan::FramebufferCreateInfo^ pCreateInfo, ManagedVulkan::AllocationCallbacks^ pAllocator, [Out] ManagedVulkan::Framebuffer^% pFramebuffer);

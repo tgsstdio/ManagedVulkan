@@ -26,6 +26,19 @@ namespace ManagedVulkan
 			mW = src[3];
 		}
 	public:
+		Vec4f() : Vec4f(0.0, 0.0, 0.0, 0.0)
+		{
+			
+		}
+
+		Vec4f(float x, float y, float z, float w)
+		{
+			mX = x;
+			mY = y;
+			mZ = z;
+			mW = w;
+		}
+
 		property float X
 		{
 			float get()

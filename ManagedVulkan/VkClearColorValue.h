@@ -16,7 +16,7 @@ namespace ManagedVulkan
 		Vec4Ui^ mUInt32s = nullptr;
 		Vec4i^ mInt32s = nullptr;
 	public:
-		property Vec4f^ Floats
+		property Vec4f^ Float32s
 		{
 			Vec4f^ get()
 			{
