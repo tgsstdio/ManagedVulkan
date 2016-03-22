@@ -6627,7 +6627,7 @@ namespace ManagedVulkan
 			dst->pNext = nullptr;
 			dst->flags = mFlags;
 			dst->initialDataSize = mInitialDataSize;
-			dst->pInitialData = (void*) mInitialData->ToPointer();
+			dst->pInitialData = (mInitialData != nullptr) ? (void*)mInitialData->ToPointer() : nullptr;
 		}
 
 		void CopyFrom(VkPipelineCacheCreateInfo* src)
@@ -8185,7 +8185,7 @@ namespace ManagedVulkan
 		ManagedVulkan::PipelineLayout^ mLayout = gcnew ManagedVulkan::PipelineLayout();
 		ManagedVulkan::RenderPass^ mRenderPass = gcnew ManagedVulkan::RenderPass();
 		UInt32 mSubpass = 0;
-		Pipeline^ mBasePipelineHandle = nullptr;
+		Pipeline^ mBasePipelineHandle = gcnew ManagedVulkan::Pipeline();
 		Int32 mBasePipelineIndex = 0;
 	public:
 		property ManagedVulkan::StructureType SType

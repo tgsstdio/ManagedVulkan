@@ -402,7 +402,7 @@ Please look at the Getting Started guide for additional information.";
 
                 var dbgCreateInfo = new ManagedVulkan.DebugReportCallbackCreateInfoEXT()
                 {
-                    SType = ManagedVulkan.StructureType.VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT,
+                    SType = ManagedVulkan.StructureType.VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT,
                     PfnCallback = callback,
                     UserData = IntPtr.Zero,
                     Flags = DebugReportFlagBitsEXT.VK_DEBUG_REPORT_ERROR_BIT_EXT | DebugReportFlagBitsEXT.VK_DEBUG_REPORT_WARNING_BIT_EXT,
@@ -866,7 +866,7 @@ Please look at the Getting Started guide for additional information.";
                     ViewType = ImageViewType.VK_IMAGE_VIEW_TYPE_2D,
                     Flags = 0,
                 };
-
+                mBuffers[i] = new SwapchainBuffers();
                 mBuffers[i].Image = swapchainImages[i];
 
                 // Render loop will expect image to have been used before and in
@@ -1364,6 +1364,7 @@ Please look at the Getting Started guide for additional information.";
                 IntPtr destination;
                 ulong length = result.MemAlloc.AllocationSize;
                 err = mDevice.MapMemory(result.Mem, 0, result.MemAlloc.AllocationSize, 0, out destination);
+                Debug.Assert(err == Result.VK_SUCCESS);
 
                 data = new byte[result.MemAlloc.AllocationSize];
                 if (!loadTexture(filename, ref data, ref layout, ref width, ref height))
@@ -1399,13 +1400,14 @@ Please look at the Getting Started guide for additional information.";
                     return false;
                 }
 
-                if (header != "P6\n")
+                if (header != "P6")
                 {
                     return false;
                 }
 
                 string comment = null;
-                do
+                comment = reader.ReadLine();
+                while (comment != null && comment.StartsWith("#"))
                 {
                     comment = reader.ReadLine();
 
@@ -1414,9 +1416,8 @@ Please look at the Getting Started guide for additional information.";
                         return false;
                     }
                 }
-                while (comment != null && comment.StartsWith("#"));
 
-                var dimensions = reader.ReadLine();
+                var dimensions = comment;
 
                 if (dimensions == null)
                 {
@@ -1447,7 +1448,7 @@ Please look at the Getting Started guide for additional information.";
 
                 var maxColorValue = reader.ReadLine();
 
-                if (maxColorValue != "255\n")
+                if (maxColorValue != "255")
                 {
                     return false;
                 }
@@ -1462,7 +1463,7 @@ Please look at the Getting Started guide for additional information.";
                         data[offset] = 255; /* Alpha of 1 */
                         ++offset;
                     }
-                    offset += (int) layout.RowPitch;
+                   // offset += (int) layout.RowPitch;
                 }
 
                 return true;
@@ -1561,9 +1562,9 @@ Please look at the Getting Started guide for additional information.";
         private struct TexCube_VS_Uniforms
         {
             public OpenTK.Matrix4 mvp;
-            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.Struct, SizeConst = 12)]
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.Struct, SizeConst = 36)]
             public OpenTK.Vector4[] position;
-            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.Struct, SizeConst = 12)]
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.Struct, SizeConst = 36)]
             public OpenTK.Vector4[] attr;
         }
 
@@ -1590,11 +1591,11 @@ Please look at the Getting Started guide for additional information.";
             Matrix4.Mult(ref VP, ref mModelMatrix, out MVP);
 
             Debug.Assert(data.position == null);
-            data.position = new OpenTK.Vector4[12];
+            data.position = new OpenTK.Vector4[36];
             Debug.Assert(data.attr == null);
-            data.attr = new OpenTK.Vector4[12];
+            data.attr = new OpenTK.Vector4[36];
 
-            for (int i = 0; i < 12 * 3; i++)
+            for (int i = 0; i < 36; i++)
             {
                 data.position[i] = new OpenTK.Vector4
                     (
@@ -1797,11 +1798,16 @@ Please look at the Getting Started guide for additional information.";
             {
                 SType = StructureType.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
                 Layout = mPipelineLayout,
-                VertexInputState = new PipelineVertexInputStateCreateInfo
+                Flags = 0,
+                VertexInputState =
+
+                new PipelineVertexInputStateCreateInfo
                 {
                     SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
                 },
-                InputAssemblyState = new PipelineInputAssemblyStateCreateInfo
+
+                InputAssemblyState =
+                new PipelineInputAssemblyStateCreateInfo
                 {
                     SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
                     Topology = PrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
@@ -1816,7 +1822,8 @@ Please look at the Getting Started guide for additional information.";
                     RasterizerDiscardEnable = false,
                     DepthBiasEnable = false,
                 },
-                ColorBlendState = new PipelineColorBlendStateCreateInfo
+                ColorBlendState = 
+                new PipelineColorBlendStateCreateInfo
                 {
                     SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
                     Attachments = new[] {
@@ -1827,20 +1834,23 @@ Please look at the Getting Started guide for additional information.";
                         }
                     },
                 },
-                MultisampleState = new PipelineMultisampleStateCreateInfo
+                MultisampleState =
+                new PipelineMultisampleStateCreateInfo
                 {
                     SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
                     SampleMask = null,
                     RasterizationSamples = SampleCountFlagBits.VK_SAMPLE_COUNT_1_BIT,
                 },
-                ViewportState = new PipelineViewportStateCreateInfo
+                ViewportState =
+                new PipelineViewportStateCreateInfo
                 {
                     SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
                     Viewports = null,
                     Scissors = null,
                     ViewportCount = 1,
                 },
-                DepthStencilState = new PipelineDepthStencilStateCreateInfo
+                DepthStencilState =
+                new PipelineDepthStencilStateCreateInfo
                 {
                     SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
                     DepthTestEnable = true,
@@ -1850,7 +1860,8 @@ Please look at the Getting Started guide for additional information.";
                     StencilTestEnable = false,
                     Front = defaultStencilState,
                 },
-                DynamicState = new PipelineDynamicStateCreateInfo
+                DynamicState =
+                new PipelineDynamicStateCreateInfo
                 {
                     SType = StructureType.VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
                     DynamicStates = new[]
@@ -1907,6 +1918,7 @@ Please look at the Getting Started guide for additional information.";
                 long arrayLength = ms.Length / sizeof(UInt32);
                 var dest = new UInt32[arrayLength];
 
+                ms.Seek(0, SeekOrigin.Begin);
                 long i = 0;
                 while (i < arrayLength)
                 {

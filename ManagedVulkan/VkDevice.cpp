@@ -226,7 +226,7 @@ ManagedVulkan::Result ManagedVulkan::Device::MapMemory(ManagedVulkan::DeviceMemo
 		// INITS 4 - flags		
 		VkMemoryMapFlags arg_4 = flags;
 		// INITS 5 - ppData		
-		void* inst_5;
+		void* inst_5 = nullptr;
 		void** arg_5 = &inst_5;
 
 		auto result = vkMapMemory(arg_0, arg_1, arg_2, arg_3, arg_4, arg_5);
@@ -1561,7 +1561,7 @@ ManagedVulkan::Result ManagedVulkan::Device::CreateShaderModule(ManagedVulkan::S
 			if (pCreateInfo->Code != nullptr)
 			{
 				UInt32 count = pCreateInfo->Code->Length;
-				arg_1->codeSize = count;
+				arg_1->codeSize = count * sizeof(UInt32);
 				if (count > 0)
 				{
 					arg_1_0 = new UInt32[count];
@@ -1569,7 +1569,8 @@ ManagedVulkan::Result ManagedVulkan::Device::CreateShaderModule(ManagedVulkan::S
 					// TODO : UInt32 bulk copy
 					for (UInt32 i = 0; i < count; ++i)
 					{
-						arg_1_0[i] = (UInt32) pCreateInfo->Code[i];
+						UInt32 srcValue = (UInt32) pCreateInfo->Code[i];
+						arg_1_0[i] = srcValue;
 					}
 					arg_1->pCode = arg_1_0;
 				}
@@ -1838,6 +1839,8 @@ ManagedVulkan::Result ManagedVulkan::Device::CreateGraphicsPipelines(ManagedVulk
 					{
 						throw gcnew NullReferenceException("pCreateInfos[" + i + "] is null");
 					}
+
+					src->CopyTo(dest, pins);
 
 					{
 						// FIELD - arg_3_4 pCreateInfos->Stages		
@@ -2235,11 +2238,6 @@ ManagedVulkan::Result ManagedVulkan::Device::CreateGraphicsPipelines(ManagedVulk
 					delete parent->pRasterizationState;
 				}
 
-				if (parent->pRasterizationState != nullptr)
-				{
-					delete parent->pRasterizationState;
-				}
-
 				if (parent->pMultisampleState != nullptr)
 				{
 					delete parent->pMultisampleState;
@@ -2452,7 +2450,7 @@ ManagedVulkan::Result ManagedVulkan::Device::CreatePipelineLayout(ManagedVulkan:
 						for (UInt32 i = 0; i < noOfLayouts; ++i)
 						{
 							auto srcLayout = (ManagedVulkan::DescriptorSetLayout^) pCreateInfo->SetLayouts[i];
-							srcLayout->mHandle = arg_1_2[i];
+							arg_1_2[i] = srcLayout->mHandle;
 						}
 					}
 				}
